@@ -271,3 +271,4 @@ bool RO::RSW::Effect::writeStream(std::ostream& s) const {
 	s.write((char*)&m_data, sizeof(EffectData));
 	return(true);
 }
+

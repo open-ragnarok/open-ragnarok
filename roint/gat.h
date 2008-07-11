@@ -56,3 +56,4 @@ namespace RO {
 }
 
 #endif /* __GAT_H */
+

@@ -26,3 +26,4 @@ namespace RO {
 }
 
 #endif /* __RO_STRINGS_H */
+

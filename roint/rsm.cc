@@ -378,3 +378,4 @@ void RO::RSM::Mesh::Dump(std::ostream& out, const std::string& prefix) const {
 		out << buf << std::endl;
 	}
 }
+

@@ -188,3 +188,4 @@ namespace RO {
 }
 
 #endif /* __RSW_H */
+

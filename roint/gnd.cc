@@ -109,3 +109,4 @@ RO::GND::strTexture& RO::GND::getTexture(const unsigned int& idx) {
 const char* RO::GND::getTextureName(const unsigned int& idx) const {
 	return(m_textures[idx].path);
 }
+

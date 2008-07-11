@@ -5,6 +5,9 @@
 
 #define CP949_COUNT 17048
 
+#include <istream>
+#include <ostream>
+
 namespace RO {
 	const unsigned short cp949_start = 0x8141;
 	const unsigned short cp949[][2] = {
@@ -152,3 +155,4 @@ namespace RO {
 	  return(euc);
 	}
 }
+

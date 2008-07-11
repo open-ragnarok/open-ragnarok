@@ -52,3 +52,4 @@ RO::GAT::strBlock& RO::GAT::getBlock(const unsigned int& x, const unsigned int& 
 
 const RO::GAT::strBlock& RO::GAT::operator[] (const unsigned int& idx) const { return(m_blocks[idx]); }
 RO::GAT::strBlock& RO::GAT::operator[] (const unsigned int& idx) { return(m_blocks[idx]); }
+

@@ -139,3 +139,4 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 	}
 	return(false);
 }
+

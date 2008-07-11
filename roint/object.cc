@@ -62,3 +62,4 @@ bool RO::Object::read(const std::string& fn) {
 	fp.close();
 	return(ret);
 }
+
