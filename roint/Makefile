@@ -1,5 +1,5 @@
 # $id$
-CC=gcc
+CC=g++
 RM=rm -f
 
 CFLAGS=-Wall -g -I.
@@ -7,11 +7,13 @@ CFLAGS=-Wall -g -I.
 MAJOR_VER=0
 MINOR_VER=1
 
-SHARED_SO=roint.so
+TARGET=libroint
+
+SHARED_SO=$(TARGET).so
 SHARED_MAJOR=$(SHARED_SO).$(MAJOR_VER)
 
 SHARED=$(SHARED_MAJOR).$(MINOR_VER)
-STATIC=roint.a
+STATIC=$(TARGET).a
 
 SRC=act.cc gat.cc grf.cc ro.cc rsm.cc spr.cc constants.cc gnd.cc \
 	object.cc ro_strings.cc rsw.cc \
