@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: roint
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends} zlib
+Depends: ${shlibs:Depends}, ${misc:Depends}, zlib1g
 Description: The Open-Ragnarok interface library
  Reads all ragnarok-related files. Write support for most of them.
 

@@ -1,4 +1,4 @@
-#include "../roint/ro.h"
+#include <roint/ro.h>
 
 #include <iostream>
 #include <fstream>

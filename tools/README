@@ -1,0 +1,4 @@
+Some tools to test the functionality of the library.
+
+In linux, be sure to install roint and roint-dev packages before 
+compiling this library.

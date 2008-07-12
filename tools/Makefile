@@ -1,8 +1,8 @@
 CC=g++
 RM=rm -f
 
-CFLAGS=-I../roint -Wall -g
-LDFLAGS=-L../roint -lroint -lz
+CFLAGS=-Wall -g
+LDFLAGS=-lroint -lz
 
 all: act_dump rsm_dump rsw_dump spr_export
 

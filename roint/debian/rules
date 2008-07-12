@@ -85,7 +85,8 @@ install-arch:
 	mkdir -p $(CURDIR)/debian/roint/lib
 	mkdir -p $(CURDIR)/debian/roint-static/lib
 	$(MAKE) PREFIX=$(CURDIR)/debian/roint install
-	mv $(CURDIR)/debian/roint/include $(CURDIR)/debian/roint-dev/include
+	mkdir -p $(CURDIR)/debian/roint-dev/usr
+	mv $(CURDIR)/debian/roint/include $(CURDIR)/debian/roint-dev/usr/include
 	mv $(CURDIR)/debian/roint/lib/*.a $(CURDIR)/debian/roint-static/lib
 
 	dh_install -s
