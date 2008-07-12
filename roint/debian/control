@@ -1,0 +1,26 @@
+Source: roint
+Section: unknown
+Priority: extra
+Maintainer: Open-Ragnarok project <interface@open-ragnarok.org>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: roint
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends} zlib
+Description: The Open-Ragnarok interface library
+ Reads all ragnarok-related files. Write support for most of them.
+
+Package: roint-doc
+Architecture: all
+Description: Documentation for roint
+
+Package: roint-static
+Depends: roint
+Architecture: any
+Description: Open-Ragarok interface static library
+
+Package: roint-dev
+Depends: roint
+Architecture: any
+Description: Open-Ragnarok interface include files

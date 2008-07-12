@@ -1,6 +1,8 @@
 # $id$
 CC=g++
 RM=rm -f
+CP=cp
+MKDIR=mkdir -p
 
 CFLAGS=-Wall -g -I.
 
@@ -23,15 +25,36 @@ SHARED_OBJ=$(SRC:%.cc=%.lo)
 
 STATIC_OBJ=$(SRC:%.cc=%.o)
 
-all: shared static
+PREFIX=/usr/local
 
-shared: $(SHARED_OBJ)
+HEADERS=act.h constants.h cp949.h gat.h gnd.h grf.h impdecl.h \
+  object.h resource.h ro.h ro_strings.h rsm.h rsw.h spr.h \
+  struct_io.h
+
+all: static shared
+
+install: $(SHARED) $(STATIC)
+	$(CP) $(SHARED) $(PREFIX)/lib
+	$(CP) $(STATIC) $(PREFIX)/lib
+	ln -sf $(SHARED) $(PREFIX)/lib/$(SHARED_MAJOR)
+	ln -sf $(SHARED) $(PREFIX)/lib/$(SHARED_SO)
+	$(MKDIR) $(PREFIX)/include/roint
+	$(CP) $(HEADERS) $(PREFIX)/include/roint
+	# TODO: LDCONFIG
+
+uninstall:
+	$(RM) $(PREFIX)/lib/$(SHARED)
+	$(RM) $(PREFIX)/lib/$(STATIC)
+	$(RM) $(PREFIX)/lib/$(SHARED_MAJOR)
+	$(RM) -r $(PREFIX)/include/roint	
+
+shared $(SHARED): $(SHARED_OBJ)
 	$(CC) -shared -Wl,-soname,$(SHARED_MAJOR) -o $(SHARED) $^
 
-static: $(STATIC_OBJ)
+static $(STATIC): $(STATIC_OBJ)
 	$(AR) rcs $(STATIC) $^
 
-clean:
+clean distclean:
 	$(RM) $(SHARED_OBJ) $(STATIC_OBJ)
 	$(RM) $(SHARED) $(STATIC)
 
