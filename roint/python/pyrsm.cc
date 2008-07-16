@@ -2,7 +2,6 @@
 #include "stdafx.h"
 
 #include "pyrsm.h"
-
 #include <fstream>
 
 namespace RO {
@@ -49,5 +48,36 @@ namespace RO {
 		return(&rsm->getMesh(idx).transf);
 	}
 
+	int getMeshVecCount_RSM(const RSM* rsm, int mesh_id) {
+		return(rsm->getMesh(mesh_id).vecs.size());
+	}
+
+	int getMeshTexCount_RSM(const RSM* rsm, int mesh_id) {
+		return(rsm->getMesh(mesh_id).textures.size());
+	}
+
+	int getMeshTexvCount_RSM(const RSM* rsm, int mesh_id) {
+		return(rsm->getMesh(mesh_id).texv.size());
+	}
+
+	int getMeshSurfCount_RSM(const RSM* rsm, int mesh_id) {
+		return(rsm->getMesh(mesh_id).surfaces.size());
+	}
+
+	const RSM::Surface* getMeshSurf_RSM(const RSM* rsm, int mesh_id, int surf_id) {
+		return(&rsm->getMesh(mesh_id).surfaces[surf_id]);
+	}
+
+	const RSM::Vec* getMeshVec_RSM(const RSM* rsm, int mesh_id, int vec_id) {
+		return(&rsm->getMesh(mesh_id).vecs[vec_id]);
+	}
+
+	int getMeshTex_RSM(const RSM* rsm, int mesh_id, int tex_id) {
+		return(rsm->getMesh(mesh_id).textures[tex_id]);
+	}
+
+	const RSM::Vec* getMeshTexv_RSM(const RSM* rsm, int mesh_id, int texv_id) {
+		return(&rsm->getMesh(mesh_id).texv[texv_id]);
+	}
 }
 

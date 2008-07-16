@@ -20,6 +20,17 @@ extern "C" {
 	// RSM::MESH interfaces
 	MYLIB_DLLAPI const RSM::Mesh::Header* getHeader_Mesh_RSM(const RSM*, int idx);
 	MYLIB_DLLAPI const RSM::Mesh::Transf* getTransf_Mesh_RSM(const RSM*, int idx);
+
+	MYLIB_DLLAPI int getMeshVecCount_RSM(const RSM*, int mesh_id);
+	MYLIB_DLLAPI int getMeshTexCount_RSM(const RSM*, int mesh_id);
+	MYLIB_DLLAPI int getMeshTexvCount_RSM(const RSM*, int mesh_id);
+	MYLIB_DLLAPI int getMeshSurfCount_RSM(const RSM*, int mesh_id);
+
+	MYLIB_DLLAPI const RSM::Surface* getMeshSurf_RSM(const RSM*, int mesh_id, int surf_id);
+	MYLIB_DLLAPI const RSM::Vec* getMeshVec_RSM(const RSM*, int mesh_id, int vec_id);
+	MYLIB_DLLAPI int getMeshTex_RSM(const RSM*, int mesh_id, int tex_id);
+	MYLIB_DLLAPI const RSM::Vec*  getMeshTexv_RSM(const RSM*, int mesh_id, int texv_id);
+
 }
 }
 
