@@ -11,3 +11,9 @@ functions = {
 
 Version = roint[functions['Version']]
 printVersion = roint[functions['printVersion']]
+
+#def euc2utf8(euc):
+#  return(roint.euc2utf8(euc))
+#  
+#def utf82euc(utf):
+#  return(roint.euc2utf8(utf))
