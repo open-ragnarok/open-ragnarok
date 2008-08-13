@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(ProjectDir)..\$(ConfigurationName)\"
+			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			ManagedExtensions="1"
@@ -42,10 +42,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)..\win32_env\include"
+				AdditionalIncludeDirectories="$(ProjectDir)..\;$(ProjectDir)..\win32_env\include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="1"
+				PrecompiledHeaderThrough="StdAfx.h"
+				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -61,8 +63,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="zlib.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)..\win32_env\lib"
-				ImportLibrary="$(SolutionDir)\..\$(ConfigurationName)\rointd.dll.lib"
+				OutputFile="$(ProjectDir)\..\$(ConfigurationName)\$(ProjectName).dll"
+				AdditionalLibraryDirectories="$(ProjectDir)..\win32_env\lib"
+				ImportLibrary="$(ProjectDir)\..\$(ConfigurationName)\rointd.dll.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -112,6 +115,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(ProjectDir)..\win32_env\include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -129,10 +133,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(NoInherit)"
+				AdditionalDependencies="zlib.lib"
+				OutputFile="$(ProjectDir)\..\$(ConfigurationName)\$(ProjectName).dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(ProjectDir)..\win32_env\lib"
 				GenerateDebugInformation="true"
-				ImportLibrary="$(SolutionDir)\$(ConfigurationName)\roint.dll.lib"
+				ImportLibrary="$(ProjectDir)\..\$(ConfigurationName)\roint.dll.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -182,72 +188,56 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\act.cc"
+				RelativePath="..\act.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\AssemblyInfo.cpp"
+				RelativePath="..\AssemblyInfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\constants.cc"
+				RelativePath="..\constants.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\gat.cc"
+				RelativePath="..\gat.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\gnd.cc"
+				RelativePath="..\gnd.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\grf.cc"
+				RelativePath="..\grf.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\object.cc"
+				RelativePath="..\object.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\ro.cc"
+				RelativePath="..\ro.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\ro_strings.cc"
+				RelativePath="..\ro_strings.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\rsm.cc"
+				RelativePath="..\rsm.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\rsw.cc"
+				RelativePath="..\rsw.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\spr.cc"
+				RelativePath="..\spr.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp"
+				RelativePath="..\stdafx.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -256,15 +246,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\constants.h"
+				RelativePath="..\constants.h"
 				>
 			</File>
 			<File
-				RelativePath=".\impdecl.h"
+				RelativePath="..\cp949.h"
 				>
 			</File>
 			<File
-				RelativePath=".\object.h"
+				RelativePath="..\impdecl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\object.h"
 				>
 			</File>
 			<File
@@ -272,15 +266,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ro.h"
+				RelativePath="..\ro.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ro_strings.h"
+				RelativePath="..\ro_strings.h"
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.h"
+				RelativePath="..\stdafx.h"
 				>
 			</File>
 		</Filter>
@@ -302,35 +296,35 @@
 			Name="ROTypes"
 			>
 			<File
-				RelativePath=".\act.h"
+				RelativePath="..\act.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gat.h"
+				RelativePath="..\gat.h"
 				>
 			</File>
 			<File
-				RelativePath=".\gnd.h"
+				RelativePath="..\gnd.h"
 				>
 			</File>
 			<File
-				RelativePath=".\grf.h"
+				RelativePath="..\grf.h"
 				>
 			</File>
 			<File
-				RelativePath=".\rsm.h"
+				RelativePath="..\rsm.h"
 				>
 			</File>
 			<File
-				RelativePath=".\rsw.h"
+				RelativePath="..\rsw.h"
 				>
 			</File>
 			<File
-				RelativePath=".\spr.h"
+				RelativePath="..\spr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\struct_io.h"
+				RelativePath="..\struct_io.h"
 				>
 			</File>
 		</Filter>
@@ -338,30 +332,30 @@
 			Name="Python"
 			>
 			<File
-				RelativePath=".\python\pyrsm.cc"
+				RelativePath="..\python\pyrsm.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\python\pyspr.cc"
+				RelativePath="..\python\pyspr.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\python\pystrings.cc"
+				RelativePath="..\python\pystrings.cc"
 				>
 			</File>
 			<Filter
 				Name="Header"
 				>
 				<File
-					RelativePath=".\python\pyrsm.h"
+					RelativePath="..\python\pyrsm.h"
 					>
 				</File>
 				<File
-					RelativePath=".\python\pyspr.h"
+					RelativePath="..\python\pyspr.h"
 					>
 				</File>
 				<File
-					RelativePath=".\python\pystrings.h"
+					RelativePath="..\python\pystrings.h"
 					>
 				</File>
 			</Filter>
