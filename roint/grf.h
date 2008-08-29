@@ -62,6 +62,8 @@ namespace RO {
 		void close();
 		
 		bool isOpen() const;
+
+		/** Reads a file from the GRF and writes into the stream. Returns false if error. */
 		bool write(const std::string&, std::ostream&);
 	};
 }

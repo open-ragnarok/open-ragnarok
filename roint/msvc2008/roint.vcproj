@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)..\$(ConfigurationName)\"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -63,9 +63,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="zlib.lib"
-				OutputFile="$(ProjectDir)\..\$(ConfigurationName)\$(ProjectName).dll"
 				AdditionalLibraryDirectories="$(ProjectDir)..\win32_env\lib"
-				ImportLibrary="$(ProjectDir)\..\$(ConfigurationName)\rointd.dll.lib"
+				ImportLibrary="$(OutDir)\roint.dll.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -138,7 +137,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(ProjectDir)..\win32_env\lib"
 				GenerateDebugInformation="true"
-				ImportLibrary="$(ProjectDir)\..\$(ConfigurationName)\roint.dll.lib"
+				ImportLibrary="$(OutDir)\roint.dll.lib"
 				TargetMachine="1"
 			/>
 			<Tool

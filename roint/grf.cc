@@ -81,6 +81,10 @@ bool RO::GRF::open(const std::string& fn) {
 	ss.write((char*)m_filetableheader.uncompressedBody, m_filetableheader.uncompressedLength);
 
 	// std::cout << std::endl;
+#ifdef _DEBUG
+	int lastporc = -1, iporc;
+	float porc;
+#endif
 	for (i = 0; i < m_filecount; i++) {
 		idx = 0;
 		c = -1;
@@ -95,11 +99,17 @@ bool RO::GRF::open(const std::string& fn) {
 		// ss.get((char&)m_items[i].flags);
 		// ss.read((char*)&m_items[i].offset, sizeof(unsigned int));
 #ifdef _DEBUG
-		if (!(i % 50))
-			std::cout << "\rTranslated file index " << i << " / " << m_filecount;
+		porc = ((float)i / (float)m_filecount) * 100.0f;
+		iporc = (int)porc;
+		if (iporc > lastporc) {
+			lastporc = iporc;
+			std::cout << "\rTranslated file index " << lastporc << "% ";
+		}
 #endif
 	}
-	// std::cout << std::endl;
+#ifdef _DEBUG
+	std::cout << std::endl;
+#endif
 
 	m_opened = true;
 	return(true);
@@ -150,4 +160,3 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 	}
 	return(false);
 }
-

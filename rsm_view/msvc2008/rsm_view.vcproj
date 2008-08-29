@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="rogl"
-	ProjectGUID="{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}"
-	RootNamespace="rogl"
+	Name="rsm_view"
+	ProjectGUID="{3BDDF897-4DFE-4A54-87E3-FB0D5D4EE88C}"
+	RootNamespace="rsm_view"
 	Keyword="ManagedCProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			ManagedExtensions="1"
 			>
@@ -42,11 +42,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\;$(ProjectDir)..\..\roint\"
+				AdditionalIncludeDirectories="$(ProjectDir)..\..\win32_env\include;$(ProjectDir)..\..\roint;$(ProjectDir)..\..\rogl"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -61,12 +59,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="roint.dll.lib opengl32.lib"
+				AdditionalDependencies="sdlmain.lib sdl.lib user32.lib opengl32.lib glu32.lib roint.dll.lib rogl.dll.lib $(NOINHERIT)"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(OutDir)"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;$(ProjectDir)..\..\win32_env\lib&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
-				ImportLibrary="$(OutDir)\rogl.dll.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -93,9 +90,9 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)..\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			ManagedExtensions="1"
 			WholeProgramOptimization="1"
@@ -119,7 +116,6 @@
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -134,12 +130,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="roint.dll.lib"
-				OutputFile="$(ProjectDir)\..\$(ConfigurationName)\$(ProjectName).dll"
+				AdditionalDependencies="$(NoInherit)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(ProjectDir)..\..\roint\$(ConfigurationName)\"
 				GenerateDebugInformation="true"
-				ImportLibrary="$(OutDir)\rogl.dll.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -166,21 +159,6 @@
 		</Configuration>
 	</Configurations>
 	<References>
-		<AssemblyReference
-			RelativePath="System.dll"
-			AssemblyName="System, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
-			MinFrameworkVersion="131072"
-		/>
-		<AssemblyReference
-			RelativePath="System.Data.dll"
-			AssemblyName="System.Data, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=x86"
-			MinFrameworkVersion="131072"
-		/>
-		<AssemblyReference
-			RelativePath="System.XML.dll"
-			AssemblyName="System.Xml, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
-			MinFrameworkVersion="131072"
-		/>
 	</References>
 	<Files>
 		<Filter
@@ -189,23 +167,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\actgl.cc"
+				RelativePath="..\image.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\AssemblyInfo.cpp"
+				RelativePath="..\image_bmp.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\rogl.cpp"
+				RelativePath="..\main.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\rsmgl.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\stdafx.cpp"
+				RelativePath="..\sdlengine.cc"
 				>
 			</File>
 		</Filter>
@@ -215,31 +189,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\actgl.h"
+				RelativePath="..\blob.h"
 				>
 			</File>
 			<File
-				RelativePath="..\globject.h"
+				RelativePath="..\image.h"
 				>
 			</File>
 			<File
-				RelativePath="..\impdecl.h"
+				RelativePath="..\image_bmp.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
-				RelativePath="..\rogl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\rsmgl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\stdafx.h"
+				RelativePath="..\sdlengine.h"
 				>
 			</File>
 		</Filter>
@@ -248,19 +210,7 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\app.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\app.rc"
-				>
-			</File>
 		</Filter>
-		<File
-			RelativePath="..\readme.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -20,11 +20,7 @@
 // when linking.
 
 	#ifndef _MYLIB_NOAUTOLIB_
-		#ifdef _DEBUG
-			#pragma comment(lib, "rointd.dll.lib")
-		#else
-			#pragma comment(lib, "roint.dll.lib")
-		#endif
+		#pragma comment(lib, "roint.dll.lib")
 	#endif
 #endif
 
