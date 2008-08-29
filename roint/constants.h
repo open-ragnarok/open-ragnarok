@@ -5,7 +5,6 @@
 #include "impdecl.h"
 
 namespace RO {
-
 	enum CSex {
 		S_MALE,
 		S_FEMALE
@@ -82,4 +81,3 @@ namespace RO {
 }
 
 #endif /* __CONSTANTS_H */
-

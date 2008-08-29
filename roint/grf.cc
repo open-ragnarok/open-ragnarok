@@ -13,7 +13,8 @@ RO::GRF::GRF() {
 }
 
 RO::GRF::~GRF() {
-	close();
+	if (m_opened)
+		close();
 }
 
 bool RO::GRF::open(const std::string& fn) {
@@ -31,7 +32,7 @@ bool RO::GRF::open(const std::string& fn) {
 	m_fp.read((char*)&m_header, sizeof(Header));
 	m_filecount = m_header.number2 - m_header.number1 - 7;
 
-#if 0
+#ifdef _DEBUG
 	{
 	char buf[256];
 	buf[0] = 0;
@@ -59,11 +60,16 @@ bool RO::GRF::open(const std::string& fn) {
 	m_filetableheader.body = new unsigned char[m_filetableheader.compressedLength];
 	m_filetableheader.uncompressedBody = new unsigned char[m_filetableheader.uncompressedLength];
 	m_fp.read((char*)m_filetableheader.body, m_filetableheader.compressedLength);
-	unsigned long ul;
+	unsigned long ul = m_filetableheader.uncompressedLength;
 
 	uncompress(m_filetableheader.uncompressedBody, &ul, m_filetableheader.body, m_filetableheader.compressedLength);
+	if (ul == 0) {
+		std::cerr << "cannot uncompress FileTableHeader" << std::endl;
+		return(false);
+	}
 	if (ul != m_filetableheader.uncompressedLength) {
 		std::cerr << "GRF Warning: Uncompressed lengths for FileTableHeader differ!" << std::endl;
+		std::cerr << m_filetableheader.uncompressedLength << " / " << ul << std::endl;
 	}
 
 	// Read files
@@ -83,14 +89,17 @@ bool RO::GRF::open(const std::string& fn) {
 			buf[idx++] = c;
 		}
 		m_items[i].filename = buf;
-		ss.read((char*)&m_items[i].compressedLength, sizeof(unsigned int));
-		ss.read((char*)&m_items[i].compressedLengthAligned, sizeof(unsigned int));
-		ss.read((char*)&m_items[i].uncompressedLength, sizeof(unsigned int));
-		ss.get((char&)m_items[i].flags);
-		ss.read((char*)&m_items[i].offset, sizeof(unsigned int));
-		std::cout << "\rTranslated file index " << i;
+		ss.read((char*)&m_items[i].compressedLength, sizeof(unsigned int) * 4 + 1);
+		// ss.read((char*)&m_items[i].compressedLengthAligned, sizeof(unsigned int));
+		// ss.read((char*)&m_items[i].uncompressedLength, sizeof(unsigned int));
+		// ss.get((char&)m_items[i].flags);
+		// ss.read((char*)&m_items[i].offset, sizeof(unsigned int));
+#ifdef _DEBUG
+		if (!(i % 50))
+			std::cout << "\rTranslated file index " << i << " / " << m_filecount;
+#endif
 	}
-	std::cout << std::endl;
+	// std::cout << std::endl;
 
 	m_opened = true;
 	return(true);
@@ -105,7 +114,9 @@ void RO::GRF::close() {
 	delete[] m_filetableheader.body;
 	delete[] m_filetableheader.uncompressedBody;
 	delete[] m_items;
-	m_fp.close();
+	if (m_fp.is_open())
+		m_fp.close();
+	m_opened = false;
 }
 
 bool RO::GRF::isOpen() const {
