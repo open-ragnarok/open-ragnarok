@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 /*
  Open Ragnarok Project 
 
@@ -50,13 +50,18 @@ bool ImageBMP::ReadFromStream(std::istream& input, bool flipvertical) {
 	
 	input.read((char*)&fileHeader, sizeof(strFileHeader));
 	if ((fileHeader.type[0] != 'B') || (fileHeader.type[1] != 'M')) {
+#ifdef _DEBUG
+		fprintf(stderr, "Invalid BMP header: %c%c\n", fileHeader.type[0], fileHeader.type[1]);
+		if (input.eof()) {
+			fprintf(stderr, "\tEOF()\n");
+		}
+#endif
 		return(false);
 	}
 
 	/*
 	char buffer[2];
 	input.read(buffer, 2);
-	// printf("BMP: %c%c\n", buffer[0], buffer[1]);
 	assert(buffer[0] == 'B' && buffer[1] == 'M' || !"Not a bitmap file");
 	input.ignore(8);
 	int dataOffset = readInt(input);
@@ -141,7 +146,47 @@ bool ImageBMP::Read8BPP(std::istream& input, const bool& flipvertical) {
 	input.seekg(fileHeader.offset, std::ios_base::beg);
 	DynamicBlob pixels(size);
 	input.read((char*)pixels.getBuffer(), size);
+
+#if 1
+	dataSize = width * height * 4;
+	this->buffer = new char[dataSize];
 	
+	// printf("Reading BMP %d x %d\n", width, height);
+	int idx, offset;
+
+	unsigned char alpha;
+
+/*
+#ifdef _DEBUG
+	{
+		int x = 0;
+		for (x = 0; x < 10; x++) {
+			std::cout << "Color " << x << ": " << (int)colors[x].r << ", " << (int)colors[x].g << ", " << (int)colors[x].b << ", " << (int)colors[x].a << std::endl;
+		}
+	}
+#endif
+*/
+	
+	for(int y = 0; y < height; y++) {
+		for(int x = 0; x < width; x++) {
+			//idx = pixels[(bpr << y) + x];
+			idx = pixels[(bpr * y) + x];
+#if 1
+			// This hack is to simulate transparency based on Ragnarok textures using the #FF00FF color for transparent.
+			if ((colors[idx].r == 255) && (colors[idx].g == 0) && (colors[idx].b == 255))
+				alpha = 0;
+			else
+				alpha = 255;
+#endif
+			offset = 4 * (width * (flipvertical?(height-y-1):y) + x);
+			this->buffer[offset  ] = colors[idx].r;
+			this->buffer[offset+1] = colors[idx].g;
+			this->buffer[offset+2] = colors[idx].b;
+			this->buffer[offset+3] = alpha;
+		}
+	}
+	bpp = 32;
+#else
 	dataSize = width * height * 3;
 	//dataSize = bpr * height * 3;
 	this->buffer = new char[dataSize];
@@ -164,8 +209,9 @@ bool ImageBMP::Read8BPP(std::istream& input, const bool& flipvertical) {
 			this->buffer[offset+2] = colors[idx].b;
 		}
 	}
-	delete[] colors;
 	bpp = 24;
+#endif
+	delete[] colors;
 	return(true);
 }
 
@@ -192,6 +238,12 @@ bool ImageBMP::Read24BPP(std::istream& input, const bool& flipvertical) {
 
 	return(true);
 }
+
+bool ImageBMP::save(std::ostream& out) const {
+	std::cerr << "ImageBMP::save() not yet implemented" << std::endl;
+	return(false);
+}
 	
 ImageBMP::ImageBMP(char*p, int w, int h) : Image(p, w, h) {
 }
+

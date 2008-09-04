@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 /*
  Open Ragnarok Project 
 
@@ -62,7 +62,16 @@ public:
 	inline T& operator[](int index) {
 		unsigned long d = index;
 		if (d >= dataSize) {
-			fprintf(stderr, "Bad index on Blob::[]");
+			fprintf(stderr, "Bad index on DynamicBlob::[]");
+			return(buffer[0]);
+		}
+		return (buffer[index]);
+	}
+
+	inline const T& operator[](int index) const {
+		unsigned long d = index;
+		if (d >= dataSize) {
+			fprintf(stderr, "Bad index on DynamicBlob::[]");
 			return(buffer[0]);
 		}
 		return (buffer[index]);
@@ -70,6 +79,10 @@ public:
 
 	inline operator T*() {
 		return (buffer);
+	}
+
+	inline operator const T*() const {
+		return(buffer);
 	}
 
 	DynamicBlob(const unsigned long& size = 0) {
@@ -81,42 +94,41 @@ public:
 		}
 	}
 	
+	/** Changes the size of the object */
 	void setSize(const unsigned long& size) {
 		dataSize = size;
-		if (buffer)
+		if (buffer) {
 			delete[] buffer;
+			buffer = NULL;
+		}
 		if (size) {
 			buffer = new T[size];
 			assert(buffer!=0 && "DynamicBlob buffer could not be created - out of memory");
 		}
 	}
 	
-	inline const T& getConst(unsigned long index) const {
-		if (index >= dataSize) {
-			fprintf(stderr, "Bad index on Blob::[]");
-			return(buffer[0]);
-		}
-		return(buffer[index]);
-	}
-		
 	~DynamicBlob() {
 		if (buffer)
 			delete[] buffer;
 		buffer = 0;
 	}
 
-	unsigned long size() {
+	/** Returns the amount of memory used by this object */
+	unsigned long size() const {
 		return (dataSize * sizeof(T) + sizeof(this));
 	}
 
-	unsigned long blobSize() {
+	unsigned long blobSize() const {
 		return(dataSize);
 	}
 	
 	T* getBuffer() {
 		return(buffer);
 	}
-};
 
+	const T* getBuffer() const {
+		return(buffer);
+	}
+};
 
 #endif /* __BLOB_H */

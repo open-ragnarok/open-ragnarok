@@ -1,4 +1,4 @@
-/* $Id: image_bmp.h 4 2008-03-01 21:10:32Z sergio $ */
+/* $Id$ */
 /*
  Open Ragnarok Project 
 
@@ -25,6 +25,11 @@
 #include <iostream>
 #include <fstream>
 
+/**
+ * Reads a bitmap from a stream
+ *
+ * Note that this class is optimized for the bitmaps used in ragnarok. This is not an all-purpose bmp class (yet).
+ */
 class ImageBMP : public Image {
 protected:
 	ImageBMP(char*, int, int);
@@ -63,6 +68,8 @@ public:
 	ImageBMP(const char* filename, bool flipverticale = true);
 	ImageBMP(std::istream& input, bool flipvertical = true);
 	ImageBMP(const unsigned char* data, const unsigned int& size, bool flipvertical = true);
+
+	bool save(std::ostream&) const;
 	
 protected:
 	unsigned long headerSize;		/* This specifies in bytes the size of the header. This must be equal to 40. */

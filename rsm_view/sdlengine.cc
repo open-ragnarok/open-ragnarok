@@ -1,3 +1,4 @@
+/* $Id$ */
 #include "sdlengine.h"
 
 SDLEngine::SDLEngine() {
@@ -111,4 +112,14 @@ void SDLEngine::Sync() {
 	SDL_GL_SwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+}
+
+void SDLEngine::setTransparency(bool t) const {
+	if (t) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	else {
+		glDisable(GL_BLEND);
+	}
 }

@@ -1,8 +1,14 @@
+/* $Id$ */
+#ifdef WIN32
+	#define _CRT_SECURE_NO_WARNINGS
+	#define _SDL_main_h
+#endif
+
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
-#define _SDL_main_h
 #include "sdlengine.h"
 
 #include "ro.h"
@@ -18,6 +24,16 @@ protected:
 
 public:
 	MyRSM(const std::string& fn) {
+	}
+
+	unsigned int getTexture(unsigned int i) const {
+		if (textures == NULL)
+			return(0);
+		if (rsm == NULL)
+			return(0);
+		if (i >= rsm->getTextureCount())
+			return(0);
+		return(textures[i]);
 	}
 
 	MyRSM() {
@@ -75,7 +91,10 @@ public:
 		return(true);
 	}
 
-	bool registerTexture(std::istream& sdata, int texid) {
+	/**
+	 * Reads the sdata stream as an bitmap file and registers it into texid
+	 */
+	bool registerTexture(std::istream& sdata, const int& texid) {
 		ImageBMP bmp(sdata);
 
 		glBindTexture(GL_TEXTURE_2D, texid);
@@ -92,14 +111,26 @@ public:
 		2^k + 2*border for some integer value of k.
 		*/
 
+		// Sanity check
+		if (bmp.getWidth() <= 0 || bmp.getHeight() <= 0 || bmp.getBpp() <= 8 || bmp.getBuffer() == NULL) {
+			std::cerr << "Invalid bitmap" << std::endl;
+			bmp.Dump(std::cout);
+			return(false);
+		}
+
+		int drawtype = GL_RGB;
+		if (bmp.getBpp() == 32) {
+			drawtype = GL_RGBA;
+		}
+
 		glTexImage2D(
 			GL_TEXTURE_2D,
 			0,
-			bmp.getBpp() / 8,
+			GL_RGBA,
 			bmp.getWidth(),
 			bmp.getHeight(),
 			0,
-			GL_RGBA,
+			drawtype,
 			GL_UNSIGNED_BYTE,
 			bmp.getBuffer()
 		);
@@ -111,36 +142,55 @@ public:
 		rsm->Dump(std::cout);
 	}
 
-	bool loadTextures() {
-		unsigned int i;
+	/**
+	 * Grabs the texture file fn from the registered GRF and registers it in the GL texture texid.
+	 * Texid must be already created.
+	 * @param fn string filename of the texture
+	 * @param texid integer texture id
+	 */
+	bool registerTexture(const std::string& fn, const int& texid) {
+		if (grf == NULL)
+			return(false);
 		std::stringstream sdata;
-		std::string texfn;
-		if (textures != NULL)
-			delete[] textures;
-		textures = new unsigned int[rsm->getTextureCount()];
-		glGenTextures(rsm->getTextureCount(), textures);
-
-		for (i = 0; i < rsm->getTextureCount(); i++) {
-			texfn = "data\\texture\\";
-			texfn += rsm->getTexture(i);
-			if (!grf->write(texfn, sdata)) {
-				std::cerr << "Error loading texture (" << i << ") " << texfn << std::endl;
-			}
-			
-			registerTexture(sdata, textures[i]);
-			sdata.clear();
+		if (!grf->write(fn, sdata)) {
+			std::cerr << "Error loading texture (" << texid << ") " << fn << std::endl;
+			return(false);
 		}
+		if (!registerTexture(sdata, texid)) {
+			std::cerr << "Erorr registering texture (" << texid << ") " << fn << std::endl;
+			return(false);
+		}
+		// Save texture
+		/*
+		char buf[256];
+		sprintf(buf, "texture_%d.bmp", texid);
+		grf->save(fn, buf);
+		std::cout << "Textured saved to file " << buf << std::endl;
+		*/
 		return(true);
 	}
 
-};
+	/** Loads all textures from the loaded rsm file */
+	bool loadTextures() {
+		unsigned int i;
+		std::string texfn;
+		if (textures != NULL)
+			delete[] textures;
+		if (rsm == NULL)
+			return(false);
+		textures = new unsigned int[rsm->getTextureCount()];
+		glGenTextures(rsm->getTextureCount(), textures);
 
-unsigned char model_fn[] = {
-	0xc5, 0xa9, 0xb8, 0xae, 0xbd, 0xba,
-	0xb8, 0xb6, 0xbd, 0xba, 0xb8, 0xb6,
-	0xc0, 0xbb, '\\',  'x',  'm',  'a',
-	 's',  '_', 0xb5, 0xa5, 0xc4, 0xda,
-	0x36,  '.',  'r',  's',  'm', 0
+		glEnable(GL_TEXTURE_2D);
+		for (i = 0; i < rsm->getTextureCount(); i++) {
+			texfn = "data\\texture\\";
+			texfn += rsm->getTexture(i);
+			registerTexture(texfn, textures[i]);
+		}
+		glDisable(GL_TEXTURE_2D);
+
+		return(true);
+	}
 };
 
 void cube(float s = 1.0f) {
@@ -193,13 +243,57 @@ void cube(float s = 1.0f) {
 #endif
 }
 
+/**
+ * Saves the grf file list into a stream, including a C unsigned char vector for copy-paste operation for testing purposes
+ */
+void saveList(const RO::GRF& grf, std::ostream& out) {
+	unsigned int c = grf.getCount();
+	unsigned int i, j;
+
+	char buf[256];
+	char aux[256];
+	unsigned char cc;
+	for (i = 0; i < c; i++) {
+		strcpy(buf, grf.getFilename(i).c_str());
+		out << buf << std::endl << "\t";
+		out << "unsigned char fn[] = { ";
+		for (j = 0; j < strlen(buf); j++) {
+			if (j > 0)
+				out << ", ";
+			if ((buf[j] >= 'a' && buf[j] <= 'z') ||
+				(buf[j] >= 'A' && buf[j] <= 'Z') ||
+				(buf[j] >= '0' && buf[j] <= '9') ||
+				buf[j] == '_') {
+				out << "'" << buf[j] << "'";
+			}
+			else if (buf[j] == '\\') {
+				out << "'\\\\'";
+			}
+			else {
+				cc = (unsigned char)buf[j];
+				sprintf(aux, "0x%x", cc);
+				out << aux;
+			}
+		}
+		out << ", 0 };" << std::endl;
+	}
+}
+
+// We're using a specific file. This is encoded using EUC_KR
+//unsigned char fn[] = { 0xc5, 0xa9, 0xb8, 0xae, 0xbd, 0xba,	0xb8, 0xb6, 0xbd, 0xba, 0xb8, 0xb6,	0xc0, 0xbb, '\\',  'x',  'm',  'a',	 's',  '_', 0xb5, 0xa5, 0xc4, 0xda,	0x36,  '.',  'r',  's',  'm', 0 };
+//unsigned char fn[] = { 0xb3, 0xbb, 0xba, 0xce, 0xbc, 0xd2, 0xc7, 0xb0, '\\', 0xbf, 0xc0, 0xc5,	0xa9, 0xc0, 0xd4, 0xb1, 0xb8, 0xc4,	0xbf, 0xc5, 0xd9, 0x2e, 'r', 's', 'm', 0 };
+//unsigned char fn[] = { 0xbe, 0xc6, 0xc0, 0xce, 0xba, 0xea, 0xb7, 0xce, 0xc5, 0xa9, '\\', 0xb9, 0xce, 0xb0, 0xa1, '0', '2', 0x2e, 'r', 's', 'm', 0 };
+//unsigned char fn[] = { 0xc5, 0xa9, 0xb8, 0xae, 0xbd, 0xba, 0xb8, 0xb6, 0xbd, 0xba, 0xb8, 0xb6, 0xc0, 0xbb, '\\', 'x', 'm', 'a', 's', '_', 0xb5, 0xa5, 0xc4, 0xda, '8', 0x2e, 'r', 's', 'm' };
+unsigned char fn[] = { 0xb6, 0xf3, 0xc7, 0xef, '\\', 0xb9, 0xce, 0xb0, 0xa1, '0', '3', 0x2e, 'r', 's', 'm', 0 };
+char* model_fn = (char*)fn;
+
 int main(int argc, char* argv[]) {
 	std::string grf_fn;
 	std::string rsm_fn;
 
 	RO::GRF grf;
 
-	grf_fn = "../data/sdata.grf";
+	grf_fn = "data/sdata.grf";
 	grf.open(grf_fn);
 
 	if (grf.isOpen()) {
@@ -210,33 +304,46 @@ int main(int argc, char* argv[]) {
 		return(1);
 	}
 
+#if 0
+	std::ofstream of("grf_list.txt");
+	saveList(grf, of);
+	of.close();
+#endif
+
 	char *fnp = (char*)model_fn;
+
+	SDLEngine engine;
+	engine.InitDisplay();
 
 	MyRSM rsm;
 	rsm.grf = &grf;
 	rsm.read(fnp);
 
-	SDLEngine engine;
-	engine.InitDisplay();
-
 	float z = -5.0f;
 	float r = 0.0f;
+	float s = 1.0f/64.0f;
 
-	for (int i = 0; i < 500; i++) {
+	// rsm.Dump();
+	engine.setTransparency(true);
+	
+	for (int i = 0; i < 1000; i++) {
 		glLoadIdentity();
 		glTranslatef(0, 0, z);
 		glRotatef(r, 0, 1, 0);
-		//rsm.Draw();
-		cube();
+		glPushMatrix();
+		glScalef(s,s,s);
+		rsm.Draw();
+		//cube();
+		glPopMatrix();
 		engine.Sync();
 		printf("\r%d", i);
-		Sleep(90);
+		Sleep(9);
 		// z+= 0.05f;
 		r += 0.8f;
 	}
 
-	engine.CloseDisplay();
 	rsm.close();
+	engine.CloseDisplay();
 	grf.close();
 	return(0);
 }

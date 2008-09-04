@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 /*
  Open Ragnarok Project 
 
@@ -36,6 +36,14 @@ Image::Image(char* img, int w, int h, int bpp) : DynamicBlob(w*h*(bpp/8)) {
 }
 
 Image::~Image() {
+}
+
+void Image::Dump(std::ostream& out) const {
+	out << "=== BITMAP DUMP ===" << std::endl;
+	out << "BPP" << bpp << std::endl;
+	out << "Dimensions: " << width << "x" << height << std::endl;
+	out << "Size: " << dataSize << std::endl;
+	out << "===================" << std::endl;
 }
 
 int Image::getWidth() const {

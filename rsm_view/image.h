@@ -1,4 +1,4 @@
-/* $Id: image.h 4 2008-03-01 21:10:32Z sergio $ */
+/* $Id$ */
 /*
  Open Ragnarok Project 
 
@@ -39,6 +39,8 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	int getBpp() const;
+
+	void Dump(std::ostream& out) const;
 };
 
 #endif /*IMAGE_H_*/

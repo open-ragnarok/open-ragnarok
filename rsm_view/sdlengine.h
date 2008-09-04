@@ -1,3 +1,4 @@
+/* $Id$ */
 #ifndef __SDLENGINE_H
 #define __SDLENGINE_H
 
@@ -21,6 +22,8 @@ public:
 	void CloseDisplay();
 	void Sync();
 	virtual void WindowResize();
+
+	void setTransparency(bool) const;
 };
 
 #endif /* __SDLENGINE_H */
