@@ -205,6 +205,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\rswgl.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\stdafx.cpp"
 				>
 			</File>
@@ -236,6 +240,10 @@
 			</File>
 			<File
 				RelativePath="..\rsmgl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\rswgl.h"
 				>
 			</File>
 			<File

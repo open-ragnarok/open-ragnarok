@@ -1,10 +1,11 @@
-/* $id$ */
+/* $Id$ */
 #include "stdafx.h"
 #include "rsw.h"
 #include "ro.h"
 
 RO::RSW::RSW() {
 	object_count = 0;
+	m_objects = NULL;
 }
 
 RO::RSW::~RSW() {
@@ -21,6 +22,7 @@ bool RO::RSW::readStream(std::istream& s) {
 
 	s.read(ini_file, 40);
 	s.read(gnd_file, 40);
+
 	if (IsCompatibleWith(1, 4))
 		s.read(gat_file, 40);
 	else
@@ -46,6 +48,7 @@ bool RO::RSW::readStream(std::istream& s) {
 		water.phase = 2.0;
 		water.surface_curve_level = 0.5;
 	}
+
 	if( IsCompatibleWith(1,9) )
 		s.read((char*)&water.texture_cycling, sizeof(int));
 	else
@@ -63,32 +66,40 @@ bool RO::RSW::readStream(std::istream& s) {
 	s.read((char*)&object_count, sizeof(unsigned int));
 	m_objects = new Object*[object_count];
 
-	int objtype;
-	Object* o;
 	for (unsigned int i = 0; i < object_count; i++) {
-		s.read((char*)&objtype, sizeof(int));
-		switch (objtype) {
-			case 1:
-				o = new Model();
-				break;
-			case 2:
-				o = new Light();
-				break;
-			case 3:
-				o = new Sound();
-				break;
-			case 4:
-				o = new Effect();
-				break;
-			default:
-				fprintf(stderr, "ERROR! invalid object %u: %u\n", i, objtype);
-				return(false);
-		}
-		o->readStream(s);
-		m_objects[i] = o;
+		m_objects[i] = readObject(s);
+		if (m_objects[i] == NULL)
+			return(false);
 	}
 
 	return(true);
+}
+
+RO::RSW::Object* RO::RSW::readObject(std::istream& in) {
+	int objtype;
+	Object* o;
+
+	in.read((char*)&objtype, sizeof(int));
+	switch (objtype) {
+		case 1:
+			o = new Model();
+			break;
+		case 2:
+			o = new Light();
+			break;
+		case 3:
+			o = new Sound();
+			break;
+		case 4:
+			o = new Effect();
+			break;
+		default:
+			fprintf(stderr, "ERROR! invalid object %u\n", objtype);
+			return(NULL);
+	}
+	o->readStream(in);
+
+	return(o);
 }
 
 bool RO::RSW::writeStream(std::ostream&) {
@@ -101,14 +112,12 @@ void RO::RSW::Dump(std::ostream& o) const {
 	o << buf;
 	sprintf(buf,"Version: %u.%u\n", m_version.cver.major, m_version.cver.minor);
 	o << buf;
-	sprintf(buf,"Ini: %s\n", ini_file);
-	o << buf;
-	sprintf(buf,"Gnd: %s\n", gnd_file);
-	o << buf;
-	sprintf(buf,"Gat: %s\n", gat_file);
-	o << buf;
-	sprintf(buf,"Scr: %s\n", scr_file);
-	o << buf;
+
+	o << "Ini: " << ini_file << std::endl;
+	o << "Gnd: " << gnd_file << std::endl;
+	o << "Gat: " << gat_file << std::endl;
+	o << "Scr: " << scr_file << std::endl;
+
 	sprintf(buf,"Water\n");
 	o << buf;
 	sprintf(buf,"\tHeight: %f\n", water.height);
@@ -131,11 +140,11 @@ void RO::RSW::Dump(std::ostream& o) const {
 	o << buf;
 	sprintf(buf,"\tAlpha: %.2f\n", light.alpha);
 	o << buf;
-	sprintf(buf,"Unknown: %d\n", unk[0]);
+	sprintf(buf,"Unknown: %d (0x%x)\n", unk[0], unk[0]);
 	o << buf;
-	sprintf(buf,"Unknown: %d\n", unk[1]);
+	sprintf(buf,"Unknown: %d (0x%x)\n", unk[1], unk[1]);
 	o << buf;
-	sprintf(buf,"Unknown: %d\n", unk[2]);
+	sprintf(buf,"Unknown: %d (0x%x)\n", unk[2], unk[2]);
 	o << buf;
 	sprintf(buf,"Objects: %u\n", object_count);
 	o << buf;
@@ -153,9 +162,9 @@ void RO::RSW::Clear() {
 		}
 		delete[] m_objects;
 	}
+	m_objects = NULL;
 	object_count = 0;
 }
-
 
 // ===== OBJECT
 
@@ -272,3 +281,22 @@ bool RO::RSW::Effect::writeStream(std::ostream& s) const {
 	return(true);
 }
 
+unsigned int RO::RSW::getObjectCount() const {
+	return(object_count);
+}
+
+RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) {
+	return(m_objects[idx]);
+}
+
+const RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) const {
+	return(m_objects[idx]);
+}
+
+RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) {
+	return(m_objects[idx]);
+}
+
+const RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) const {
+	return(m_objects[idx]);
+}

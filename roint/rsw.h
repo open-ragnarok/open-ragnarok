@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __RSW_H
 #define __RSW_H
 
@@ -147,17 +147,8 @@ namespace RO {
 		protected:
 			EffectData m_data;
 		};
-#pragma pack(pop)
-	protected:
-		Object** m_objects;
 
-	public:
-		char ini_file[40];
-		char gnd_file[40];
-		char gat_file[40];
-		char scr_file[40];
-
-		// Water
+		/** Water information */
 		struct strWater {
 			float height;
 			unsigned int type;
@@ -165,27 +156,61 @@ namespace RO {
 			float phase;
 			float surface_curve_level;
 			int texture_cycling;
-		} water;
-		// Light
+		};
+
+		/** Light information */
 		struct strLight {
 			float ambient[3];
 			float diffuse[3];
 			float shadow[3];
 			float alpha;
-		} light;
+		};
+#pragma pack(pop)
+
+	protected:
+		Object** m_objects;
+		Object* readObject(std::istream&);
+
+		unsigned int object_count;
+
+	public:
+		/** INI File associated */
+		char ini_file[40];
+		
+		/** GND File associated */
+		char gnd_file[40];
+
+		/** GAT File associated. Version >= 1.4 */
+		char gat_file[40];
+
+		/** SCR File associated */
+		char scr_file[40];
+
+		strWater water;
+		strLight light;
+
+		unsigned int getObjectCount() const;
+
+		Object* getObject(const unsigned int&);
+		const Object* getObject(const unsigned int&) const;
+
+		Object* operator[] (const unsigned int&);
+		const Object* operator[] (const unsigned int&) const;
 
 		int unk[3];
-		unsigned int object_count;
 
 		RSW();
 		virtual ~RSW();
 
 		virtual bool readStream(std::istream&);
+
+		/** Write the RSW data to a stream */
 		virtual bool writeStream(std::ostream&);
 		virtual void Dump(std::ostream& = std::cout) const;
+
+		/** Clear all variables. Disallocate all data from memory. */
 		void Clear();
 	};
 }
 
 #endif /* __RSW_H */
-

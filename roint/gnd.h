@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __GND_H
 #define __GND_H
 
@@ -8,9 +8,9 @@
 namespace RO {
 	class MYLIB_DLLAPI GND : public Object {
 	public:
-		// Structure definitions
 #pragma pack(push)
 #pragma pack(1)
+		// Structure definitions
 		struct strTexture {
 			char path[40];
 			char unk[40];
@@ -22,7 +22,9 @@ namespace RO {
 		};
 
 		struct strTile {
+			/** This is the "u" coordinate of the texture */
 			float texture_start[4];
+			/** This is the "v" coordinate of the texture */
 			float texture_end[4];
 			unsigned short texture_index;
 			unsigned short lightmap;
@@ -48,8 +50,8 @@ namespace RO {
 			unsigned int y;
 			unsigned int cell;
 		};
-
 #pragma pack(pop)
+
 	protected:
 		strGndHeader m_gndheader;
 		strGridInfo m_grid;
@@ -64,6 +66,8 @@ namespace RO {
 	public:
 		GND();
 		virtual ~GND();
+
+		void Clear();
 
 		virtual bool readStream(std::istream&);
 		void Dump(std::ostream&) const;
@@ -100,27 +104,14 @@ namespace RO {
 		 */
 		strTile& getTile(const unsigned int& idx);
 
-		/**
-		 * Retrieves the tile structure based on the xy location.
-		 * @param x x coordinate
-		 * @param y y coordinate
-		 * @return strTile reference
-		 */
-		const strTile& getTile(const unsigned int& x, const unsigned int& y) const;
-
-		/**
-		 * Retrieves the tile structure based on the xy location.
-		 * @param x x coordinate
-		 * @param y y coordinate
-		 * @return strTile reference
-		 */
-		strTile& getTile(const unsigned int& x, const unsigned int& y);
-
 		const strCube& getCube(const unsigned int& x, const unsigned int& y) const;
 		strCube& getCube(const unsigned int& x, const unsigned int& y);
 
 		const strCube& getCube(const unsigned int& idx) const;
 		strCube& getCube(const unsigned int& idx);
+
+		unsigned int getWidth() const;
+		unsigned int getHeight() const;
 	};
 }
 

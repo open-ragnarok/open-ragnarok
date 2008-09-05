@@ -64,6 +64,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="zlib.lib"
 				AdditionalLibraryDirectories="$(ProjectDir)..\win32_env\lib"
+				GenerateDebugInformation="true"
 				ImportLibrary="$(OutDir)\roint.dll.lib"
 			/>
 			<Tool

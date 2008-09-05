@@ -1,9 +1,10 @@
-/* $id$ */
+/* $Id$ */
 /*
  * struct_io.h
  *
  *  Created on: Jun 5, 2008
  *      Author: sergio
+ *    Revision: $Rev$
  */
 
 #ifndef __STRUCT_IO_H
@@ -12,10 +13,16 @@
 #include <iostream>
 
 namespace RO {
+	/**
+	 * Helps in reading and writing data that comes in the type <count><sequence of type>, assuming
+	 * count is an int and is immediately followed by the sequence of structures
+	 */
 	template <typename T>
 	class MYLIB_DLLAPI StructIO {
 	protected:
+		/** Number of scructures that we have */
 		int count;
+		/** Stores our data */
 		T* data;
 		T unused;
 
@@ -102,13 +109,16 @@ namespace RO {
 			return(*this);
 		}
 
+		/**
+		 * Writes our data to a stream in the same way as we read it.
+		 */
 		void Write(std::ostream& s) const {
 			char* ptr = (char*)&count;
 			s.write(ptr, 4);
 			if (count > 0) {
-		  ptr = (char*)data;
-		  s.write((char*)data, sizeof(T) * count);
-		}
+			  ptr = (char*)data;
+			  s.write((char*)data, sizeof(T) * count);
+			}
 		}
 
 		int getCount() const {
@@ -146,4 +156,3 @@ namespace RO {
 }
 
 #endif /* __STRUCT_IO_H */
-
