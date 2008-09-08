@@ -9,21 +9,21 @@ namespace RO {
 	 * Interface for RSW format objects/files
 	 */
 	class MYLIB_DLLAPI RSW : public Object {
+	public:
+		typedef enum {
+			OT_Unknown = 0,
+			OT_Model = 1,
+			OT_Light = 2,
+			OT_Sound = 3,
+			OT_Effect = 4
+		} ObjectType;
 #pragma pack(push)
 #pragma pack(1)
 		/**
 		 * Base class for RSW objects
 		 */
-		class Object {
+		class MYLIB_DLLAPI Object {
 		public:
-			typedef enum {
-				OT_Unknown,
-				OT_Model,
-				OT_Light,
-				OT_Sound,
-				OT_Effect
-			} ObjectType;
-
 			virtual bool readStream(std::istream&) = 0;
 			virtual bool writeStream(std::ostream&) const = 0;
 
@@ -47,7 +47,7 @@ namespace RO {
 		/**
 		 * RSW Object Model
 		 */
-		class Model : public Object {
+		class MYLIB_DLLAPI Model : public Object {
 		public:
 			Model();
 			virtual ~Model();
@@ -80,7 +80,7 @@ namespace RO {
 		/**
 		 * RSW Object Light
 		 */
-		class Light : public Object {
+		class MYLIB_DLLAPI Light : public Object {
 		public:
 			Light();
 			virtual ~Light();
@@ -103,7 +103,7 @@ namespace RO {
 		/**
 		 * RSW Object Sound
 		 */
-		class Sound : public Object {
+		class MYLIB_DLLAPI Sound : public Object {
 		public:
 			Sound();
 			virtual ~Sound();
@@ -124,7 +124,7 @@ namespace RO {
 		/**
 		 * RSW Object Effect
 		 */
-		class Effect : public Object {
+		class MYLIB_DLLAPI Effect : public Object {
 		public:
 			Effect();
 			virtual ~Effect();

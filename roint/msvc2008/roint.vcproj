@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\;$(ProjectDir)..\win32_env\include"
+				AdditionalIncludeDirectories="$(ProjectDir)..\;$(ProjectDir)..\..\win32_env\include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="1"
@@ -62,8 +62,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="zlib.lib"
-				AdditionalLibraryDirectories="$(ProjectDir)..\win32_env\lib"
+				AdditionalDependencies="zdll.lib"
+				AdditionalLibraryDirectories="$(ProjectDir)..\..\win32_env\lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="$(OutDir)\roint.dll.lib"
 			/>

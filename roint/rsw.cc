@@ -3,6 +3,14 @@
 #include "rsw.h"
 #include "ro.h"
 
+/*
+RO::RSW::OT_Unknown = 0;
+RO::RSW::OT_Model = 1;
+RO::RSW::OT_Light = 2;
+RO::RSW::OT_Sound = 3;
+RO::RSW::OT_Effect = 4;
+*/
+
 RO::RSW::RSW() {
 	object_count = 0;
 	m_objects = NULL;
@@ -175,7 +183,7 @@ RO::RSW::Object::Object(ObjectType t) {
 RO::RSW::Object::~Object() {
 }
 
-RO::RSW::Object::ObjectType RO::RSW::Object::getType() const {
+RO::RSW::ObjectType RO::RSW::Object::getType() const {
 	return(m_type);
 }
 
@@ -188,7 +196,7 @@ void RO::RSW::Object::Dump(std::ostream& o) const {
 }
 
 // ===== MODEL
-RO::RSW::Model::Model() : Object(RO::RSW::Object::OT_Model) {
+RO::RSW::Model::Model() : Object(RO::RSW::OT_Model) {
 	memset(&m_data, 0, sizeof(ModelData));
 	data = &m_data;
 }
@@ -221,7 +229,7 @@ void RO::RSW::Model::Dump(std::ostream& o) const {
 
 // ===== LIGHT
 
-RO::RSW::Light::Light() : Object(RO::RSW::Object::OT_Light) {
+RO::RSW::Light::Light() : Object(RO::RSW::OT_Light) {
 	memset(&m_data, 0, sizeof(LightData));
 	data = &m_data;
 }
@@ -241,7 +249,7 @@ bool RO::RSW::Light::writeStream(std::ostream& s) const {
 }
 
 // ===== SOUND
-RO::RSW::Sound::Sound() : Object(RO::RSW::Object::OT_Sound) {
+RO::RSW::Sound::Sound() : Object(RO::RSW::OT_Sound) {
 	memset(&m_data, 0, sizeof(SoundData));
 	data = &m_data;
 }
@@ -262,7 +270,7 @@ bool RO::RSW::Sound::writeStream(std::ostream& s) const {
 
 // ===== EFFECT
 
-RO::RSW::Effect::Effect() : Object(RO::RSW::Object::OT_Effect) {
+RO::RSW::Effect::Effect() : Object(RO::RSW::OT_Effect) {
 	memset(&m_data, 0, sizeof(EffectData));
 	data = &m_data;
 }
