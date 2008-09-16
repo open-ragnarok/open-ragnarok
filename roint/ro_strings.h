@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __RO_STRINGS_H
 #define __RO_STRINGS_H
 
@@ -17,6 +17,9 @@ namespace RO {
 	 */
 	MYLIB_DLLAPI std::string euc2utf8(std::istream& is);
 
+	/**
+	 * Converts an stream from EUC_KR into a UTF-8 stream
+	 */
 	MYLIB_DLLAPI void euc2utf8(std::istream&, std::ostream&);
 
 	/**

@@ -6,6 +6,11 @@
 #include "struct_io.h"
 
 namespace RO {
+	/**
+	 * Ground information
+	 *
+	 * \ingroup ROInterface
+	 */
 	class MYLIB_DLLAPI GND : public Object {
 	public:
 #pragma pack(push)

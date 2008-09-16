@@ -174,6 +174,26 @@ void RO::RSW::Clear() {
 	object_count = 0;
 }
 
+unsigned int RO::RSW::getObjectCount() const {
+	return(object_count);
+}
+
+RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) {
+	return(m_objects[idx]);
+}
+
+const RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) const {
+	return(m_objects[idx]);
+}
+
+RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) {
+	return(m_objects[idx]);
+}
+
+const RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) const {
+	return(m_objects[idx]);
+}
+
 // ===== OBJECT
 
 RO::RSW::Object::Object(ObjectType t) {
@@ -227,6 +247,10 @@ void RO::RSW::Model::Dump(std::ostream& o) const {
 	o << "\t" << buf << std::endl;
 }
 
+const char* RO::RSW::Model::getName() const {
+	return(m_data.m_name);
+}
+
 // ===== LIGHT
 
 RO::RSW::Light::Light() : Object(RO::RSW::OT_Light) {
@@ -248,6 +272,10 @@ bool RO::RSW::Light::writeStream(std::ostream& s) const {
 	return(true);
 }
 
+const char* RO::RSW::Light::getName() const {
+	return(m_data.name);
+}
+
 // ===== SOUND
 RO::RSW::Sound::Sound() : Object(RO::RSW::OT_Sound) {
 	memset(&m_data, 0, sizeof(SoundData));
@@ -266,6 +294,10 @@ bool RO::RSW::Sound::writeStream(std::ostream& s) const {
 	s.write((char*)&m_type, sizeof(int));
 	s.write((char*)&m_data, sizeof(SoundData));
 	return(true);
+}
+
+const char* RO::RSW::Sound::getName() const {
+	return(m_data.name);
 }
 
 // ===== EFFECT
@@ -289,22 +321,7 @@ bool RO::RSW::Effect::writeStream(std::ostream& s) const {
 	return(true);
 }
 
-unsigned int RO::RSW::getObjectCount() const {
-	return(object_count);
+const char* RO::RSW::Effect::getName() const {
+	return(m_data.name);
 }
 
-RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) {
-	return(m_objects[idx]);
-}
-
-const RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) const {
-	return(m_objects[idx]);
-}
-
-RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) {
-	return(m_objects[idx]);
-}
-
-const RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) const {
-	return(m_objects[idx]);
-}

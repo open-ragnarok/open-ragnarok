@@ -12,7 +12,6 @@
 
 #include "my_rsw.h"
 
-/** Oh, look! A cube! */
 void plane(int x = 5, int y = 5) {
 	float fx, fy;
 	fx = (float)x;
@@ -23,6 +22,7 @@ void plane(int x = 5, int y = 5) {
 	glPopMatrix();
 }
 
+/** Oh, look! A cube! */
 void cube(float s = 1.0f) {
 	float vertices[][3] = {
 		{  s / 2,  s / 2,  s / 2 },
@@ -116,9 +116,11 @@ public:
 		glLoadIdentity();
 
 		glTranslatef(0, -10, -25);
+		//glTranslatef(0, 0, -25);
 		glRotatef(rot_y, 0, 1, 0);
 		// cube();
 		rsw.Draw();
+		//rsw.DrawModels();
 		Sleep(3);
 	}
 };
@@ -144,8 +146,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	RSWDraw draw(&grf);
+	// draw.InitDisplay(1280, 800, true);
+	draw.z_near = 10.0f;
+	draw.z_far = 1000.0f;
 	draw.InitDisplay();
-	if (!draw.Read("prontera")) {
+	if (!draw.Read(mapname)) {
 		std::cerr << "Error reading map " << mapname << std::endl;
 		draw.CloseDisplay();
 		return(1);

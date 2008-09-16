@@ -1,10 +1,17 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __ACT_H
 #define __ACT_H
 
 #include "object.h"
 
 namespace RO {
+
+	/** Action class.
+	 *
+	 * This class holds information on how to correctly draw sprites to create walking characters, 
+	 * item animation and such.
+	 * \ingroup ROInterface
+	 */
 	class MYLIB_DLLAPI ACT : public Object {
 	public:
 		// ACT Strutures

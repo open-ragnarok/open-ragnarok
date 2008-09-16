@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __SPR_H
 #define __SPR_H
 
@@ -7,6 +7,12 @@
 #include <vector>
 
 namespace RO {
+	/**
+	 * Sprite libraries
+	 * Each file contain one or more sprite (bitmaps) for numerous goals.
+	 *
+	 * \ingroup ROInterface
+	 */
 	class MYLIB_DLLAPI SPR : public Object {
 	public:
 #pragma pack(push)

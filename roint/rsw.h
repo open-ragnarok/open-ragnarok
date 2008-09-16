@@ -6,7 +6,10 @@
 
 namespace RO {
 	/**
-	 * Interface for RSW format objects/files
+	 * Resource World
+	 * Interface for RSW format objects/files. These are basically maps that users can walk on.
+	 *
+	 * \ingroup ROInterface
 	 */
 	class MYLIB_DLLAPI RSW : public Object {
 	public:
@@ -26,6 +29,7 @@ namespace RO {
 		public:
 			virtual bool readStream(std::istream&) = 0;
 			virtual bool writeStream(std::ostream&) const = 0;
+			virtual const char* getName() const = 0;
 
 			Object(ObjectType);
 			virtual ~Object();
@@ -53,6 +57,7 @@ namespace RO {
 			virtual ~Model();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
+			virtual const char* getName() const;
 
 			virtual void Dump(std::ostream& = std::cout) const;
 
@@ -86,6 +91,7 @@ namespace RO {
 			virtual ~Light();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
+			virtual const char* getName() const;
 
 			typedef struct {
 				char name[40];
@@ -109,6 +115,7 @@ namespace RO {
 			virtual ~Sound();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
+			virtual const char* getName() const;
 
 			typedef struct {
 				char name[80];
@@ -130,6 +137,7 @@ namespace RO {
 			virtual ~Effect();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
+			virtual const char* getName() const;
 
 			typedef struct {
 				char name[40];

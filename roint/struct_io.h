@@ -14,7 +14,7 @@
 
 namespace RO {
 	/**
-	 * Helps in reading and writing data that comes in the type <count><sequence of type>, assuming
+	 * Helps in reading and writing data that comes in the type &lt;count&gt;&lt;sequence of type&gt;, assuming
 	 * count is an int and is immediately followed by the sequence of structures
 	 */
 	template <typename T>

@@ -11,11 +11,22 @@
  * Simple interface for initializing OpenGL support over SDL.
  * Just create a subclass from this one with a <b>virtual void Draw()</b>
  * function so that can be executed when calling Sync().
+ *
+ * <b>Note on stereo rendering:</b> Stereo rendering will only be useful if 
+ * using the internal Draw function. If any drawing is being done before 
+ * calling the Sync() function, it won't work.
  */
 class SDLEngine {
 protected:
 	unsigned int m_width, m_height;
 public:
+	/** True if drawing stereo images */
+	bool m_stereo;
+	/** True if drawing stereo anaglyph images (RED/BLUE) */
+	bool m_anaglyph;
+
+	float z_near, z_far;
+
 	SDLEngine();
 	virtual ~SDLEngine();
 

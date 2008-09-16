@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __RSM_H
 #define __RSM_H
 
@@ -6,6 +6,13 @@
 #include "struct_io.h"
 
 namespace RO {
+	/**
+	 * Resource Model.
+	 *
+	 * Holds information about 3D objects
+	 *
+	 * \ingroup ROInterface
+	 */
 	class MYLIB_DLLAPI RSM : public Object {
 	public:
 		// RSM Internal Structures
@@ -48,7 +55,7 @@ namespace RO {
 		};
 
 
-		class Mesh {
+		class MYLIB_DLLAPI Mesh {
 		public:
 			struct Header {
 			  char name[40];
@@ -89,7 +96,7 @@ namespace RO {
 			StructIO<Surface> surfaces;
 			StructIO<Frame> frames;
 
-			BoundingBox box;
+			const BoundingBox& getBoundingBox() const;
 
 			Mesh();
 			Mesh(const Mesh&);
@@ -97,23 +104,36 @@ namespace RO {
 			void Clear();
 			void Write(std::ostream& s) const;
 			bool readStream(std::istream& s, bool main = true);
-			void calcBoundingBox();
+			void calcBoundingBox(const RO::RSM::Mesh::Transf&);
 
 			void Dump(std::ostream& out, const std::string& prefix) const;
 			Mesh& operator = (const Mesh&);
 			Mesh& operator = (const Mesh*);
+
+			unsigned int getFrameCount() const;
+			const Frame& getFrame(const unsigned int&) const;
+			Frame& getFrame(const unsigned int&);
+
+		protected:
+			BoundingBox box;
 		};
 #pragma pack(pop)
 
 	protected:
+		/** Unknown information included in all RSM */
 		char garbage[25];
 		unsigned int meshCount;
 		StructIO<TexName> m_textures;
 		Mesh* m_meshes;
 
+		void calcBoundingBox();
+		BoundingBox box;
+
 	public:
 		RSM();
 		virtual ~RSM();
+
+		const BoundingBox& getBoundingBox() const;
 
 		bool Write(std::ostream& s) const;
 		virtual bool readStream(std::istream&);

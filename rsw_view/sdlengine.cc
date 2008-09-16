@@ -4,6 +4,11 @@
 
 SDLEngine::SDLEngine() {
 	m_width = m_height = 0;
+	m_stereo = false;
+	m_anaglyph = false;
+
+	z_near = 1.0f;
+	z_far = 100.0f;
 }
 
 SDLEngine::~SDLEngine() {
@@ -37,7 +42,7 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	if (fullscreen)
 		flags |= SDL_FULLSCREEN;
 
-#define HWCHECK
+//#define HWCHECK
 #ifdef HWCHECK
 	if (vi->hw_available)
 		flags |= SDL_HWSURFACE;
@@ -106,12 +111,33 @@ void SDLEngine::WindowResize() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float ratio = (float)m_width / (float)m_height;
-	gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+	gluPerspective(40.0f, ratio, z_near, z_far);
 	glMatrixMode(GL_MODELVIEW);
 }
 
 void SDLEngine::Sync() {
-	Draw();
+	// Stereo code is for testing purposes only and are not mature nor accurrate. Use on your own risk.
+	if (m_anaglyph) {
+		glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+		glDrawBuffer(GL_BACK_LEFT);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		Draw();
+		glLoadIdentity();
+		glColorMask(GL_FALSE, GL_FALSE, GL_TRUE, GL_TRUE);
+		glDrawBuffer(GL_BACK_RIGHT);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		Draw();
+	}
+	else if (m_stereo) {
+		glDrawBuffer(GL_BACK_LEFT);
+		Draw();
+		glLoadIdentity();
+		glDrawBuffer(GL_BACK_RIGHT);
+		Draw();
+	}
+	else {
+		Draw();
+	}
 	SDL_GL_SwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();

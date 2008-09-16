@@ -189,7 +189,6 @@ bool ImageBMP::Read8BPP(std::istream& input, const bool& flipvertical) {
 	bpp = 32;
 #else
 	dataSize = width * height * 3;
-	//dataSize = bpr * height * 3;
 	this->buffer = new char[dataSize];
 	
 	// printf("Reading BMP %d x %d\n", width, height);

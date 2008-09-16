@@ -60,7 +60,10 @@ public:
 	}
 
 	void Draw() const {
+		glColor3f(1, 1, 1);
 		ROGL::draw(rsm, textures);
+		glColor3f(1, 0, 0);
+		ROGL::drawBoundingBox(rsm);
 	}
 
 	RO::GRF* grf;
@@ -138,8 +141,8 @@ public:
 		return(true);
 	}
 
-	void Dump() const {
-		rsm->Dump(std::cout);
+	void Dump(std::ostream& out = std::cout, const std::string& prefix = "") const {
+		rsm->Dump(out, prefix);
 	}
 
 	/**
@@ -157,7 +160,7 @@ public:
 			return(false);
 		}
 		if (!registerTexture(sdata, texid)) {
-			std::cerr << "Erorr registering texture (" << texid << ") " << fn << std::endl;
+			std::cerr << "Error registering texture (" << texid << ") " << fn << std::endl;
 			return(false);
 		}
 		// Save texture
@@ -319,17 +322,23 @@ int main(int argc, char* argv[]) {
 	rsm.grf = &grf;
 	rsm.read(fnp);
 
-	float z = -5.0f;
+	float z = -4.0f;
 	float r = 0.0f;
-	float s = 1.0f/64.0f;
+	float s = -z/67.03f;
 
-	// rsm.Dump();
+#if 0
+	std::ofstream of("rsm_dump.txt");
+	rsm.Dump(of);
+	of.close();
+#endif
 	engine.setTransparency(true);
 	
 	for (int i = 0; i < 1000; i++) {
 		glLoadIdentity();
 		glTranslatef(0, 0, z);
+		//glRotatef(-90, 1, 0, 0);
 		glRotatef(r, 0, 1, 0);
+		glRotatef(-90, 1, 0, 0);
 		glPushMatrix();
 		glScalef(s,s,s);
 		rsm.Draw();

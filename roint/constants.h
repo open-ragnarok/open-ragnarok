@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __CONSTANTS_H
 #define __CONSTANTS_H
 
@@ -10,7 +10,9 @@ namespace RO {
 		S_FEMALE
 	};
 
+	/** \enum CJob enumeration of available jobs */
 	enum CJob {
+		/** Acolyte job */
 		J_ACOLYTE = 0,
 		J_ALCHEMIST,
 		J_ARCHER,

@@ -8,12 +8,13 @@
 #include <iostream>
 #include <fstream>
 
-// !!!!!! WARNING !!!!!!
-// This currently supports only unencrypted GRF files.
-
 namespace RO {
 	/**
-	 * Reads, decompresses and decrypts the grf structure and returns readable data
+	 * Reads, decompresses and decrypts the grf structure and returns readable data.
+	 * <b>!!!!!! WARNING !!!!!!</b>
+	 * <b>This currently supports only unencrypted GRF files.</b>
+	 *
+	 * \ingroup ROInterface
 	 */
 	class MYLIB_DLLAPI GRF {
 	public:
@@ -29,6 +30,7 @@ namespace RO {
 			unsigned int version;
 		};
 
+		/** Holds a sequence of compressed (and uncompressed) FileTableItem structures */
 		struct FileTableHeader {
 			unsigned int compressedLength;
 			unsigned int uncompressedLength;
@@ -36,11 +38,22 @@ namespace RO {
 			unsigned char* uncompressedBody;
 		};
 
+		/** Presents information on each file inside of the GRF */
 		struct FileTableItem {
 			std::string filename;
 			unsigned int compressedLength;
 			unsigned int compressedLengthAligned;
 			unsigned int uncompressedLength;
+			/**
+			 * Bitmask indicating what this file is
+			 * <pre>
+			 * 0x01 -> File
+			 * 0x02 -> MIXCRYPT
+			 * 0x03 -> DES
+			 * </pre>
+			 *
+			 * Source: OpenKore project
+			 */
 			unsigned char flags;
 			unsigned int offset;
 		};
@@ -52,6 +65,8 @@ namespace RO {
 		int m_filecount;
 		std::ifstream m_fp;
 		FileTableHeader m_filetableheader;
+
+		/** List of files contained in the GRF */
 		FileTableItem *m_items;
 
 	public:

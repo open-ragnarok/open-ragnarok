@@ -13,6 +13,21 @@
 #	define MIN(x,y) (((y)>(x))?(x):(y))
 #endif
 
+namespace RO {
+	void DumpBox(const RO::RSM::BoundingBox& box, const std::string& prefix = "", std::ostream& out = std::cout) {
+		// BOX
+		char buf[512];
+
+		out << prefix << "Box" << std::endl;
+		sprintf(buf, "\tMax %.2f %.2f %.2f", box.max.v[0], box.max.v[1], box.max.v[2]);
+		out << prefix << buf << std::endl;
+		sprintf(buf, "\tMin %.2f %.2f %.2f", box.min.v[0], box.min.v[1], box.min.v[2]);
+		out << prefix << buf << std::endl;
+		sprintf(buf, "\tRange %.2f %.2f %.2f", box.range.v[0], box.range.v[1], box.range.v[2]);
+		out << prefix << buf << std::endl;
+	}
+}
+
 RO::RSM::RSM() : Object() {
 	m_meshes = NULL;
 }
@@ -103,6 +118,8 @@ bool RO::RSM::readStream(std::istream& s) {
 	}
 	meshes.clear();
 
+	calcBoundingBox();
+
 	return(true);
 }
 
@@ -147,10 +164,14 @@ void RO::RSM::Dump(std::ostream& out, const std::string& prefix) const {
 	out << prefix << "Garbage ";
 	char buf[16];
 	for (i = 0; i < 25; i++) {
-		sprintf(buf, "0x%x ", garbage[i]);
+		sprintf(buf, "0x%x ", (unsigned char)garbage[i]);
 		out << buf;
 	}
 	out << std::endl;
+
+	// BOX
+	out << prefix << "Bounding Box" << std::endl;
+	DumpBox(box, prefix, out);
 
 
 	out << prefix << "Textures (" << m_textures.size() << ")" << std::endl;
@@ -161,6 +182,42 @@ void RO::RSM::Dump(std::ostream& out, const std::string& prefix) const {
 	for (i = 0; i < meshCount; i++) {
 		m_meshes[i].Dump(out, mypfx);
 	}
+}
+
+void RO::RSM::calcBoundingBox() {
+	unsigned int i, j;
+	BoundingBox& meshbox = box;
+	box.max.c.x = -999999;
+	box.max.c.y = -999999;
+	box.max.c.z = -999999;
+
+	box.min.c.x = 999999;
+	box.min.c.y = 999999;
+	box.min.c.z = 999999;
+
+	box.range.c.x = 0;
+	box.range.c.y = 0;
+	box.range.c.z = 0;
+
+	for (i = 0; i < meshCount; i++) {
+		m_meshes[i].calcBoundingBox(m_meshes[0].transf);
+		meshbox = m_meshes[i].getBoundingBox();
+
+		for(j = 0; j < 3; j++) {
+			if (meshbox.max.v[j] > box.max.v[j])
+				box.max.v[j] = meshbox.max.v[j];
+			if (meshbox.min.v[j] < box.min.v[j])
+				box.min.v[j] = meshbox.min.v[j];
+		}
+	}
+
+	for(j = 0; j < 3; j++)
+		// box.range.v[j] = box.max.v[j] - box.min.v[j];
+		box.range.v[j] = (box.max.v[j] + box.min.v[j])/2.0f;
+}
+
+const RO::RSM::BoundingBox& RO::RSM::getBoundingBox() const {
+	return(box);
 }
 
 RO::RSM::Mesh::Mesh() {
@@ -281,25 +338,10 @@ bool RO::RSM::Mesh::readStream(std::istream& s, bool main) {
 	}
 	frames.readStream(s);
 
-	calcBoundingBox();
-
 	return(true);
 }
 
-void DumpBox(const RO::RSM::BoundingBox& box, const std::string& prefix = "", std::ostream& out = std::cout) {
-	// BOX
-	char buf[512];
-
-	out << prefix << "Box" << std::endl;
-	sprintf(buf, "\tMax %.2f %.2f %.2f", box.max.v[0], box.max.v[1], box.max.v[2]);
-	out << prefix << buf << std::endl;
-	sprintf(buf, "\tMin %.2f %.2f %.2f", box.min.v[0], box.min.v[1], box.min.v[2]);
-	out << prefix << buf << std::endl;
-	sprintf(buf, "\tRange %.2f %.2f %.2f", box.range.v[0], box.range.v[1], box.range.v[2]);
-	out << prefix << buf << std::endl;
-}
-
-void RO::RSM::Mesh::calcBoundingBox() {
+void RO::RSM::Mesh::calcBoundingBox(const RO::RSM::Mesh::Transf& t) {
 	box.max.v[0] = box.max.v[1] = box.max.v[2] = -999999.0;
 	box.min.v[0] = box.min.v[1] = box.min.v[2] = 999999.0;
 
@@ -312,7 +354,7 @@ void RO::RSM::Mesh::calcBoundingBox() {
 		v.c.z = vecs[i].c.z;
 
 		for (j = 0; j < 3; j++) {
-			if (!is_only) v.v[j] += transf.translate1.v[j] + transf.translate2.v[j];
+			if (!is_only) v.v[j] += t.translate1.v[j] + t.translate2.v[j];
 
 			box.min.v[j] = MIN(v.v[j], box.min.v[j]);
 			box.max.v[j] = MAX(v.v[j], box.max.v[j]);
@@ -321,6 +363,10 @@ void RO::RSM::Mesh::calcBoundingBox() {
 
 	for (i = 0; i < 3; i++)
 		box.range.v[i] = (box.max.v[i] + box.min.v[i]) / 2.0f;
+}
+
+const RO::RSM::BoundingBox& RO::RSM::Mesh::getBoundingBox() const {
+	return(box);
 }
 
 void RO::RSM::Mesh::Dump(std::ostream& out, const std::string& prefix) const {
@@ -379,3 +425,14 @@ void RO::RSM::Mesh::Dump(std::ostream& out, const std::string& prefix) const {
 	}
 }
 
+unsigned int RO::RSM::Mesh::getFrameCount() const {
+	return(frames.size());
+}
+
+const RO::RSM::Mesh::Frame& RO::RSM::Mesh::getFrame(const unsigned int& i) const {
+	return(frames[i]);
+}
+
+RO::RSM::Mesh::Frame& RO::RSM::Mesh::getFrame(const unsigned int& i) {
+	return(frames[i]);
+}

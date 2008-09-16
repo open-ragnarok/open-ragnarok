@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __GAT_H
 #define __GAT_H
 
@@ -7,6 +7,8 @@
 namespace RO {
 	/**
 	 * Ground Altitude File
+	 *
+	 * \ingroup ROInterface
 	 */
 	class MYLIB_DLLAPI GAT : public Object {
 	public:
