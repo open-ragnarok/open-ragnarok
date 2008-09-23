@@ -37,7 +37,8 @@ namespace RO {
 			/** Returns the object type */
 			ObjectType getType() const;
 
-			virtual void Dump(std::ostream& = std::cout) const;
+			virtual void Dump(std::ostream&, const std::string&) const;
+			void Dump(std::ostream& = std::cout) const;
 			
 			/** Check if we are the same type as the parameter */
 			bool isType(ObjectType) const;
@@ -59,7 +60,7 @@ namespace RO {
 			virtual bool writeStream(std::ostream&) const;
 			virtual const char* getName() const;
 
-			virtual void Dump(std::ostream& = std::cout) const;
+			virtual void Dump(std::ostream&, const std::string&) const;
 
 			typedef struct {
 				char m_name[40];
@@ -213,8 +214,9 @@ namespace RO {
 		virtual bool readStream(std::istream&);
 
 		/** Write the RSW data to a stream */
-		virtual bool writeStream(std::ostream&);
+		virtual bool writeStream(std::ostream&) const;
 		virtual void Dump(std::ostream& = std::cout) const;
+		virtual void Dump(std::ostream&, const std::string&) const;
 
 		/** Clear all variables. Disallocate all data from memory. */
 		void Clear();

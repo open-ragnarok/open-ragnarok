@@ -1,24 +1,12 @@
-# $id$
+# $Id$
 from ctypes import *
-
-roint = cdll.roint
+import ro
 
 functions = {
   'Version': '?Version@RO@@YAGXZ',
   'printVersion': '?printVersion@RO@@YAXXZ',
   '': ''
 };
-
-def Version():
-  retval = roint[functions['Version']]()
-  return(retval)
-
-def printVersion():
-  roint[functions['printVersion']]()
-
-Version = roint[functions['Version']]
-printVersion = roint[functions['printVersion']]
-
 
 class RSM_SprSize(Structure):
   _pack = 1
@@ -81,84 +69,82 @@ class RSM_Mesh_Surface(Structure):
     print("vec %d %d %d" % (self.sv[0], self.sv[1], self.sv[2]))
     print("tex %d %d %d" % (self.tv[0], self.tv[1], self.tv[2]))
     print("texid %d" % self.texid)
-    
-
 
 class RSM:
-  def __init__(self):
-    self._base = roint.new_RSM() # store C++ superclass obj
-    self._getTexture = roint.getTexture_RSM
-    self._getTexture.restype = c_char_p
-    
-    self._getMeshSurf = roint.getMeshSurf_RSM
-    self._getMeshSurf.restype = POINTER(RSM_Mesh_Surface)
-    
-    self._getMeshVec = roint.getMeshVec_RSM
-    self._getMeshVec.restype = POINTER(RSM_Vec)
-
-    self._getMeshTexv = roint.getMeshTexv_RSM
-    self._getMeshTexv.restype = POINTER(RSM_Vec)
+	__roint = None
+	def __init__(self):
+		self.__roint = ro.Int()
+		self._base = self.__roint.new_RSM() # store C++ superclass obj
+		self._getTexture = self.__roint.getTexture_RSM
+		self._getTexture.restype = c_char_p
+		
+		self._getMeshSurf = self.__roint.getMeshSurf_RSM
+		self._getMeshSurf.restype = POINTER(RSM_Mesh_Surface)
+		
+		self._getMeshVec = self.__roint.getMeshVec_RSM
+		self._getMeshVec.restype = POINTER(RSM_Vec)
+		
+		self._getMeshTexv = self.__roint.getMeshTexv_RSM
+		self._getMeshTexv.restype = POINTER(RSM_Vec)
+		
   
-  def __del__(self):
-    roint.del_RSM(self._base)
+	def __del__(self):
+		self.__roint.del_RSM(self._base)
  
-  def read(self, fn):
-    ret = roint.read_RSM(self._base, fn)
-    return(ret)
-  
-  def Dump(self, prefix):
-    roint.Dump_RSM(self._base, prefix)
+	def read(self, fn):
+		ret = self.__roint.read_RSM(self._base, fn)
+		return(ret)
+		
+	def Dump(self, prefix):
+		self.__roint.Dump_RSM(self._base, prefix)
     
-  def getTextureCount(self):
-    return(roint.getTextureCount_RSM(self._base))
-    
-  """Retrieve the number of meshed in this object"""
-  def getMeshCount(self):
-    r = roint.getMeshCount_RSM(self._base)
-    # print r
-    return(r)
-    
-  def getTexture(self, idx):
-    return(self._getTexture(self._base, idx))
-    
-  def getMeshHeader(self, mesh_id):
-    """TODO"""
-    return(None)
-  
-  def getMeshTransf(self, mesh_id):
-    """TODO"""
-    return(None)
-  
-  def getMeshVecCount(self, mesh_id):
-    return(roint.getMeshVecCount_RSM(self._base, mesh_id))
-    
-  def getMeshTexCount(self, mesh_id):
-    return(roint.getMeshTexCount_RSM(self._base, mesh_id))
+	def getTextureCount(self):
+		return(self.__roint.getTextureCount_RSM(self._base))
+	
+	"""Retrieve the number of meshed in this object"""
+	def getMeshCount(self):
+		r = self.__roint.getMeshCount_RSM(self._base)
+		# print r
+		return(r)
+		
+	def getTexture(self, idx):
+		return(self._getTexture(self._base, idx))
+	
+	def getMeshHeader(self, mesh_id):
+		"""TODO"""
+		return(None)
 
-  def getMeshTexvCount(self, mesh_id):
-    return(roint.getMeshTexvCount_RSM(self._base, mesh_id))
-  
-  """Retrieve the number of surfaces in a given mesh"""
-  def getMeshSurfCount(self, mesh_id):
-    r = roint.getMeshSurfCount_RSM(self._base, mesh_id)
-    # print r
-    return(r)
-  
-  """Return a given surface in a given mesh"""  
-  def getMeshSurf(self, mesh_id, surf_id):
-    return(self._getMeshSurf(self._base, mesh_id, surf_id))
+	def getMeshTransf(self, mesh_id):
+		"""TODO"""
+		return(None)
+	
+	def getMeshVecCount(self, mesh_id):
+		return(self.__roint.getMeshVecCount_RSM(self._base, mesh_id))
     
-  def getMeshVec(self, mesh_id, vec_id):
-    return(self._getMeshVec(self._base, mesh_id, vec_id))
+	def getMeshTexCount(self, mesh_id):
+		return(self.__roint.getMeshTexCount_RSM(self._base, mesh_id))
+
+	def getMeshTexvCount(self, mesh_id):
+		return(self.__roint.getMeshTexvCount_RSM(self._base, mesh_id))
+  
+	"""Retrieve the number of surfaces in a given mesh"""
+	def getMeshSurfCount(self, mesh_id):
+		r = self.__roint.getMeshSurfCount_RSM(self._base, mesh_id)
+		return(r)
+  
+	"""Return a given surface in a given mesh"""  
+	def getMeshSurf(self, mesh_id, surf_id):
+		return(self._getMeshSurf(self._base, mesh_id, surf_id))
     
-  def getMeshTexv(self, mesh_id, texv_id):
-    return(self._getMeshTexv(self._base, mesh_id, texv_id))
-  
-  
+	def getMeshVec(self, mesh_id, vec_id):
+		return(self._getMeshVec(self._base, mesh_id, vec_id))
+    
+	def getMeshTexv(self, mesh_id, texv_id):
+		return(self._getMeshTexv(self._base, mesh_id, texv_id))
 
 # This is the test
 if __name__ == "__main__":
-  printVersion();
+  ro.printVersion();
   rsm = RSM()
   print ""
   print rsm.read("test1.rsm")

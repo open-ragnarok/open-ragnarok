@@ -346,6 +346,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\python\pyrsw.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\python\pyspr.cc"
 				>
 			</File>
@@ -358,6 +362,10 @@
 				>
 				<File
 					RelativePath="..\python\pyrsm.h"
+					>
+				</File>
+				<File
+					RelativePath="..\python\pyrsw.h"
 					>
 				</File>
 				<File

@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __PYRSM_H
 #define __PYRSM_H
 

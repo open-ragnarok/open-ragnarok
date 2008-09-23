@@ -110,57 +110,61 @@ RO::RSW::Object* RO::RSW::readObject(std::istream& in) {
 	return(o);
 }
 
-bool RO::RSW::writeStream(std::ostream&) {
+bool RO::RSW::writeStream(std::ostream&) const {
 	return(true);
 }
 
-void RO::RSW::Dump(std::ostream& o) const {
+void RO::RSW::Dump(std::ostream& o, const std::string& pfx) const {
 	char buf[1024];
-	sprintf(buf,"Magic: %c%c%c%c\n", magic[0], magic[1], magic[2], magic[3]);
-	o << buf;
-	sprintf(buf,"Version: %u.%u\n", m_version.cver.major, m_version.cver.minor);
-	o << buf;
+	sprintf(buf,"Magic: %c%c%c%c", magic[0], magic[1], magic[2], magic[3]);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"Version: %u.%u", m_version.cver.major, m_version.cver.minor);
+	o << pfx << buf << std::endl;
 
-	o << "Ini: " << ini_file << std::endl;
-	o << "Gnd: " << gnd_file << std::endl;
-	o << "Gat: " << gat_file << std::endl;
-	o << "Scr: " << scr_file << std::endl;
+	o << pfx << "Ini: " << ini_file << std::endl;
+	o << pfx << "Gnd: " << gnd_file << std::endl;
+	o << pfx << "Gat: " << gat_file << std::endl;
+	o << pfx << "Scr: " << scr_file << std::endl;
 
-	sprintf(buf,"Water\n");
-	o << buf;
-	sprintf(buf,"\tHeight: %f\n", water.height);
-	o << buf;
-	sprintf(buf,"\tType: %u\n", water.type);
-	o << buf;
-	sprintf(buf,"\tAmpliture: %.2f\n", water.amplitude);
-	o << buf;
-	sprintf(buf,"\tPhase: %.2f\n", water.phase);
-	o << buf;
-	sprintf(buf,"\tSurface curve level: %.2f\n", water.surface_curve_level);
-	o << buf;
-	sprintf(buf,"Light\n");
-	o << buf;
-	sprintf(buf,"\tAmbient: %.2f %.2f %.2f\n", light.ambient[0], light.ambient[1], light.ambient[2]);
-	o << buf;
-	sprintf(buf,"\tDiffuse: %.2f %.2f %.2f\n", light.diffuse[0], light.diffuse[1], light.diffuse[2]);
-	o << buf;
-	sprintf(buf,"\tShadow: %.2f %.2f %.2f\n", light.shadow[0], light.shadow[1], light.shadow[2]);
-	o << buf;
-	sprintf(buf,"\tAlpha: %.2f\n", light.alpha);
-	o << buf;
-	sprintf(buf,"Unknown: %d (0x%x)\n", unk[0], unk[0]);
-	o << buf;
-	sprintf(buf,"Unknown: %d (0x%x)\n", unk[1], unk[1]);
-	o << buf;
-	sprintf(buf,"Unknown: %d (0x%x)\n", unk[2], unk[2]);
-	o << buf;
-	sprintf(buf,"Objects: %u\n", object_count);
-	o << buf;
+	sprintf(buf,"Water");
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tHeight: %f", water.height);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tType: %u", water.type);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tAmpliture: %.2f", water.amplitude);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tPhase: %.2f", water.phase);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tSurface curve level: %.2f", water.surface_curve_level);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"Light");
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tAmbient: %.2f %.2f %.2f", light.ambient[0], light.ambient[1], light.ambient[2]);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tDiffuse: %.2f %.2f %.2f", light.diffuse[0], light.diffuse[1], light.diffuse[2]);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tShadow: %.2f %.2f %.2f", light.shadow[0], light.shadow[1], light.shadow[2]);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"\tAlpha: %.2f", light.alpha);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"Unknown: %d (0x%x)", unk[0], unk[0]);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"Unknown: %d (0x%x)", unk[1], unk[1]);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"Unknown: %d (0x%x)", unk[2], unk[2]);
+	o << pfx << buf << std::endl;
+	sprintf(buf,"Objects: %u", object_count);
+	o << pfx << buf << std::endl;
 
 	unsigned int i;
 	for (i = 0; i < object_count; i++) {
 		m_objects[i]->Dump(o);
 	}
+}
+
+void RO::RSW::Dump(std::ostream& o) const {
+	Dump(o, "");
 }
 
 void RO::RSW::Clear() {
@@ -211,8 +215,12 @@ bool RO::RSW::Object::isType(ObjectType t) const {
 	return(m_type == t);
 }
 
+void RO::RSW::Object::Dump(std::ostream& o, const std::string& pfx) const {
+	o << pfx << "No data to dump" << std::endl;
+}
+
 void RO::RSW::Object::Dump(std::ostream& o) const {
-	o << "No data to dump" << std::endl;
+	Dump(o, "");
 }
 
 // ===== MODEL
@@ -235,16 +243,16 @@ bool RO::RSW::Model::writeStream(std::ostream& s) const {
 	return(true);
 }
 
-void RO::RSW::Model::Dump(std::ostream& o) const {
+void RO::RSW::Model::Dump(std::ostream& o, const std::string& pfx) const {
 	char buf[512];
-	o << "Model " << m_data.filename << std::endl;
-	o << "\t" << m_data.m_name << std::endl;
+	o << pfx << "Model " << m_data.filename << std::endl;
+	o << pfx << "\t" << m_data.m_name << std::endl;
 	sprintf(buf, "pos: %.2f, %.2f, %.2f", m_data.pos[0], m_data.pos[1], m_data.pos[2]);
-	o << "\t" << buf << std::endl;
+	o << pfx << "\t" << buf << std::endl;
 	sprintf(buf, "rot: %.2f, %.2f, %.2f", m_data.rot[0], m_data.rot[1], m_data.rot[2]);
-	o << "\t" << buf << std::endl;
+	o << pfx << "\t" << buf << std::endl;
 	sprintf(buf, "scale: %.2f, %.2f, %.2f", m_data.scale[0], m_data.scale[1], m_data.scale[2]);
-	o << "\t" << buf << std::endl;
+	o << pfx << "\t" << buf << std::endl;
 }
 
 const char* RO::RSW::Model::getName() const {
@@ -324,4 +332,3 @@ bool RO::RSW::Effect::writeStream(std::ostream& s) const {
 const char* RO::RSW::Effect::getName() const {
 	return(m_data.name);
 }
-
