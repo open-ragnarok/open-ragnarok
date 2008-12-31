@@ -1,0 +1,4 @@
+/* $Id$ */
+
+#include "stdafx.h"
+
