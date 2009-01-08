@@ -69,6 +69,9 @@ namespace RO {
 		/** List of files contained in the GRF */
 		FileTableItem *m_items;
 
+	private:
+		unsigned long m_seekstart;
+
 	public:
 		GRF();
 		~GRF();

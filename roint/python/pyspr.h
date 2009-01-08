@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __PYSPR_H
 #define __PYSPR_H
 

@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #ifndef __IMPDECL_H
 #define __IMPDECL_H
 
@@ -6,7 +6,14 @@
 // building the DLL and importing the classes when build an application 
 // using this DLL.
 
-#ifndef WIN32
+#ifndef __WINDOWS__
+#	if defined(WIN32) || defined(WIN64) || defined(_WINDOWS) || defined(_WIN32) || defined(_WIN64)
+#		define __WINDOWS__
+#	endif
+#endif
+
+
+#ifndef __WINDOWS__
 	#define MYLIB_DLLAPI
 #else
 	#ifdef _MYLIB_DLLAPI_

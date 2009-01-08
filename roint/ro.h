@@ -24,6 +24,7 @@
  * \section client_sec The Client
  */
 
+#include "roint_settings.h"
 
 #define GRF_HEADER "Master of Magic"
 #define SPR_HEADER "SP"
@@ -57,6 +58,10 @@ namespace RO {
 /**
  * \defgroup ROInterface Interface
  */
+
+#ifdef ROINT_USE_XML
+#	include "tinyxml/tinyxml.h"
+#endif
 
 
 #endif // __RO_H

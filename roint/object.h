@@ -21,6 +21,7 @@ namespace RO {
 	class MYLIB_DLLAPI Object {
 	public:
 		Object();
+		Object(const Object&);
 		virtual ~Object();
 
 		virtual bool read(const std::string&);
@@ -39,6 +40,8 @@ namespace RO {
 		bool IsCompatibleWith(short ver) const;
 		bool readHeader(std::istream&);
 		bool writeHeader(std::ostream&) const;
+		bool copyHeader(Object*) const;
+		bool copyHeader(Object&) const;
 		bool checkHeader(const std::string&) const;
 	};
 }

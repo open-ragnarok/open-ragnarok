@@ -92,12 +92,15 @@ bool RO::GRF::open(const std::string& fn) {
 			ss.get(c);
 			buf[idx++] = c;
 		}
+		buf[idx] = 0;
 		m_items[i].filename = buf;
+
 		ss.read((char*)&m_items[i].compressedLength, sizeof(unsigned int) * 4 + 1);
 		// ss.read((char*)&m_items[i].compressedLengthAligned, sizeof(unsigned int));
 		// ss.read((char*)&m_items[i].uncompressedLength, sizeof(unsigned int));
 		// ss.get((char&)m_items[i].flags);
 		// ss.read((char*)&m_items[i].offset, sizeof(unsigned int));
+
 #ifdef _DEBUG
 		porc = ((float)i / (float)m_filecount) * 100.0f;
 		iporc = (int)porc;
@@ -134,6 +137,9 @@ bool RO::GRF::isOpen() const {
 }
 
 bool RO::GRF::write(const std::string& s, std::ostream& out) {
+	if (!m_opened)
+		return(false);
+
 	// search for file
 	for (int i = 0; i < m_filecount; i++) {
 		if (m_items[i].filename == s) {
@@ -145,13 +151,37 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 			unsigned long ul;
 
 			m_fp.seekg(m_items[i].offset + 46);
+//#ifdef DEBUG
+//			std::cout << "File: " << s << ", Offset: " << m_items[i].offset << "+46 ";
+//#endif
 			m_fp.read((char*)body, m_items[i].compressedLength);
 			ul = m_items[i].uncompressedLength;
-			uncompress(uncompressed, &ul, body, m_items[i].compressedLength);
+			int r;
+			if ((r = uncompress(uncompressed, &ul, body, m_items[i].compressedLength)) != Z_OK) {
+				std::cerr << "Error uncompressing data ";
+				if (r == Z_MEM_ERROR)
+					std::cerr << "Z_MEM_ERROR";
+				if (r == Z_BUF_ERROR)
+					std::cerr << "Z_BUF_ERROR";
+				if (r == Z_STREAM_ERROR)
+					std::cerr << "Z_STREAM_ERROR";
+				std::cerr << std::endl;
+
+				delete[] uncompressed;
+				delete[] body;
+				return(false);
+			}
 			if (ul != m_items[i].uncompressedLength)
 				std::cerr << "GRF Warning: Uncompressed lengths for file " << m_items[i].filename << " differs!" << std::endl;
 
 			out.write((char*)uncompressed, ul);
+
+			/*{
+				char buf[16];
+				for (int k = 0; k< 4; k++)
+					buf[k] = uncompressed[k];
+				printf("0x%02x%02x%02x%02x - %c%c%c%c\n", buf[0], buf[1], buf[2], buf[3], buf[0], buf[1], buf[2], buf[3]);
+			}*/
 
 			delete[] body;
 			delete[] uncompressed;
@@ -163,44 +193,28 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 }
 
 bool RO::GRF::save(const std::string& s, const std::string& filename) {
+	if (!m_opened)
+		return(false);
+
 	std::ofstream out(filename.c_str());
-	// search for file
-	for (int i = 0; i < m_filecount; i++) {
-		if (m_items[i].filename == s) {
-			unsigned char *body;
-			unsigned char *uncompressed;
-			body = new unsigned char[m_items[i].compressedLength];
-			uncompressed = new unsigned char[m_items[i].uncompressedLength];
-
-			unsigned long ul;
-
-			m_fp.seekg(m_items[i].offset + 46);
-			m_fp.read((char*)body, m_items[i].compressedLength);
-			ul = m_items[i].uncompressedLength;
-			uncompress(uncompressed, &ul, body, m_items[i].compressedLength);
-			if (ul != m_items[i].uncompressedLength)
-				std::cerr << "GRF Warning: Uncompressed lengths for file " << m_items[i].filename << " differs!" << std::endl;
-
-			out.write((char*)uncompressed, ul);
-			out.close();
-
-			delete[] body;
-			delete[] uncompressed;
-
-			return(true);
-		}
-	}
-	return(false);
+	bool r = write(s, out);
+	out.close();
+	return(r);
 }
 
 std::string RO::GRF::getFilename(const unsigned int& i) const {
-	if (i >= (unsigned int)m_filecount) {
+	if (!m_opened)
 		return("");
-	}
+
+	if (i >= (unsigned int)m_filecount)
+		return("");
 
 	return(m_items[i].filename);
 }
 
 unsigned int RO::GRF::getCount() const {
+	if (!m_opened)
+		return(0);
+
 	return(m_filecount);
 }

@@ -4,7 +4,7 @@
  *
  *  Created on: Jun 5, 2008
  *      Author: sergio
- *    Revision: $Rev$
+ *    Revision: $Rev: 20 $
  */
 
 #ifndef __STRUCT_IO_H
@@ -89,6 +89,7 @@ namespace RO {
 		}
 
 		StructIO<T>& operator = (const StructIO& s) {
+			Clear();
 			count = s.getCount();
 			data = NULL;
 			if (count > 0) {

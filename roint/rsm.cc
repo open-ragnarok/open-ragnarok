@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #include "stdafx.h"
 #include "rsm.h"
 #include "ro.h"
@@ -30,6 +30,45 @@ namespace RO {
 
 RO::RSM::RSM() : Object() {
 	m_meshes = NULL;
+}
+
+RO::RSM::RSM(const RSM& rsm) : Object(rsm) {
+	memcpy(garbage, rsm.garbage, 25);
+	m_meshes = NULL;
+	meshCount = rsm.meshCount;
+	m_textures = rsm.m_textures;
+	if (meshCount > 1000)
+		meshCount = 0;
+
+	if (meshCount > 0) {
+		m_meshes = new Mesh[meshCount];
+		for (unsigned i = 0; i < meshCount; i++)
+			m_meshes[i] = rsm.m_meshes[i];
+	}
+
+	memcpy(&box, &rsm.box, sizeof(BoundingBox));
+}
+
+RO::RSM& RO::RSM::operator = (const RSM& rsm) {
+	rsm.copyHeader(this);
+	memcpy(garbage, rsm.garbage, 25);
+	if (m_meshes != NULL)
+		delete[] m_meshes;
+	m_meshes = NULL;
+	meshCount = rsm.meshCount;
+	m_textures = rsm.m_textures;
+	if (meshCount > 1000)
+		meshCount = 0;
+
+	if (meshCount > 0) {
+		m_meshes = new Mesh[meshCount];
+		for (unsigned i = 0; i < meshCount; i++)
+			m_meshes[i] = rsm.m_meshes[i];
+	}
+
+	memcpy(&box, &rsm.box, sizeof(BoundingBox));
+
+	return(*this);
 }
 
 RO::RSM::~RSM() {
@@ -105,7 +144,7 @@ bool RO::RSM::readStream(std::istream& s) {
 		meshes[0]->is_only = true;
 
 	m_meshes = NULL;
-	meshCount = meshes.size();
+	meshCount = (unsigned int)meshes.size();
 	if (meshCount == 0)
 		return(true);
 
@@ -226,7 +265,18 @@ RO::RSM::Mesh::Mesh() {
 }
 
 RO::RSM::Mesh::Mesh(const RO::RSM::Mesh& m) {
-	*this = m;
+	memcpy((char*)&header, (char*)&m.header, sizeof(Header));
+	memcpy((char*)&transf, (char*)&m.transf, sizeof(Transf));
+	textures = m.textures;
+	vecs = m.vecs;
+	texv = m.texv;
+	surfaces = m.surfaces;
+	frames = m.frames;
+
+	is_main = m.is_main;
+	is_only = m.is_only;
+
+	memcpy((char*)&box, (char*)&m.box, sizeof(BoundingBox));
 }
 
 RO::RSM::Mesh::~Mesh() {
@@ -436,3 +486,172 @@ const RO::RSM::Mesh::Frame& RO::RSM::Mesh::getFrame(const unsigned int& i) const
 RO::RSM::Mesh::Frame& RO::RSM::Mesh::getFrame(const unsigned int& i) {
 	return(frames[i]);
 }
+
+#ifdef ROINT_USE_XML
+
+TiXmlElement* RO::RSM::GenerateXML(const std::string& name, bool utf) const {
+	TiXmlElement *root = new TiXmlElement("RSM");
+	char buf[16];
+	sprintf(buf,"%d.%d", m_version.cver.major , m_version.cver.minor);
+	root->SetAttribute("version", buf);
+	if (name != "") {
+		root->SetAttribute("name", name);
+	}
+	
+	// Textures
+	for (int i = 0 ; i < m_textures.size(); i++) {
+		std::string texname = m_textures[i];
+		if (utf) {
+			texname = euc2utf8(texname);
+		}
+		TiXmlElement *texture = new TiXmlElement("texture");
+		texture->SetAttribute("id", i);
+		texture->LinkEndChild(new TiXmlText(texname));
+		root->LinkEndChild(texture);
+	}
+
+	// Meshes
+	for(unsigned int i = 0; i < meshCount; i++) {
+		char buf[16];
+		TiXmlElement *mesh = new TiXmlElement("mesh");
+		mesh->SetAttribute("name", m_meshes[i].header.name);
+		if (strlen(m_meshes[i].header.parent) > 0) {
+			mesh->SetAttribute("parent", m_meshes[i].header.parent);
+		}
+		TiXmlElement *matrix = new TiXmlElement("transformation");
+		TiXmlElement *row = new TiXmlElement("row");
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[0]);
+		row->SetAttribute("a", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[1]);
+		row->SetAttribute("b", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[2]);
+		row->SetAttribute("c", buf);
+		matrix->LinkEndChild(row);
+
+		row = new TiXmlElement("row");
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[4]);
+		row->SetAttribute("a", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[5]);
+		row->SetAttribute("b", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[6]);
+		row->SetAttribute("c", buf);
+		matrix->LinkEndChild(row);
+
+		row = new TiXmlElement("row");
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[7]);
+		row->SetAttribute("a", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[8]);
+		row->SetAttribute("b", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.mat33[9]);
+		row->SetAttribute("c", buf);
+		matrix->LinkEndChild(row);
+
+		mesh->LinkEndChild(matrix);
+
+
+		row = new TiXmlElement("translation1");
+		sprintf(buf, "%f", m_meshes[i].transf.translate1.c.x);
+		row->SetAttribute("x", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.translate1.c.y);
+		row->SetAttribute("y", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.translate1.c.z);
+		row->SetAttribute("z", buf);
+		mesh->LinkEndChild(row);
+
+		row = new TiXmlElement("translation2");
+		sprintf(buf, "%f", m_meshes[i].transf.translate2.c.x);
+		row->SetAttribute("x", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.translate2.c.y);
+		row->SetAttribute("y", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.translate2.c.z);
+		row->SetAttribute("z", buf);
+		mesh->LinkEndChild(row);
+
+		row = new TiXmlElement("rotation");
+		sprintf(buf, "%f", m_meshes[i].transf.rot_angle);
+		row->SetAttribute("angle", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.rot_vector.c.x);
+		row->SetAttribute("x", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.rot_vector.c.y);
+		row->SetAttribute("y", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.rot_vector.c.z);
+		row->SetAttribute("z", buf);
+		mesh->LinkEndChild(row);
+
+		row = new TiXmlElement("scale");
+		sprintf(buf, "%f", m_meshes[i].transf.scale.c.x);
+		row->SetAttribute("x", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.scale.c.y);
+		row->SetAttribute("y", buf);
+		sprintf(buf, "%f", m_meshes[i].transf.scale.c.z);
+		row->SetAttribute("z", buf);
+		mesh->LinkEndChild(row);
+
+
+		// Surfaces
+		for (int j = 0; j < m_meshes[i].surfaces.size(); j++) {
+			TiXmlElement *surface = new TiXmlElement("surface");
+			
+			for (int k = 0; k < 3; k++) {
+				TiXmlElement *vertice = new TiXmlElement("vertice");
+				sprintf(buf, "%d", m_meshes[i].surfaces[j].sv[k]);
+				vertice->SetAttribute("posv", buf);
+				sprintf(buf, "%d", m_meshes[i].surfaces[j].tv[k]);
+				vertice->SetAttribute("texv", buf);
+				surface->LinkEndChild(vertice);
+			}
+			mesh->LinkEndChild(surface);
+		}
+
+		for (int j = 0; j < m_meshes[i].vecs.size(); j++) {
+			TiXmlElement *vertice = new TiXmlElement("vertice");
+			sprintf(buf, "%f", m_meshes[i].vecs[j].c.x);
+			vertice->SetAttribute("x", buf);
+			sprintf(buf, "%f", m_meshes[i].vecs[j].c.y);
+			vertice->SetAttribute("y", buf);
+			sprintf(buf, "%f", m_meshes[i].vecs[j].c.z);
+			vertice->SetAttribute("z", buf);
+			mesh->LinkEndChild(vertice);
+		}
+
+		for (int j = 0; j < m_meshes[i].texv.size(); j++) {
+			TiXmlElement *vertice = new TiXmlElement("texv");
+			sprintf(buf, "%f", m_meshes[i].texv[j].c.x);
+			vertice->SetAttribute("x", buf);
+			sprintf(buf, "%f", m_meshes[i].texv[j].c.y);
+			vertice->SetAttribute("y", buf);
+			sprintf(buf, "%f", m_meshes[i].texv[j].c.z);
+			vertice->SetAttribute("z", buf);
+			mesh->LinkEndChild(vertice);
+		}
+
+		root->LinkEndChild(mesh);
+	}
+
+	return(root);
+}
+
+TiXmlDocument RO::RSM::GenerateXMLDoc(const std::string& name, bool utf) const {
+	TiXmlDocument doc;
+	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
+	doc.LinkEndChild(decl);
+	
+	TiXmlElement * root = GenerateXML(name, utf);
+	doc.LinkEndChild(root);
+	
+	return(doc);
+}
+
+bool RO::RSM::SaveXML(std::ostream& out,const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateXMLDoc(name, utf);
+	out << doc;
+	return(true);
+}
+
+bool RO::RSM::SaveXML(const std::string& fn, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateXMLDoc(name, utf);
+	doc.SaveFile(fn);
+	return(true);
+}
+
+#endif

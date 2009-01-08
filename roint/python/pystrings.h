@@ -1,3 +1,4 @@
+/* $Id$ */
 #ifndef __PYSTRINGS_H
 #define __PYSTRINGS_H
 

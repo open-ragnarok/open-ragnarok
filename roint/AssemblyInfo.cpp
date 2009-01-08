@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 // This file is used only in windows
 #include "stdafx.h"
 
@@ -18,7 +18,7 @@ using namespace System::Security::Permissions;
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("Open-Ragnarok")];
 [assembly:AssemblyProductAttribute("ROInterface")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c) Open-Ragnarok 2007-2008")];
+[assembly:AssemblyCopyrightAttribute("Copyright (c) Open-Ragnarok 2007-2009")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
@@ -31,9 +31,9 @@ using namespace System::Security::Permissions;
 //      Revision
 //
 // You can specify all the value or you can default the Revision and Build Numbers
-// by using the '*' as shown below:
+// by using the '*':
 
-[assembly:AssemblyVersionAttribute("1.0.*")];
+[assembly:AssemblyVersionAttribute("0.0.5.0")];
 
 [assembly:ComVisible(false)];
 

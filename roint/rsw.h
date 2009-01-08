@@ -4,6 +4,11 @@
 
 #include "object.h"
 
+#ifdef ROINT_USE_XML
+#	include "rsm.h"
+#	include <map>
+#endif
+
 namespace RO {
 	/**
 	 * Resource World
@@ -43,10 +48,13 @@ namespace RO {
 			/** Check if we are the same type as the parameter */
 			bool isType(ObjectType) const;
 
+			/** Returns a copy of this object */
+			Object* Copy() const;
+
 		protected:
 			ObjectType m_type;
-
 			unsigned int datasize;
+			void Copy(const Object& o);
 		};
 
 		/**
@@ -55,6 +63,8 @@ namespace RO {
 		class MYLIB_DLLAPI Model : public Object {
 		public:
 			Model();
+			Model(const Model&);
+			Model(const Model*);
 			virtual ~Model();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
@@ -79,6 +89,9 @@ namespace RO {
 
 			const ModelData *data;
 
+			virtual Model& operator = (const Model&);
+			virtual Model& operator = (const Model*);
+
 		protected:
 			ModelData m_data;
 		};
@@ -89,6 +102,8 @@ namespace RO {
 		class MYLIB_DLLAPI Light : public Object {
 		public:
 			Light();
+			Light(const Light&);
+			Light(const Light*);
 			virtual ~Light();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
@@ -103,6 +118,9 @@ namespace RO {
 			} LightData;
 
 			const LightData* data;
+
+			virtual Light& operator = (const Light&);
+			virtual Light& operator = (const Light*);
 		protected:
 			LightData m_data;
 		};
@@ -113,6 +131,8 @@ namespace RO {
 		class MYLIB_DLLAPI Sound : public Object {
 		public:
 			Sound();
+			Sound(const Sound&);
+			Sound(const Sound*);
 			virtual ~Sound();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
@@ -125,6 +145,9 @@ namespace RO {
 			} SoundData;
 
 			const SoundData *data;
+
+			virtual Sound& operator = (const Sound&);
+			virtual Sound& operator = (const Sound*);
 		public:
 			SoundData m_data;
 		};
@@ -135,6 +158,8 @@ namespace RO {
 		class MYLIB_DLLAPI Effect : public Object {
 		public:
 			Effect();
+			Effect(const Effect&);
+			Effect(const Effect*);
 			virtual ~Effect();
 			virtual bool readStream(std::istream&);
 			virtual bool writeStream(std::ostream&) const;
@@ -153,6 +178,8 @@ namespace RO {
 
 			const EffectData *data;
 
+			virtual Effect& operator = (const Effect&);
+			virtual Effect& operator = (const Effect*);
 		protected:
 			EffectData m_data;
 		};
@@ -198,6 +225,8 @@ namespace RO {
 		strWater water;
 		strLight light;
 
+		int unk[3];
+
 		unsigned int getObjectCount() const;
 
 		Object* getObject(const unsigned int&);
@@ -206,12 +235,31 @@ namespace RO {
 		Object* operator[] (const unsigned int&);
 		const Object* operator[] (const unsigned int&) const;
 
-		int unk[3];
 
 		RSW();
+		RSW(const RSW&);
+		// RSW(const RSW*);
 		virtual ~RSW();
 
 		virtual bool readStream(std::istream&);
+
+#ifdef ROINT_USE_XML
+		TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
+		TiXmlDocument GenerateXMLDoc(const std::string& name = "", bool utf = true) const;
+		bool SaveXML(std::ostream& out, const std::string& name = "", bool utf = true) const;
+		bool SaveXML(const std::string& fn, const std::string& name = "", bool utf = true) const;
+
+		TiXmlElement *GenerateFullXML(const std::map<std::string, RSM*>, const std::string& name = "", bool utf = true) const;
+		TiXmlDocument GenerateFullXMLDoc(const std::map<std::string, RSM*>, const std::string& name = "", bool utf = true) const;
+		bool SaveFullXML(const std::map<std::string, RSM*>, std::ostream& out, const std::string& name = "", bool utf = true) const;
+		bool SaveFullXML(const std::map<std::string, RSM*>, const std::string& fn, const std::string& name = "", bool utf = true) const;
+
+		TiXmlElement *GenerateFullXML(const std::map<std::string, RSM>, const std::string& name = "", bool utf = true) const;
+		TiXmlDocument GenerateFullXMLDoc(const std::map<std::string, RSM>, const std::string& name = "", bool utf = true) const;
+		bool SaveFullXML(const std::map<std::string, RSM>, std::ostream& out, const std::string& name = "", bool utf = true) const;
+		bool SaveFullXML(const std::map<std::string, RSM>, const std::string& fn, const std::string& name = "", bool utf = true) const;
+
+#endif
 
 		/** Write the RSW data to a stream */
 		virtual bool writeStream(std::ostream&) const;
@@ -220,6 +268,8 @@ namespace RO {
 
 		/** Clear all variables. Disallocate all data from memory. */
 		void Clear();
+
+		RSW& operator = (const RSW&);
 	};
 }
 

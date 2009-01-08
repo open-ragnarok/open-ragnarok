@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #include "stdafx.h"
 #include "object.h"
 
@@ -9,6 +9,13 @@ RO::Object::Object() {
 	m_version.sver = 0;
 	magicSize = 4;
 	memset(magic, 0, 4);
+}
+
+RO::Object::Object(const Object& o) {
+	memcpy(magic, o.magic, 4);
+	magicSize = o.magicSize;
+	m_version.sver = o.m_version.sver;
+	m_valid = o.m_valid;
 }
 
 RO::Object::~Object() {
@@ -43,6 +50,18 @@ bool RO::Object::writeHeader(std::ostream &s) const {
 	s.write((char*)&m_version, 2);
 
 	return(true);
+}
+
+bool RO::Object::copyHeader(Object* o) const {
+	memcpy(o->magic, magic, 4);
+	o->magicSize = magicSize;
+	o->m_version.sver = m_version.sver;
+	o->m_valid = m_valid;
+	return(true);
+}
+
+bool RO::Object::copyHeader(Object& o) const {
+	return(copyHeader(&o));
 }
 
 bool RO::Object::isValid() const {

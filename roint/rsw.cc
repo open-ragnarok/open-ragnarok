@@ -11,10 +11,31 @@ RO::RSW::OT_Sound = 3;
 RO::RSW::OT_Effect = 4;
 */
 
-RO::RSW::RSW() {
+RO::RSW::RSW() : RO::Object() {
 	object_count = 0;
 	m_objects = NULL;
 }
+
+RO::RSW::RSW(const RSW& rsw) : RO::Object(rsw) {
+	object_count = rsw.object_count;
+	m_objects = new Object*[object_count];
+	for(unsigned int i = 0; i < object_count; i++) {
+		m_objects[i] = rsw.m_objects[i]->Copy();
+	}
+	strcpy(ini_file, rsw.ini_file);
+	strcpy(gnd_file, rsw.gnd_file);
+	strcpy(gat_file, rsw.gat_file);
+	strcpy(scr_file, rsw.scr_file);
+
+	memcpy(&water, &rsw.water, sizeof(strWater));
+	memcpy(&light, &rsw.light, sizeof(strLight));
+
+	memcpy(unk, rsw.unk, 3);
+}
+
+//RO::RSW::RSW(const RSW* rsw) {
+//	*this = *rsw;
+//}
 
 RO::RSW::~RSW() {
 	Clear();
@@ -138,6 +159,7 @@ void RO::RSW::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << buf << std::endl;
 	sprintf(buf,"\tSurface curve level: %.2f", water.surface_curve_level);
 	o << pfx << buf << std::endl;
+
 	sprintf(buf,"Light");
 	o << pfx << buf << std::endl;
 	sprintf(buf,"\tAmbient: %.2f %.2f %.2f", light.ambient[0], light.ambient[1], light.ambient[2]);
@@ -198,137 +220,343 @@ const RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) const {
 	return(m_objects[idx]);
 }
 
-// ===== OBJECT
+RO::RSW& RO::RSW::operator = (const RO::RSW& rsw) {
+	Clear();
+	rsw.copyHeader(this);
+	object_count = rsw.object_count;
+	m_objects = new Object*[object_count];
+	for(unsigned int i = 0; i < object_count; i++) {
+		m_objects[i] = rsw.m_objects[i]->Copy();
+	}
+	strcpy(ini_file, rsw.ini_file);
+	strcpy(gnd_file, rsw.gnd_file);
+	strcpy(gat_file, rsw.gat_file);
+	strcpy(scr_file, rsw.scr_file);
 
-RO::RSW::Object::Object(ObjectType t) {
-	m_type = t;
+	memcpy(&water, &rsw.water, sizeof(strWater));
+	memcpy(&light, &rsw.light, sizeof(strLight));
+
+	memcpy(unk, rsw.unk, 3);
+
+	return(*this);
 }
 
-RO::RSW::Object::~Object() {
+/* === XML === */
+#ifdef ROINT_USE_XML
+
+#include <fstream>
+
+TiXmlElement *RO::RSW::GenerateXML(const std::string& name, bool utf) const {
+	TiXmlElement *root = new TiXmlElement("RSW");
+
+	char buf[16];
+	sprintf(buf,"%d.%d", m_version.cver.major , m_version.cver.minor);
+	root->SetAttribute("version", buf);
+	if (name != "") root->SetAttribute("name", name);
+	// if (utf) std::cout << "Saving XML with UTF-8 Encoding" << std::endl;
+
+	if (strlen(ini_file)) {
+		TiXmlElement *file = new TiXmlElement("ini_file");
+		std::string n;
+		if (utf)
+			n = euc2utf8(ini_file);
+		else
+			n = ini_file;
+		file->LinkEndChild(new TiXmlText(n));
+		root->LinkEndChild(file);
+	}
+	if (strlen(gnd_file)) {
+		TiXmlElement *file = new TiXmlElement("gnd_file");
+		std::string n;
+		if (utf)
+			n = euc2utf8(gnd_file);
+		else
+			n = gnd_file;
+		file->LinkEndChild(new TiXmlText(n));
+		root->LinkEndChild(file);
+	}
+	if (strlen(gat_file)) {
+		TiXmlElement *file = new TiXmlElement("gat_file");
+		std::string n;
+		if (utf)
+			n = euc2utf8(gat_file);
+		else
+			n = gat_file;
+		file->LinkEndChild(new TiXmlText(n));
+		root->LinkEndChild(file);
+	}
+	if (strlen(scr_file)) {
+		TiXmlElement *file = new TiXmlElement("scr_file");
+		std::string n;
+		if (utf)
+			n = euc2utf8(scr_file);
+		else
+			n = scr_file;
+		file->LinkEndChild(new TiXmlText(n));
+		root->LinkEndChild(file);
+	}
+
+	// Water
+	TiXmlElement *attr;
+	TiXmlElement *water = new TiXmlElement("water");
+
+	sprintf(buf, "%f", this->water.height);
+	attr = new TiXmlElement("height");
+	attr->LinkEndChild(new TiXmlText(buf));
+	water->LinkEndChild(attr);
+
+	sprintf(buf, "%u", this->water.type);
+	attr = new TiXmlElement("type");
+	attr->LinkEndChild(new TiXmlText(buf));
+	water->LinkEndChild(attr);
+
+	sprintf(buf, "%f", this->water.amplitude);
+	attr = new TiXmlElement("amplitude");
+	attr->LinkEndChild(new TiXmlText(buf));
+	water->LinkEndChild(attr);
+
+	sprintf(buf, "%f", this->water.phase);
+	attr = new TiXmlElement("phase");
+	attr->LinkEndChild(new TiXmlText(buf));
+	water->LinkEndChild(attr);
+
+	sprintf(buf, "%f", this->water.surface_curve_level);
+	attr = new TiXmlElement("surface_curve_level");
+	attr->LinkEndChild(new TiXmlText(buf));
+	water->LinkEndChild(attr);
+
+	root->LinkEndChild(water);
+
+	attr = new TiXmlElement("light_ambient");
+	sprintf(buf, "%f", this->light.ambient[0]);
+	attr->SetAttribute("r", buf);
+	sprintf(buf, "%f", this->light.ambient[1]);
+	attr->SetAttribute("g", buf);
+	sprintf(buf, "%f", this->light.ambient[2]);
+	attr->SetAttribute("b", buf);
+	root->LinkEndChild(attr);
+
+	attr = new TiXmlElement("light_diffuse");
+	sprintf(buf, "%f", this->light.diffuse[0]);
+	attr->SetAttribute("r", buf);
+	sprintf(buf, "%f", this->light.diffuse[1]);
+	attr->SetAttribute("g", buf);
+	sprintf(buf, "%f", this->light.diffuse[2]);
+	attr->SetAttribute("b", buf);
+	root->LinkEndChild(attr);
+
+	attr = new TiXmlElement("light_shadow");
+	sprintf(buf, "%f", this->light.shadow[0]);
+	attr->SetAttribute("r", buf);
+	sprintf(buf, "%f", this->light.shadow[1]);
+	attr->SetAttribute("g", buf);
+	sprintf(buf, "%f", this->light.shadow[2]);
+	attr->SetAttribute("b", buf);
+	root->LinkEndChild(attr);
+
+	for (unsigned int i = 0; i < object_count; i++) {
+		TiXmlElement *object = new TiXmlElement("object");
+		switch(m_objects[i]->getType()) {
+			case OT_Model:
+				object->SetAttribute("type", "model");
+				{
+					Model* mdl = (Model*)m_objects[i];
+					if (utf) {
+						object->SetAttribute("filename", euc2utf8(mdl->data->filename));
+						object->SetAttribute("name", euc2utf8(mdl->data->m_name));
+					}
+					else {
+						object->SetAttribute("filename", mdl->data->filename);
+						object->SetAttribute("name", mdl->data->m_name);
+					}
+
+					attr = new TiXmlElement("pos");
+					sprintf(buf, "%f", mdl->data->pos[0]);
+					attr->SetAttribute("x", buf);
+					sprintf(buf, "%f", mdl->data->pos[1]);
+					attr->SetAttribute("y", buf);
+					sprintf(buf, "%f", mdl->data->pos[2]);
+					attr->SetAttribute("z", buf);
+					object->LinkEndChild(attr);
+
+					attr = new TiXmlElement("rot");
+					sprintf(buf, "%f", mdl->data->rot[0]);
+					attr->SetAttribute("x", buf);
+					sprintf(buf, "%f", mdl->data->rot[1]);
+					attr->SetAttribute("y", buf);
+					sprintf(buf, "%f", mdl->data->rot[2]);
+					attr->SetAttribute("z", buf);
+					object->LinkEndChild(attr);
+
+					attr = new TiXmlElement("scale");
+					sprintf(buf, "%f", mdl->data->scale[0]);
+					attr->SetAttribute("x", buf);
+					sprintf(buf, "%f", mdl->data->scale[1]);
+					attr->SetAttribute("y", buf);
+					sprintf(buf, "%f", mdl->data->scale[2]);
+					attr->SetAttribute("z", buf);
+					object->LinkEndChild(attr);
+				}
+				break;
+			case OT_Effect:
+				object->SetAttribute("type", "effect");
+				break;
+			case OT_Light:
+				object->SetAttribute("type", "light");
+				break;
+			case OT_Sound:
+				object->SetAttribute("type", "sound");
+				break;
+		}
+
+		root->LinkEndChild(object);
+	}
+
+	return(root);
 }
 
-RO::RSW::ObjectType RO::RSW::Object::getType() const {
-	return(m_type);
+TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM> rsm, const std::string& name, bool utf) const {
+	TiXmlElement *root = GenerateXML(name, utf);
+
+	// populate RSM
+	std::vector<std::string> saved;
+	std::map<std::string, RSM>::const_iterator rsm_itr;
+	bool found = false;
+	std::string fname;
+	for (unsigned int i = 0; i < getObjectCount(); i++) {
+		if (!getObject(i)->isType(RO::RSW::OT_Model))
+			continue;
+
+		RO::RSW::Model *mdl = (RO::RSW::Model*)getObject(i);
+		fname = mdl->data->filename;
+		found = false;
+		for(std::vector<std::string>::const_iterator itr = saved.begin(); itr != saved.end(); itr++) {
+			if (*itr == fname)
+				found = true;
+		}
+
+		if (!found) {
+			saved.push_back(fname);
+			rsm_itr = rsm.find(fname);
+			if (rsm_itr != rsm.end()) {
+				TiXmlElement* e = rsm_itr->second.GenerateXML(fname, utf);
+				root->LinkEndChild(e);
+			}
+			else {
+				std::cout << "can't find file " << fname << "!" << std::endl;
+			}
+		}
+	}
+
+	return(root);
 }
 
-bool RO::RSW::Object::isType(ObjectType t) const {
-	return(m_type == t);
+
+TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM*> rsm, const std::string& name, bool utf) const {
+	TiXmlElement *root = GenerateXML(name, utf);
+
+	// populate RSM
+	std::vector<std::string> saved;
+
+	std::map<std::string, RSM*>::const_iterator rsm_itr;
+
+	bool found = false;
+	std::string fname;
+	for (unsigned int i = 0; i < getObjectCount(); i++) {
+		if (!getObject(i)->isType(RO::RSW::OT_Model))
+			continue;
+
+		RO::RSW::Model *mdl = (RO::RSW::Model*)getObject(i);
+		fname = mdl->data->filename;
+		found = false;
+		for(std::vector<std::string>::const_iterator itr = saved.begin(); itr != saved.end(); itr++) {
+			if (*itr == fname)
+				found = true;
+		}
+
+		if (!found) {
+			saved.push_back(fname);
+			rsm_itr = rsm.find(fname);
+			if (rsm_itr != rsm.end()) {
+				TiXmlElement* e = rsm_itr->second->GenerateXML(fname, utf);
+				root->LinkEndChild(e);
+			}
+			else {
+				std::cout << "can't find file " << fname << "!" << std::endl;
+			}
+		}
+	}
+
+	return(root);
 }
 
-void RO::RSW::Object::Dump(std::ostream& o, const std::string& pfx) const {
-	o << pfx << "No data to dump" << std::endl;
+TiXmlDocument RO::RSW::GenerateXMLDoc(const std::string& name, bool utf) const {
+	TiXmlDocument doc;
+	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
+	doc.LinkEndChild(decl);
+	
+	TiXmlElement * root = GenerateXML(name, utf);
+	doc.LinkEndChild(root);
+	
+	return(doc);
 }
 
-void RO::RSW::Object::Dump(std::ostream& o) const {
-	Dump(o, "");
+TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM*> rsm, const std::string& name, bool utf) const {
+	TiXmlDocument doc;
+	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
+	doc.LinkEndChild(decl);
+	
+	TiXmlElement * root = GenerateFullXML(rsm, name, utf);
+	doc.LinkEndChild(root);
+	
+	return(doc);
 }
 
-// ===== MODEL
-RO::RSW::Model::Model() : Object(RO::RSW::OT_Model) {
-	memset(&m_data, 0, sizeof(ModelData));
-	data = &m_data;
+TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM> rsm, const std::string& name, bool utf) const {
+	TiXmlDocument doc;
+	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
+	doc.LinkEndChild(decl);
+	
+	TiXmlElement * root = GenerateFullXML(rsm, name, utf);
+	doc.LinkEndChild(root);
+	
+	return(doc);
 }
 
-RO::RSW::Model::~Model() {
-}
-
-bool RO::RSW::Model::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(ModelData));
+bool RO::RSW::SaveXML(std::ostream& out, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateXMLDoc(name, utf);
+	out << doc;
 	return(true);
 }
 
-bool RO::RSW::Model::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(ModelData));
+bool RO::RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, std::ostream& out, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
+	out << doc;
 	return(true);
 }
 
-void RO::RSW::Model::Dump(std::ostream& o, const std::string& pfx) const {
-	char buf[512];
-	o << pfx << "Model " << m_data.filename << std::endl;
-	o << pfx << "\t" << m_data.m_name << std::endl;
-	sprintf(buf, "pos: %.2f, %.2f, %.2f", m_data.pos[0], m_data.pos[1], m_data.pos[2]);
-	o << pfx << "\t" << buf << std::endl;
-	sprintf(buf, "rot: %.2f, %.2f, %.2f", m_data.rot[0], m_data.rot[1], m_data.rot[2]);
-	o << pfx << "\t" << buf << std::endl;
-	sprintf(buf, "scale: %.2f, %.2f, %.2f", m_data.scale[0], m_data.scale[1], m_data.scale[2]);
-	o << pfx << "\t" << buf << std::endl;
-}
-
-const char* RO::RSW::Model::getName() const {
-	return(m_data.m_name);
-}
-
-// ===== LIGHT
-
-RO::RSW::Light::Light() : Object(RO::RSW::OT_Light) {
-	memset(&m_data, 0, sizeof(LightData));
-	data = &m_data;
-}
-
-RO::RSW::Light::~Light() {
-}
-
-bool RO::RSW::Light::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(LightData));
+bool RO::RSW::SaveFullXML(const std::map<std::string, RSM> rsm, std::ostream& out, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
+	out << doc;
 	return(true);
 }
 
-bool RO::RSW::Light::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(LightData));
+bool RO::RSW::SaveXML(const std::string& fn, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateXMLDoc(name, utf);
+	doc.SaveFile(fn);
 	return(true);
 }
 
-const char* RO::RSW::Light::getName() const {
-	return(m_data.name);
-}
-
-// ===== SOUND
-RO::RSW::Sound::Sound() : Object(RO::RSW::OT_Sound) {
-	memset(&m_data, 0, sizeof(SoundData));
-	data = &m_data;
-}
-
-RO::RSW::Sound::~Sound() {
-}
-
-bool RO::RSW::Sound::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(SoundData));
+bool RO::RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, const std::string& fn, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
+	doc.SaveFile(fn);
 	return(true);
 }
 
-bool RO::RSW::Sound::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(SoundData));
+bool RO::RSW::SaveFullXML(const std::map<std::string, RSM> rsm, const std::string& fn, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
+	doc.SaveFile(fn);
 	return(true);
 }
 
-const char* RO::RSW::Sound::getName() const {
-	return(m_data.name);
-}
-
-// ===== EFFECT
-
-RO::RSW::Effect::Effect() : Object(RO::RSW::OT_Effect) {
-	memset(&m_data, 0, sizeof(EffectData));
-	data = &m_data;
-}
-
-RO::RSW::Effect::~Effect() {
-}
-
-bool RO::RSW::Effect::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(EffectData));
-	return(true);
-}
-
-bool RO::RSW::Effect::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(EffectData));
-	return(true);
-}
-
-const char* RO::RSW::Effect::getName() const {
-	return(m_data.name);
-}
+#endif

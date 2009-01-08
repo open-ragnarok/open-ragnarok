@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 /* Codepage 949. Adapted from http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP949.TXT
  * This file contains the encoding conversion from utf-8 to enc_kr (and vice-versa). This file should not be included
  * directly. It's used by euc_kr.cc.

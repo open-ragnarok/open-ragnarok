@@ -131,6 +131,7 @@ namespace RO {
 
 	public:
 		RSM();
+		RSM(const RSM&);
 		virtual ~RSM();
 
 		const BoundingBox& getBoundingBox() const;
@@ -138,6 +139,13 @@ namespace RO {
 		bool Write(std::ostream& s) const;
 		virtual bool readStream(std::istream&);
 		void Dump(std::ostream& out, const std::string& = "") const;
+
+#ifdef ROINT_USE_XML
+		TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
+		TiXmlDocument GenerateXMLDoc(const std::string& name = "", bool utf = true) const;
+		bool SaveXML(std::ostream& out, const std::string& name = "", bool utf = true) const;
+		bool SaveXML(const std::string& fn, const std::string& name = "", bool utf = true) const;
+#endif
 
 		unsigned int getMeshCount() const;
 		unsigned int getTextureCount() const;
@@ -150,6 +158,8 @@ namespace RO {
 
 		Mesh& getMesh(const unsigned int&);
 		const Mesh& getMesh(const unsigned int&) const;
+
+		RSM& operator = (const RSM&);
 	};
 }
 

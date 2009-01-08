@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id$ */
 #include "stdafx.h"
 #include "spr.h"
 
@@ -93,7 +93,7 @@ void RO::SPR::readImage(std::istream& s, unsigned int idx) {
 	
 	delete[] data;
 
-	unsigned int size = out.tellp();
+	unsigned int size = (unsigned int)out.tellp();
 	img->data = new unsigned char[size];
 	//printf(" bytes decoded: %u", size);
 	//printf(" expected size: %u", img->w * img->h);
