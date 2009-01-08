@@ -1,12 +1,8 @@
+# Copyright (C) 2008 Open-Ragnarok Project
+# http://www.open-ragnarok.org
 # $Id$
 from ctypes import *
 import ro
-
-functions = {
-  'Version': '?Version@RO@@YAGXZ',
-  'printVersion': '?printVersion@RO@@YAXXZ',
-  '': ''
-};
 
 class RSM_SprSize(Structure):
   _pack = 1

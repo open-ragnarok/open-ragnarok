@@ -1,5 +1,8 @@
 # Copyright (C) 2008 Open-Ragnarok Project
 # http://www.open-ragnarok.org
+# $Id$
+
+# These have been tested using Python 2.6.
 
 """
 A package for parsing, handling, and generating Ragnarok Online files.
@@ -12,12 +15,16 @@ __version__ = "0.1"
 __all__ = [
   "spr",
   "ro",
-  "rsm"
+  "rsm",
+  "act",
+  "grf"
   ]
   
 import spr
 import ro
 import rsm
+import act
+import grf
 
 #SPR = spr.SPR
 #RSM = rsm.RSM
