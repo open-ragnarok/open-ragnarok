@@ -4,7 +4,10 @@
 
 #include "object.h"
 
+#include "ro_seq.h"
+
 namespace RO {
+
 
 	/** Action class.
 	 *
@@ -15,70 +18,118 @@ namespace RO {
 	class MYLIB_DLLAPI ACT : public Object {
 	public:
 		// ACT Strutures
-#pragma pack(push)
-#pragma pack(1)
-		struct Spr {
-			int x;  // 0x0101 -- everyone have these
-			int y;  // 0x0101 -- everyone have these
-			int sprNo;  // 0x0101 -- everyone have these
-			unsigned int mirrorOn; // 0x0101 -- everyone have these
-			unsigned int color; // 0x0201 -- every version 2 have this -- is this a RGBA value?
-			float xyMag; // 0x0201 -- on 0x0201 and 0x0203 (what about 0x0202? assumming yes)
+		class MYLIB_DLLAPI Spr {
+		public:
+			Spr();
+			Spr(const Spr&);
+			~Spr();
 
-			float xMag; // 0x0204 -- on 0x0204 and 0x0205 instead of xyMag
-			float yMag; // 0x0204 -- on 0x0204 and 0x0205 instead of xyMag
+			bool readStream(std::istream&, const s_obj_ver&);
+			bool writeStream(std::ostream&, const s_obj_ver&) const;
 
-			unsigned int rot; // 0x0201 -- every version 2 have this
-			unsigned int type; // 0x0201 -- every version 2 have this
+			Spr& operator = (const Spr&);
 
-			int w; // 0x0205 -- only on 0x0205
-			int h; // 0x0205 -- only on 0x0205
+#ifdef ROINT_USE_XML
+			TiXmlElement *GenerateXML(const s_obj_ver&) const;
+#endif
+			// DATA //
+			int x;
+			int y;
+			int sprNo;
+			unsigned int mirrorOn;
+			unsigned int color;
+			float xyMag;
+			float xMag;
+			float yMag;
+			unsigned int rot;
+			unsigned int type;
+
+			int w;
+			int h;
+		protected:
+			void copyFrom(const Spr&);
 		};
 
-		struct Pat {
+		class MYLIB_DLLAPI Pat {
+		public:
+			Pat();
+			Pat(const Pat&);
+			~Pat();
+
+			bool readStream(std::istream&, const s_obj_ver&);
+			bool writeStream(std::ostream&, const s_obj_ver&) const;
+
+			Spr& operator[] (unsigned int i);
+			const Spr& operator[] (unsigned int i) const;
+
+			Pat& operator = (const Pat&);
+
+#ifdef ROINT_USE_XML
+			TiXmlElement *GenerateXML(const s_obj_ver&) const;
+#endif
+
+		// DATA //
 			int pal[2];
 			short unk[12];
 			unsigned int numspr;
-			Spr* spr;
+			Seq<Spr> spr;
 			int sndNo; // only in version 2.
 			int numxxx; // version > 0x0201 (does not exists on 0x0201)
 			int ext1;
 			int ext_x;
 			int ext_y;
 			int terminate;
+
+		protected:
+			void copyFrom(const Pat&);
 		};
 
-		struct Act {
+		class MYLIB_DLLAPI Act {
+		public:
+			Act();
+			Act(const Act&);
+			~Act();
+
+			bool readStream(std::istream&, const s_obj_ver&);
+			bool writeStream(std::ostream&, const s_obj_ver&) const;
+
+			Pat& operator[] (unsigned int i);
+			const Pat& operator[] (unsigned int i) const;
+
+			Act& operator = (const Act&);
+
+#ifdef ROINT_USE_XML
+			TiXmlElement *GenerateXML(const s_obj_ver&) const;
+#endif
+
+			// DATA //
 			unsigned int patnum;
-			Pat* pat;
+			Seq<Pat> pat;
+		protected:
+			void copyFrom(const Act&);
 		};
-#pragma pack(pop)
 
 	protected:
-		unsigned short actCount;
-		Act* acts;
+		Seq<Act> acts;
 		short unk1;
 		int unk2;
 		int unk3;
 
-		void readAct(std::istream&, Act*);
-		void readSpr(std::istream&, Spr*);
-
+		void ClearAll();
 	public:
 		ACT();
 		ACT(const ACT&);
 		virtual ~ACT();
 
 		virtual bool readStream(std::istream&);
-		const Act* operator[] (const unsigned int&) const;
+		virtual bool writeStream(std::ostream&) const;
+		const Act& operator[] (const unsigned int&) const;
 		unsigned int count() const;
 		void Dump(std::ostream&, const std::string& pfx = "") const;
 
 		ACT& operator = (const ACT&);
 
 #ifdef ROINT_USE_XML
-		TiXmlElement *GenerateXML(const Spr&) const;
-
 		TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
 		TiXmlDocument GenerateXMLDoc(const std::string& name = "", bool utf = true) const;
 		bool SaveXML(std::ostream& out, const std::string& name = "", bool utf = true) const;

@@ -5,146 +5,36 @@
 
 RO::ACT::ACT() : Object() {
 	magicSize = 2;
-	acts = NULL;
 }
 
 RO::ACT::ACT(const ACT& a) : Object(a) {
 	magicSize = 2;
-	actCount = a.actCount;
-	if (actCount > 1000)
-		actCount = 0;
 
-	if (actCount > 0)
-		acts = new Act[actCount];
-
-	unk1 = a.unk1;
-	unk2 = a.unk2;
-	unk3 = a.unk3;
-	
-	for (unsigned int i = 0; i < actCount; i++) {
-		acts[i].patnum = a.acts[i].patnum;
-		acts[i].pat = new Pat[acts[i].patnum];
-		for(unsigned int j = 0; j < acts[i].patnum; j++) {
-			acts[i].pat[j].pal[0] = a.acts[i].pat[j].pal[0];
-			acts[i].pat[j].pal[1] = a.acts[i].pat[j].pal[1];
-			for (int x = 0; x < 12; x++)
-				acts[i].pat[j].unk[x] = a.acts[i].pat[j].unk[x];
-
-			acts[i].pat[j].numspr = a.acts[i].pat[j].numspr;
-			acts[i].pat[j].spr = NULL;
-			if (acts[i].pat[j].numspr > 0) {
-				acts[i].pat[j].spr = new Spr[acts[i].pat[j].numspr];
-				for (unsigned int k = 0; k < acts[i].pat[j].numspr; k++) {
-					acts[i].pat[j].spr[k].x = a.acts[i].pat[j].spr[k].x;
-					acts[i].pat[j].spr[k].y = a.acts[i].pat[j].spr[k].y;
-					acts[i].pat[j].spr[k].sprNo = a.acts[i].pat[j].spr[k].sprNo;
-					acts[i].pat[j].spr[k].mirrorOn = a.acts[i].pat[j].spr[k].mirrorOn;
-					acts[i].pat[j].spr[k].color = a.acts[i].pat[j].spr[k].color;
-					acts[i].pat[j].spr[k].xyMag = a.acts[i].pat[j].spr[k].xyMag;
-					acts[i].pat[j].spr[k].xMag = a.acts[i].pat[j].spr[k].xMag;
-					acts[i].pat[j].spr[k].yMag = a.acts[i].pat[j].spr[k].yMag;
-					acts[i].pat[j].spr[k].rot = a.acts[i].pat[j].spr[k].rot;
-					acts[i].pat[j].spr[k].type = a.acts[i].pat[j].spr[k].type;
-					acts[i].pat[j].spr[k].w = a.acts[i].pat[j].spr[k].w;
-					acts[i].pat[j].spr[k].h = a.acts[i].pat[j].spr[k].h;
-				}
-			}
-			acts[i].pat[j].sndNo = a.acts[i].pat[j].sndNo;
-			acts[i].pat[j].numxxx = a.acts[i].pat[j].numxxx;
-			acts[i].pat[j].ext1 = a.acts[i].pat[j].ext1;
-			acts[i].pat[j].ext_x = a.acts[i].pat[j].ext_x;
-			acts[i].pat[j].ext_y = a.acts[i].pat[j].ext_y;
-			acts[i].pat[j].terminate = a.acts[i].pat[j].terminate;
-		}
+	unsigned int i;
+	unsigned int n = a.acts.size();
+	for (i = 0; i < n; i++) {
+		acts.push_back(a.acts[i]);
 	}
 }
 
+void RO::ACT::ClearAll() {
+	acts.clear();
+}
+
 RO::ACT& RO::ACT::operator = (const ACT& a) {
-	if (acts != NULL) {
-		for (unsigned int i = 0; i < actCount; i++) {
-			if (acts[i].pat != NULL) {
-				for (unsigned int j = 0; j < acts[i].patnum; j++)
-					delete[] acts[i].pat[j].spr;
-
-				delete[] acts[i].pat;
-			}
-		}
-
-		delete[] acts;
-		acts = NULL;
-	}
-
+	ClearAll();
 	a.copyHeader(this);
-	magicSize = 2;
-	actCount = a.actCount;
 
-	unk1 = a.unk1;
-	unk2 = a.unk2;
-	unk3 = a.unk3;
-
-	if (actCount > 1000)
-		actCount = 0;
-
-	if (actCount > 0)
-		acts = new Act[actCount];
-	else {
-		return(*this);
-	}
-
-	for (unsigned int i = 0; i < actCount; i++) {
-		acts[i].patnum = a.acts[i].patnum;
-		acts[i].pat = new Pat[acts[i].patnum];
-		for(unsigned int j = 0; j < acts[i].patnum; j++) {
-			acts[i].pat[j].pal[0] = a.acts[i].pat[j].pal[0];
-			acts[i].pat[j].pal[1] = a.acts[i].pat[j].pal[1];
-			for (int x = 0; x < 12; x++)
-				acts[i].pat[j].unk[x] = a.acts[i].pat[j].unk[x];
-
-			acts[i].pat[j].numspr = a.acts[i].pat[j].numspr;
-			acts[i].pat[j].spr = NULL;
-			if (acts[i].pat[j].numspr > 0) {
-				acts[i].pat[j].spr = new Spr[acts[i].pat[j].numspr];
-				for (unsigned int k = 0; k < acts[i].pat[j].numspr; k++) {
-					acts[i].pat[j].spr[k].x = a.acts[i].pat[j].spr[k].x;
-					acts[i].pat[j].spr[k].y = a.acts[i].pat[j].spr[k].y;
-					acts[i].pat[j].spr[k].sprNo = a.acts[i].pat[j].spr[k].sprNo;
-					acts[i].pat[j].spr[k].mirrorOn = a.acts[i].pat[j].spr[k].mirrorOn;
-					acts[i].pat[j].spr[k].color = a.acts[i].pat[j].spr[k].color;
-					acts[i].pat[j].spr[k].xyMag = a.acts[i].pat[j].spr[k].xyMag;
-					acts[i].pat[j].spr[k].xMag = a.acts[i].pat[j].spr[k].xMag;
-					acts[i].pat[j].spr[k].yMag = a.acts[i].pat[j].spr[k].yMag;
-					acts[i].pat[j].spr[k].rot = a.acts[i].pat[j].spr[k].rot;
-					acts[i].pat[j].spr[k].type = a.acts[i].pat[j].spr[k].type;
-					acts[i].pat[j].spr[k].w = a.acts[i].pat[j].spr[k].w;
-					acts[i].pat[j].spr[k].h = a.acts[i].pat[j].spr[k].h;
-				}
-			}
-			acts[i].pat[j].sndNo = a.acts[i].pat[j].sndNo;
-			acts[i].pat[j].numxxx = a.acts[i].pat[j].numxxx;
-			acts[i].pat[j].ext1 = a.acts[i].pat[j].ext1;
-			acts[i].pat[j].ext_x = a.acts[i].pat[j].ext_x;
-			acts[i].pat[j].ext_y = a.acts[i].pat[j].ext_y;
-			acts[i].pat[j].terminate = a.acts[i].pat[j].terminate;
-		}
+	unsigned int i;
+	unsigned int n = a.acts.size();
+	for (i = 0; i < n; i++) {
+		acts.push_back(a.acts[i]);
 	}
 
 	return(*this);
 }
 
 RO::ACT::~ACT() {
-	if (acts != NULL) {
-		for (unsigned int i = 0; i < actCount; i++) {
-			if (acts[i].pat != NULL) {
-				for (unsigned int j = 0; j < acts[i].patnum; j++)
-					delete[] acts[i].pat[j].spr;
-
-				delete[] acts[i].pat;
-			}
-		}
-
-		delete[] acts;
-		acts = NULL;
-	}
 }
 
 bool RO::ACT::readStream(std::istream &s) {
@@ -158,120 +48,53 @@ bool RO::ACT::readStream(std::istream &s) {
 		return(false);
 	}
 
-	s.read((char*)&actCount, sizeof(unsigned short));
+	unsigned short i;
+	unsigned int n;
+
+	s.read((char*)&n, sizeof(unsigned short));
 	s.read((char*)&unk1, sizeof(short));
 	s.read((char*)&unk2, sizeof(int));
 	s.read((char*)&unk3, sizeof(int));
 
-	acts = new Act[actCount];
-	memset(acts, 0, sizeof(Act) * actCount);
-
-	unsigned short i;
-	for (i = 0; i < actCount; i++) {
-		// printf("act No. %u\n", i);
-
-		readAct(s, &acts[i]);
+	for (i = 0; i < n; i++) {
+		Act a;
+		a.readStream(s, m_version);
+		acts.push_back(a);
 	}
 
-	// printf("Version: %d.%d\n", major_ver, minor_ver);
 	return(true);
 }
 
-void RO::ACT::readAct(std::istream& s, Act* act) {
-	unsigned int i;
-	unsigned int p;
+bool RO::ACT::writeStream(std::ostream& o) const {
+	writeHeader(o);
+	unsigned short n = acts.size();
+	o.write((char*)&n, sizeof(unsigned short));
+	o.write((char*)&unk1, sizeof(short));
+	o.write((char*)&unk2, sizeof(int));
+	o.write((char*)&unk3, sizeof(int));
 
-	s.read((char*)&act->patnum, sizeof(unsigned int));
-
-	// One "ACT" has "act->patnum" "ActPat"s.
-	// Each action has many patterns
-	// A pattern is a frame in an action.
-	act->pat = new Pat[act->patnum];
-	memset(act->pat, 0, sizeof(Pat) * act->patnum);
-	
-	Pat* pat;
-	for (p = 0; p < act->patnum; p++) {
-		pat = &act->pat[p];
-
-		s.read((char*)pat->pal, sizeof(unsigned int) * 2);
-		s.read((char*)pat->unk, sizeof(unsigned short) * 12);
-		s.read((char*)&pat->numspr, sizeof(unsigned int));
-
-		// Each pattern may have any number of SPRITES. They are drawn on top of each
-		// other in the order that is read from the file.
-		pat->spr = new Spr[pat->numspr];
-		memset(pat->spr, 0, sizeof(Spr) * pat->numspr);
-		for (i = 0; i < pat->numspr; i++) {
-			readSpr(s, &pat->spr[i]);
-		}
-
-		if (m_version.cver.major < 2)
-			continue;
-		
-		// Sound? -- Research!
-		s.read((char*)&pat->sndNo, sizeof(int));
-
-		if (m_version.cver.minor <= 1)
-			continue;
-		// version greater then 0x0201
-		s.read((char*)&pat->numxxx, sizeof(int));
-
-		if (pat->numxxx > 0)
-			s.read((char*)&pat->ext1, sizeof(int) * 4);
+	unsigned short i;
+	for (i = 0; i < n; i++) {
+		acts[i].writeStream(o, m_version);
 	}
+
+	return(true);
 }
 
-void RO::ACT::readSpr(std::istream& s, Spr* spr) {
-	s.read((char*)&spr->x, sizeof(int) * 4);
-	/*
-	spr->x = readInt(s);
-	spr->y = readInt(s);
-	spr->sprNo = readInt(s);
-	spr->mirrorOn = readInt(s);
-	*/
-
-	if (m_version.cver.major <= 1)
-		return;
-	s.read((char*)&spr->color, sizeof(int));
-	//spr->color = readInt(s);
-
-	if (m_version.cver.minor <= 3) {
-		s.read((char*)&spr->xyMag, sizeof(float));
-		//spr->xyMag = readFloat(s);
-	}
-	else {
-		s.read((char*)&spr->xMag, sizeof(float) * 2);
-		//spr->xMag = readFloat(s);
-		//spr->yMag = readFloat(s);
-	}
-	s.read((char*)&spr->rot, sizeof(int) * 2);
-	//spr->rot = readInt(s);
-	//spr->type = readInt(s);
-
-	if (m_version.cver.minor <= 4)
-		return;
-
-	s.read((char*)&spr->w, sizeof(int) * 2);
-	//spr->w = readInt(s);
-	//spr->h = readInt(s);
-}
-
-const RO::ACT::Act* RO::ACT::operator[] (const unsigned int& i) const {
-	if (i >= actCount)
-		return(NULL);
-	return(&acts[i]);
+const RO::ACT::Act& RO::ACT::operator[] (const unsigned int& i) const {
+	return(acts[i]);
 }
 
 unsigned int RO::ACT::count() const {
-	return(actCount);
+	return(acts.size());
 }
 
 void RO::ACT::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "Version " << (short)m_version.cver.major << "." << (short)m_version.cver.minor << std::endl;
-	o << pfx << "Action count: " << actCount << std::endl;
+	o << pfx << "Action count: " << acts.size() << std::endl;
 	o << pfx << "Unknowns: " << unk1 << ", " << unk2  << ", " << unk3 << std::endl;
 	unsigned int i_act, i_spr, i_pat;
-	for (i_act = 0; i_act < actCount; i_act++) {
+	for (i_act = 0; i_act < acts.size(); i_act++) {
 		o << pfx << "Action " << i_act << std::endl;
 		for (i_pat = 0; i_pat < acts[i_act].patnum ; i_pat++) {
 			o << pfx << "\tACT ======" << std::endl;
@@ -307,41 +130,6 @@ void RO::ACT::Dump(std::ostream& o, const std::string& pfx) const {
 }
 
 #ifdef ROINT_USE_XML
-
-TiXmlElement *RO::ACT::GenerateXML(const Spr& s) const {
-	TiXmlElement *e = new TiXmlElement("spr");
-
-	char buf[32];
-
-	e->SetAttribute("x", s.x);
-	e->SetAttribute("y", s.y);
-	e->SetAttribute("spr", s.sprNo);
-	e->SetAttribute("mirror", s.mirrorOn);
-
-	if (m_version.cver.major >= 2) {
-		sprintf(buf, "#%08x", s.color);
-		e->SetAttribute("color", buf);
-		if (m_version.cver.minor <= 3) {
-			sprintf(buf, "%f", s.xyMag);
-			e->SetAttribute("xyMag", buf);
-		}
-		else {
-			sprintf(buf, "%f", s.xMag);
-			e->SetAttribute("xMag", buf);
-			sprintf(buf, "%f", s.yMag);
-			e->SetAttribute("yMag", buf);
-		}
-
-		e->SetAttribute("rot", s.rot);
-		e->SetAttribute("type", s.type);
-		if (m_version.cver.minor >= 5) {
-			e->SetAttribute("w", s.w);
-			e->SetAttribute("h", s.h);
-		}
-	}
-	return(e);
-}
-
 TiXmlElement *RO::ACT::GenerateXML(const std::string& name, bool utf) const {
 	TiXmlElement *root = new TiXmlElement("ACT");
 	char buf[32];
@@ -351,54 +139,10 @@ TiXmlElement *RO::ACT::GenerateXML(const std::string& name, bool utf) const {
 		root->SetAttribute("name", name);
 	}
 
-	TiXmlElement *e;
-	std::string s;
-
-	unsigned int i, j, k;
-
-	// acts
-	for(i = 0 ; i < actCount; i++) {
-		TiXmlElement *_act = new TiXmlElement("act");
-		root->LinkEndChild(_act);
-		for (j = 0; j < acts[i].patnum; j++) {
-			TiXmlElement *_pat = new TiXmlElement("pat");
-			_act->LinkEndChild(_pat);
-			e = new TiXmlElement("pal");
-			sprintf(buf,"#%08x,#%08x", acts[i].pat[j].pal[0], acts[i].pat[j].pal[1]);
-			e->LinkEndChild(new TiXmlText(buf));
-			_pat->LinkEndChild(e);
-			
-			e = new TiXmlElement("unk");
-			_pat->LinkEndChild(e);
-			char c = 'a';
-			for (k = 0; k < 12; k++) {
-				sprintf(buf, "%c", c++);
-				e->SetAttribute(buf, acts[i].pat[j].unk[k]);
-				//sprintf(buf, "%d", acts[i].pat[j].unk[k]);
-				//e->LinkEndChild(new TiXmlText(buf));
-			}
-
-			for (k = 0; k < acts[i].pat[j].numspr; k++) {
-				_pat->LinkEndChild(GenerateXML(acts[i].pat[j].spr[k]));
-			}
-
-			if (m_version.cver.major >= 2) {
-				e = new TiXmlElement("sound");
-				e->SetAttribute("id", acts[i].pat[j].sndNo);
-				_pat->LinkEndChild(e);
-
-				if (acts[i].pat[j].numxxx == 1) {
-					e = new TiXmlElement("ext");
-					_pat->LinkEndChild(e);
-					e->SetAttribute("x", acts[i].pat[j].ext_x);
-					e->SetAttribute("y", acts[i].pat[j].ext_y);
-					sprintf(buf, "%x", acts[i].pat[j].terminate);
-					e->SetAttribute("terminate", buf);
-					sprintf(buf, "%d", acts[i].pat[j].ext1);
-					e->LinkEndChild(new TiXmlText(buf));
-				}
-			}
-		}
+	unsigned int i;
+	unsigned int n = acts.size();
+	for (i = 0; i < n; i++) {
+		root->LinkEndChild(acts[i].GenerateXML(m_version));
 	}
 
 	return(root);
@@ -423,5 +167,377 @@ bool RO::ACT::SaveXML(const std::string& fn, const std::string& name, bool utf) 
 	TiXmlDocument doc = GenerateXMLDoc(name, utf);
 	doc.SaveFile(fn);
 	return(true);
+}
+#endif
+
+RO::ACT::Spr::Spr() {
+	x = y = 0;
+	sprNo = 0;
+	mirrorOn = 0;
+	color = 0;
+	xyMag = xMag = yMag = 1;
+	rot = 0;
+	type = 0;
+	w = h = 0;
+}
+
+RO::ACT::Spr::Spr(const Spr& s) {
+	copyFrom(s);
+}
+
+RO::ACT::Spr::~Spr() {
+}
+
+void RO::ACT::Spr::copyFrom(const Spr& s) {
+	x = s.x;
+	y = s.y;
+	sprNo = s.sprNo;
+	mirrorOn = s.sprNo;
+	color = s.sprNo;
+	xyMag = s.xyMag;
+	xMag = s.xMag;
+	yMag = s.yMag;
+	rot = s.rot;
+	type = s.type;
+	w = s.w;
+	h = s.h;
+}
+
+RO::ACT::Spr& RO::ACT::Spr::operator = (const Spr& s) {
+	copyFrom(s);
+	return(*this);
+}
+
+
+bool RO::ACT::Spr::readStream(std::istream& s, const s_obj_ver& v) {
+	s.read((char*)&x, sizeof(int));
+	s.read((char*)&y, sizeof(int));
+	s.read((char*)&sprNo, sizeof(int));
+	s.read((char*)&mirrorOn, sizeof(int));
+
+	if (v.cver.major <= 1)
+		return(true);
+	s.read((char*)&color, sizeof(int));
+
+	if (v.cver.minor <= 3) {
+		s.read((char*)&xyMag, sizeof(float));
+		xMag = xyMag;
+		yMag = xyMag;
+	}
+	else {
+		s.read((char*)&xMag, sizeof(float));
+		s.read((char*)&yMag, sizeof(float));
+	}
+
+	s.read((char*)&rot, sizeof(int));
+	s.read((char*)&type, sizeof(int));
+
+	if (v.cver.minor <= 4)
+		return(true);
+
+	s.read((char*)&w, sizeof(int));
+	s.read((char*)&h, sizeof(int));
+	return(true);
+}
+
+bool RO::ACT::Spr::writeStream(std::ostream& s, const s_obj_ver& v) const {
+	s.write((char*)&x, sizeof(int));
+	s.write((char*)&y, sizeof(int));
+	s.write((char*)&sprNo, sizeof(int));
+	s.write((char*)&mirrorOn, sizeof(int));
+
+	if (v.cver.major <= 1)
+		return(true);
+	s.write((char*)&color, sizeof(int));
+
+	if (v.cver.minor <= 3) {
+		s.write((char*)&xyMag, sizeof(float));
+	}
+	else {
+		s.write((char*)&xMag, sizeof(float));
+		s.write((char*)&yMag, sizeof(float));
+	}
+
+	s.write((char*)&rot, sizeof(int));
+	s.write((char*)&type, sizeof(int));
+
+	if (v.cver.minor <= 4)
+		return(true);
+
+	s.write((char*)&w, sizeof(int));
+	s.write((char*)&h, sizeof(int));
+	return(true);
+}
+
+#ifdef ROINT_USE_XML
+TiXmlElement* RO::ACT::Spr::GenerateXML(const s_obj_ver& v) const {
+	TiXmlElement *e = new TiXmlElement("spr");
+
+	char buf[32];
+
+	e->SetAttribute("x", x);
+	e->SetAttribute("y", y);
+	e->SetAttribute("spr", sprNo);
+	e->SetAttribute("mirror", mirrorOn);
+
+	if (v.cver.major >= 2) {
+		sprintf(buf, "#%08x", color);
+		e->SetAttribute("color", buf);
+		if (v.cver.minor <= 3) {
+			sprintf(buf, "%f", xyMag);
+			e->SetAttribute("xyMag", buf);
+		}
+		else {
+			sprintf(buf, "%f", xMag);
+			e->SetAttribute("xMag", buf);
+			sprintf(buf, "%f", yMag);
+			e->SetAttribute("yMag", buf);
+		}
+
+		e->SetAttribute("rot", rot);
+		e->SetAttribute("type", type);
+		if (v.cver.minor >= 5) {
+			e->SetAttribute("w", w);
+			e->SetAttribute("h", h);
+		}
+	}
+	return(e);
+}
+#endif
+
+
+RO::ACT::Pat::Pat() {
+}
+
+RO::ACT::Pat::Pat(const Pat& p) {
+	copyFrom(p);
+}
+
+RO::ACT::Pat::~Pat() {
+}
+
+bool RO::ACT::Pat::readStream(std::istream& s, const s_obj_ver& v) {
+	s.read((char*)pal, sizeof(unsigned int) * 2);
+	s.read((char*)unk, sizeof(unsigned short) * 12);
+	unsigned int n;
+
+	s.read((char*)&n, sizeof(unsigned int));
+	numspr = n; // TODO: Remove this... no need for this.
+
+	for (unsigned int i = 0; i < n; i++) {
+		Spr _s;
+		_s.readStream(s, v);
+		spr.push_back(_s);
+	}
+
+	if (v.cver.major < 2)
+		return(true);
+	
+	s.read((char*)&sndNo, sizeof(int));
+
+	if (v.cver.minor <= 1)
+		return(true);
+
+	// version greater then 0x0201
+	s.read((char*)&numxxx, sizeof(int));
+
+	if (numxxx > 0) {
+		s.read((char*)&ext1, sizeof(int));
+		s.read((char*)&ext_x, sizeof(int));
+		s.read((char*)&ext_y, sizeof(int));
+		s.read((char*)&terminate, sizeof(int));
+	}
+
+
+	return(true);
+}
+
+bool RO::ACT::Pat::writeStream(std::ostream& s, const s_obj_ver& v) const {
+	s.write((char*)pal, sizeof(unsigned int) * 2);
+	s.write((char*)unk, sizeof(unsigned short) * 12);
+	unsigned int n = (unsigned int)spr.size();
+
+	s.write((char*)&n, sizeof(unsigned int));
+
+	for (unsigned int i = 0; i < n; i++)
+		spr[i].writeStream(s, v);
+
+	if (v.cver.major < 2)
+		return(true);
+	
+	s.write((char*)&sndNo, sizeof(int));
+
+	if (v.cver.minor <= 1)
+		return(true);
+
+	// version greater then 0x0201
+	s.write((char*)&numxxx, sizeof(int));
+
+	if (numxxx > 0) {
+		s.write((char*)&ext1, sizeof(int));
+		s.write((char*)&ext_x, sizeof(int));
+		s.write((char*)&ext_y, sizeof(int));
+		s.write((char*)&terminate, sizeof(int));
+	}
+
+
+	return(true);
+}
+
+RO::ACT::Spr& RO::ACT::Pat::operator[] (unsigned int i) {
+	return(spr[i]);
+}
+
+const RO::ACT::Spr& RO::ACT::Pat::operator[] (unsigned int i) const {
+	return(spr[i]);
+}
+
+RO::ACT::Pat& RO::ACT::Pat::operator = (const Pat& p) {
+	copyFrom(p);
+	return(*this);
+}
+
+void RO::ACT::Pat::copyFrom(const Pat& p) {
+	unsigned int i, n;
+
+	pal[0] = p.pal[0];
+	pal[1] = p.pal[1];
+
+	for (i = 0; i < 12; i++)
+		unk[i] = p.unk[i];
+
+	sndNo = p.sndNo; // only in version 2.
+	numxxx = p.numxxx; // version > 0x0201 (does not exists on 0x0201)
+	ext1 = p.ext1;
+	ext_x = p.ext_x;
+	ext_y = p.ext_y;
+	terminate = p.terminate;
+
+
+	n = spr.size();
+	for (i = 0; i < n; i++) {
+		Spr s;
+		s = p.spr[i];
+		spr.push_back(s);
+	}
+}
+
+#ifdef ROINT_USE_XML
+TiXmlElement* RO::ACT::Pat::GenerateXML(const s_obj_ver& v) const {
+	TiXmlElement *_pat = new TiXmlElement("pat");
+	TiXmlElement *e;
+
+	unsigned int k;
+	char buf[32];
+
+	e = new TiXmlElement("pal");
+	sprintf(buf,"#%08x,#%08x", pal[0], pal[1]);
+	e->LinkEndChild(new TiXmlText(buf));
+	_pat->LinkEndChild(e);
+			
+	e = new TiXmlElement("unk");
+	_pat->LinkEndChild(e);
+	char c = 'a';
+	for (k = 0; k < 12; k++) {
+		sprintf(buf, "%c", c++);
+		e->SetAttribute(buf, unk[k]);
+	}
+
+	for (k = 0; k < spr.size(); k++) {
+		_pat->LinkEndChild(spr[k].GenerateXML(v));
+	}
+
+	if (v.cver.major >= 2) {
+		e = new TiXmlElement("sound");
+		e->SetAttribute("id", sndNo);
+		_pat->LinkEndChild(e);
+
+		if (numxxx == 1) {
+			e = new TiXmlElement("ext");
+			_pat->LinkEndChild(e);
+			e->SetAttribute("x", ext_x);
+			e->SetAttribute("y", ext_y);
+			sprintf(buf, "%x", terminate);
+			e->SetAttribute("terminate", buf);
+			sprintf(buf, "%d", ext1);
+			e->LinkEndChild(new TiXmlText(buf));
+		}
+
+	}
+
+	return(_pat);
+}
+#endif
+
+RO::ACT::Act::Act() {
+}
+
+RO::ACT::Act::Act(const Act& a) {
+	copyFrom(a);
+}
+
+RO::ACT::Act::~Act() {
+}
+
+bool RO::ACT::Act::readStream(std::istream& s, const s_obj_ver& v) {
+	unsigned int i, n;
+
+	s.read((char*)&n, sizeof(unsigned int));
+
+	// One "ACT" has "n" "ActPat"s.
+	// Each action has many patterns
+	// A pattern is a frame in an action.
+
+	for (i = 0; i < n; i++) {
+		Pat _pat;
+		_pat.readStream(s,v);
+		pat.push_back(_pat);
+	}
+
+	return(true);
+}
+
+bool RO::ACT::Act::writeStream(std::ostream& s, const s_obj_ver& v) const {
+	unsigned int n = pat.size();
+	s.write((char*)&n, sizeof(unsigned int));
+	for (unsigned int i = 0; i < n; i++) {
+		pat[i].writeStream(s, v);
+	}
+
+	return(true);
+}
+
+RO::ACT::Pat& RO::ACT::Act::operator[] (unsigned int i) {
+	return(pat[i]);
+}
+const RO::ACT::Pat& RO::ACT::Act::operator[] (unsigned int i) const {
+	return(pat[i]);
+}
+
+RO::ACT::Act& RO::ACT::Act::operator = (const Act& a) {
+	copyFrom(a);
+	return(*this);
+}
+
+void RO::ACT::Act::copyFrom(const Act& a) {
+	unsigned int i, n;
+	n = a.pat.size();
+	for (i = 0; i < n; i++) {
+		Pat p;
+		p = a.pat[i];
+		pat.push_back(p);
+	}
+}
+
+#ifdef ROINT_USE_XML
+TiXmlElement* RO::ACT::Act::GenerateXML(const s_obj_ver& v) const {
+	TiXmlElement *_act = new TiXmlElement("act");
+	unsigned int i, n;
+	n = pat.size();
+
+	for (i = 0; i < n; i++)
+		_act->LinkEndChild(pat[i].GenerateXML(v));
+
+	return(_act);
 }
 #endif
