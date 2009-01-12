@@ -45,13 +45,13 @@ protected:
 	};
 
 	unsigned int _size;
-	Storage<T> *first;
+	Storage<T> *_first;
 
 	Storage<T>* getIndex(const unsigned int& n) {
-		if (first == NULL)
+		if (_first == NULL)
 			return(NULL);
 
-		Storage<T>* r = first;
+		Storage<T>* r = _first;
 		for (unsigned int i = 0; i < n; i++)
 			r = r->next;
 
@@ -59,10 +59,10 @@ protected:
 	}
 
 	const Storage<T>* getIndex(const unsigned int& n) const {
-		if (first == NULL)
+		if (_first == NULL)
 			return(NULL);
 
-		Storage<T>* r = first;
+		Storage<T>* r = _first;
 		for (unsigned int i = 0; i < n; i++)
 			r = r->next;
 
@@ -73,7 +73,7 @@ protected:
 public:
 	Seq() {
 		_size = 0;
-		first = NULL;
+		_first = NULL;
 	}
 
 	~Seq() {
@@ -81,11 +81,11 @@ public:
 	}
 
 	bool push_back(T data) {
-		if (first == NULL)
-			first = new Storage<T>(data);
-		else {
-			new Storage<T>(data, first);
-		}
+		if (_first == NULL)
+			_first = new Storage<T>(data);
+		else
+			new Storage<T>(data, _first);
+
 		_size++;
 
 		return(true);
@@ -105,10 +105,10 @@ public:
 
 	void clear() {
 		while (_size > 0) {
-			delete(first->next);
+			delete(_first->next);
 			_size--;
 		}
-		first = NULL;
+		_first = NULL;
 	}
 };
 

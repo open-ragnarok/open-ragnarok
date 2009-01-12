@@ -48,8 +48,7 @@ bool RO::ACT::readStream(std::istream &s) {
 		return(false);
 	}
 
-	unsigned short i;
-	unsigned int n;
+	unsigned short i, n;
 
 	s.read((char*)&n, sizeof(unsigned short));
 	s.read((char*)&unk1, sizeof(short));
@@ -192,8 +191,8 @@ void RO::ACT::Spr::copyFrom(const Spr& s) {
 	x = s.x;
 	y = s.y;
 	sprNo = s.sprNo;
-	mirrorOn = s.sprNo;
-	color = s.sprNo;
+	mirrorOn = s.mirrorOn;
+	color = s.color;
 	xyMag = s.xyMag;
 	xMag = s.xMag;
 	yMag = s.yMag;
@@ -217,6 +216,7 @@ bool RO::ACT::Spr::readStream(std::istream& s, const s_obj_ver& v) {
 
 	if (v.cver.major <= 1)
 		return(true);
+
 	s.read((char*)&color, sizeof(int));
 
 	if (v.cver.minor <= 3) {
@@ -248,6 +248,7 @@ bool RO::ACT::Spr::writeStream(std::ostream& s, const s_obj_ver& v) const {
 
 	if (v.cver.major <= 1)
 		return(true);
+
 	s.write((char*)&color, sizeof(int));
 
 	if (v.cver.minor <= 3) {
@@ -319,16 +320,18 @@ RO::ACT::Pat::~Pat() {
 bool RO::ACT::Pat::readStream(std::istream& s, const s_obj_ver& v) {
 	s.read((char*)pal, sizeof(unsigned int) * 2);
 	s.read((char*)unk, sizeof(unsigned short) * 12);
-	unsigned int n;
+	unsigned int n, i;
 
 	s.read((char*)&n, sizeof(unsigned int));
+	//std::cout << "<<SPR Count " << n << std::endl;
 	numspr = n; // TODO: Remove this... no need for this.
 
-	for (unsigned int i = 0; i < n; i++) {
+	for (i = 0; i < n; i++) {
 		Spr _s;
 		_s.readStream(s, v);
 		spr.push_back(_s);
 	}
+	//std::cout << "  Seq size: " << spr.size() << std::endl;
 
 	if (v.cver.major < 2)
 		return(true);
@@ -355,7 +358,9 @@ bool RO::ACT::Pat::readStream(std::istream& s, const s_obj_ver& v) {
 bool RO::ACT::Pat::writeStream(std::ostream& s, const s_obj_ver& v) const {
 	s.write((char*)pal, sizeof(unsigned int) * 2);
 	s.write((char*)unk, sizeof(unsigned short) * 12);
+	
 	unsigned int n = (unsigned int)spr.size();
+	//std::cout << ">>SPR Count " << n << std::endl;
 
 	s.write((char*)&n, sizeof(unsigned int));
 
@@ -414,7 +419,7 @@ void RO::ACT::Pat::copyFrom(const Pat& p) {
 	terminate = p.terminate;
 
 
-	n = spr.size();
+	n = p.spr.size();
 	for (i = 0; i < n; i++) {
 		Spr s;
 		s = p.spr[i];
@@ -507,12 +512,8 @@ bool RO::ACT::Act::writeStream(std::ostream& s, const s_obj_ver& v) const {
 	return(true);
 }
 
-RO::ACT::Pat& RO::ACT::Act::operator[] (unsigned int i) {
-	return(pat[i]);
-}
-const RO::ACT::Pat& RO::ACT::Act::operator[] (unsigned int i) const {
-	return(pat[i]);
-}
+RO::ACT::Pat& RO::ACT::Act::operator[] (unsigned int i) { return(pat[i]); }
+const RO::ACT::Pat& RO::ACT::Act::operator[] (unsigned int i) const { return(pat[i]); }
 
 RO::ACT::Act& RO::ACT::Act::operator = (const Act& a) {
 	copyFrom(a);

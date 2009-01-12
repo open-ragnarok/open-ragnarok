@@ -196,7 +196,7 @@ bool RO::GRF::save(const std::string& s, const std::string& filename) {
 	if (!m_opened)
 		return(false);
 
-	std::ofstream out(filename.c_str());
+	std::ofstream out(filename.c_str(), std::ios_base::out | std::ios_base::binary);
 	bool r = write(s, out);
 	out.close();
 	return(r);
