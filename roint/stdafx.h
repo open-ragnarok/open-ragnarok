@@ -9,7 +9,15 @@
 
 #include "roint_settings.h"
 
+#ifdef ZLIB_STATIC
+#	pragma comment(lib, "zlib.lib")
+#else
+#	pragma comment(lib, "zlib.dll.lib")
+#endif
+
 #define _MYLIB_DLLAPI_
 #define _MYLIB_NOAUTOLIB_
+
+#include "impdecl.h"
 
 #endif /* __STDAFX_H */

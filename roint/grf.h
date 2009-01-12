@@ -11,8 +11,7 @@
 namespace RO {
 	/**
 	 * Reads, decompresses and decrypts the grf structure and returns readable data.
-	 * <b>!!!!!! WARNING !!!!!!</b>
-	 * <b>This currently supports only unencrypted GRF files.</b>
+	 * <b>This currently supports only GRF 2.0 version files.</b>
 	 *
 	 * \ingroup ROInterface
 	 */
@@ -41,21 +40,23 @@ namespace RO {
 		/** Presents information on each file inside of the GRF */
 		struct FileTableItem {
 			std::string filename;
-			unsigned int compressedLength;
-			unsigned int compressedLengthAligned;
-			unsigned int uncompressedLength;
+			int compressedLength;
+			int compressedLengthAligned;
+			int uncompressedLength;
 			/**
 			 * Bitmask indicating what this file is
 			 * <pre>
 			 * 0x01 -> File
 			 * 0x02 -> MIXCRYPT
 			 * 0x03 -> DES
+			 * 0x05 -> ??
 			 * </pre>
 			 *
 			 * Source: OpenKore project
 			 */
-			unsigned char flags;
-			unsigned int offset;
+			char flags;
+			int offset;
+			int cycle; // for DES Decoding purposes
 		};
 #pragma pack(pop)
 
