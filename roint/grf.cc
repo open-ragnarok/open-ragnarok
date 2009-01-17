@@ -324,13 +324,13 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 			m_fp.read((char*)body, m_items[i].compressedLengthAligned);
 			if ((m_items[i].flags == 3) || (m_items[i].flags == 5)) {
 				// DES encoded. Let's decode!
-#ifdef DEBUG
-				std::cout << "Decoding " << s << "..." << std::endl;
-#endif
+//#ifdef DEBUG
+//				std::cout << "Decoding " << s << "..." << std::endl;
+//#endif
 				DES::decode(body, m_items[i].compressedLengthAligned, m_items[i].cycle);
-#ifdef DEBUG
-				std::cout << "\tDone." << std::endl;
-#endif
+//#ifdef DEBUG
+//				std::cout << "\tDone." << std::endl;
+//#endif
 			}
 
 			ul = m_items[i].uncompressedLength;
@@ -398,3 +398,12 @@ unsigned int RO::GRF::getCount() const {
 
 	return(m_filecount);
 }
+
+const RO::GRF::FileTableItem& RO::GRF::operator[] (const unsigned int& i) const {
+	return(m_items[i]);
+}
+
+const RO::GRF::FileTableItem& RO::GRF::getItem(const unsigned int& i) const {
+	return(m_items[i]);
+}
+

@@ -89,6 +89,8 @@ namespace RO {
 
 		unsigned int getCount() const;
 		std::string getFilename(const unsigned int& i) const;
+		const FileTableItem& operator[] (const unsigned int& i) const;
+		const FileTableItem& getItem(const unsigned int& i) const;
 	};
 }
 
