@@ -2,6 +2,7 @@
 #define __WX_SUPPORT_H
 
 #include "wx/wx.h"
+#include "wx/progdlg.h"
 
 #pragma comment(lib,"comctl32.lib")
 #pragma comment(lib,"rpcrt4.lib")
@@ -9,8 +10,17 @@
 #pragma comment(lib,"advapi32.lib")
 #pragma comment(lib,"wsock32.lib")
 
-//#define __WXVERSION "28"
-#define __WXVERSION "29"
+#if wxMAJOR_VERSION == 2
+#	if wxMINOR_VERSION == 8
+#		define __WXVERSION "28"
+#	elif wxMINOR_VERSION == 9
+#		define __WXVERSION "29"
+#	else
+#		error "Unsupported version of wxWidgets"
+#	endif
+#else
+#	error "Unsupported version of wxWidgets"
+#endif
 
 #ifdef _DEBUG
 #	ifdef _UNICODE
