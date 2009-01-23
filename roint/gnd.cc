@@ -128,3 +128,98 @@ unsigned int RO::GND::getWidth() const {
 unsigned int RO::GND::getHeight() const {
 	return(m_gndheader.size_y);
 }
+
+#ifdef ROINT_USE_XML
+TiXmlElement* RO::GND::GenerateXML(const std::string& name, bool utf) const {
+	TiXmlElement *root = new TiXmlElement("GND");
+	char buf[16];
+	unsigned int i;
+	sprintf(buf,"%d.%d", m_version.cver.major , m_version.cver.minor);
+	root->SetAttribute("version", buf);
+	if (name != "") {
+		root->SetAttribute("name", name);
+	}
+
+	// Size
+	sprintf(buf, "%d", m_gndheader.size_x);
+	root->SetAttribute("size_x", buf);
+	sprintf(buf, "%d", m_gndheader.size_y);
+	root->SetAttribute("size_y", buf);
+
+	TiXmlElement* tiles = new TiXmlElement("tiles");
+	root->LinkEndChild(tiles);
+	for (i = 0; i < (unsigned int)m_tiles.getCount(); i++) {
+		TiXmlElement* tile = new TiXmlElement("tile");
+		tiles->LinkEndChild(tile);
+		for (unsigned int j = 0; j < 4; j++) {
+			TiXmlElement* texture = new TiXmlElement("texture");
+			tile->LinkEndChild(texture);
+			sprintf(buf, "%f", m_tiles[i].texture_start[j]);
+			texture->SetAttribute("u", buf);
+			sprintf(buf, "%f", m_tiles[i].texture_end[j]);
+			texture->SetAttribute("v", buf);
+		}
+		sprintf(buf, "%d", m_tiles[i].texture_index);
+		tile->SetAttribute("texture_index", buf);
+		sprintf(buf, "%d", m_tiles[i].lightmap);
+		tile->SetAttribute("lightmap", buf);
+		TiXmlElement* color = new TiXmlElement("color");
+		tile->LinkEndChild(color);
+		
+		// Red
+		sprintf(buf, "%d", m_tiles[i].color[2]);
+		color->SetAttribute("r", buf);
+
+		// Green
+		sprintf(buf, "%d", m_tiles[i].color[1]);
+		color->SetAttribute("g", buf);
+		
+		// Blue
+		sprintf(buf, "%d", m_tiles[i].color[0]);
+		color->SetAttribute("b", buf);
+
+		// Alpha
+		sprintf(buf, "%d", m_tiles[i].color[3]);
+		color->SetAttribute("a", buf);
+	}
+
+	// CUBES
+	TiXmlElement* cubes = new TiXmlElement("cubes");
+	root->LinkEndChild(cubes);
+	for (i = 0; i < m_cubecount; i++) {
+		TiXmlElement* cube = new TiXmlElement("cube");
+		cubes->LinkEndChild(cube);
+		sprintf(buf, "%f", m_cubes[i].height[0]);
+		cube->SetAttribute("height_1", buf);
+		sprintf(buf, "%f", m_cubes[i].height[1]);
+		cube->SetAttribute("height_2", buf);
+		sprintf(buf, "%f", m_cubes[i].height[2]);
+		cube->SetAttribute("height_3", buf);
+		sprintf(buf, "%f", m_cubes[i].height[3]);
+		cube->SetAttribute("height_4", buf);
+
+		sprintf(buf, "%f", m_cubes[i].tile_up);
+		cube->SetAttribute("tile_up", buf);
+		sprintf(buf, "%f", m_cubes[i].tile_side);
+		cube->SetAttribute("tile_side", buf);
+		sprintf(buf, "%f", m_cubes[i].tile_aside);
+		cube->SetAttribute("tile_aside", buf);
+	}
+
+	// TEXTURES
+	TiXmlElement* textures = new TiXmlElement("textures");
+	root->LinkEndChild(textures);
+	for (i = 0; i < m_gndheader.texture_count; i++) {
+		TiXmlElement* texture = new TiXmlElement("texture");
+		textures->LinkEndChild(texture);
+		std::string n = m_textures[i].path;
+		if (utf)
+			n = euc2utf8(n);
+
+		texture->SetAttribute("name", n);
+		texture->SetAttribute("unk", m_textures[i].unk);
+	}
+
+	return(root);
+}
+#endif

@@ -32,17 +32,68 @@ namespace RO {
 	protected:
 		unsigned char magicSize;
 		char magic[4];
-		//unsigned char major_ver, minor_ver;
 		s_obj_ver m_version;
 		bool m_valid;
 
+		/**
+		 * Checks compatibility with a given version.
+		 * Returns true if the current version is greater or equal the one given
+		 */
 		bool IsCompatibleWith(unsigned char major_ver, unsigned char minor_ver) const;
+
+		/**
+		 * Checks compatibility with a given version.
+		 * Returns true if the current version is greater or equal the one given
+		 */
 		bool IsCompatibleWith(short ver) const;
+
+		/**
+		 * Reads the header from the input stream.
+		 * This has variable size, being 2 bytes for the version and magicSize bytes (usually 4) for the fingerprint.
+		 */
 		bool readHeader(std::istream&);
+
+		/**
+		 * Writes the header to the output stream
+		 */
 		bool writeHeader(std::ostream&) const;
+
+		/**
+		 * Copies the header to another object.
+		 */
 		bool copyHeader(Object*) const;
+
+		/**
+		 * Copies the header to another object.
+		 */
 		bool copyHeader(Object&) const;
+
+		/**
+		 * Checks if we have a valid header according to the string given.
+		 */
 		bool checkHeader(const std::string&) const;
+
+#ifdef ROINT_USE_XML
+		/**
+		 * Generates the XML root object. This should be overloaded by child classes (but it's not mandatory).
+		 */
+		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
+
+		/**
+		 * Generates the XML document from the GenerateXML function
+		 */
+		TiXmlDocument GenerateXMLDoc(const std::string& name = "", bool utf = true) const;
+
+		/**
+		 * Saves the XML to an output stream
+		 */
+		bool SaveXML(std::ostream& out, const std::string& name = "", bool utf = true) const;
+
+		/**
+		 * Saves the XML to a file
+		 */
+		bool SaveXML(const std::string& fn, const std::string& name = "", bool utf = true) const;
+#endif
 	};
 }
 

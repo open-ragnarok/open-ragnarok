@@ -631,27 +631,4 @@ TiXmlElement* RO::RSM::GenerateXML(const std::string& name, bool utf) const {
 	return(root);
 }
 
-TiXmlDocument RO::RSM::GenerateXMLDoc(const std::string& name, bool utf) const {
-	TiXmlDocument doc;
-	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
-	doc.LinkEndChild(decl);
-	
-	TiXmlElement * root = GenerateXML(name, utf);
-	doc.LinkEndChild(root);
-	
-	return(doc);
-}
-
-bool RO::RSM::SaveXML(std::ostream& out,const std::string& name, bool utf) const {
-	TiXmlDocument doc = GenerateXMLDoc(name, utf);
-	out << doc;
-	return(true);
-}
-
-bool RO::RSM::SaveXML(const std::string& fn, const std::string& name, bool utf) const {
-	TiXmlDocument doc = GenerateXMLDoc(name, utf);
-	doc.SaveFile(fn);
-	return(true);
-}
-
 #endif

@@ -20,4 +20,6 @@
 
 #include "impdecl.h"
 
+#include "ro.h"
+
 #endif /* __STDAFX_H */

@@ -77,6 +77,10 @@ namespace RO {
 		virtual bool readStream(std::istream&);
 		void Dump(std::ostream&) const;
 
+#ifdef ROINT_USE_XML
+		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
+#endif
+
 		/** Returns the number of textures used in this object */
 		unsigned int getTextureCount() const;
 

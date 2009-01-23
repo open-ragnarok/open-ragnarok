@@ -244,10 +244,7 @@ namespace RO {
 		virtual bool readStream(std::istream&);
 
 #ifdef ROINT_USE_XML
-		TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
-		TiXmlDocument GenerateXMLDoc(const std::string& name = "", bool utf = true) const;
-		bool SaveXML(std::ostream& out, const std::string& name = "", bool utf = true) const;
-		bool SaveXML(const std::string& fn, const std::string& name = "", bool utf = true) const;
+		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
 
 		TiXmlElement *GenerateFullXML(const std::map<std::string, RSM*>, const std::string& name = "", bool utf = true) const;
 		TiXmlDocument GenerateFullXMLDoc(const std::map<std::string, RSM*>, const std::string& name = "", bool utf = true) const;
@@ -258,7 +255,6 @@ namespace RO {
 		TiXmlDocument GenerateFullXMLDoc(const std::map<std::string, RSM>, const std::string& name = "", bool utf = true) const;
 		bool SaveFullXML(const std::map<std::string, RSM>, std::ostream& out, const std::string& name = "", bool utf = true) const;
 		bool SaveFullXML(const std::map<std::string, RSM>, const std::string& fn, const std::string& name = "", bool utf = true) const;
-
 #endif
 
 		/** Write the RSW data to a stream */

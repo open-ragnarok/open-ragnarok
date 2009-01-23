@@ -82,3 +82,43 @@ bool RO::Object::read(const std::string& fn) {
 	return(ret);
 }
 
+#ifdef ROINT_USE_XML
+TiXmlElement *RO::Object::GenerateXML(const std::string& name, bool utf) const {
+	char buf[32];
+	memset(buf, 0, 32);
+	strncpy(buf, magic, magicSize);
+
+	TiXmlElement *root = new TiXmlElement(buf);
+	sprintf(buf,"%d.%d", m_version.cver.major, m_version.cver.minor);
+	root->SetAttribute("version", buf);
+	if (name != "") {
+		root->SetAttribute("name", name);
+	}
+
+	return(root);
+}
+
+TiXmlDocument RO::Object::GenerateXMLDoc(const std::string& name, bool utf) const {
+	TiXmlDocument doc;
+	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
+	doc.LinkEndChild(decl);
+	
+	TiXmlElement * root = GenerateXML(name, utf);
+	doc.LinkEndChild(root);
+	
+	return(doc);
+}
+
+bool RO::Object::SaveXML(std::ostream& out, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateXMLDoc(name, utf);
+	out << doc;
+	return(true);
+}
+
+bool RO::Object::SaveXML(const std::string& fn, const std::string& name, bool utf) const {
+	TiXmlDocument doc = GenerateXMLDoc(name, utf);
+	doc.SaveFile(fn);
+	return(true);
+}
+
+#endif

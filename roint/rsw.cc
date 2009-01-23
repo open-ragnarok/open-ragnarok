@@ -490,17 +490,6 @@ TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM*> rsm, co
 	return(root);
 }
 
-TiXmlDocument RO::RSW::GenerateXMLDoc(const std::string& name, bool utf) const {
-	TiXmlDocument doc;
-	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
-	doc.LinkEndChild(decl);
-	
-	TiXmlElement * root = GenerateXML(name, utf);
-	doc.LinkEndChild(root);
-	
-	return(doc);
-}
-
 TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM*> rsm, const std::string& name, bool utf) const {
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
@@ -523,12 +512,6 @@ TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM> rsm, 
 	return(doc);
 }
 
-bool RO::RSW::SaveXML(std::ostream& out, const std::string& name, bool utf) const {
-	TiXmlDocument doc = GenerateXMLDoc(name, utf);
-	out << doc;
-	return(true);
-}
-
 bool RO::RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, std::ostream& out, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
 	out << doc;
@@ -538,12 +521,6 @@ bool RO::RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, std::ostream& o
 bool RO::RSW::SaveFullXML(const std::map<std::string, RSM> rsm, std::ostream& out, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
 	out << doc;
-	return(true);
-}
-
-bool RO::RSW::SaveXML(const std::string& fn, const std::string& name, bool utf) const {
-	TiXmlDocument doc = GenerateXMLDoc(name, utf);
-	doc.SaveFile(fn);
 	return(true);
 }
 

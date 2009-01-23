@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)..\"
-				PreprocessorDefinitions="WIN32;_DEBUG"
+				PreprocessorDefinitions="WIN32;_DEBUG;ROINT_STATIC"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="1"
 				PrecompiledHeaderThrough="StdAfx.h"
@@ -174,9 +174,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(ProjectDir)..\"
-				PreprocessorDefinitions="WIN32;NDEBUG"
-				RuntimeLibrary="0"
-				UsePrecompiledHeader="1"
+				PreprocessorDefinitions="WIN32;NDEBUG;ROINT_STATIC"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -215,7 +215,7 @@
 			IntermediateDirectory="$(ProjectDir)$(PlatformName)\$(ConfigurationName)\static\"
 			ConfigurationType="4"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -238,8 +238,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
-				RuntimeLibrary="0"
-				UsePrecompiledHeader="1"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -358,6 +358,22 @@
 			<File
 				RelativePath="..\stdafx.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -387,6 +403,10 @@
 			</File>
 			<File
 				RelativePath="..\ro_seq.h"
+				>
+			</File>
+			<File
+				RelativePath="..\ro_static.h"
 				>
 			</File>
 			<File

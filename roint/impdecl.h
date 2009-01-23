@@ -52,5 +52,4 @@
 #	define ZLIB_WINAPI
 #endif
 
-
 #endif /* __IMPDECL_H */

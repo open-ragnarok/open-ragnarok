@@ -42,6 +42,7 @@
 namespace RO {
 	MYLIB_DLLAPI unsigned short Version();
 	MYLIB_DLLAPI void printVersion();
+	MYLIB_DLLAPI const char* strVersion();
 }
 
 #include "ro_strings.h"

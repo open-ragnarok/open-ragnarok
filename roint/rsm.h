@@ -141,10 +141,7 @@ namespace RO {
 		void Dump(std::ostream& out, const std::string& = "") const;
 
 #ifdef ROINT_USE_XML
-		TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
-		TiXmlDocument GenerateXMLDoc(const std::string& name = "", bool utf = true) const;
-		bool SaveXML(std::ostream& out, const std::string& name = "", bool utf = true) const;
-		bool SaveXML(const std::string& fn, const std::string& name = "", bool utf = true) const;
+		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
 #endif
 
 		unsigned int getMeshCount() const;

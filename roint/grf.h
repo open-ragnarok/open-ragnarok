@@ -85,7 +85,8 @@ namespace RO {
 		/** Reads a file from the GRF and writes into the stream. Returns false if error. */
 		bool write(const std::string&, std::ostream&);
 		
-		bool save(const std::string&, const std::string& filename);
+		/** Saves the file f into the file filename */
+		bool save(const std::string& f, const std::string& filename);
 
 		unsigned int getCount() const;
 		std::string getFilename(const unsigned int& i) const;
