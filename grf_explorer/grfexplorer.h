@@ -32,6 +32,8 @@ public:
 	void OnOpen(wxCommandEvent& event);
 	void OnClose(wxCommandEvent& event);
 	void OnInfo(wxCommandEvent& event);
+	void OnExtract(wxCommandEvent& event);
+	void OnXMLInfo(wxCommandEvent& event);
 
     DECLARE_EVENT_TABLE()
 
