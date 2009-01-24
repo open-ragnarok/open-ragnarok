@@ -11,7 +11,7 @@ namespace RO {
 	 *
 	 * \ingroup ROInterface
 	 */
-	class MYLIB_DLLAPI GND : public Object {
+	class ROINT_DLLAPI GND : public Object {
 	public:
 #pragma pack(push)
 #pragma pack(1)

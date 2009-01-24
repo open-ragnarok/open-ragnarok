@@ -13,7 +13,7 @@ namespace RO {
 	 *
 	 * \ingroup ROInterface
 	 */
-	class MYLIB_DLLAPI SPR : public Object {
+	class ROINT_DLLAPI SPR : public Object {
 	public:
 #pragma pack(push)
 #pragma pack(1)

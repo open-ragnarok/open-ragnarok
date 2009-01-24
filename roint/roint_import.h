@@ -16,15 +16,15 @@
 
 
 #ifndef __WINDOWS__
-	#define MYLIB_DLLAPI
+	#define ROINT_DLLAPI
 #else
 	#ifdef ROINT_STATIC
-		#define MYLIB_DLLAPI
+		#define ROINT_DLLAPI
 	#else
-		#ifdef _MYLIB_DLLAPI_
-		    #define MYLIB_DLLAPI  __declspec( dllexport )
+		#ifdef _ROINT_DLLAPI_
+		    #define ROINT_DLLAPI  __declspec( dllexport )
 		#else
-		    #define MYLIB_DLLAPI  __declspec( dllimport )
+		    #define ROINT_DLLAPI  __declspec( dllimport )
 		#endif
 	#endif
 
@@ -32,7 +32,7 @@
 // DLL) using this DLL, the appropriate .LIB file will automatically be used
 // when linking.
 
-	#ifndef _MYLIB_NOAUTOLIB_
+	#ifndef _ROINT_NOAUTOLIB_
 		#ifdef ROINT_STATIC
 			#pragma comment(lib, "roint.lib")
 		#else

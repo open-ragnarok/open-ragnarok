@@ -2,7 +2,7 @@
 #ifndef __CONSTANTS_H
 #define __CONSTANTS_H
 
-#include "impdecl.h"
+#include "roint_import.h"
 
 namespace RO {
 	enum CSex {
@@ -40,45 +40,45 @@ namespace RO {
 	};
 
 	namespace UTF {
-		MYLIB_DLLAPI extern char humans[]; // Human family
-		MYLIB_DLLAPI extern char monsters[];
+		ROINT_DLLAPI extern char humans[]; // Human family
+		ROINT_DLLAPI extern char monsters[];
 
-		MYLIB_DLLAPI extern char water[];
+		ROINT_DLLAPI extern char water[];
 
 		// sex
-		MYLIB_DLLAPI extern char *sex[];
-		MYLIB_DLLAPI extern char female[];
-		MYLIB_DLLAPI extern char male[];
+		ROINT_DLLAPI extern char *sex[];
+		ROINT_DLLAPI extern char female[];
+		ROINT_DLLAPI extern char male[];
 
-		MYLIB_DLLAPI extern char body[];
-		MYLIB_DLLAPI extern char head[];
-		MYLIB_DLLAPI extern char weapons[];
+		ROINT_DLLAPI extern char body[];
+		ROINT_DLLAPI extern char head[];
+		ROINT_DLLAPI extern char weapons[];
 
 		// classes
-		MYLIB_DLLAPI extern char *classname[];
-		MYLIB_DLLAPI extern char *classname_en[];
+		ROINT_DLLAPI extern char *classname[];
+		ROINT_DLLAPI extern char *classname_en[];
 
-		MYLIB_DLLAPI extern char acolyte[];
-		MYLIB_DLLAPI extern char alchemist[];
-		MYLIB_DLLAPI extern char archer[];
-		MYLIB_DLLAPI extern char assassin[];
-		MYLIB_DLLAPI extern char bard[];
-		MYLIB_DLLAPI extern char blacksmith[];
-		MYLIB_DLLAPI extern char crusader[];
-		MYLIB_DLLAPI extern char dancer[];
-		MYLIB_DLLAPI extern char hunter[];
-		MYLIB_DLLAPI extern char knight[];
-		MYLIB_DLLAPI extern char magician[];
-		MYLIB_DLLAPI extern char mercenary[];
-		MYLIB_DLLAPI extern char merchant[];
-		MYLIB_DLLAPI extern char monk[];
-		MYLIB_DLLAPI extern char novice[];
-		MYLIB_DLLAPI extern char priest[];
-		MYLIB_DLLAPI extern char rogue[];
-		MYLIB_DLLAPI extern char sage[];
-		MYLIB_DLLAPI extern char swordsman[];
-		MYLIB_DLLAPI extern char thief[];
-		MYLIB_DLLAPI extern char wizard[];
+		ROINT_DLLAPI extern char acolyte[];
+		ROINT_DLLAPI extern char alchemist[];
+		ROINT_DLLAPI extern char archer[];
+		ROINT_DLLAPI extern char assassin[];
+		ROINT_DLLAPI extern char bard[];
+		ROINT_DLLAPI extern char blacksmith[];
+		ROINT_DLLAPI extern char crusader[];
+		ROINT_DLLAPI extern char dancer[];
+		ROINT_DLLAPI extern char hunter[];
+		ROINT_DLLAPI extern char knight[];
+		ROINT_DLLAPI extern char magician[];
+		ROINT_DLLAPI extern char mercenary[];
+		ROINT_DLLAPI extern char merchant[];
+		ROINT_DLLAPI extern char monk[];
+		ROINT_DLLAPI extern char novice[];
+		ROINT_DLLAPI extern char priest[];
+		ROINT_DLLAPI extern char rogue[];
+		ROINT_DLLAPI extern char sage[];
+		ROINT_DLLAPI extern char swordsman[];
+		ROINT_DLLAPI extern char thief[];
+		ROINT_DLLAPI extern char wizard[];
 	}
 }
 

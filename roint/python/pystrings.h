@@ -6,8 +6,8 @@
 
 namespace RO {
 extern "C" {
-	MYLIB_DLLAPI const char* euc2utf8(const char* euc);
-	MYLIB_DLLAPI const char* utf82euc(const char* utf);
+	ROINT_DLLAPI const char* euc2utf8(const char* euc);
+	ROINT_DLLAPI const char* utf82euc(const char* utf);
 }
 }
 

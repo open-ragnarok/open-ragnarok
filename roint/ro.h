@@ -34,20 +34,22 @@
 #define GND_HEADER "GRGN"
 #define GAT_HEADER "GRAT"
 
-#include "impdecl.h"
+#include "roint_import.h"
 
 /** \namespace RO Main namespace for the Interface.
  * 
  */
 namespace RO {
-	MYLIB_DLLAPI unsigned short Version();
-	MYLIB_DLLAPI void printVersion();
-	MYLIB_DLLAPI const char* strVersion();
+	ROINT_DLLAPI unsigned short Version();
+	ROINT_DLLAPI void printVersion();
+	ROINT_DLLAPI const char* strVersion();
 }
 
 #include "ro_strings.h"
 #include "constants.h"
 #include "object.h"
+
+// the file types
 #include "grf.h"
 #include "spr.h"
 #include "act.h"

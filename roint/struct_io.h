@@ -18,7 +18,7 @@ namespace RO {
 	 * count is an int and is immediately followed by the sequence of structures
 	 */
 	template <typename T>
-	class MYLIB_DLLAPI StructIO {
+	class ROINT_DLLAPI StructIO {
 	protected:
 		/** Number of scructures that we have */
 		int count;

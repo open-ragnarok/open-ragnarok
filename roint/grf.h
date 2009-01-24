@@ -2,7 +2,7 @@
 #ifndef __GRF_H
 #define __GRF_H
 
-#include "impdecl.h"
+#include "roint_import.h"
 
 #include <string>
 #include <iostream>
@@ -15,7 +15,7 @@ namespace RO {
 	 *
 	 * \ingroup ROInterface
 	 */
-	class MYLIB_DLLAPI GRF {
+	class ROINT_DLLAPI GRF {
 	public:
 #pragma pack(push)
 #pragma pack(1)

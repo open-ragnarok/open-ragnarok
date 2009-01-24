@@ -13,7 +13,7 @@ namespace RO {
 	 *
 	 * \ingroup ROInterface
 	 */
-	class MYLIB_DLLAPI RSM : public Object {
+	class ROINT_DLLAPI RSM : public Object {
 	public:
 		// RSM Internal Structures
 #pragma pack(push)
@@ -55,7 +55,7 @@ namespace RO {
 		};
 
 
-		class MYLIB_DLLAPI Mesh {
+		class ROINT_DLLAPI Mesh {
 		public:
 			struct Header {
 			  char name[40];

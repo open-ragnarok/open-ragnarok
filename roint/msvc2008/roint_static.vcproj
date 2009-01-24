@@ -390,10 +390,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\impdecl.h"
-				>
-			</File>
-			<File
 				RelativePath="..\object.h"
 				>
 			</File>
@@ -411,6 +407,10 @@
 			</File>
 			<File
 				RelativePath="..\ro_strings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\roint_import.h"
 				>
 			</File>
 			<File

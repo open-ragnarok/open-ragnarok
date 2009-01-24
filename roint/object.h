@@ -7,7 +7,7 @@
 #include <istream>
 #include <string>
 
-#include "impdecl.h"
+#include "roint_import.h"
 
 namespace RO {
 	union s_obj_ver {
@@ -18,7 +18,7 @@ namespace RO {
 		} cver;
 	};
 
-	class MYLIB_DLLAPI Object {
+	class ROINT_DLLAPI Object {
 	public:
 		Object();
 		Object(const Object&);

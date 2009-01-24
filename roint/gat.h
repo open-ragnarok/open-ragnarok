@@ -10,7 +10,7 @@ namespace RO {
 	 *
 	 * \ingroup ROInterface
 	 */
-	class MYLIB_DLLAPI GAT : public Object {
+	class ROINT_DLLAPI GAT : public Object {
 	public:
 #pragma pack(push)
 #pragma pack(1)

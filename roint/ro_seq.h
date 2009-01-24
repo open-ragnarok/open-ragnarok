@@ -6,10 +6,10 @@
 namespace RO {
 
 template <typename T>
-class MYLIB_DLLAPI Seq {
+class ROINT_DLLAPI Seq {
 protected:
 	template <typename T>
-	class MYLIB_DLLAPI Storage {
+	class ROINT_DLLAPI Storage {
 	protected:
 		T data;
 	public:

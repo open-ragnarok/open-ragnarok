@@ -15,10 +15,10 @@ namespace RO {
 	 * item animation and such.
 	 * \ingroup ROInterface
 	 */
-	class MYLIB_DLLAPI ACT : public Object {
+	class ROINT_DLLAPI ACT : public Object {
 	public:
 		// ACT Strutures
-		class MYLIB_DLLAPI Spr {
+		class ROINT_DLLAPI Spr {
 		public:
 			Spr();
 			Spr(const Spr&);
@@ -50,7 +50,7 @@ namespace RO {
 			void copyFrom(const Spr&);
 		};
 
-		class MYLIB_DLLAPI Pat {
+		class ROINT_DLLAPI Pat {
 		public:
 			Pat();
 			Pat(const Pat&);
@@ -68,7 +68,7 @@ namespace RO {
 			TiXmlElement *GenerateXML(const s_obj_ver&) const;
 #endif
 
-		// DATA //
+			// DATA //
 			int pal[2];
 			short unk[12];
 			unsigned int numspr;
@@ -84,7 +84,7 @@ namespace RO {
 			void copyFrom(const Pat&);
 		};
 
-		class MYLIB_DLLAPI Act {
+		class ROINT_DLLAPI Act {
 		public:
 			Act();
 			Act(const Act&);
@@ -117,17 +117,31 @@ namespace RO {
 
 		void ClearAll();
 	public:
+		/** Basic Contructor */
 		ACT();
+
+		/** Copy Constructor */
 		ACT(const ACT&);
 		virtual ~ACT();
 
+		/** Stream reader implemented from RO::Object */
 		virtual bool readStream(std::istream&);
+
+		/** Writes the file to a stream.
+			Note that the stream passed must be in binary mode or things will not look good.
+		*/
 		virtual bool writeStream(std::ostream&) const;
-		const Act& operator[] (const unsigned int&) const;
 		unsigned int count() const;
 		void Dump(std::ostream&, const std::string& pfx = "") const;
 
+		/** Basic copier */
 		ACT& operator = (const ACT&);
+
+		const Act& operator[] (const unsigned int&) const;
+		Act& operator[] (const unsigned int&);
+		const Act& getAct(const unsigned int&) const;
+		Act& getAct(const unsigned int&);
+
 
 #ifdef ROINT_USE_XML
 		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;

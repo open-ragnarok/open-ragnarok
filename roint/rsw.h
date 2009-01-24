@@ -16,7 +16,7 @@ namespace RO {
 	 *
 	 * \ingroup ROInterface
 	 */
-	class MYLIB_DLLAPI RSW : public Object {
+	class ROINT_DLLAPI RSW : public Object {
 	public:
 		typedef enum {
 			OT_Unknown = 0,
@@ -30,7 +30,7 @@ namespace RO {
 		/**
 		 * Base class for RSW objects
 		 */
-		class MYLIB_DLLAPI Object {
+		class ROINT_DLLAPI Object {
 		public:
 			virtual bool readStream(std::istream&) = 0;
 			virtual bool writeStream(std::ostream&) const = 0;
@@ -60,7 +60,7 @@ namespace RO {
 		/**
 		 * RSW Object Model
 		 */
-		class MYLIB_DLLAPI Model : public Object {
+		class ROINT_DLLAPI Model : public Object {
 		public:
 			Model();
 			Model(const Model&);
@@ -99,7 +99,7 @@ namespace RO {
 		/**
 		 * RSW Object Light
 		 */
-		class MYLIB_DLLAPI Light : public Object {
+		class ROINT_DLLAPI Light : public Object {
 		public:
 			Light();
 			Light(const Light&);
@@ -128,7 +128,7 @@ namespace RO {
 		/**
 		 * RSW Object Sound
 		 */
-		class MYLIB_DLLAPI Sound : public Object {
+		class ROINT_DLLAPI Sound : public Object {
 		public:
 			Sound();
 			Sound(const Sound&);
@@ -155,7 +155,7 @@ namespace RO {
 		/**
 		 * RSW Object Effect
 		 */
-		class MYLIB_DLLAPI Effect : public Object {
+		class ROINT_DLLAPI Effect : public Object {
 		public:
 			Effect();
 			Effect(const Effect&);

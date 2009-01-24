@@ -81,6 +81,26 @@ bool RO::ACT::writeStream(std::ostream& o) const {
 }
 
 const RO::ACT::Act& RO::ACT::operator[] (const unsigned int& i) const {
+	if (i > acts.size())
+		return(acts[0]);
+	return(acts[i]);
+}
+
+RO::ACT::Act& RO::ACT::operator[] (const unsigned int& i) {
+	if (i > acts.size())
+		return(acts[0]);
+	return(acts[i]);
+}
+
+const RO::ACT::Act& RO::ACT::getAct(const unsigned int& i) const {
+	if (i > acts.size())
+		return(acts[0]);
+	return(acts[i]);
+}
+
+RO::ACT::Act& RO::ACT::getAct(const unsigned int& i) {
+	if (i > acts.size())
+		return(acts[0]);
 	return(acts[i]);
 }
 

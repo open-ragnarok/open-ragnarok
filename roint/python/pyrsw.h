@@ -6,18 +6,18 @@
 
 namespace RO {
 extern "C" {
-	MYLIB_DLLAPI RSW* new_RSW();
-	MYLIB_DLLAPI void del_RSW(RSW*);
+	ROINT_DLLAPI RSW* new_RSW();
+	ROINT_DLLAPI void del_RSW(RSW*);
 
-	MYLIB_DLLAPI bool read_RSW(RSW*, const char*);
-	MYLIB_DLLAPI void dump_RSW(const RSW*, const char*);
-	MYLIB_DLLAPI bool write_RSW(const RSW*, const char*);
-	MYLIB_DLLAPI void clear_RSW(RSW*);
+	ROINT_DLLAPI bool read_RSW(RSW*, const char*);
+	ROINT_DLLAPI void dump_RSW(const RSW*, const char*);
+	ROINT_DLLAPI bool write_RSW(const RSW*, const char*);
+	ROINT_DLLAPI void clear_RSW(RSW*);
 
-	MYLIB_DLLAPI char* get_RSW_ini(RSW*);
-	MYLIB_DLLAPI char* get_RSW_gnd(RSW*);
-	MYLIB_DLLAPI char* get_RSW_gat(RSW*);
-	MYLIB_DLLAPI char* get_RSW_scr(RSW*);
+	ROINT_DLLAPI char* get_RSW_ini(RSW*);
+	ROINT_DLLAPI char* get_RSW_gnd(RSW*);
+	ROINT_DLLAPI char* get_RSW_gat(RSW*);
+	ROINT_DLLAPI char* get_RSW_scr(RSW*);
 } // Extern "C"
 } // namespace RO
 

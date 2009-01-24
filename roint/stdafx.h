@@ -15,10 +15,10 @@
 #	pragma comment(lib, "zlib.dll.lib")
 #endif
 
-#define _MYLIB_DLLAPI_
+#define _ROINT_DLLAPI_
 #define _MYLIB_NOAUTOLIB_
 
-#include "impdecl.h"
+#include "roint_import.h"
 
 #include "ro.h"
 
