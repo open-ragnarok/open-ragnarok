@@ -73,6 +73,7 @@ namespace RO {
 		 */
 		bool checkHeader(const std::string&) const;
 
+	public:
 #ifdef ROINT_USE_XML
 		/**
 		 * Generates the XML root object. This should be overloaded by child classes (but it's not mandatory).

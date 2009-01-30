@@ -22,7 +22,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)\static\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			ManagedExtensions="0"
@@ -45,10 +45,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;_DEBUG;ROINT_STATIC"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="StdAfx.h"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -65,6 +65,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)\roint.lib"
+				AdditionalLibraryDirectories="$(OutDir)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -85,10 +86,10 @@
 		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(PlatformName)\$(ConfigurationName)\static\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -109,12 +110,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="StdAfx.h"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -130,6 +130,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)\roint.lib"
+				AdditionalLibraryDirectories="$(OutDir)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -150,7 +151,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)\static\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			ManagedExtensions="0"
@@ -173,7 +174,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;NDEBUG;ROINT_STATIC"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -192,6 +195,8 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)\roint.lib"
+				AdditionalLibraryDirectories="$(OutDir)"
+				IgnoreAllDefaultLibraries="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -212,7 +217,7 @@
 		<Configuration
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(PlatformName)\$(ConfigurationName)\static\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			CharacterSet="1"
 			ManagedExtensions="0"
@@ -236,11 +241,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -256,6 +260,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)\roint.lib"
+				AdditionalLibraryDirectories="$(OutDir)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -358,6 +363,22 @@
 			<File
 				RelativePath="..\stdafx.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
 					>

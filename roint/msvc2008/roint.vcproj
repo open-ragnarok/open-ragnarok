@@ -22,10 +22,10 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -45,10 +45,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="StdAfx.h"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -98,10 +98,10 @@
 		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -122,12 +122,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="StdAfx.h"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -173,10 +172,10 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -196,7 +195,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				Optimization="3"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -246,10 +246,10 @@
 		<Configuration
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -270,11 +270,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(ProjectDir)..\"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="1"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -357,10 +356,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\AssemblyInfo.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\constants.cc"
 				>
 			</File>
@@ -408,7 +403,31 @@
 				RelativePath="..\stdafx.cpp"
 				>
 				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -431,10 +450,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\impdecl.h"
-				>
-			</File>
-			<File
 				RelativePath="..\object.h"
 				>
 			</File>
@@ -448,6 +463,10 @@
 			</File>
 			<File
 				RelativePath="..\ro_strings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\roint_import.h"
 				>
 			</File>
 			<File

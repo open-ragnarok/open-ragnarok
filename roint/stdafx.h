@@ -4,19 +4,19 @@
 #define __STDAFX_H
 
 #ifdef WIN32
-	#define _CRT_SECURE_NO_WARNINGS
+#	define _CRT_SECURE_NO_WARNINGS
 #endif
 
 #include "roint_settings.h"
 
-#ifdef ZLIB_STATIC
+#ifdef ROINT_STATIC
 #	pragma comment(lib, "zlib.lib")
 #else
 #	pragma comment(lib, "zlib.dll.lib")
 #endif
 
 #define _ROINT_DLLAPI_
-#define _MYLIB_NOAUTOLIB_
+#define _ROINT_NOAUTOLIB_
 
 #include "roint_import.h"
 

@@ -1,6 +1,6 @@
 /* $Id$ */
-#ifndef __IMPDECL_H
-#define __IMPDECL_H
+#ifndef __ROINT_IMPORT_H
+#define __ROINT_IMPORT_H
 
 // The following will ensure that we are exporting our C++ classes when 
 // building the DLL and importing the classes when build an application 
@@ -52,4 +52,4 @@
 #	define ZLIB_WINAPI
 #endif
 
-#endif /* __IMPDECL_H */
+#endif /* __ROINT_IMPORT_H */
