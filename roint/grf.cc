@@ -186,22 +186,6 @@ bool RO::GRF::open(const std::string& fn) {
 	m_fp.read((char*)&m_header, sizeof(Header));
 	m_filecount = m_header.number2 - m_header.number1 - 7;
 
-#ifdef _DEBUG
-	{
-	char buf[256];
-	buf[0] = 0;
-	std::cout << "GRF Header size: " << sizeof(Header) << std::endl;
-	std::cout << "Signature: " << m_header.signature << std::endl;
-	for (int i = 0; i < 14; i++)
-		sprintf(buf, "%s%x", buf, m_header.allowEncryption[i]);
-	std::cout << "allowEncryption: " << buf << std::endl
-		<< "FileTableOffset: " << m_header.fileTableOffset << std::endl
-		<< "File Count: " << m_filecount << std::endl;
-	sprintf(buf, "Version: %04x", m_header.version);
-	std::cout << buf << std::endl;
-	}
-#endif
-
 	// Go to the starting offset to read the GRF index.
 	m_fp.seekg(m_header.fileTableOffset, std::ios_base::cur);
 	if (m_fp.eof()) {
@@ -227,59 +211,20 @@ bool RO::GRF::open(const std::string& fn) {
 	}
 
 	// Read files
-	int i, idx;
+	int i;
 	m_items = new FileTableItem[m_filecount];
-	char buf[512];
-	char c;
 	std::stringstream ss;
 	ss.write((char*)m_filetableheader.uncompressedBody, m_filetableheader.uncompressedLength);
 
-	// std::cout << std::endl;
-#ifdef _DEBUG
-	int lastporc = -1, iporc;
-	float porc;
-#endif
-	for (i = 0; i < m_filecount; i++) {
-		idx = 0;
-		c = -1;
-		while (c != 0) {
-			ss.get(c);
-			buf[idx++] = c;
-		}
-		buf[idx] = 0;
-		m_items[i].filename = buf;
+	// Delete unneeded data
+	delete[] m_filetableheader.body;
+	m_filetableheader.body = NULL;
+	delete[] m_filetableheader.uncompressedBody;
+	m_filetableheader.uncompressedBody = NULL;
 
-		ss.read((char*)&m_items[i].compressedLength, sizeof(unsigned int) * 4 + 1);
-		// ss.read((char*)&m_items[i].compressedLengthAligned, sizeof(unsigned int));
-		// ss.read((char*)&m_items[i].uncompressedLength, sizeof(unsigned int));
-		// ss.get((char&)m_items[i].flags);
-		// ss.read((char*)&m_items[i].offset, sizeof(unsigned int));
 
-		//m_items[i].compressedLengthAligned -= 37579; // This is according to eAthena too
-		/* FOR DES Decoding, borrowed from eAthena */
-		if (m_items[i].flags == 3) {
-			int lop;
-			int srccount;
-			int srclen = m_items[i].compressedLength;
-			for (lop = 10, srccount = 1; srclen >= lop; lop = lop * 10, srccount++);
-			m_items[i].cycle = srccount;
-		}
-		else {
-			m_items[i].cycle = 0;
-		}
-
-#ifdef _DEBUG
-		porc = ((float)i / (float)m_filecount) * 100.0f;
-		iporc = (int)porc;
-		if (iporc > lastporc) {
-			lastporc = iporc;
-			std::cout << "\rTranslated file index " << lastporc << "% ";
-		}
-#endif
-	}
-#ifdef _DEBUG
-	std::cout << std::endl;
-#endif
+	for (i = 0; i < m_filecount; i++)
+		m_items[i].readStream(ss);
 
 	m_opened = true;
 	return(true);
@@ -291,9 +236,10 @@ void RO::GRF::close() {
 		return;
 	}
 
-	delete[] m_filetableheader.body;
-	delete[] m_filetableheader.uncompressedBody;
+	//delete[] m_filetableheader.body;
+	//delete[] m_filetableheader.uncompressedBody;
 	delete[] m_items;
+	m_items = NULL;
 	if (m_fp.is_open())
 		m_fp.close();
 	m_opened = false;
@@ -399,6 +345,13 @@ unsigned int RO::GRF::getCount() const {
 	return(m_filecount);
 }
 
+bool RO::GRF::fileExists(const std::string& fn) const {
+	for (int i = 0; i < m_filecount; i++)
+		if (strcmp(m_items[i].filename, fn.c_str()))
+			return(true);
+	return(false);
+}
+
 const RO::GRF::FileTableItem& RO::GRF::operator[] (const unsigned int& i) const {
 	return(m_items[i]);
 }
@@ -407,3 +360,91 @@ const RO::GRF::FileTableItem& RO::GRF::getItem(const unsigned int& i) const {
 	return(m_items[i]);
 }
 
+RO::GRF::FileTableItem::FileTableItem() {
+	filename = NULL;
+	compressedLength = 0;
+	compressedLengthAligned = 0;
+	uncompressedLength = 0;
+	flags = 0;
+	offset = 0;
+	cycle = 0;
+}
+
+RO::GRF::FileTableItem::FileTableItem(const FileTableItem& f) {
+	if (f.filename != NULL) {
+		filename = new char[strlen(f.filename) + 1];
+		strcpy(filename, f.filename);
+	}
+	else {
+		filename = NULL;
+	}
+	compressedLength = f.compressedLength;
+	compressedLengthAligned = f.compressedLengthAligned;
+	uncompressedLength = f.uncompressedLength;
+	flags = f.flags;
+	offset = f.offset;
+	cycle = f.cycle;
+}
+
+RO::GRF::FileTableItem::~FileTableItem() {
+	if (filename != NULL)
+		delete[] filename;
+}
+
+bool RO::GRF::FileTableItem::readStream(std::istream& ss) {
+	char buf[256];
+	int idx;
+	char c;
+	idx = 0;
+	c = -1;
+	while (c != 0) {
+		ss.get(c);
+		buf[idx++] = c;
+	}
+	buf[idx] = 0;
+	filename = new char[strlen(buf) + 1];
+	strcpy(filename, buf);
+
+	ss.read((char*)&compressedLength, sizeof(unsigned int));
+	ss.read((char*)&compressedLengthAligned, sizeof(unsigned int));
+	ss.read((char*)&uncompressedLength, sizeof(unsigned int));
+	ss.get(flags);
+	ss.read((char*)offset, sizeof(unsigned int));
+
+	// Setup for decryption
+	if (flags == 3) {
+		int lop;
+		int srccount;
+		int srclen = compressedLength;
+		for (lop = 10, srccount = 1; srclen >= lop; lop = lop * 10, srccount++);
+		cycle = srccount;
+	}
+	else {
+		cycle = 0;
+	}
+
+	return(true);
+}
+
+RO::GRF::FileTableItem& RO::GRF::FileTableItem::operator = (const FileTableItem& f) {
+	if (filename != NULL)
+		delete[] filename;
+
+	if (f.filename != NULL) {
+		filename = new char[strlen(f.filename) + 1];
+		strcpy(filename, f.filename);
+	}
+	else {
+		filename = NULL;
+	}
+	filename = new char[strlen(f.filename) + 1];
+	strcpy(filename, f.filename);
+	compressedLength = f.compressedLength;
+	compressedLengthAligned = f.compressedLengthAligned;
+	uncompressedLength = f.uncompressedLength;
+	flags = f.flags;
+	offset = f.offset;
+	cycle = f.cycle;
+
+	return(*this);
+}

@@ -36,10 +36,20 @@ namespace RO {
 			unsigned char* body;
 			unsigned char* uncompressedBody;
 		};
+#pragma pack(pop)
 
 		/** Presents information on each file inside of the GRF */
-		struct FileTableItem {
-			std::string filename;
+		class ROINT_DLLAPI FileTableItem {
+		public:
+			FileTableItem();
+			FileTableItem(const FileTableItem&);
+			~FileTableItem();
+			bool readStream(std::istream& ss);
+
+			FileTableItem& operator = (const FileTableItem&);
+
+
+			char* filename;
 			int compressedLength;
 			int compressedLengthAligned;
 			int uncompressedLength;
@@ -58,7 +68,6 @@ namespace RO {
 			int offset;
 			int cycle; // for DES Decoding purposes
 		};
-#pragma pack(pop)
 
 	protected:
 		Header m_header;
@@ -87,6 +96,8 @@ namespace RO {
 		
 		/** Saves the file f into the file filename */
 		bool save(const std::string& f, const std::string& filename);
+
+		bool fileExists(const std::string& fn) const;
 
 		unsigned int getCount() const;
 		std::string getFilename(const unsigned int& i) const;
