@@ -2,7 +2,7 @@
 #ifndef __GND_H
 #define __GND_H
 
-#include "object.h"
+#include "ro_object.h"
 #include "struct_io.h"
 
 namespace RO {

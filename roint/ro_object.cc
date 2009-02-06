@@ -1,6 +1,6 @@
-/* $Id$ */
+/* $Id: object.cc 31 2009-01-23 22:46:41Z sergio $ */
 #include "stdafx.h"
-#include "object.h"
+#include "ro_object.h"
 
 #include <fstream>
 

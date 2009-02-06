@@ -1,6 +1,6 @@
-/* $Id$ */
-#ifndef __OBJECT_H
-#define __OBJECT_H
+/* $Id: object.h 37 2009-01-30 03:36:48Z sergio $ */
+#ifndef __RO_OBJECT_H
+#define __RO_OBJECT_H
 
 #include <iostream>
 #include <ostream>
@@ -98,5 +98,4 @@ namespace RO {
 	};
 }
 
-#endif /* __OBJECT_H */
-
+#endif /* __RO_OBJECT_H */

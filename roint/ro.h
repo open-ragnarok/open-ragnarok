@@ -47,7 +47,7 @@ namespace RO {
 
 #include "ro_strings.h"
 #include "constants.h"
-#include "object.h"
+#include "ro_object.h"
 
 // the file types
 #include "grf.h"

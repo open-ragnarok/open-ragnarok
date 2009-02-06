@@ -2,7 +2,7 @@
 #ifndef __SPR_H
 #define __SPR_H
 
-#include "object.h"
+#include "ro_object.h"
 
 #include <vector>
 

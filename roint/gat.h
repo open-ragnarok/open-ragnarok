@@ -2,7 +2,7 @@
 #ifndef __GAT_H
 #define __GAT_H
 
-#include "object.h"
+#include "ro_object.h"
 
 namespace RO {
 	/**

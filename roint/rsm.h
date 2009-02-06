@@ -2,7 +2,7 @@
 #ifndef __RSM_H
 #define __RSM_H
 
-#include "object.h"
+#include "ro_object.h"
 #include "struct_io.h"
 
 namespace RO {

@@ -347,7 +347,7 @@ unsigned int RO::GRF::getCount() const {
 
 bool RO::GRF::fileExists(const std::string& fn) const {
 	for (int i = 0; i < m_filecount; i++)
-		if (strcmp(m_items[i].filename, fn.c_str()))
+		if (!strcmp(m_items[i].filename, fn.c_str()))
 			return(true);
 	return(false);
 }
@@ -401,6 +401,9 @@ bool RO::GRF::FileTableItem::readStream(std::istream& ss) {
 		ss.get(c);
 		buf[idx++] = c;
 	}
+
+	cycle = 0;
+
 	buf[idx] = 0;
 	filename = new char[strlen(buf) + 1];
 	strcpy(filename, buf);
@@ -408,8 +411,8 @@ bool RO::GRF::FileTableItem::readStream(std::istream& ss) {
 	ss.read((char*)&compressedLength, sizeof(unsigned int));
 	ss.read((char*)&compressedLengthAligned, sizeof(unsigned int));
 	ss.read((char*)&uncompressedLength, sizeof(unsigned int));
-	ss.get(flags);
-	ss.read((char*)offset, sizeof(unsigned int));
+	ss.read(&flags, 1);
+	ss.read((char*)&offset, sizeof(unsigned int));
 
 	// Setup for decryption
 	if (flags == 3) {
@@ -418,9 +421,6 @@ bool RO::GRF::FileTableItem::readStream(std::istream& ss) {
 		int srclen = compressedLength;
 		for (lop = 10, srccount = 1; srclen >= lop; lop = lop * 10, srccount++);
 		cycle = srccount;
-	}
-	else {
-		cycle = 0;
 	}
 
 	return(true);

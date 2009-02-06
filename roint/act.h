@@ -2,7 +2,7 @@
 #ifndef __ACT_H
 #define __ACT_H
 
-#include "object.h"
+#include "ro_object.h"
 
 #include "ro_seq.h"
 

@@ -224,6 +224,26 @@ void RO::RSM::Dump(std::ostream& out, const std::string& prefix) const {
 }
 
 void RO::RSM::calcBoundingBox() {
+#if 1
+	unsigned int i;
+
+	m_meshes[0].calcBoundingBox(m_meshes[0].transf);
+	for (i = 1; i < meshCount; i++)
+		if (strcmp(m_meshes[i].header.parent, m_meshes[0].header.name) == 0)
+			m_meshes[i].calcBoundingBox(m_meshes[i].transf);
+
+	for (i = 0; i < 3; i++) {
+		box.max.v[i] = m_meshes[0].getBoundingBox().max.v[i];
+		box.min.v[i] = m_meshes[0].getBoundingBox().min.v[i];
+		for (unsigned int j = 1; j < meshCount; j++) {
+			if (strcmp(m_meshes[i].header.parent, m_meshes[0].header.name) == 0){
+				box.max.v[i] = MAX(m_meshes[j].getBoundingBox().max.v[i], box.max.v[i]);
+				box.min.v[i] = MIN(m_meshes[j].getBoundingBox().min.v[i], box.min.v[i]);
+			}
+		}
+		box.range.v[i] = (box.max.v[i] + box.min.v[i]) / 2.0f;
+	}
+#else
 	unsigned int i, j;
 	BoundingBox& meshbox = box;
 	box.max.c.x = -999999;
@@ -237,7 +257,6 @@ void RO::RSM::calcBoundingBox() {
 	box.range.c.x = 0;
 	box.range.c.y = 0;
 	box.range.c.z = 0;
-
 	for (i = 0; i < meshCount; i++) {
 		m_meshes[i].calcBoundingBox(m_meshes[0].transf);
 		meshbox = m_meshes[i].getBoundingBox();
@@ -253,6 +272,7 @@ void RO::RSM::calcBoundingBox() {
 	for(j = 0; j < 3; j++)
 		// box.range.v[j] = box.max.v[j] - box.min.v[j];
 		box.range.v[j] = (box.max.v[j] + box.min.v[j])/2.0f;
+#endif
 }
 
 const RO::RSM::BoundingBox& RO::RSM::getBoundingBox() const {
@@ -391,17 +411,50 @@ bool RO::RSM::Mesh::readStream(std::istream& s, bool main) {
 	return(true);
 }
 
+namespace RO {
+void MatrixMultVect(const float* M, const RSM::Vec& Vin, RSM::Vec& Vout) {
+	Vout.v[0] = Vin.v[0]*M[0] + Vin.v[1]*M[4] + Vin.v[2]*M[8] + 1.0f * M[12];
+	Vout.v[1] = Vin.v[0]*M[1] + Vin.v[1]*M[5] + Vin.v[2]*M[9] + 1.0f * M[13];
+	Vout.v[2] = Vin.v[0]*M[2] + Vin.v[1]*M[6] + Vin.v[2]*M[10] + 1.0f * M[14];
+}
+}
+
+
 void RO::RSM::Mesh::calcBoundingBox(const RO::RSM::Mesh::Transf& t) {
 	box.max.v[0] = box.max.v[1] = box.max.v[2] = -999999.0;
 	box.min.v[0] = box.min.v[1] = box.min.v[2] = 999999.0;
 
+	float transf[12];
+	transf[0] = t.mat33[0];
+	transf[1] = t.mat33[1];
+	transf[2] = t.mat33[2];
+	transf[3] = 0;
+
+	transf[4] = t.mat33[3];
+	transf[5] = t.mat33[4];
+	transf[6] = t.mat33[5];
+	transf[7] = 0;
+
+	transf[8] = t.mat33[6];
+	transf[9] = t.mat33[7];
+	transf[10] = t.mat33[8];
+	transf[11] = 0;
+
+	transf[12] = 0;
+	transf[13] = 0;
+	transf[14] = 0;
+	transf[15] = 1;
+
 	int i, j;
-	Vec v;
+	Vec vi, v;
 
 	for (i = 0; i < vecs.size(); i++) {
-		v.c.x = vecs[i].c.x;
-		v.c.y = vecs[i].c.y;
-		v.c.z = vecs[i].c.z;
+		vi.c.x = vecs[i].c.x;
+		vi.c.y = vecs[i].c.y;
+		vi.c.z = vecs[i].c.z;
+
+		MatrixMultVect(transf, vi, v);
+
 
 		for (j = 0; j < 3; j++) {
 			if (!is_only) v.v[j] += t.translate1.v[j] + t.translate2.v[j];

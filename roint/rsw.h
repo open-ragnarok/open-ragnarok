@@ -2,7 +2,7 @@
 #ifndef __RSW_H
 #define __RSW_H
 
-#include "object.h"
+#include "ro_object.h"
 
 #ifdef ROINT_USE_XML
 #	include "rsm.h"
