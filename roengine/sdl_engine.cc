@@ -119,6 +119,10 @@ void SDLEngine::WindowResize() {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void SDLEngine::LookAt(float sX, float sY, float sZ, float dX, float dY, float dZ) {
+	gluLookAt(sX, sY, sZ, dX, dY, dZ, 0, 1, 0);
+}
+
 void SDLEngine::Sync() {
 	SDL_GL_SwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

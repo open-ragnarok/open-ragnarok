@@ -6,9 +6,12 @@
 GLObject::GLObject() {
 	x=y=z=0.0f;
 	xrot=yrot=zrot=0.0f;
+	scalex=scaley=scalez=1.0f;
 	m_useTexture = false; 
 	m_visible = true;
 }
+
+GLObject::~GLObject() {}
 
 void GLObject::setVisible(bool v) {
 	m_visible = v;
@@ -27,9 +30,10 @@ bool GLObject::isVisible() const {
 void GLObject::BeforeDraw() {
 	glPushMatrix();
 	glTranslatef(x, y, z);
-	glRotatef(xrot, 1, 0, 0);
 	glRotatef(yrot, 0, 1, 0);
-	glRotatef(zrot, 0, 0, 1);
+	glRotatef(zrot, 1, 0, 0);
+	glRotatef(xrot, 0, 0, 1);
+	glScalef(scalex, scaley, scalez);
 	if (m_useTexture) {
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, m_textureId);
@@ -53,6 +57,12 @@ void GLObject::setRot(const float& x, const float& y, const float& z) {
 	this->xrot = x;
 	this->yrot = y;
 	this->zrot = z;
+}
+
+void GLObject::setScale(const float& x, const float& y, const float& z) {
+	scalex = x;
+	scaley = y;
+	scalez = z;
 }
 
 void GLObject::setRotX(const float& x) {

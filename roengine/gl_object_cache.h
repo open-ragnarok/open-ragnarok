@@ -7,6 +7,7 @@
 
 #include "objects/cube_object.h"
 #include "objects/rsm_object.h"
+#include "objects/rsw_object.h"
 
 class GLObjectCache : public BaseCache<GLObject> {
 public:

@@ -21,6 +21,7 @@ public:
 	void CloseDisplay();
 	void Sync();
 	virtual void WindowResize();
+	void LookAt(float sX, float sY, float sZ, float dX, float dY, float dZ);
 
 	// Some primitives
 	static void cube(const float& side = 1.0f);

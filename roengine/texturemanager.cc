@@ -5,6 +5,157 @@
 
 #include "image_bmp.h"
 
+std::list<Texture*> Texture::objects;
+
+Texture::Texture() {
+	objects.push_back(this);
+	refcount = 0;
+	texid = 0;
+}
+
+Texture::Texture(const Texture& t) {
+	objects.push_back(this);
+	refcount = 0;
+	texid = t.texid;
+}
+
+Texture::Texture(const unsigned int& t, const std::string& n) {
+	objects.push_back(this);
+	refcount = 0;
+	texid = t;
+	name = n;
+}
+
+Texture::~Texture() {
+	if (refcount != 0)
+		std::cerr << "Warning: Deleting texture " << name << " with "<< refcount<<" active references!" << std::endl;
+
+	objects.remove(this);
+
+	glDeleteTextures(1, &texid);
+}
+
+void Texture::AddRef() {
+	refcount++;
+}
+
+void Texture::Release() {
+	refcount--;
+}
+
+Texture& Texture::operator = (const Texture& t) {
+	texid = t.texid;
+	return(*this);
+}
+
+Texture& Texture::operator = (unsigned int i) {
+	texid = i;
+	return(*this);
+}
+
+unsigned int Texture::operator*() const {
+	return(texid);
+}
+
+unsigned int Texture::getIdx() const {
+	return(texid);
+}
+
+void Texture::Activate() const {
+	glBindTexture(GL_TEXTURE_2D, texid);
+}
+
+// === TEXTURE POINTER ===
+
+Texture::Pointer::Pointer() {
+	texture = NULL;
+}
+
+Texture::Pointer::Pointer(Texture* t) {
+	texture = t;
+	if (texture != NULL)
+		texture->AddRef();
+}
+
+Texture::Pointer::Pointer(Pointer& t) {
+	texture = t.texture;
+	if (texture != NULL)
+		texture->AddRef();
+}
+
+Texture::Pointer::~Pointer() {
+	if (texture != NULL)
+		texture->Release();
+}
+
+void Texture::Pointer::setTexture(Texture* t) {
+	if (texture != NULL)
+		texture->Release();
+	texture = t;
+	if (texture != NULL)
+		texture->AddRef();
+}
+
+Texture::Pointer& Texture::Pointer::operator = (Texture *t) {
+	if (texture != NULL)
+		texture->Release();
+	texture = t;
+	if (texture != NULL)
+		texture->AddRef();
+
+	return(*this);
+}
+
+Texture::Pointer& Texture::Pointer::operator = (Pointer& t) {
+	if (texture != NULL)
+		texture->Release();
+	texture = t.texture;
+	if (texture != NULL)
+		texture->AddRef();
+	return(*this);
+}
+
+unsigned int Texture::Pointer::operator *() const {
+	if (texture == NULL)
+		return(0);
+	return(texture->getIdx());
+}
+
+void Texture::Pointer::Activate() const {
+	if (texture != NULL)
+		texture->Activate();
+}
+
+Texture::PointerCache::PointerCache() {}
+
+Texture::PointerCache::~PointerCache() {
+	clear();
+}
+
+void Texture::PointerCache::clear() {
+	std::vector<Pointer*>::iterator itr;
+	itr = pointers.begin();
+	while(itr != pointers.end()) {
+		delete(*itr);
+		itr++;
+	}
+	pointers.clear();
+}
+
+Texture::Pointer* Texture::PointerCache::operator[] (const unsigned int& i) {
+	return(pointers[i]);
+}
+
+const Texture::Pointer* Texture::PointerCache::operator[] (const unsigned int& i) const {
+	return(pointers[i]);
+}
+
+void Texture::PointerCache::add(Texture::Pointer* p) {
+	pointers.push_back(p);
+}
+
+// === TEXTURE MANAGER ===
+
 TextureManager::TextureManager() {
 }
 
@@ -14,17 +165,20 @@ TextureManager::~TextureManager() {
 
 void TextureManager::Clear() {
 	tex_t::iterator itr = textures.begin();
+	Texture* tp;
+
 	unsigned int glTex;
 	while (itr != textures.end()) {
-		glTex = itr->second;
-		std::cout << "Unregistering texture " << itr->first << std::endl;
-		glDeleteTextures(1, &glTex);
+		tp = itr->second;
+		glTex = tp->getIdx();
+		// std::cout << "Unregistering texture " << itr->first << std::endl;
+		delete(tp);
 		itr++;
 	}
 	textures.clear();
 }
 
-unsigned int TextureManager::Register(FileManager& fm, const std::string& name) {
+Texture::Pointer TextureManager::Register(FileManager& fm, const std::string& name) {
 	if (!fm.fileExists(name)) {
 		std::cerr << "Can't load texture " << name << std::endl;
 		return(0);
@@ -68,9 +222,10 @@ unsigned int TextureManager::Register(FileManager& fm, const std::string& name) 
 		img.getBuffer()
 	);
 
-	textures[name] = glTex;
+	textures[name] = new Texture(glTex, name);
+	Texture::Pointer tp(textures[name]);
 
-	return(glTex);
+	return(tp);
 }
 
 bool TextureManager::UnRegister(const std::string& name) {
@@ -78,7 +233,7 @@ bool TextureManager::UnRegister(const std::string& name) {
 		return(false);
 	tex_t::iterator itr = textures.find(name);
 
-	unsigned int glTex = itr->second;
+	unsigned int glTex = itr->second->getIdx();
 	glDeleteTextures(1, &glTex);
 	textures.erase(itr);
 
@@ -96,17 +251,18 @@ bool TextureManager::Activate(const std::string& name) const {
 	if (itr == textures.end())
 		return(false);
 
-	if (!glIsTexture(itr->second))
+	if (!glIsTexture(itr->second->getIdx()))
 		return(false);
 
-	glBindTexture(GL_TEXTURE_2D, itr->second);
+	glBindTexture(GL_TEXTURE_2D, itr->second->getIdx());
 	return(true);
 }
 
 
-unsigned int TextureManager::operator [](const std::string& name) const {
+Texture::Pointer TextureManager::operator [](const std::string& name) const {
 	tex_t::const_iterator itr = textures.find(name);
 	if (itr == textures.end())
 		return(0);
-	return(itr->second);
+	Texture::Pointer ptr(itr->second);
+	return(ptr);
 }

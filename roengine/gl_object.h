@@ -6,6 +6,7 @@ class GLObject {
 protected:
 	float x, y, z;
 	float xrot, yrot, zrot;
+	float scalex, scaley, scalez;
 
 	virtual void AfterDraw();
 	virtual void BeforeDraw();
@@ -17,10 +18,12 @@ protected:
 
 public:
 	GLObject();
+	virtual ~GLObject();
 
 	virtual void Draw() = 0;
 	void Render(long tickdelay = 0);
 	void setPos(const float&, const float&, const float&);
+	void setScale(const float&, const float&, const float&);
 	void setRot(const float&, const float&, const float&);
 	void setRotX(const float&);
 	void setRotY(const float&);

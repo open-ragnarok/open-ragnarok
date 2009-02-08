@@ -21,6 +21,7 @@ public:
 	void clear() {
 		obj_t::iterator itr = objects.begin();
 		while(itr != objects.end()) {
+			// std::cout << "Deleting object " << itr->first << std::endl;
 			delete(itr->second);
 			itr++;
 		}
@@ -77,6 +78,24 @@ public:
 		obj_t::iterator itr = objects.find(name);
 		if (itr == objects.end())
 			return(NULL);
+		return(itr->second);
+	}
+
+	const T* operator[] (const unsigned int& i) const {
+		obj_t::const_iterator itr = objects.begin();
+		unsigned int j;
+		for (j = 0 ; j < i; j++) {
+			itr++;
+		}
+		return(itr->second);
+	}
+
+	T* operator[] (const unsigned int& i) {
+		obj_t::iterator itr = objects.begin();
+		unsigned int j;
+		for (j = 0 ; j < i; j++) {
+			itr++;
+		}
 		return(itr->second);
 	}
 };

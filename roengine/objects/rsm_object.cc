@@ -8,18 +8,28 @@
 RsmObject::RsmObject(const RO::RSM* o) : GLObject() {
 	rsm = o;
 	m_time = 0;
+
+	is_static = true;
+	for (unsigned int i = 0; i < o->getMeshCount(); i++) {
+		if (o->getMesh(i).getFrameCount() != 0)
+			is_static = false;
+	}
+}
+
+RsmObject::~RsmObject() {
+	textures.clear();
 }
 
 bool RsmObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	unsigned int i;
-	unsigned int tex;
+	Texture::Pointer* tex;
 	std::string texname;
 
 	for (i = 0; i < rsm->getTextureCount(); i++) {
 		texname = "data\\texture\\";
 		texname += rsm->getTexture(i);
-		tex = tm.Register(fm, texname);
-		textures.push_back(tex);
+		tex = new Texture::Pointer(tm.Register(fm, texname));
+		textures.add(tex);
 	}
 
 	return(true);
@@ -151,7 +161,7 @@ void RsmObject::CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) c
 	Ori[15] = 1.0;
 	*/
 
-	printf("time: %d\tcurframe: %d\tcframetime: %d\tnframetime: %d\r", time, current, mesh.frames[current].time, mesh.frames[next].time);
+	//printf("time: %d\tcurframe: %d\tcframetime: %d\tnframetime: %d\r", time, current, mesh.frames[current].time, mesh.frames[next].time);
 
 	if (time >= mesh.frames[mesh.frames.getCount() - 1].time)
 		time = 0;
@@ -225,7 +235,6 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 			mesh.transf.rot_vector.c.y, 
 			mesh.transf.rot_vector.c.z);
 	else {
-		// printf("frames! %d\n", mesh.frames.getCount());
 		glMultMatrixf(Ori);
 	}
 
@@ -253,7 +262,8 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 		if (surface.texid != lasttex) {
 			glEnd();
 			lasttex = surface.texid;
-			glBindTexture(GL_TEXTURE_2D, textures[lasttex]);
+			textures[lasttex]->Activate();
+			//glBindTexture(GL_TEXTURE_2D, textures[lasttex]);
 			glBegin(GL_TRIANGLES);
 		}
 		for (j = 0; j < 3; j++) {
@@ -278,11 +288,23 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 }
 
 void RsmObject::Draw() {
-
-	//printf("time: %d\tdelay: %d\r", m_time, m_tickdelay);
-
-	m_time += m_tickdelay * 10;
-	glEnable(GL_TEXTURE_2D);
-	DrawMesh(0);
-	glDisable(GL_TEXTURE_2D);
+	if (is_static) {
+		if (glIsList(rsm_gl)) {
+			glCallList(rsm_gl);
+		}
+		else {
+			rsm_gl = glGenLists(1);
+			glNewList(rsm_gl, GL_COMPILE_AND_EXECUTE);
+			glEnable(GL_TEXTURE_2D);
+			DrawMesh(0);
+			glDisable(GL_TEXTURE_2D);
+			glEndList();
+		}
+	}
+	else {
+		m_time += m_tickdelay * 10;
+		glEnable(GL_TEXTURE_2D);
+		DrawMesh(0);
+		glDisable(GL_TEXTURE_2D);
+	}
 }

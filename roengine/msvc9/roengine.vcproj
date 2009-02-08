@@ -414,6 +414,14 @@
 				RelativePath="..\objects\rsm_object.h"
 				>
 			</File>
+			<File
+				RelativePath="..\objects\rsw_object.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\objects\rsw_object.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
