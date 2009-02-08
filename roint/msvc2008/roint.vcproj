@@ -372,11 +372,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\object.cc"
+				RelativePath="..\ro.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\ro.cc"
+				RelativePath="..\ro_object.cc"
 				>
 			</File>
 			<File
