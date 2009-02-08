@@ -4,6 +4,7 @@
 
 #include "../gl_object.h"
 #include "rsw.h"
+#include "gnd.h"
 #include "../texturemanager.h"
 #include "../file_manager.h"
 #include "../ro_object_cache.h"
@@ -25,6 +26,7 @@ public:
 	bool loadTextures(TextureManager&, FileManager&);
 
 	virtual void Draw();
+	virtual bool isInFrustum(const Frustum&) const;
 };
 
 #endif /* __RSW_OBJECT_H */

@@ -283,6 +283,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\frustum.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gl_object.cc"
 				>
 			</File>
@@ -350,6 +354,10 @@
 			</File>
 			<File
 				RelativePath="..\file_manager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\frustum.h"
 				>
 			</File>
 			<File

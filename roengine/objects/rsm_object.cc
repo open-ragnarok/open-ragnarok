@@ -5,7 +5,7 @@
 
 #include <math.h>
 
-RsmObject::RsmObject(const RO::RSM* o) : GLObject() {
+RsmObject::RsmObject(const RO::RSM* o, const RO::RSW::Model* mdl) : GLObject() {
 	rsm = o;
 	m_time = 0;
 
@@ -13,6 +13,12 @@ RsmObject::RsmObject(const RO::RSM* o) : GLObject() {
 	for (unsigned int i = 0; i < o->getMeshCount(); i++) {
 		if (o->getMesh(i).getFrameCount() != 0)
 			is_static = false;
+	}
+	model = mdl;
+	if (model != NULL) {
+		setPos(model->data->pos[0], -model->data->pos[1], model->data->pos[2]);
+		setRot(model->data->rot[0], model->data->rot[1], model->data->rot[2]);
+		setScale(model->data->scale[0], -model->data->scale[1], model->data->scale[2]);
 	}
 }
 
@@ -307,4 +313,10 @@ void RsmObject::Draw() {
 		DrawMesh(0);
 		glDisable(GL_TEXTURE_2D);
 	}
+}
+
+bool RsmObject::isInFrustum(const Frustum& f) const {
+	if (model == NULL)
+		return(true);
+	return(f.ModelVisible(rsm, model));
 }

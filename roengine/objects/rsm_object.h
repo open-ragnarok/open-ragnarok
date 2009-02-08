@@ -8,14 +8,16 @@
 #include "../base_cache.h"
 
 #include "rsm.h"
-#include "gnd.h"
+#include "rsw.h"
+
+#include "../frustum.h"
 
 #include <vector>
 
 class RsmObject : public GLObject {
 protected:
 	const RO::RSM* rsm;
-	const RO::GND* gnd;
+	const RO::RSW::Model* model;
 	Texture::PointerCache textures;
 
 	static void DrawBoundingBox(const RO::RSM::BoundingBox& box);
@@ -27,10 +29,11 @@ protected:
 	unsigned int rsm_gl;
 
 public:
-	RsmObject(const RO::RSM*);
+	RsmObject(const RO::RSM*, const RO::RSW::Model* mdl = NULL);
 	virtual ~RsmObject();
 
 	bool loadTextures(TextureManager&, FileManager&);
+	virtual bool isInFrustum(const Frustum&) const;
 
 	virtual void Draw();
 };

@@ -128,3 +128,6 @@ void RswObject::Draw() {
 	}
 }
 
+bool RswObject::isInFrustum(const Frustum&) const {
+	return(true);
+}

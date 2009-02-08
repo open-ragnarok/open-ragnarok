@@ -7,6 +7,7 @@
 #include "gl_object_cache.h"
 #include "texturemanager.h"
 #include "file_manager.h"
+#include "frustum.h"
 
 #include "ro.h"
 #include "rogl.h"
@@ -18,6 +19,7 @@ protected:
 	GLObjectCache m_gl_objects;
 	ROObjectCache m_ro_objects;
 	FileManager m_filemanager;
+	Frustum m_frustum;
 
 	bool keys[1024];
 	bool m_quit;

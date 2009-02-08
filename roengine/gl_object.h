@@ -2,6 +2,8 @@
 #ifndef __GL_OBJECT_H
 #define __GL_OBJECT_H
 
+#include "frustum.h"
+
 class GLObject {
 protected:
 	float x, y, z;
@@ -33,6 +35,7 @@ public:
 	void useTexture(bool);
 	void setVisible(bool = true);
 	bool isVisible() const;
+	virtual bool isInFrustum(const Frustum&) const;
 };
 
 #endif /* __GL_OBJECT_H */

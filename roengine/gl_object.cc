@@ -84,3 +84,7 @@ void GLObject::setTexture(const unsigned int& textureId) {
 void GLObject::useTexture(bool b) {
 	m_useTexture = b;
 }
+
+bool GLObject::isInFrustum(const Frustum& f) const {
+	return(f.PointVisible(x, y, z));
+}

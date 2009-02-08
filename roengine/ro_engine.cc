@@ -54,7 +54,7 @@ void ROEngine::Run() {
 		HandleKeyboard();
 
 		BeforeDraw();
-		m_gl_objects.draw(tickDelay);
+		m_gl_objects.draw(m_frustum, tickDelay);
 		AfterDraw();
 		Sync();
 	}
