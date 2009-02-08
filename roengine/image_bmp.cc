@@ -137,11 +137,12 @@ bool ImageBMP::Read8bpp(std::istream& input) {
 		DynamicBlob<unsigned char> pixels(size);
 		input.read((char*)pixels.getBuffer(), size);
 		
-		dataSize = width * height * 3;
+		dataSize = width * height * 4;
 		//this->buffer = new img_t[dataSize];
 		setSize(dataSize);
 		
 		int idx, offset;
+		unsigned char alpha;
 		
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
@@ -153,14 +154,21 @@ bool ImageBMP::Read8bpp(std::istream& input) {
 				printf(" (%d, %d, %d)\n", colors[pixels[idx]].b, colors[pixels[idx]].g, colors[pixels[idx]].r);
 				#endif
 				//offset = 3 * (width * (flipvertical?(height-y-1):y) + x);
-				offset = 3 * (width * y + x);
+				offset = 4 * (width * y + x);
+				if (colors[idx].r == 255 && colors[idx].b == 255 && colors[idx].g == 0) {
+					alpha = 0;
+				}
+				else {
+					alpha = 255;
+				}
 				this->buffer[offset  ] = colors[idx].r;
 				this->buffer[offset+1] = colors[idx].g;
 				this->buffer[offset+2] = colors[idx].b;
+				this->buffer[offset+3] = alpha;
 			}
 		}
 		delete[] colors;
-		bpp = 24;
+		bpp = 32;
 
 		return(true);
 }

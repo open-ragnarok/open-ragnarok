@@ -302,7 +302,10 @@ void RsmObject::Draw() {
 			rsm_gl = glGenLists(1);
 			glNewList(rsm_gl, GL_COMPILE_AND_EXECUTE);
 			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, 0.90);
 			DrawMesh(0);
+			glDisable(GL_ALPHA_TEST);
 			glDisable(GL_TEXTURE_2D);
 			glEndList();
 		}
@@ -310,7 +313,10 @@ void RsmObject::Draw() {
 	else {
 		m_time += m_tickdelay * 10;
 		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.90);
 		DrawMesh(0);
+		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_TEXTURE_2D);
 	}
 }

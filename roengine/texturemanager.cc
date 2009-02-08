@@ -209,18 +209,34 @@ Texture::Pointer TextureManager::Register(FileManager& fm, const std::string& na
 	2^k + 2*border for some integer value of k.
 	*/
 
-	glTexImage2D(
-		GL_TEXTURE_2D,
-		0,
-		img.getBpp() / 8,
-		img.getWidth(),
-		img.getHeight(),
-		0,
-		//img.glDrawType,
-		GL_RGB,
-		GL_UNSIGNED_BYTE,
-		img.getBuffer()
-	);
+	if (img.getBpp() == 32) {
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			img.getBpp() / 8,
+			img.getWidth(),
+			img.getHeight(),
+			0,
+			//img.glDrawType,
+			GL_RGBA,
+			GL_UNSIGNED_BYTE,
+			img.getBuffer()
+		);
+	}
+	else {
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			img.getBpp() / 8,
+			img.getWidth(),
+			img.getHeight(),
+			0,
+			//img.glDrawType,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			img.getBuffer()
+		);
+	}
 
 	textures[name] = new Texture(glTex, name);
 	Texture::Pointer tp(textures[name]);
