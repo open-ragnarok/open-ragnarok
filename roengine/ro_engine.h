@@ -8,6 +8,7 @@
 #include "texturemanager.h"
 #include "file_manager.h"
 #include "frustum.h"
+#include "camera.h"
 
 #include "ro.h"
 #include "rogl.h"
@@ -21,10 +22,7 @@ protected:
 	FileManager m_filemanager;
 	Frustum m_frustum;
 
-	bool keys[1024];
 	bool m_quit;
-
-	void ProcessKeyboard();
 
 	virtual void HandleKeyboard();
 	virtual void BeforeRun();
@@ -35,11 +33,18 @@ protected:
 	long lastTick;
 	long tickDelay;
 
+	Camera cam;
+
 public:
 	ROEngine(const std::string& name = "");
 
 	~ROEngine();
 	void Run();
+
+	void ReadIni(const std::string& name = "data.ini");
+
+	virtual void evtQuit();
+
 };
 
 #ifndef __ROENGINE_NO_AUTOIMPORT_LIB__

@@ -3,6 +3,7 @@
 #define __STDAFX_H
 
 #define __ROENGINE_NO_AUTOIMPORT_LIB__
+#define _CRT_SECURE_NO_WARNINGS
 
 #ifdef WIN32
 #	include <windows.h>
@@ -16,8 +17,8 @@
 #	include "rogl_static.h"
 #endif
 
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
+//#pragma comment(lib, "opengl32.lib")
+//#pragma comment(lib, "glu32.lib")
 #pragma comment(lib, "sdl.lib")
 
 #endif /* __STDAFX_H */

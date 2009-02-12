@@ -16,6 +16,7 @@ protected:
 	
 	int width, height, bpp;
 public:
+	Image(const Image&);
 	virtual ~Image();
 	
 	int glDrawType;
@@ -23,6 +24,9 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	int getBpp() const;
+
+	bool resizeW(const int&);
+	bool resizeH(const int&);
 };
 
 #endif /*IMAGE_H_*/

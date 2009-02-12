@@ -15,13 +15,13 @@ RswObject::~RswObject() {
 
 bool RswObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	unsigned int i;
-	Texture::Pointer* tex;
+	Texture::Pointer tex;
 	std::string texname;
 
 	for (i = 0; i < gnd->getTextureCount(); i++) {
 		texname = "data\\texture\\";
 		texname += gnd->getTexture(i).path;
-		tex = new Texture::Pointer(tm.Register(fm, texname));
+		tex = tm.Register(fm, texname);
 		textures.add(tex);
 	}
 
@@ -86,6 +86,7 @@ void RswObject::DrawGND() {
 
 
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_ALPHA_TEST);
 	for (j = 0; j < gnd->getHeight(); j++) {
 		for (i = 0; i < gnd->getWidth(); i++) {
 			const RO::GND::strCube& cube = gnd->getCube(i, j);
@@ -97,20 +98,61 @@ void RswObject::DrawGND() {
 				textures[tile.texture_index]->Activate();
 				glBegin(GL_QUADS);
 				glTexCoord2f(tile.texture_start[0],		tile.texture_end[0]);
-				glVertex3f(tile_size * i,				tile_size * j, cube.height[0]);
+				glVertex3f(tile_size * i,		tile_size * j,		 cube.height[0]);
 
 				glTexCoord2f(tile.texture_start[1],		tile.texture_end[1]);
-				glVertex3f(tile_size * i + tile_size,	tile_size * j, cube.height[1]);
+				glVertex3f(tile_size * (i + 1),	tile_size * j,		 cube.height[1]);
 
 				glTexCoord2f(tile.texture_start[3],		tile.texture_end[3]);
-				glVertex3f(tile_size * i + tile_size,	tile_size * j + tile_size, cube.height[3]);
+				glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);
 
 				glTexCoord2f(tile.texture_start[2],		tile.texture_end[2]);
-				glVertex3f(tile_size * i,				tile_size * j + tile_size, cube.height[2]);
+				glVertex3f(tile_size * i,		tile_size * (j + 1), cube.height[2]);
+				glEnd();
+			}
+
+			/* TILE SIDE */
+			if (cube.tile_side != -1) {
+				const RO::GND::strTile& tile = gnd->getTile(cube.tile_side);
+				const RO::GND::strCube& cube2 = gnd->getCube(i, j+1);
+				textures[tile.texture_index]->Activate();
+				glBegin(GL_QUADS);
+				glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
+				glVertex3f(tile_size * i,		tile_size * (j + 1), cube.height[2]);
+
+				glTexCoord2f(tile.texture_start[1],	tile.texture_end[1]);
+				glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);
+
+				glTexCoord2f(tile.texture_start[3],	tile.texture_end[3]);
+				glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube2.height[1]);
+
+				glTexCoord2f(tile.texture_start[2],	tile.texture_end[2]);
+				glVertex3f(tile_size * i,		tile_size * (j + 1), cube2.height[0]);
+				glEnd();
+			}
+
+			/* TILE ASIDE */
+			if (cube.tile_aside != -1) {
+				const RO::GND::strTile& tile = gnd->getTile(cube.tile_aside);
+				const RO::GND::strCube& cube2 = gnd->getCube(i+1, j);
+				textures[tile.texture_index]->Activate();
+				glBegin(GL_QUADS);
+				glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
+				glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);
+
+				glTexCoord2f(tile.texture_start[1],	tile.texture_end[1]);
+				glVertex3f(tile_size * (i + 1),	tile_size * j, cube.height[1]);
+
+				glTexCoord2f(tile.texture_start[3],	tile.texture_end[3]);
+				glVertex3f(tile_size * (i + 1),	tile_size * j, cube2.height[0]);
+
+				glTexCoord2f(tile.texture_start[2],	tile.texture_end[2]);
+				glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube2.height[2]);
 				glEnd();
 			}
 		}
 	}
+	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_TEXTURE_2D);
 
 	glPopMatrix();

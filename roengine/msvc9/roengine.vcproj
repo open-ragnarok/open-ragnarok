@@ -279,6 +279,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\camera.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\file_manager.cc"
 				>
 			</File>
@@ -300,6 +304,10 @@
 			</File>
 			<File
 				RelativePath="..\image_bmp.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\image_spr.cc"
 				>
 			</File>
 			<File
@@ -335,6 +343,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\texture.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\texturemanager.cc"
 				>
 			</File>
@@ -350,6 +362,10 @@
 			</File>
 			<File
 				RelativePath="..\blob.h"
+				>
+			</File>
+			<File
+				RelativePath="..\camera.h"
 				>
 			</File>
 			<File
@@ -377,6 +393,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\image_spr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\ro_engine.h"
 				>
 			</File>
@@ -393,7 +413,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\texture.h"
+				>
+			</File>
+			<File
 				RelativePath="..\texturemanager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\vector.h"
 				>
 			</File>
 		</Filter>
@@ -428,6 +456,38 @@
 			</File>
 			<File
 				RelativePath="..\objects\rsw_object.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="GUI"
+			>
+			<File
+				RelativePath="..\gui\element.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\element.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\gui.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\gui.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\singleton.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\window.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\window.h"
 				>
 			</File>
 		</Filter>

@@ -141,6 +141,11 @@ public:
 		return(dataSize);
 	}
 	
+
+	const T* getBuffer() const {
+		return(buffer);
+	}
+
 	T* getBuffer() {
 		return(buffer);
 	}

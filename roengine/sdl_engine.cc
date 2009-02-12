@@ -6,14 +6,18 @@
 
 #include <stdio.h>
 
+bool SDLEngine::supportPot = false;
+
 SDLEngine::SDLEngine() {
 	m_width = m_height = 0;
 	caption = "Open-Ragnarok.org";
+	m_mode2d = false;
 }
 
 SDLEngine::SDLEngine(const std::string& caption) {
 	m_width = m_height = 0;
 	this->caption = caption;
+	m_mode2d = false;
 }
 
 SDLEngine::~SDLEngine() {
@@ -36,18 +40,26 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	m_height = h;
 
 	const SDL_VideoInfo * vi = SDL_GetVideoInfo();
+#ifdef _DEBUG
 	printf("Video Info:\n");
 	printf("\tHardware Surface: %d\n", vi->hw_available);
 	printf("\tWindow Manager: %d\n", vi->wm_available);
 	if (vi->hw_available) 
 		printf("\tVideo Memory: %u\n", vi->video_mem);
-	
+
+#ifdef GL_TEXTURE_RECTANGLE_EXT
+	printf("\tGL_TEXTURE_RECTANGLE_EXT defined.\n");
+#else
+	printf("\tGL_TEXTURE_RECTANGLE_EXT undefined.\n");
+#endif /* GL_TEXTURE_RECTANGLE_EXT */
+
+#endif /* _DEBUG */
 	int flags = SDL_OPENGL | SDL_ANYFORMAT;
 
 	if (fullscreen)
 		flags |= SDL_FULLSCREEN;
 
-#define HWCHECK
+//#define HWCHECK
 #ifdef HWCHECK
 	if (vi->hw_available)
 		flags |= SDL_HWSURFACE;
@@ -89,13 +101,33 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 #endif // WIN32
 
+	const char* data;
+	data = (char*)glGetString(GL_VENDOR);
+	printf("OpenGL Vendor: %s\n", data);
+	data = (char*)glGetString(GL_VERSION);
+	printf("       Version: %s\n", data);
+
+	data = (char*)glGetString(GL_EXTENSIONS);
+	const char* ptr = data;
+	while (ptr[0] != 0) {
+		if (ptr[0] == ' ')
+			if (!strncmp("GL_ARB_texture_non_power_of_two", ptr, strlen("GL_ARB_texture_non_power_of_two"))) {
+				supportPot = true;
+				break;
+			}
+		ptr++;
+	}
+	printf("       Extensions: %s\n", data);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
 	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);
 	glClearColor(0.0f, 0.0f, 0.1f, 0.5f);
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	//glDepthFunc(GL_LEQUAL);
+	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	
 	WindowResize();
 	glLoadIdentity();
@@ -115,7 +147,7 @@ void SDLEngine::WindowResize() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float ratio = (float)m_width / (float)m_height;
-	gluPerspective(45.0f, ratio, 5.0f, 500.0f);
+	gluPerspective(45.0f, ratio, 20.0f, 1000.0f);
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -124,10 +156,62 @@ void SDLEngine::LookAt(float sX, float sY, float sZ, float dX, float dY, float d
 }
 
 void SDLEngine::Sync() {
+	if (m_mode2d)
+		Mode2DEnd();
 	SDL_GL_SwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 }
+
+void SDLEngine::Mode2DStart() {
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, m_width, m_height, 0);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glDisable(GL_DEPTH_TEST);
+
+	m_mode2d = true;
+}
+
+void SDLEngine::Mode2DEnd() {
+	m_mode2d = false;
+
+	glEnable(GL_DEPTH_TEST);
+	
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
+void SDLEngine::ProcessKeyboard() {
+	SDL_Event event;
+	while(SDL_PollEvent(&event)) {
+		switch (event.type) {
+			case SDL_KEYDOWN:
+				keys[event.key.keysym.sym] = true;
+				evtKeyPress(event.key.keysym.sym);
+				break;
+			case SDL_KEYUP:
+				keys[event.key.keysym.sym] = false;
+				evtKeyRelease(event.key.keysym.sym);
+				break;
+			case SDL_QUIT:
+				evtQuit();
+				break;
+		}
+	}
+}
+
+void SDLEngine::evtQuit() {}
+void SDLEngine::evtKeyPress(const int& key) {}
+void SDLEngine::evtKeyRelease(const int& key) {}
+
+
 
 /* THE PRIMITIVES */
 

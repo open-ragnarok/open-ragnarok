@@ -120,6 +120,8 @@ bool ImageBMP::Read8bpp(std::istream& input) {
 		} RGBA;
 
 		int palsize = getColors();
+		if (palsize == 0)
+			palsize = 256;
 
 		RGBA *colors = new RGBA[palsize];
 		// RGBA colors[palsize]; // Round #3. Windows really should make my life easier...

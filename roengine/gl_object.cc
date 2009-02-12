@@ -4,11 +4,11 @@
 #include "gl_object.h"
 
 GLObject::GLObject() {
-	x=y=z=0.0f;
 	xrot=yrot=zrot=0.0f;
 	scalex=scaley=scalez=1.0f;
 	m_useTexture = false; 
 	m_visible = true;
+	m_frustum_check = true;
 }
 
 GLObject::~GLObject() {}
@@ -29,14 +29,17 @@ bool GLObject::isVisible() const {
 
 void GLObject::BeforeDraw() {
 	glPushMatrix();
-	glTranslatef(x, y, z);
+	glTranslatef(pos[0], pos[1], pos[2]);
 	glRotatef(yrot, 0, 1, 0);
 	glRotatef(zrot, 1, 0, 0);
 	glRotatef(xrot, 0, 0, 1);
 	glScalef(scalex, scaley, scalez);
 	if (m_useTexture) {
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, m_textureId);
+		m_texture.Activate();
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
 	}
 }
 
@@ -48,9 +51,7 @@ void GLObject::Render(long tickdelay) {
 }
 
 void GLObject::setPos(const float& x, const float& y, const float& z) {
-	this->x = x;
-	this->y = y;
-	this->z = z;
+	pos.set(x, y, z);
 }
 
 void GLObject::setRot(const float& x, const float& y, const float& z) {
@@ -65,6 +66,14 @@ void GLObject::setScale(const float& x, const float& y, const float& z) {
 	scalez = z;
 }
 
+Vector3f& GLObject::getPos() {
+	return(pos);
+}
+
+const Vector3f& GLObject::getPos() const {
+	return(pos);
+}
+
 void GLObject::setRotX(const float& x) {
 	xrot = x;
 }
@@ -77,14 +86,20 @@ void GLObject::setRotZ(const float& z) {
 	zrot = z;
 }
 
-void GLObject::setTexture(const unsigned int& textureId) {
-	m_textureId = textureId;
+void GLObject::setTexture(Texture::Pointer& tex) {
+	m_texture = tex;
 }
 
 void GLObject::useTexture(bool b) {
 	m_useTexture = b;
 }
 
+void GLObject::setFrustumCheck(bool b) {
+	m_frustum_check = b;
+}
+
 bool GLObject::isInFrustum(const Frustum& f) const {
-	return(f.PointVisible(x, y, z));
+	if (!m_frustum_check)
+		return(true);
+	return(f.PointVisible(pos[0], pos[1], pos[2]));
 }

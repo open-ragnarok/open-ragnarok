@@ -28,13 +28,13 @@ RsmObject::~RsmObject() {
 
 bool RsmObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	unsigned int i;
-	Texture::Pointer* tex;
+	Texture::Pointer tex;
 	std::string texname;
 
 	for (i = 0; i < rsm->getTextureCount(); i++) {
 		texname = "data\\texture\\";
 		texname += rsm->getTexture(i);
-		tex = new Texture::Pointer(tm.Register(fm, texname));
+		tex = tm.Register(fm, texname);
 		textures.add(tex);
 	}
 
@@ -170,7 +170,7 @@ void RsmObject::CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) c
 	//printf("time: %d\tcurframe: %d\tcframetime: %d\tnframetime: %d\r", time, current, mesh.frames[current].time, mesh.frames[next].time);
 
 	if (time >= mesh.frames[mesh.frames.getCount() - 1].time)
-		time = 0;
+		time -= mesh.frames[mesh.frames.getCount() - 1].time;
 }
 
 void RsmObject::DrawMesh(unsigned int meshid) {
@@ -325,4 +325,8 @@ bool RsmObject::isInFrustum(const Frustum& f) const {
 	if (model == NULL)
 		return(true);
 	return(f.ModelVisible(rsm, model));
+}
+
+Texture::Pointer RsmObject::getTexture(unsigned int i) {
+	return(textures[i]);
 }

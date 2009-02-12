@@ -3,10 +3,12 @@
 #define __GL_OBJECT_H
 
 #include "frustum.h"
+#include "texture.h"
+#include "vector.h"
 
 class GLObject {
 protected:
-	float x, y, z;
+	Vector3f pos;
 	float xrot, yrot, zrot;
 	float scalex, scaley, scalez;
 
@@ -14,9 +16,10 @@ protected:
 	virtual void BeforeDraw();
 
 	bool m_useTexture;
-	unsigned int m_textureId;
+	Texture::Pointer m_texture;
 	bool m_visible;
 	long m_tickdelay;
+	bool m_frustum_check;
 
 public:
 	GLObject();
@@ -31,9 +34,13 @@ public:
 	void setRotY(const float&);
 	void setRotZ(const float&);
 
-	void setTexture(const unsigned int& textureId);
+	Vector3f& getPos();
+	const Vector3f& getPos() const;
+
+	void setTexture(Texture::Pointer& tex);
 	void useTexture(bool);
 	void setVisible(bool = true);
+	void setFrustumCheck(bool = true);
 	bool isVisible() const;
 	virtual bool isInFrustum(const Frustum&) const;
 };

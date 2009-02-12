@@ -34,6 +34,7 @@ public:
 
 	bool loadTextures(TextureManager&, FileManager&);
 	virtual bool isInFrustum(const Frustum&) const;
+	Texture::Pointer getTexture(unsigned int i);
 
 	virtual void Draw();
 };

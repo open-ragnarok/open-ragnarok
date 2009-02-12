@@ -2,10 +2,7 @@
 #include "stdafx.h"
 
 #include "ro_object_cache.h"
-#include "rsm.h"
-#include "rsw.h"
-#include "gnd.h"
-#include "gat.h"
+#include "ro.h"
 
 #include <sstream>
 
@@ -87,5 +84,43 @@ bool ROObjectCache::ReadGND(const std::string& name, FileManager& fm) {
 		return(false);
 	}
 	add(name, rsw);
+	return(true);
+}
+
+bool ROObjectCache::ReadACT(const std::string& name, FileManager& fm) {
+	if (exists(name))
+		return(false);
+
+	FileData data = fm.getFile(name);
+	if (data.blobSize() == 0)
+		return(false);
+
+	RO::ACT* act = new RO::ACT();
+	std::stringstream ss;
+	data.write(ss);
+	if (!act->readStream(ss)) {
+		delete(act);
+		return(false);
+	}
+	add(name, act);
+	return(true);
+}
+
+bool ROObjectCache::ReadSPR(const std::string& name, FileManager& fm) {
+	if (exists(name))
+		return(false);
+
+	FileData data = fm.getFile(name);
+	if (data.blobSize() == 0)
+		return(false);
+
+	RO::SPR* spr = new RO::SPR();
+	std::stringstream ss;
+	data.write(ss);
+	if (!spr->readStream(ss)) {
+		delete(spr);
+		return(false);
+	}
+	add(name, spr);
 	return(true);
 }
