@@ -218,7 +218,7 @@ bool RO::ACT::Spr::readStream(std::istream& s, const s_obj_ver& v) {
 
 	s.read((char*)&color, sizeof(int));
 
-	if (v.cver.minor <= 3) {
+	if ((v.cver.major < 3) || (v.cver.major == 3 && v.cver.minor <= 2)) {
 		s.read((char*)&xyMag, sizeof(float));
 		xMag = xyMag;
 		yMag = xyMag;
@@ -231,7 +231,7 @@ bool RO::ACT::Spr::readStream(std::istream& s, const s_obj_ver& v) {
 	s.read((char*)&rot, sizeof(int));
 	s.read((char*)&type, sizeof(int));
 
-	if (v.cver.minor <= 4)
+	if (v.cver.major <= 4)
 		return(true);
 
 	s.read((char*)&w, sizeof(int));
@@ -296,7 +296,7 @@ TiXmlElement* RO::ACT::Spr::GenerateXML(const s_obj_ver& v) const {
 
 		e->SetAttribute("rot", rot);
 		e->SetAttribute("type", type);
-		if (v.cver.minor >= 5) {
+		if (v.cver.major >= 5) {
 			e->SetAttribute("w", w);
 			e->SetAttribute("h", h);
 		}
@@ -337,19 +337,18 @@ bool RO::ACT::Pat::readStream(std::istream& s, const s_obj_ver& v) {
 	
 	s.read((char*)&sndNo, sizeof(int));
 
-	if (v.cver.minor <= 1)
+	if ((v.cver.major == 2) && (v.cver.minor <= 1))
 		return(true);
 
 	// version greater then 0x0201
 	s.read((char*)&numxxx, sizeof(int));
 
-	if (numxxx > 0) {
+	if (numxxx == 1) {
 		s.read((char*)&ext1, sizeof(int));
 		s.read((char*)&ext_x, sizeof(int));
 		s.read((char*)&ext_y, sizeof(int));
 		s.read((char*)&terminate, sizeof(int));
 	}
-
 
 	return(true);
 }

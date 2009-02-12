@@ -4,11 +4,18 @@
 #include "constants.h"
 
 namespace RO {
+
+	namespace EUC {
+		char user_interface[] =  "\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba";
+	}
+
 	namespace UTF {
 		char humans[] = "\xec\x9d\xb8\xea\xb0\x84\xec\xa1\xb1"; // Human family
 		char monsters[] = "\xeb\xaa\xac\xec\x8a\xa4\xed\x84\xb0";
 
 		char water[] = "\xec\x9b\x8c\xed\x84\xb0";
+
+
 		// char humans[] = { 0xec, 0x9d, 0xb8, 0xea, 0xb0, 0x84, 0xec, 0xa1, 0xb1, 0 }; // Human family
 		// char monsters[] = { 0xeb, 0xaa, 0xac, 0xec, 0x8a, 0xa4, 0xed, 0x84, 0xb0 , 0};
 

@@ -39,6 +39,11 @@ namespace RO {
 		JOB_COUNT
 	};
 
+	namespace EUC {
+		ROINT_DLLAPI extern char user_interface[];
+	}
+
+
 	namespace UTF {
 		ROINT_DLLAPI extern char humans[]; // Human family
 		ROINT_DLLAPI extern char monsters[];
