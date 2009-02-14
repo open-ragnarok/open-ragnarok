@@ -471,6 +471,26 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\font.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\gl_font.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\gl_font.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\glf_font.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\glf_font.h"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\gui.cc"
 				>
 			</File>

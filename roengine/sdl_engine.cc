@@ -46,6 +46,8 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	printf("\tWindow Manager: %d\n", vi->wm_available);
 	if (vi->hw_available) 
 		printf("\tVideo Memory: %u\n", vi->video_mem);
+	else
+		printf("\tNo Hardware acceleration!\n");
 
 #ifdef GL_TEXTURE_RECTANGLE_EXT
 	printf("\tGL_TEXTURE_RECTANGLE_EXT defined.\n");
@@ -59,7 +61,7 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	if (fullscreen)
 		flags |= SDL_FULLSCREEN;
 
-//#define HWCHECK
+#define HWCHECK
 #ifdef HWCHECK
 	if (vi->hw_available)
 		flags |= SDL_HWSURFACE;
