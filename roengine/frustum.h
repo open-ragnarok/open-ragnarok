@@ -6,6 +6,8 @@
 #include "rsm.h"
 #include "rsw.h"
 
+#include "vector.h"
+
 class Frustum {
 protected:
 	float frustum[6][4];
@@ -15,6 +17,7 @@ public:
 
 	void Calculate();
 
+	bool VectorVisible(const Vector3f&) const;
 	bool PointVisible(float x, float y, float z) const;
 	bool BoxVisible(float x, float y, float z, float width, float height, float length) const;
 	bool ModelVisible(const RO::RSM* rsm, const RO::RSW::Model* model) const;

@@ -123,6 +123,10 @@ void Frustum::Calculate() {
 	frustum[5][3] /= t;
 }
 
+bool Frustum::VectorVisible(const Vector3f& v) const {
+	return(PointVisible(v[0], v[1], v[2]));
+}
+
 bool Frustum::PointVisible(float x, float y, float z) const {
 	int p;
  
