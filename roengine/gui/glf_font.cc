@@ -22,13 +22,22 @@ GUI::GLFFont::~GLFFont() {
 }
 
 bool GUI::GLFFont::load(const std::string & fn) {
-	int num;
+	bool ret;
 
 	std::ifstream file(fn.c_str(), std::ios_base::in | std::ios_base::binary);
 
 	if (!file.is_open()) {
 		return(false);
 	}
+
+	ret = load(file);
+
+	file.close();
+	return(ret);
+}
+
+bool GUI::GLFFont::load(std::istream& file) {
+	int num;
 	file.read((char*)&m_font, sizeof(Font));
 	glGenTextures(1, &m_font.Tex);
 	
@@ -53,9 +62,9 @@ bool GUI::GLFFont::load(const std::string & fn) {
 		m_font.TexHeight, 0, GL_LUMINANCE_ALPHA, 
 		GL_UNSIGNED_BYTE, (void *)TexBytes.getBuffer());
 
-	file.close();
 	return(true);
 }
+
 
 void GUI::GLFFont::textOut(const std::string& data, float x, float y, float z) const {
 	float fontmult = 6.0f;

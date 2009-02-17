@@ -13,6 +13,8 @@ protected:
 	void ProcessKeyboard();
 
 	bool keys[1024];
+	virtual void BeforeInit();
+	virtual void AfterInit();
 
 public:
 

@@ -463,6 +463,10 @@
 			Name="GUI"
 			>
 			<File
+				RelativePath="..\gui\button.h"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\element.cc"
 				>
 			</File>
@@ -503,6 +507,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\textinput.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\textinput.h"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\window.cc"
 				>
 			</File>
@@ -510,6 +522,22 @@
 				RelativePath="..\gui\window.h"
 				>
 			</File>
+			<Filter
+				Name="Fonts"
+				>
+				<File
+					RelativePath="..\gui\arabia-8.glf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\arial-10.glf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\arial-8.glf.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -25,6 +25,7 @@ SDLEngine::~SDLEngine() {
 }
 
 bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const bool& fullscreen, const unsigned int& bpp) {
+	BeforeInit();
 	unsigned int initflags = SDL_INIT_VIDEO;
 #ifdef _DEBUG
 	initflags |= SDL_INIT_NOPARACHUTE;
@@ -134,6 +135,7 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	WindowResize();
 	glLoadIdentity();
 	return(true);
+	AfterInit();
 }
 
 void SDLEngine::CloseDisplay() {
@@ -213,7 +215,8 @@ void SDLEngine::evtQuit() {}
 void SDLEngine::evtKeyPress(const int& key) {}
 void SDLEngine::evtKeyRelease(const int& key) {}
 
-
+void SDLEngine::BeforeInit() {}
+void SDLEngine::AfterInit() {}
 
 /* THE PRIMITIVES */
 
@@ -253,3 +256,4 @@ void SDLEngine::cube(const float& side) {
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(-aux,  aux, -aux);	// Top Left Of The Texture and Quad
 	glEnd();
 }
+

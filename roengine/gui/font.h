@@ -5,7 +5,7 @@
 
 namespace GUI {
 	class Font {
-	protected:
+	public:
 		virtual void textOut (const std::string&, float x, float y, float z) const = 0;
 	};
 }

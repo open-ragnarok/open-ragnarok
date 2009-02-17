@@ -13,6 +13,7 @@
 #include "ro.h"
 #include "rogl.h"
 #include "sdl.h"
+#include "gui/gui.h"
 
 class ROEngine : public SDLEngine {
 protected:
@@ -21,6 +22,7 @@ protected:
 	ROObjectCache m_ro_objects;
 	FileManager m_filemanager;
 	Frustum m_frustum;
+	GUI::Gui m_gui;
 
 	bool m_quit;
 
@@ -29,6 +31,7 @@ protected:
 	virtual void AfterRun();
 	virtual void BeforeDraw();
 	virtual void AfterDraw();
+	virtual void AfterInit();
 
 	long lastTick;
 	long tickDelay;

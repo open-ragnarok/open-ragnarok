@@ -132,7 +132,7 @@ bool ImageBMP::Read8bpp(std::istream& input) {
 		int bpr = width;
 		if (((width) % 4) > 0) {
 			bpr += 4 - ((width) % 4);
-			width -= 2;
+			//width -= 2;
 		}
 		int size = bpr * height; 
 		input.seekg(dataOffset, std::ios_base::beg);

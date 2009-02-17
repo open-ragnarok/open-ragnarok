@@ -91,11 +91,16 @@ void ROEngine::evtQuit() {
 void ROEngine::BeforeDraw() {}
 void ROEngine::AfterDraw() {}
 
+void ROEngine::AfterInit() {
+	m_gui.Init(m_width, m_height);
+}
+
+
 void ROEngine::Run() {
 	long curtick;
 	m_quit = false;
-	BeforeRun();
 
+	BeforeRun();
 	while (!m_quit) {
 		ProcessKeyboard();
 
@@ -113,6 +118,7 @@ void ROEngine::Run() {
 		m_frustum.Calculate();
 
 		m_gl_objects.draw(m_frustum, tickDelay);
+		m_gui.Draw();
 
 		AfterDraw();
 		Sync();
