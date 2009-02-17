@@ -24,12 +24,14 @@ bool FileLoader::writeFile(const std::string& name, std::ostream& os) {
 }
 
 bool GRFFileLoader::fileExists(const std::string& name) const {
-	std::string fn;
+	std::string fn, aux = "data\\";
 	for (unsigned int i = 0; i < name.length(); i++)
 		if (name[i] > 'A' && name[i] < 'Z')
 			fn += (name[i] - 'A' + 'a');
 		else
 			fn += name[i];
+
+	fn = aux + fn;
 
 	return(m_grf.fileExists(fn));
 }
@@ -37,12 +39,14 @@ bool GRFFileLoader::fileExists(const std::string& name) const {
 FileData GRFFileLoader::getFile(const std::string& name) {
 	FileData ret;
 	std::stringstream ss;
-	std::string fn;
+	std::string fn, aux = "data\\";
 	for (unsigned int i = 0; i < name.length(); i++)
 		if (name[i] > 'A' && name[i] < 'Z')
 			fn += (name[i] - 'A' + 'a');
 		else
 			fn += name[i];
+
+	fn = aux + fn;
 
 	m_grf.write(fn, ss);
 	ret.setSize(ss.tellp());
