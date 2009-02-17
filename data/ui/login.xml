@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<desktop name="login" texture="bgi_temp.bmp">
+	<!-- $Id$ -->
+	<window name="login_window" texture="login_interface\win_login.bmp" x="-1" y="-1">
+		<textarea name="login_window/login" x="10" y="10" />
+		<textarea name="login_window/password" x="10" y="30" />
+		<button name="login_window/btnOk" x="180" y="96" texture="login_interface\btn_ok.bmp" />
+		<button name="login_window/btnCancel" x="230" y="96" texture="login_interface\btn_cancel.bmp" />
+	</window>
+</desktop>
