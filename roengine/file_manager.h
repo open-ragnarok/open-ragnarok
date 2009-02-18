@@ -37,6 +37,12 @@ public:
 
 // Reads files from a filesystem directory
 class FSFileLoader : public FileLoader {
+protected:
+	std::string m_path;
+public:
+	virtual bool fileExists(const std::string& name) const;
+	virtual FileData getFile(const std::string& name);
+	virtual bool open(const std::string& name);
 };
 
 // Reads files from a Zip file
@@ -55,6 +61,7 @@ public:
 	bool remove(const std::string& name);
 
 	bool OpenGRF(const std::string& grf_fn);
+	bool OpenFS(const std::string& location);
 
 	bool fileExists(const std::string& name) const;
 	FileData getFile(const std::string& name);

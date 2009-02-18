@@ -54,6 +54,10 @@ void ROEngine::ReadIni(const std::string& name) {
 			if (!m_filemanager.OpenGRF(file))
 				std::cerr << "Error opening GRF file " << file << std::endl;
 		}
+		if (cmd == "fs") {
+			if (!m_filemanager.OpenFS(file))
+				std::cerr << "Error opening location " << file << std::endl;
+		}
 		else {
 			std::cerr << "Error: Command '" << cmd << "' not supported." << std::endl;
 		}

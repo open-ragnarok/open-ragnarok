@@ -3,6 +3,8 @@
 
 #include "file_manager.h"
 
+#include <sys/stat.h>
+
 FileData::FileData() : DynamicBlob() {
 }
 
@@ -58,6 +60,47 @@ bool GRFFileLoader::open(const std::string& name) {
 	return(m_grf.open(name));
 }
 
+bool FSFileLoader::fileExists(const std::string& name) const {
+	std::string fn = m_path;
+	if (fn[fn.length() - 1] != '\\')
+		fn += "\\";
+	fn += name;
+
+	struct stat stFileInfo;
+	// Stat returns 0 on success (meaning the file exists)
+	if (stat(fn.c_str(), &stFileInfo))
+		return(false);
+
+	return(true);
+}
+
+FileData FSFileLoader::getFile(const std::string& name) {
+	std::ifstream file;
+	FileData ret;
+
+	std::string fn = m_path;
+	if (fn[fn.length() - 1] != '\\')
+		fn += "\\";
+	fn += name;
+
+	file.open(fn.c_str(), std::ios_base::in | std::ios_base::binary);
+
+	if(!file.is_open())
+		return(ret);
+
+	file.seekg(0, std::ios_base::end);
+	int size = file.tellg();
+	file.seekg(0, std::ios_base::beg);
+	ret.setSize(size);
+	file.read(ret.getBuffer(), size);
+
+	return(ret);
+}
+bool FSFileLoader::open(const std::string& name) {
+	m_path = name;
+	return(true);
+}
+
 
 FileManager::FileManager() {
 }
@@ -109,6 +152,24 @@ bool FileManager::OpenGRF(const std::string& grf_fn) {
 
 	add(grfn, m_grf);
 	LoadOrder.push_back(grfn);
+	return(true);
+}
+
+bool FileManager::OpenFS(const std::string& location) {
+	std::string fnn = "fs:";
+	fnn += location;
+
+	if (exists(fnn))
+		return(false);
+
+	FSFileLoader *m_fs = new FSFileLoader();
+	if (!m_fs->open(location)) {
+		delete(m_fs);
+		return(false);
+	}
+
+	add(fnn, m_fs);
+	LoadOrder.push_back(fnn);
 	return(true);
 }
 
