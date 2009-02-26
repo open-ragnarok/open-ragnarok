@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<desktop name="login" texture="bgi_temp.bmp">
+<desktop name="login_ui" texture="rag_title.bmp">
 	<!-- $Id$ -->
 	<window name="login_window" texture="login_interface\win_login.bmp" x="-1" y="-1">
-		<textarea name="login_window/login" x="10" y="10" />
-		<textarea name="login_window/password" x="10" y="30" />
-		<button name="login_window/btnOk" x="180" y="96" texture="login_interface\btn_ok.bmp" />
-		<button name="login_window/btnCancel" x="230" y="96" texture="login_interface\btn_cancel.bmp" />
+		<textarea name="login_window/login" x="95" y="29" />
+		<textarea name="login_window/password" x="95" y="61" />
+		<button name="login_window/btnConnect" x="180" y="96" texture="login_interface\btn_connect.bmp" active="login_interface\btn_connect_a.bmp" hover="login_interface\btn_connect_b.bmp" />
+		<button name="login_window/btnCancel" x="230" y="96" texture="login_interface\btn_cancel.bmp" active="btn_cancel_a.bmp" hover="btn_cancel_b.bmp" />
 	</window>
 </desktop>
