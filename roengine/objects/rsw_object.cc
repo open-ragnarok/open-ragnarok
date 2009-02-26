@@ -5,8 +5,7 @@
 
 RswObject::RswObject(const RO::RSW* rsw, ROObjectCache& cache) : GLObject() {
 	this->rsw = rsw;
-	std::string gnd_fn = "data\\";
-	gnd_fn += rsw->gnd_file;
+	std::string gnd_fn = rsw->gnd_file;
 	this->gnd = (RO::GND*)cache[gnd_fn];
 }
 
@@ -19,7 +18,7 @@ bool RswObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	std::string texname;
 
 	for (i = 0; i < gnd->getTextureCount(); i++) {
-		texname = "data\\texture\\";
+		texname = "texture\\";
 		texname += gnd->getTexture(i).path;
 		tex = tm.Register(fm, texname);
 		textures.add(tex);
@@ -95,18 +94,18 @@ void RswObject::DrawGND() {
 			/* TILE UP */
 			if (cube.tile_up != -1) {
 				const RO::GND::strTile& tile = gnd->getTile(cube.tile_up);
-				textures[tile.texture_index]->Activate();
+				textures[tile.texture_index].Activate();
 				glBegin(GL_QUADS);
-				glTexCoord2f(tile.texture_start[0],		tile.texture_end[0]);
+				glTexCoord2f(tile.texture_start[0],		1 - tile.texture_end[0]);
 				glVertex3f(tile_size * i,		tile_size * j,		 cube.height[0]);
 
-				glTexCoord2f(tile.texture_start[1],		tile.texture_end[1]);
+				glTexCoord2f(tile.texture_start[1],		1 - tile.texture_end[1]);
 				glVertex3f(tile_size * (i + 1),	tile_size * j,		 cube.height[1]);
 
-				glTexCoord2f(tile.texture_start[3],		tile.texture_end[3]);
+				glTexCoord2f(tile.texture_start[3],		1 - tile.texture_end[3]);
 				glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);
 
-				glTexCoord2f(tile.texture_start[2],		tile.texture_end[2]);
+				glTexCoord2f(tile.texture_start[2],		1 - tile.texture_end[2]);
 				glVertex3f(tile_size * i,		tile_size * (j + 1), cube.height[2]);
 				glEnd();
 			}
@@ -115,7 +114,7 @@ void RswObject::DrawGND() {
 			if (cube.tile_side != -1) {
 				const RO::GND::strTile& tile = gnd->getTile(cube.tile_side);
 				const RO::GND::strCube& cube2 = gnd->getCube(i, j+1);
-				textures[tile.texture_index]->Activate();
+				textures[tile.texture_index].Activate();
 				glBegin(GL_QUADS);
 				glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
 				glVertex3f(tile_size * i,		tile_size * (j + 1), cube.height[2]);
@@ -135,7 +134,7 @@ void RswObject::DrawGND() {
 			if (cube.tile_aside != -1) {
 				const RO::GND::strTile& tile = gnd->getTile(cube.tile_aside);
 				const RO::GND::strCube& cube2 = gnd->getCube(i+1, j);
-				textures[tile.texture_index]->Activate();
+				textures[tile.texture_index].Activate();
 				glBegin(GL_QUADS);
 				glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
 				glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);

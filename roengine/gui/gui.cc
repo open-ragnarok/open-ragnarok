@@ -8,7 +8,6 @@ namespace GUI {
 #include "arial-8.glf.h"
 #include "arial-10.glf.h"
 
-
 void Mode2DStart(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -71,15 +70,20 @@ GUI::Gui::Gui() : Singleton() {
 }
 
 GUI::Gui::~Gui() {
+	clear();
 }
 
-void GUI::Gui::Draw() {
+void GUI::Gui::clear() {
+	GUI::Element::getCache().clear();
+}
+
+void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 	if (!m_desktop)
 		return;
 	Mode2DStart(m_width, m_height);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.90);
+	glAlphaFunc(GL_GREATER, 0.45f);
 
 	m_desktop->Draw();
 
@@ -97,9 +101,23 @@ GUI::Element* GUI::Gui::getDesktop() {
 	return(m_desktop);
 }
 
+const GUI::Element* GUI::Gui::getDesktop() const {
+	return(m_desktop);
+}
+
 void GUI::Gui::setDesktop(Element* e) {
 	m_desktop = e;
 }
+
+void GUI::Gui::setDesktop(const std::string& ui) {
+	Element* e = GUI::Element::getElement(ui);
+	if (e == NULL) {
+		std::cerr << "No GUI element named " << ui << " found." << std::endl;
+		return;
+	}
+	setDesktop(e);
+}
+
 
 BaseCache<GUI::Font>& GUI::Gui::FontManager() {
 	return(m_fonts);
@@ -120,3 +138,77 @@ int GUI::Gui::getWidth() const {
 int GUI::Gui::getHeight() const {
 	return(m_height);
 }
+
+GUI::Element* GUI::Gui::getActiveElement() {
+	if (active == NULL) {
+		if (m_desktop != NULL) {
+			Element* next;
+			active = m_desktop;
+			next = active->getActiveChild();
+			while (next != NULL) {
+				active = next;
+				next = next->getActiveChild();
+			}
+		}
+	}
+	return(active);
+}
+
+bool GUI::Gui::InjectKeyPress(const int& key, const int& mod) {
+	Element* e = getActiveElement();
+	if (e == NULL)
+		return(false);
+	return(e->HandleKeyDown(key, mod));
+}
+
+bool GUI::Gui::InjectKeyRelease(const int& key, const int& mod) {
+	Element* e = getActiveElement();
+	if (e == NULL)
+		return(false);
+	return(e->HandleKeyUp(key, mod));
+}
+
+bool GUI::Gui::InjectMouseClick(int x, int y, int buttons, int modifier)  {
+	Element* e = getDesktop();
+	if (e == NULL)
+		return(false);
+	return(e->HandleMouseDown(x, y, buttons));
+}
+
+void GUI::Gui::setFocus(Element* e) {
+	if (active != e) {
+		if (active != NULL)
+			active->onLoseFocus();
+		active = e;
+		active->setActive();
+		if (active != NULL)
+			active->onGetFocus();
+	}
+}
+
+GUI::Element* GUI::Gui::operator[] (const std::string& n) {
+	return(Element::getElement(n));
+}
+
+const GUI::Element* GUI::Gui::operator[] (const std::string& n) const {
+	return(Element::getElement(n));
+}
+
+void GUI::Gui::PushEvent(const Event& e) {
+	m_events.push_back(e);
+}
+	
+GUI::Event GUI::Gui::PopEvent() {
+	std::vector<Event>::iterator itr;
+	itr = m_events.begin();
+	if (itr == m_events.end())
+		return(Event());
+	Event ret = *itr;
+	m_events.erase(itr);
+	return(ret);
+}
+
+int GUI::Gui::GetEventCount() const {
+	return(m_events.size());
+}
+

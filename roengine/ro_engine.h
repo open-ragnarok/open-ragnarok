@@ -48,6 +48,10 @@ public:
 
 	virtual void evtQuit();
 
+	virtual bool evtKeyPress(const int& key, const int& mod = 0);
+	virtual bool evtKeyRelease(const int& key, const int& mod = 0);
+	virtual bool evtMouseClick(const int& x, const int& y, const int& buttons);
+
 };
 
 #ifndef __ROENGINE_NO_AUTOIMPORT_LIB__

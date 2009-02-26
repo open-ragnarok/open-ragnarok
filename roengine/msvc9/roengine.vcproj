@@ -283,6 +283,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\file_data.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\file_manager.cc"
 				>
 			</File>
@@ -366,6 +370,10 @@
 			</File>
 			<File
 				RelativePath="..\camera.h"
+				>
+			</File>
+			<File
+				RelativePath="..\file_data.h"
 				>
 			</File>
 			<File
@@ -463,6 +471,10 @@
 			Name="GUI"
 			>
 			<File
+				RelativePath="..\gui\button.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\button.h"
 				>
 			</File>
@@ -475,15 +487,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\event.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\event.h"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\font.h"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\gl_font.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\gl_font.h"
 				>
 			</File>
 			<File
@@ -500,6 +512,14 @@
 			</File>
 			<File
 				RelativePath="..\gui\gui.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\label.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\label.h"
 				>
 			</File>
 			<File

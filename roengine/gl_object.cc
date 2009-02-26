@@ -9,6 +9,7 @@ GLObject::GLObject() {
 	m_useTexture = false; 
 	m_visible = true;
 	m_frustum_check = true;
+	cameraDir = Vector3f::UNIT_Z;
 }
 
 GLObject::~GLObject() {}
@@ -43,8 +44,9 @@ void GLObject::BeforeDraw() {
 	}
 }
 
-void GLObject::Render(long tickdelay) {
+void GLObject::Render(long tickdelay, const Vector3f& CameraLook) {
 	m_tickdelay = tickdelay;
+	cameraDir = CameraLook;
 	BeforeDraw();
 	Draw();
 	AfterDraw();

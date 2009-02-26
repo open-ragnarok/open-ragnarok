@@ -83,6 +83,7 @@ void ImageBMP::ReadFromStream(std::istream& input, bool flipvertical) {
 		Read8bpp(input);
 	}
 	else if (bpp == 24) {
+		flipvertical = false;
 		int bytesPerRow = ((width * 3 + 3) / 4) * 4 - (width * 3 % 4);
 		int size = bytesPerRow * height;
 		DynamicBlob<char> pixels(size);

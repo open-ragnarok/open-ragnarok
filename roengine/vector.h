@@ -1,3 +1,4 @@
+/* $Id$ */
 #ifndef __VECTOR_H
 #define __VECTOR_H
 
@@ -8,6 +9,10 @@ class Vector3 {
 protected:
 	T _data[3];
 public:
+	static const Vector3<T> UNIT_X;
+	static const Vector3<T> UNIT_Y;
+	static const Vector3<T> UNIT_Z;
+
 	Vector3() {
 		_data[0] = _data[1] = _data[2] = 0;
 	}
@@ -181,6 +186,37 @@ public:
 		return(_data[2]);
 	}
 
+	/**
+	 * Calculates the dot product between this vector and another given vector.
+	 */
+	T dot(const Vector3<T>& v) const {
+		T ret = 0;
+		for (int i = 0; i < 3; i++)
+			ret += _data[i] * v._data[i];
+
+		return(ret);
+	}
+
+	/** Returns the angle between two vectors (in radians)
+	 */
+	T angle(const Vector3<T>& v) const {
+		if (v.size() == 0)
+			return(0);
+		if (size() == 0)
+			return(0);
+
+		Vector3<T> v1, v2;
+		v1 = *this;
+		v1 /= v1.size();
+		v2 = v;
+		v2 /= v2.size();
+		T ret = v1.dot(v2);
+
+		ret = acos(ret);
+
+		return(ret);
+	}
+
 	Vector3<T>& add(const Vector3<T>& v) {
 		_data[0] += v._data[0];
 		_data[1] += v._data[1];
@@ -205,9 +241,37 @@ public:
 	Vector3<T> operator + (const Vector3<T>& v) const {
 		float x[3];
 		x[0] = _data[0] + v._data[0];
-		x[0] = _data[1] + v._data[1];
-		x[0] = _data[2] + v._data[2];
+		x[1] = _data[1] + v._data[1];
+		x[2] = _data[2] + v._data[2];
 		return(Vector3<T>(x));
+	}
+
+	/**
+	 * Calculates the cross product
+	 */
+	Vector3<T> operator * (const Vector3<T>& v) const {
+		float x[3];
+		// Yeah, cheating. I'm lazy. Sue me!
+		x[0] = _data[1] * v._data[2] - _data[2] * v._data[1];
+		x[1] = _data[2] * v._data[0] - _data[0] * v._data[2];
+		x[2] = _data[0] * v._data[1] - _data[1] * v._data[0];
+		return(Vector3<T>(x));
+	}
+
+	/**
+	 * Calculates the cross product
+	 */
+	Vector3<T>& operator *= (const Vector3<T>& v) {
+		float x[3];
+		// Yeah, cheating. I'm lazy. Sue me!
+		x[0] = _data[1] * v._data[2] - _data[2] * v._data[1];
+		x[1] = _data[2] * v._data[0] - _data[0] * v._data[2];
+		x[2] = _data[0] * v._data[1] - _data[1] * v._data[0];
+
+		_data[0] = x[0];
+		_data[1] = x[1];
+		_data[2] = x[2];
+		return(*this);
 	}
 
 	Vector3<T>& operator += (const Vector3<T>& v) {
@@ -220,8 +284,8 @@ public:
 	Vector3<T> operator - (const Vector3<T>& v) const {
 		float x[3];
 		x[0] = _data[0] - v._data[0];
-		x[0] = _data[1] - v._data[1];
-		x[0] = _data[2] - v._data[2];
+		x[1] = _data[1] - v._data[1];
+		x[2] = _data[2] - v._data[2];
 		return(Vector3<T>(x));
 	}
 
@@ -235,8 +299,8 @@ public:
 	Vector3<T> operator * (const T& v) const {
 		float x[3];
 		x[0] = _data[0] * v;
-		x[0] = _data[1] * v;
-		x[0] = _data[2] * v;
+		x[1] = _data[1] * v;
+		x[2] = _data[2] * v;
 		return(Vector3<T>(x));
 	}
 
@@ -250,8 +314,8 @@ public:
 	Vector3<T> operator / (const T& v) const {
 		float x[3];
 		x[0] = _data[0] / v;
-		x[0] = _data[1] / v;
-		x[0] = _data[2] / v;
+		x[1] = _data[1] / v;
+		x[2] = _data[2] / v;
 		return(Vector3<T>(x));
 	}
 
@@ -291,7 +355,16 @@ public:
 	}
 };
 
+template <typename T>
+const Vector3<T> Vector3<T>::UNIT_X = Vector3<T>(1, 0, 0);
+template <typename T>
+const Vector3<T> Vector3<T>::UNIT_Y = Vector3<T>(0, 1, 0);
+template <typename T>
+const Vector3<T> Vector3<T>::UNIT_Z = Vector3<T>(0, 0, 1);
+
 typedef Vector3<float> Vector3f;
 typedef Vector3<double> Vector3d;
+
+
 
 #endif /* __VECTOR_H */

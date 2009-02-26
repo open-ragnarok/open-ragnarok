@@ -45,6 +45,8 @@ void ROEngine::ReadIni(const std::string& name) {
 			ptr++;
 
 		while (ptr[0] != 0) {
+			if (ptr[0] == ';' || ptr[0] == '#')
+				break;
 			file += ptr[0];
 			ptr++;
 		}
@@ -54,7 +56,7 @@ void ROEngine::ReadIni(const std::string& name) {
 			if (!m_filemanager.OpenGRF(file))
 				std::cerr << "Error opening GRF file " << file << std::endl;
 		}
-		if (cmd == "fs") {
+		else if (cmd == "fs") {
 			if (!m_filemanager.OpenFS(file))
 				std::cerr << "Error opening location " << file << std::endl;
 		}
@@ -84,6 +86,7 @@ void ROEngine::BeforeRun() {
 void ROEngine::AfterRun() {
 	m_gl_objects.clear();
 	m_ro_objects.clear();
+	m_gui.clear();
 	m_texturemanager.Clear();
 	CloseDisplay();
 }
@@ -98,7 +101,6 @@ void ROEngine::AfterDraw() {}
 void ROEngine::AfterInit() {
 	m_gui.Init(m_width, m_height);
 }
-
 
 void ROEngine::Run() {
 	long curtick;
@@ -130,4 +132,14 @@ void ROEngine::Run() {
 	AfterRun();
 }
 
+bool ROEngine::evtKeyPress(const int& key, const int& mod) {
+	return(m_gui.InjectKeyPress(key, mod));
+}
 
+bool ROEngine::evtKeyRelease(const int& key, const int& mod) {
+	return(m_gui.InjectKeyRelease(key, mod));
+}
+
+bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
+	return(m_gui.InjectMouseClick(x, y, buttons));
+}

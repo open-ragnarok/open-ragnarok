@@ -1,17 +1,17 @@
+/* $Id$ */
 #ifndef __GUI_TEXTINPUT_H
 #define __GUI_TEXTINPUT_H
 
-#include "element.h"
+#include "label.h"
 
 namespace GUI {
-	class TextInput : public Element {
+	class TextInput : public Label {
 	protected:
-		std::string m_text;
+		unsigned int m_pos;
 	public:
-		void setText(const std::string&);
-		std::string& getText();
-		const std::string& getText() const;
-		virtual void Draw();
+		TextInput(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+
+		virtual bool HandleKeyDown(int key, int mod = 0);
 	};
 }
 

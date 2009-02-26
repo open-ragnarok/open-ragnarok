@@ -134,8 +134,8 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	
 	WindowResize();
 	glLoadIdentity();
-	return(true);
 	AfterInit();
+	return(true);
 }
 
 void SDLEngine::CloseDisplay() {
@@ -193,17 +193,25 @@ void SDLEngine::Mode2DEnd() {
 }
 
 void SDLEngine::ProcessKeyboard() {
-	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-		switch (event.type) {
+	SDL_Event e;
+	while(SDL_PollEvent(&e)) {
+		switch (e.type) {
 			case SDL_KEYDOWN:
-				keys[event.key.keysym.sym] = true;
-				evtKeyPress(event.key.keysym.sym);
+				keys[e.key.keysym.sym] = true;
+				evtKeyPress(e.key.keysym.sym, e.key.keysym.mod);
 				break;
 			case SDL_KEYUP:
-				keys[event.key.keysym.sym] = false;
-				evtKeyRelease(event.key.keysym.sym);
+				keys[e.key.keysym.sym] = false;
+				evtKeyRelease(e.key.keysym.sym, e.key.keysym.mod);
 				break;
+            case SDL_MOUSEMOTION:
+                //printf("Mouse foi movido de %d,%d para (%d,%d)\n", e.motion.xrel, e.motion.yrel, e.motion.x, e.motion.y);
+				evtMouseMove(e.button.x, e.button.y, e.motion.xrel, e.motion.yrel);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                //printf("botão %d do mouse pressionado em (%d,%d)\n", e.button.button, e.button.x, e.button.y);
+				evtMouseClick(e.button.x, e.button.y, e.button.button);
+                break;
 			case SDL_QUIT:
 				evtQuit();
 				break;
@@ -212,8 +220,11 @@ void SDLEngine::ProcessKeyboard() {
 }
 
 void SDLEngine::evtQuit() {}
-void SDLEngine::evtKeyPress(const int& key) {}
-void SDLEngine::evtKeyRelease(const int& key) {}
+bool SDLEngine::evtKeyPress(const int& key, const int& mod) { return(false); }
+bool SDLEngine::evtKeyRelease(const int& key, const int& mod) { return(false); }
+bool SDLEngine::evtMouseClick(const int& x, const int& y, const int& buttons) { return(false); }
+bool SDLEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) { return(false); }
+bool SDLEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int& dy) { return(false); }
 
 void SDLEngine::BeforeInit() {}
 void SDLEngine::AfterInit() {}

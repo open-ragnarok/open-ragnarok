@@ -1,0 +1,45 @@
+/* $Id$ */
+#include "stdafx.h"
+
+#include "label.h"
+#include "gui.h"
+
+GUI::Label::Label(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
+	if (node != NULL)
+		ParseFromXml(node, tm, fm);
+}
+
+GUI::Label& GUI::Label::setText(const std::string& s) {
+	m_text = s;
+	return(*this);
+}
+
+std::string& GUI::Label::getText() {
+	return(m_text);
+}
+
+const std::string& GUI::Label::getText() const {
+	return(m_text);
+}
+
+void GUI::Label::Draw() {
+	GUI::Gui& gui = GUI::Gui::getSingleton();
+	const GUI::Font* font = gui.getDefaultFont();
+
+	glColor3f(0,0,0);
+	font->textOut(m_text, (float)pos_x, (float)pos_y, 0);
+	glColor3f(1,1,1);
+}
+
+bool GUI::Label::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
+	if (GUI::Element::ParseXmlAttr(attr, tm, fm))
+		return(true);
+
+	std::string attrname = attr->Name();
+
+	if (attrname == "text") {
+		m_text = attr->Value();
+		return(true);
+	}
+	return(false);
+}

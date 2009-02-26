@@ -20,13 +20,14 @@ protected:
 	bool m_visible;
 	long m_tickdelay;
 	bool m_frustum_check;
+	Vector3f cameraDir;
 
 public:
 	GLObject();
 	virtual ~GLObject();
 
 	virtual void Draw() = 0;
-	void Render(long tickdelay = 0);
+	void Render(long tickdelay = 0, const Vector3f& CameraLook = Vector3f::UNIT_Z);
 	void setPos(const float&, const float&, const float&);
 	void setScale(const float&, const float&, const float&);
 	void setRot(const float&, const float&, const float&);

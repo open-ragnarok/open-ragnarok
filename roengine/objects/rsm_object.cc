@@ -32,7 +32,7 @@ bool RsmObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	std::string texname;
 
 	for (i = 0; i < rsm->getTextureCount(); i++) {
-		texname = "data\\texture\\";
+		texname = "texture\\";
 		texname += rsm->getTexture(i);
 		tex = tm.Register(fm, texname);
 		textures.add(tex);
@@ -268,7 +268,7 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 		if (surface.texid != lasttex) {
 			glEnd();
 			lasttex = surface.texid;
-			textures[lasttex]->Activate();
+			textures[lasttex].Activate();
 			//glBindTexture(GL_TEXTURE_2D, textures[lasttex]);
 			glBegin(GL_TRIANGLES);
 		}
@@ -303,7 +303,7 @@ void RsmObject::Draw() {
 			glNewList(rsm_gl, GL_COMPILE_AND_EXECUTE);
 			glEnable(GL_TEXTURE_2D);
 			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GREATER, 0.90);
+			glAlphaFunc(GL_GREATER, 0.90f);
 			DrawMesh(0);
 			glDisable(GL_ALPHA_TEST);
 			glDisable(GL_TEXTURE_2D);
@@ -314,7 +314,7 @@ void RsmObject::Draw() {
 		m_time += m_tickdelay * 10;
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.90);
+		glAlphaFunc(GL_GREATER, 0.90f);
 		DrawMesh(0);
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_TEXTURE_2D);

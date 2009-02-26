@@ -3,17 +3,9 @@
 #define __FILE_MANAGER_H
 
 #include "base_cache.h"
-#include "blob.h"
+#include "file_data.h"
 
 #include <vector>
-
-class FileData : public DynamicBlob<char> {
-public:
-	FileData();
-	FileData(const FileData& o);
-	FileData(const char* data, unsigned int size);
-	bool write(std::ostream& os) const;
-};
 
 class FileLoader {
 public:

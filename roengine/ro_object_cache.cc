@@ -46,14 +46,12 @@ bool ROObjectCache::ReadRSW(const std::string& name, FileManager& fm, bool deped
 	if (depedencies) {
 		std::string fn;
 
-		fn = "data\\";
-		fn += rsw->gat_file;
+		fn = rsw->gat_file;
 		// ReadGAT(fn, fm);
-		fn = "data\\";
-		fn += rsw->gnd_file;
+		fn = rsw->gnd_file;
 		ReadGND(fn, fm);
 
-		std::string model_pfx = "data\\model\\";
+		std::string model_pfx = "model\\";
 		unsigned int i;
 		for (i = 0; i < rsw->getObjectCount(); i++) {
 			if (rsw->getObject(i)->isType(RO::RSW::OT_Model)) {
