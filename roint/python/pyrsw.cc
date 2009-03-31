@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "pyrsw.h"
+#include "ro/python/pyrsw.h"
 
 namespace RO {
 

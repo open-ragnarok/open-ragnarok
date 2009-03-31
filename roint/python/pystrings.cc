@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "pystrings.h"
+#include "ro/python/pystrings.h"
 
 namespace RO {
 	std::string __pyret;

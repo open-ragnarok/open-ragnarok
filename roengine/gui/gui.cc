@@ -85,7 +85,7 @@ void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.45f);
 
-	m_desktop->Draw();
+	m_desktop->Draw(delay);
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_TEXTURE_2D);
@@ -97,25 +97,38 @@ void GUI::Gui::setSize(int w, int h) {
 	m_height = h;
 }
 
-GUI::Element* GUI::Gui::getDesktop() {
+GUI::Desktop* GUI::Gui::getDesktop() {
 	return(m_desktop);
 }
 
-const GUI::Element* GUI::Gui::getDesktop() const {
+const GUI::Desktop* GUI::Gui::getDesktop() const {
 	return(m_desktop);
 }
 
-void GUI::Gui::setDesktop(Element* e) {
+void GUI::Gui::setDesktop(Desktop* e) {
+	if (m_desktop == e)
+		return;
 	m_desktop = e;
+	if (m_desktop == NULL)
+		return;
+
+	active = (Element*)m_desktop;
+	while (active->getActiveChild() != NULL) {
+		active = active->getActiveChild();
+	}
 }
 
 void GUI::Gui::setDesktop(const std::string& ui) {
+	if (ui == "") {
+		setDesktop(NULL);
+		return;
+	}
 	Element* e = GUI::Element::getElement(ui);
 	if (e == NULL) {
 		std::cerr << "No GUI element named " << ui << " found." << std::endl;
 		return;
 	}
-	setDesktop(e);
+	setDesktop((Desktop*)e);
 }
 
 
@@ -210,5 +223,13 @@ GUI::Event GUI::Gui::PopEvent() {
 
 int GUI::Gui::GetEventCount() const {
 	return(m_events.size());
+}
+
+void GUI::Gui::ProcessEvents() {
+	if (m_desktop == NULL)
+		return;
+
+	while (GetEventCount())
+		m_desktop->HandleEvent(PopEvent());
 }
 

@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)\roint\;$(SolutionDir)\rogl\;$(SDL)\include\"
+				AdditionalIncludeDirectories="&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\roint\include\&quot;;&quot;$(SolutionDir)\rogl\include\&quot;"
 				PreprocessorDefinitions="WIN32,_WINDOWS,_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -170,7 +170,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="$(SolutionDir)\roint\;$(SolutionDir)\rogl\;$(SDL)\include\"
+				AdditionalIncludeDirectories="&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\roint\&quot;;&quot;$(SolutionDir)\rogl\&quot;;&quot;$(SolutionDir)\ronet\include&quot;"
 				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -295,23 +295,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\full_act.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gl_object.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\gl_object_cache.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\image.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\image_bmp.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\image_spr.cc"
 				>
 			</File>
 			<File
@@ -347,10 +339,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\texture.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\texturemanager.cc"
 				>
 			</File>
@@ -362,10 +350,6 @@
 			>
 			<File
 				RelativePath="..\base_cache.h"
-				>
-			</File>
-			<File
-				RelativePath="..\blob.h"
 				>
 			</File>
 			<File
@@ -385,23 +369,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\full_act.h"
+				>
+			</File>
+			<File
 				RelativePath="..\gl_object.h"
 				>
 			</File>
 			<File
 				RelativePath="..\gl_object_cache.h"
-				>
-			</File>
-			<File
-				RelativePath="..\image.h"
-				>
-			</File>
-			<File
-				RelativePath="..\image_bmp.h"
-				>
-			</File>
-			<File
-				RelativePath="..\image_spr.h"
 				>
 			</File>
 			<File
@@ -418,10 +394,6 @@
 			</File>
 			<File
 				RelativePath="..\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\texture.h"
 				>
 			</File>
 			<File
@@ -443,11 +415,11 @@
 			Name="Objects"
 			>
 			<File
-				RelativePath="..\objects\cube_object.cc"
+				RelativePath="..\objects\act_object.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\objects\cube_object.h"
+				RelativePath="..\objects\cube_object.cc"
 				>
 			</File>
 			<File
@@ -455,17 +427,29 @@
 				>
 			</File>
 			<File
-				RelativePath="..\objects\rsm_object.h"
-				>
-			</File>
-			<File
 				RelativePath="..\objects\rsw_object.cc"
 				>
 			</File>
-			<File
-				RelativePath="..\objects\rsw_object.h"
+			<Filter
+				Name="Headers"
 				>
-			</File>
+				<File
+					RelativePath="..\objects\act_object.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objects\cube_object.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objects\rsm_object.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objects\rsw_object.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="GUI"
@@ -475,7 +459,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\gui\button.h"
+				RelativePath="..\gui\desktop.cc"
 				>
 			</File>
 			<File
@@ -483,19 +467,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\gui\element.h"
-				>
-			</File>
-			<File
 				RelativePath="..\gui\event.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\event.h"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\font.h"
 				>
 			</File>
 			<File
@@ -503,15 +475,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\gui\glf_font.h"
-				>
-			</File>
-			<File
 				RelativePath="..\gui\gui.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\gui.h"
 				>
 			</File>
 			<File
@@ -519,11 +483,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\gui\label.h"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\singleton.h"
+				RelativePath="..\gui\list.cc"
 				>
 			</File>
 			<File
@@ -531,15 +491,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\gui\textinput.h"
-				>
-			</File>
-			<File
 				RelativePath="..\gui\window.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\window.h"
 				>
 			</File>
 			<Filter
@@ -558,6 +510,78 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Headers"
+				>
+				<File
+					RelativePath="..\gui\button.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\desktop.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\element.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\event.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\font.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\glf_font.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\gui.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\label.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\list.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\singleton.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\textinput.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\window.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Data"
+			>
+			<File
+				RelativePath="..\..\data\ui\char_create.xml"
+				>
+			</File>
+			<File
+				RelativePath="..\..\data\ui\char_select.xml"
+				>
+			</File>
+			<File
+				RelativePath="..\..\data\ui\login.xml"
+				>
+			</File>
+			<File
+				RelativePath="..\..\data\ui\service_select.xml"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

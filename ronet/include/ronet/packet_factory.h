@@ -2,8 +2,10 @@
 #ifndef __RONET_PACKET_FACTORY_H
 #define __RONET_PACKET_FACTORY_H
 
+#include "packet_vector.h"
 #include "packet.h"
 #include "buffer.h"
+#include "connection.h"
 
 #include <vector>
 #include <map>
@@ -11,7 +13,7 @@
 namespace ronet {
 	class RONET_DLLAPI PacketFactory {
 	private:
-		std::vector<Packet*> packets;
+		PacketVector packets;
 	protected:
 
 		typedef bool (PacketFactory::*Handler)(ucBuffer& p);
@@ -29,6 +31,8 @@ namespace ronet {
 		};
 
 		bool Handle_ServerList(ucBuffer&);
+		bool Handle_CharCreateError(ucBuffer&);
+		bool Handle_CharList(ucBuffer&);
 
 		void push(Packet*);
 
@@ -42,6 +46,8 @@ namespace ronet {
 		Packet* pop();
 
 		void generatePackets(ucBuffer&);
+		PacketFactory& operator << (ucBuffer&);
+		PacketFactory& operator << (Connection&);
 	};
 }
 

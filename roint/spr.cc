@@ -1,6 +1,6 @@
 /* $Id$ */
 #include "stdafx.h"
-#include "spr.h"
+#include "ro/types/spr.h"
 
 #include <fstream>
 #include <sstream>
@@ -73,6 +73,7 @@ void RO::SPR::readImage(std::istream& s, unsigned int idx) {
 		return;
 	}
 	std::stringstream out;
+	int written = 0;
 	
 	for (pos = 0; pos < length; pos++) {
 		c = data[pos];
@@ -80,14 +81,19 @@ void RO::SPR::readImage(std::istream& s, unsigned int idx) {
 		if (c == 0) {
 			unsigned char len;
 			len = data[pos+1];
+			pos++;
 			if (len != 0) {
-				pos++;
-				for (unsigned char j = 0; j < len; j++)
+				//pos++;
+				for (unsigned char j = 0; j < len; j++) {
 					out.write("\0", 1);
+					written++;
+				}
 			}
 		}
 		else {
-			out.write((char*)data + pos, 1);
+			out.write((char*)&c, 1);
+//			out.write((char*)data + pos, 1);
+			written++;
 		}
 	}
 	
@@ -112,8 +118,10 @@ const RO::SPR::Pal* RO::SPR::getPal(const unsigned char& idx) const {
 	return(&pal[idx]);
 }
 
-#pragma pack(push)
-#pragma pack(1)
+#ifndef __PSP__
+#	pragma pack(push)
+#	pragma pack(1)
+#endif
 namespace RO {
 	struct bmpHeader {
 		struct fileHeader {
@@ -136,7 +144,9 @@ namespace RO {
 		} dib;
 	};
 }
-#pragma pack(pop)
+#ifndef __PSP__
+#	pragma pack(pop)
+#endif
 
 bool RO::SPR::saveBMP(const unsigned int& idx, std::ostream& s) const {
 	const Image* i = getFrame(idx);

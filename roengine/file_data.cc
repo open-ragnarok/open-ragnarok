@@ -3,22 +3,19 @@
 
 #include "file_data.h"
 
-FileData::FileData() :
-	DynamicBlob(),
-	std::basic_iostream<char>(this),
-	std::basic_streambuf<char>()  {
+FileData::FileData() : DynamicBlobChar() {
 
 }
 
-FileData::FileData(const FileData& o) : DynamicBlob(o), std::basic_iostream<char>(this), std::basic_streambuf<char>() {
+FileData::FileData(const FileData& o) : DynamicBlobChar(o) {
 }
 
-FileData::FileData(const char* data, unsigned int size) : DynamicBlob(size), std::basic_iostream<char>(this), std::basic_streambuf<char>() {
+FileData::FileData(const char* data, unsigned int size) : DynamicBlobChar(size) {
 	memcpy(this->buffer, data, size);
 }
 
 bool FileData::write(std::ostream& os) const {
-	os.write(this->buffer, dataSize);
+	os.write((char*)this->buffer, dataSize);
 	return(true);
 }
 

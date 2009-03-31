@@ -5,27 +5,29 @@
 #include "event.h"
 #include "gui.h"
 
-GUI::Button::Button(Element* parent, const Texture::Pointer& base) : Element(parent) {
+#include <SDL.h>
+
+GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base) : Element(parent) {
 	texture_base = base;
 	texture_active = base;
 	texture_hover = base;
 	texture_disabled = base;
 }
-GUI::Button::Button(Element* parent, const Texture::Pointer& base, const Texture::Pointer& active) : Element(parent) {
+GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
 	texture_hover = active;
 	texture_disabled = base;
 }
 
-GUI::Button::Button(Element* parent, const Texture::Pointer& base, const Texture::Pointer& active, const Texture::Pointer& hover) : Element(parent) {
+GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
 	texture_hover = hover;
 	texture_disabled = base;
 }
 
-GUI::Button::Button(Element* parent, const Texture::Pointer& base, const Texture::Pointer& active, const Texture::Pointer& hover, const Texture::Pointer& disabled) : Element(parent) {
+GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover, const rogl::Texture::Pointer& disabled) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
 	texture_hover = hover;
@@ -101,15 +103,36 @@ bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, F
 	return(false);
 }
 
+void GUI::Button::Click() {
+	Event e(getName(), Event::evtClick, this);
+	GUI::Gui::getSingleton().PushEvent(e);
+}
+
+
 bool GUI::Button::HandleMouseDown(int x, int y, int button) {
+	if (!m_enabled)
+		return(false);
+
+	std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
+
 	if (!(button & 1))
 		return(false);
-	Event e("Button Click", this);
-	GUI::Gui::getSingleton().PushEvent(e);
+	Click();
 	return(true);
 }
 
-void GUI::Button::Draw() {
+bool GUI::Button::HandleKeyDown(int key, int mod) {
+	if (!m_enabled)
+		return(false);
+
+	if (key == SDLK_SPACE || key == SDLK_RETURN) {
+		Click();
+		return(true);
+	}
+	return(GUI::Element::HandleKeyDown(key, mod));
+}
+
+void GUI::Button::Draw(unsigned int delay) {
 	// Default
 	texture = texture_base;
 

@@ -222,77 +222,7 @@ namespace ronet {
 
 			return(ret);
 		}
-
-		Buffer<T, _StorSize>& operator << (std::istream& s) {
-			write(s);
-			return(*this);
-		}
-
-		Buffer<T, _StorSize>& operator << (Buffer<T>& b) {
-			write(b);
-			return(*this);
-		}
-
-		Buffer<T, _StorSize>& operator >> (std::ostream& s) {
-			s.write((char*)data + dataStart, dataSize());
-			alloc(0);
-			return(*this);
-		}
-
-		Buffer<T, _StorSize>& operator >> (T& c) {
-			if (dataSize() == 0)
-				return(*this);
-			c = *(data+dataStart);
-			dataStart++;
-			return(*this);
-		}
-
-		Buffer<T, _StorSize>& operator >> (short& c) {
-			c = 0;
-			if (dataSize() < sizeof(short))
-				return(*this);
-
-			c = *(short*)(data+dataStart);
-
-			dataStart += sizeof(short);
-			return(*this);
-		}
-
-		Buffer<T, _StorSize>& operator >> (unsigned short& c) {
-			c = 0;
-			if (dataSize() < sizeof(unsigned short))
-				return(*this);
-
-			c = *(unsigned short*)(data+dataStart);
-
-			dataStart += sizeof(unsigned short);
-			return(*this);
-		}
-
-		Buffer<T, _StorSize>& operator >> (int& c) {
-			c = 0;
-			if (dataSize() < sizeof(int))
-				return(*this);
-
-			c = *(int*)(data+dataStart);
-			dataStart += sizeof(int);
-			return(*this);
-		}
-
-		Buffer<T, _StorSize>& operator >> (unsigned int& c) {
-			c = 0;
-			if (dataSize() < sizeof(unsigned int))
-				return(*this);
-
-			c = *(unsigned int*)(data+dataStart);
-			dataStart += sizeof(unsigned int);
-			return(*this);
-		}
-
-
 	};
-
-	class RONET_DLLAPI ucBuffer : public Buffer<unsigned char> {};
 }
 
 #endif /* __RONET_BUFFER_H */

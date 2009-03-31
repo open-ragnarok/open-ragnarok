@@ -3,11 +3,13 @@
 #define __GUI_H
 
 // Objects
+#include "desktop.h"
 #include "window.h"
 #include "textinput.h"
 #include "button.h"
 #include "label.h"
 #include "textinput.h"
+#include "list.h"
 
 // Other stuff
 #include "singleton.h"
@@ -34,7 +36,7 @@ namespace GUI {
  */
 class Gui : public Singleton<Gui> {
 protected:
-	Element* m_desktop;
+	Desktop* m_desktop;
 	Element* active;
 	int m_width;
 	int m_height;
@@ -57,10 +59,10 @@ public:
 	/** Clears the GUI and all the elements */
 	void clear();
 
-	Element* getDesktop();
-	const Element* getDesktop() const;
+	Desktop* getDesktop();
+	const Desktop* getDesktop() const;
 	Element* getActiveElement();
-	void setDesktop(Element*);
+	void setDesktop(Desktop*);
 	void setDesktop(const std::string&);
 	void setFocus(Element*);
 
@@ -80,6 +82,7 @@ public:
 
 	void PushEvent(const Event&);
 	Event PopEvent();
+	void ProcessEvents();
 	int GetEventCount() const;
 
 	/** Finds an object of a given name. No two objects can have the same name. */

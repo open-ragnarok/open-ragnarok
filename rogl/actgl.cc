@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "actgl.h"
+#include "rogl/actgl.h"
 
 ROGL::ActData::ActData() {
 	spr = NULL;

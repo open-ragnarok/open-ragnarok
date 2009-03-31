@@ -28,6 +28,20 @@ bool GLObject::isVisible() const {
 	return(m_visible);
 }
 
+float GLObject::getAngle(const Vector3f& v) const {
+	Vector3f cam = cameraDir / cameraDir.size();
+	cam[1] = 0;
+	
+	Vector3f cross = cam * v;
+
+	float angle = cam.angle(v);
+
+	if (cross[1] < 0)
+		angle = -angle;
+
+	return(angle);
+}
+
 void GLObject::BeforeDraw() {
 	glPushMatrix();
 	glTranslatef(pos[0], pos[1], pos[2]);
@@ -88,7 +102,7 @@ void GLObject::setRotZ(const float& z) {
 	zrot = z;
 }
 
-void GLObject::setTexture(Texture::Pointer& tex) {
+void GLObject::setTexture(rogl::Texture::Pointer& tex) {
 	m_texture = tex;
 }
 

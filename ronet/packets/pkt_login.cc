@@ -3,13 +3,13 @@
 
 #include "ronet/packets/pkt_login.h"
 
-ronet::pktLogin::pktLogin() : Packet(0x0064) {
+ronet::pktLogin::pktLogin() : Packet(pktLoginID) {
 	version = 0x14000000;
 	version2 = 1;
 	setSize(55);
 }
 
-ronet::pktLogin::pktLogin(const std::string& user, const std::string& pass) : Packet(0x0064) {
+ronet::pktLogin::pktLogin(const std::string& user, const std::string& pass) : Packet(pktLoginID) {
 	version = 0x14000000;
 	version2 = 1;
 	setSize(55);

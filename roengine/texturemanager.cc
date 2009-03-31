@@ -3,8 +3,9 @@
 
 #include "texturemanager.h"
 
-#include "image_bmp.h"
-#include "image_spr.h"
+#include "rogl/texture.h"
+#include "rogl/image_bmp.h"
+#include "rogl/image_spr.h"
 
 // === TEXTURE MANAGER ===
 
@@ -17,7 +18,7 @@ TextureManager::~TextureManager() {
 
 void TextureManager::Clear() {
 	tex_t::iterator itr = textures.begin();
-	Texture* tp;
+	rogl::Texture* tp;
 
 	unsigned int glTex;
 	while (itr != textures.end()) {
@@ -30,7 +31,7 @@ void TextureManager::Clear() {
 	textures.clear();
 }
 
-Texture::Pointer TextureManager::Register(FileManager& fm, const std::string& name) {
+rogl::Texture::Pointer TextureManager::Register(FileManager& fm, const std::string& name) {
 	if (!fm.fileExists(name)) {
 		std::cerr << "Can't load texture " << name << std::endl;
 		return(0);
@@ -42,16 +43,16 @@ Texture::Pointer TextureManager::Register(FileManager& fm, const std::string& na
 	FileData data = fm.getFile(name);
 	std::stringstream imgfile;
 	data.write(imgfile);
-	ImageBMP img(imgfile);
+	rogl::ImageBMP img(imgfile);
 	return(Register(name, img));
 }
 
-Texture::Pointer TextureManager::Register(const std::string& name, const Image& img) {
+rogl::Texture::Pointer TextureManager::Register(const std::string& name, const rogl::Image& img) {
 	if (IsRegistered(name))
 		return(textures[name]);
 
-	textures[name] = new Texture(img, name);
-	Texture::Pointer tp(textures[name]);
+	textures[name] = new rogl::Texture(img, name);
+	rogl::Texture::Pointer tp(textures[name]);
 
 	return(tp);
 }
@@ -87,17 +88,17 @@ bool TextureManager::Activate(const std::string& name) const {
 }
 
 
-Texture::Pointer TextureManager::operator [](const std::string& name) const {
+rogl::Texture::Pointer TextureManager::operator [](const std::string& name) const {
 	tex_t::const_iterator itr = textures.find(name);
 	if (itr == textures.end())
 		return(0);
-	Texture::Pointer ptr(itr->second);
+	rogl::Texture::Pointer ptr(itr->second);
 	return(ptr);
 }
 
-Texture::PointerCache TextureManager::RegisterSPR(FileManager& fm, ROObjectCache& cache, const std::string& name) {
+rogl::Texture::PointerCache TextureManager::RegisterSPR(FileManager& fm, ROObjectCache& cache, const std::string& name) {
 	const RO::SPR* spr;
-	Texture::PointerCache ret;
+	rogl::Texture::PointerCache ret;
 
 	if (!cache.ReadSPR(name,fm))
 		return(ret);
@@ -106,7 +107,7 @@ Texture::PointerCache TextureManager::RegisterSPR(FileManager& fm, ROObjectCache
 	for (unsigned int i = 0; i < spr->getImgCount(); i++) {
 		char buf[256];
 		sprintf(buf, "%s-%d", name.c_str(), i);
-		ImageSPR img(spr, i);
+		rogl::ImageSPR img(spr, i);
 		ret.add(Register(buf, img));
 	}
 

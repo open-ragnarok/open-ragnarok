@@ -10,8 +10,8 @@
 #include "frustum.h"
 #include "camera.h"
 
-#include "ro.h"
-#include "rogl.h"
+#include "ro/ro.h"
+#include "rogl/rogl.h"
 #include "sdl.h"
 #include "gui/gui.h"
 
@@ -52,6 +52,11 @@ public:
 	virtual bool evtKeyRelease(const int& key, const int& mod = 0);
 	virtual bool evtMouseClick(const int& x, const int& y, const int& buttons);
 
+	TextureManager& getTextureManager();
+	GLObjectCache& getGLObjects();
+	ROObjectCache& getROObjects();
+	FileManager& getFileManager();
+	Frustum& getFrustum();
 };
 
 #ifndef __ROENGINE_NO_AUTOIMPORT_LIB__

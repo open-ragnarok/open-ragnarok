@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "pyrsm.h"
+#include "ro/python/pyrsm.h"
 #include <fstream>
 
 namespace RO {

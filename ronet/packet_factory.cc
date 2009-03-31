@@ -3,8 +3,25 @@
 
 #include "ronet/packet_factory.h"
 
+#define HANDLER(x) bool ronet::PacketFactory::Handle_ ##x (ronet::ucBuffer& b) { \
+	pkt ##x *p; \
+	p = new pkt ##x (); \
+	if (!p->Decode(b)) { delete(p); return(false); } \
+	push(p); \
+	return(true); }
+
+#define CALLER(x) m_dispatcher.Register(pkt ##x ##ID, &ronet::PacketFactory::Handle_ ##x )
+// List of packets that we know how to decode
+
+HANDLER(ServerList)
+HANDLER(CharList)
+HANDLER(CharCreateError)
+
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
-	m_dispatcher.Register(0x0069, &ronet::PacketFactory::Handle_ServerList);
+	CALLER(ServerList);
+	CALLER(CharList);
+	CALLER(CharCreateError);
+	//m_dispatcher.Register(0x0069, &ronet::PacketFactory::Handle_ServerList);
 }
 
 ronet::PacketFactory::~PacketFactory() {
@@ -15,6 +32,7 @@ ronet::PacketFactory::~PacketFactory() {
 	}
 }
 
+/*
 bool ronet::PacketFactory::Handle_ServerList(ronet::ucBuffer& b) {
 	pktServerList *p;
 	p = new pktServerList();
@@ -26,6 +44,7 @@ bool ronet::PacketFactory::Handle_ServerList(ronet::ucBuffer& b) {
 	push(p);
 	return(true);
 }
+*/
 
 void ronet::PacketFactory::push(ronet::Packet* p) {
 	packets.push_back(p);
@@ -52,6 +71,16 @@ void ronet::PacketFactory::generatePackets(ucBuffer& buffer) {
 		if(!m_dispatcher.Call(id, buffer))
 			return;
 	}
+}
+
+ronet::PacketFactory& ronet::PacketFactory::operator << (ucBuffer& buffer) {
+	generatePackets(buffer);
+	return(*this);
+}
+
+ronet::PacketFactory& ronet::PacketFactory::operator << (Connection& c) {
+	generatePackets(c.bufInput);
+	return(*this);
 }
 
 ronet::PacketFactory::Dispatcher::Dispatcher(ronet::PacketFactory* f) {

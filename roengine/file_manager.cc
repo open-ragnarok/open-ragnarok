@@ -37,7 +37,7 @@ FileData GRFFileLoader::getFile(const std::string& name) {
 
 	m_grf.write(fn, ss);
 	ret.setSize(ss.tellp());
-	ss.read(ret.getBuffer(), ss.tellp());
+	ss.read((char*)*ret, ss.tellp());
 	return(ret);
 }
 
@@ -77,7 +77,7 @@ FileData FSFileLoader::getFile(const std::string& name) {
 	int size = file.tellg();
 	file.seekg(0, std::ios_base::beg);
 	ret.setSize(size);
-	file.read(ret.getBuffer(), size);
+	file.read((char*)*ret, size);
 
 	return(ret);
 }

@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "ro_strings.h"
+#include "ro/ro_strings.h"
 
 #define CP949_COUNT 17048
 

@@ -21,6 +21,7 @@ namespace GUI {
 		} Font;
 
 		Font m_font;
+		float fontmult;
 	public:
 		GLFFont();
 		GLFFont(const std::string&);
@@ -29,7 +30,7 @@ namespace GUI {
 		bool load(std::istream&);
 		bool load(const std::string&);
 		virtual void textOut(const std::string&, float x, float y, float z) const;
-
+		virtual float getWidth(const std::string&) const;
 	};
 
 }

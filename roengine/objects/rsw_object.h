@@ -3,8 +3,8 @@
 #define __RSW_OBJECT_H
 
 #include "../gl_object.h"
-#include "rsw.h"
-#include "gnd.h"
+#include "ro/types/rsw.h"
+#include "ro/types/gnd.h"
 #include "../texturemanager.h"
 #include "../file_manager.h"
 #include "../ro_object_cache.h"
@@ -13,7 +13,7 @@ class RswObject : public GLObject {
 protected:
 	const RO::RSW* rsw;
 	const RO::GND* gnd;
-	Texture::PointerCache textures;
+	rogl::Texture::PointerCache textures;
 
 	void DrawGND();
 

@@ -120,7 +120,10 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 			}
 		ptr++;
 	}
-	printf("       Extensions: %s\n", data);
+	if (supportPot) {
+		printf("We have POT!\n");
+	}
+	// printf("       Extensions: %s\n", data);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 

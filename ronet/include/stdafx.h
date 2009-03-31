@@ -9,8 +9,9 @@
 #define _RONET_DLLAPI_
 #define _RONET_NOAUTOLIB_
 
-#include "ronet/ronet_import.h"
+#include "ronet/packet_vector.h"
 
+#include "ronet/ronet_import.h"
 #include "ronet/ronet.h"
 #include "ronet/buffer.h"
 

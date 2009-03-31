@@ -12,7 +12,7 @@ protected:
 public:
 	Window();
 	virtual ~Window();
-	Window(const Texture::Pointer&);
+	Window(const rogl::Texture::Pointer&);
 	Window(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
 
 	void setCaption(const std::string&);

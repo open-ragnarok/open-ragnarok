@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="rogl"
+	Name="rogl_dll"
 	ProjectGUID="{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}"
 	RootNamespace="rogl"
 	Keyword="ManagedCProj"
@@ -12,17 +12,20 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -42,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\;$(ProjectDir)..\..\roint\"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)roint\include\&quot;;&quot;$(SDL)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="1"
@@ -61,9 +64,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="roint.dll.lib opengl32.lib"
+				OutputFile="$(OutDir)\rogl.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(OutDir)"
+				AdditionalLibraryDirectories="$(OutDir);$(SDL)\lib\"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				ImportLibrary="$(OutDir)\rogl.dll.lib"
@@ -92,12 +95,89 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)..\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="1"
+			ManagedExtensions="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(SolutionDir)roint\"
+				PreprocessorDefinitions="WIN32;_DEBUG"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\rogl.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(OutDir)"
+				GenerateDebugInformation="true"
+				AssemblyDebug="1"
+				ImportLibrary="$(OutDir)\rogl.dll.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			CharacterSet="1"
+			ManagedExtensions="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -117,6 +197,81 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)roint\include\&quot;;&quot;$(SDL)\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				RuntimeLibrary="0"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\rogl.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(OutDir);$(SDL)\lib\"
+				GenerateDebugInformation="true"
+				ImportLibrary="$(OutDir)\rogl.dll.lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
+			ConfigurationType="2"
+			CharacterSet="1"
+			ManagedExtensions="0"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(SolutionDir)roint\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -134,13 +289,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="roint.dll.lib"
-				OutputFile="$(ProjectDir)\..\$(ConfigurationName)\$(ProjectName).dll"
+				OutputFile="$(OutDir)\rogl.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(ProjectDir)..\..\roint\$(ConfigurationName)\"
+				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
 				ImportLibrary="$(OutDir)\rogl.dll.lib"
-				TargetMachine="1"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -193,7 +347,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AssemblyInfo.cpp"
+				RelativePath="..\blob.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\image.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\image_bmp.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\image_spr.cc"
 				>
 			</File>
 			<File
@@ -211,6 +377,42 @@
 			<File
 				RelativePath="..\stdafx.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\texture.cc"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -219,35 +421,55 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\actgl.h"
+				RelativePath="..\include\rogl\actgl.h"
 				>
 			</File>
 			<File
-				RelativePath="..\globject.h"
+				RelativePath="..\include\rogl\blob.h"
 				>
 			</File>
 			<File
-				RelativePath="..\impdecl.h"
+				RelativePath="..\include\rogl\globject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
+				RelativePath="..\include\rogl\image.h"
 				>
 			</File>
 			<File
-				RelativePath="..\rogl.h"
+				RelativePath="..\include\rogl\image_bmp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\rsmgl.h"
+				RelativePath="..\include\rogl\image_spr.h"
 				>
 			</File>
 			<File
-				RelativePath="..\rswgl.h"
+				RelativePath="..\include\rogl\rogl.h"
 				>
 			</File>
 			<File
-				RelativePath="..\stdafx.h"
+				RelativePath="..\include\rogl\rogl_import.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\rogl\rogl_static.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\rogl\rsmgl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\rogl\rswgl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\rogl\texture.h"
 				>
 			</File>
 		</Filter>
@@ -257,11 +479,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\app.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\app.rc"
+				RelativePath=".\rogl.rc"
 				>
 			</File>
 		</Filter>

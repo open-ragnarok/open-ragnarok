@@ -7,14 +7,15 @@
 
 #ifdef WIN32
 #	include <windows.h>
+#	pragma warning(disable: 4251)
 #endif
 
 #ifndef ROENGINE_STATIC
-#	include "ro.h"
-#	include "rogl.h"
+#	include "ro/ro.h"
+#	include "rogl/rogl.h"
 #else
-#	include "ro_static.h"
-#	include "rogl_static.h"
+#	include "ro/ro_static.h"
+#	include "rogl/rogl_static.h"
 #endif
 
 //#pragma comment(lib, "opengl32.lib")

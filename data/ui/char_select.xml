@@ -16,6 +16,13 @@
 		<label name="char_select/luk" x="211" y="282" text="Default_SP" />
 
 		<button name="char_select/btnOk" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
-		<button name="char_select/btnCancel" x="-45" y="-25" texture="login_interface\btn_cancel.bmp" />
-	</window>
+    <button name="char_select/btnCreate" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
+    <button name="char_select/btnDelete" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
+    <button name="char_select/btnCancel" x="-45" y="-25" texture="login_interface\btn_cancel.bmp" />
+    <button name="char_select/btnMake" x="-90" y="-25" texture="login_interface\btn_make.bmp" visible="0" />
+
+    <button name="char_select/select1" x="55" y="40" texture="login_interface\box_select.bmp" transparent="1" />
+    <button name="char_select/select2" x="220" y="40" texture="login_interface\box_select.bmp" transparent="1" />
+    <button name="char_select/select3" x="382" y="40" texture="login_interface\box_select.bmp" transparent="1" />
+  </window>
 </desktop>

@@ -19,6 +19,11 @@ public:
 	void setEye(const Vector3f&);
 	void setDest(const Vector3f&);
 
+	Vector3f& getEye();
+	Vector3f& getDest();
+	const Vector3f& getEye() const;
+	const Vector3f& getDest() const;
+
 	void Look() const;
 };
 

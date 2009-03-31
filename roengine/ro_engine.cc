@@ -68,7 +68,6 @@ void ROEngine::ReadIni(const std::string& name) {
 	ini.close();
 }
 
-
 ROEngine::ROEngine(const std::string& name) : SDLEngine(name) {
 	for (int i = 0; i < 1024; i++)
 		keys[i] = false;
@@ -106,6 +105,8 @@ void ROEngine::Run() {
 	long curtick;
 	m_quit = false;
 
+	Vector3f camera_look;
+
 	BeforeRun();
 	while (!m_quit) {
 		ProcessKeyboard();
@@ -123,8 +124,10 @@ void ROEngine::Run() {
 		cam.Look();
 		m_frustum.Calculate();
 
-		m_gl_objects.draw(m_frustum, tickDelay);
-		m_gui.Draw();
+		camera_look = cam.getEye() - cam.getDest();
+		m_gl_objects.draw(m_frustum, tickDelay, camera_look);
+		m_gui.Draw(tickDelay);
+		m_gui.ProcessEvents();
 
 		AfterDraw();
 		Sync();
@@ -143,3 +146,9 @@ bool ROEngine::evtKeyRelease(const int& key, const int& mod) {
 bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 	return(m_gui.InjectMouseClick(x, y, buttons));
 }
+
+TextureManager& ROEngine::getTextureManager() { return(m_texturemanager); }
+GLObjectCache& ROEngine::getGLObjects() { return(m_gl_objects); }
+ROObjectCache& ROEngine::getROObjects() { return(m_ro_objects); }
+FileManager& ROEngine::getFileManager() { return(m_filemanager); }
+Frustum& ROEngine::getFrustum() { return(m_frustum); }

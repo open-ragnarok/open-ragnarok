@@ -2,7 +2,7 @@
 #ifndef __RONET_CONNECTION_H
 #define __RONET_CONNECTION_H
 
-#include "buffer.h"
+#include "ucbuffer.h"
 
 /** \file connection.h
  * 
@@ -24,6 +24,12 @@ namespace ronet {
 		Incoming
 	} connection_direction;
 
+	typedef enum {
+		Unknown,
+		TCP,
+		UDP
+	} connection_protocol;
+
 	/**
 	 * Generic Connection class, implementing basic instructions
 	 * 
@@ -37,6 +43,8 @@ namespace ronet {
 		/** The direction of our connection: Incoming or Outgoing */
 		connection_direction m_direction;
 
+		connection_protocol m_protocol;
+
 		/** Socket Identifier */	
 		int m_socket;
 		
@@ -47,8 +55,11 @@ namespace ronet {
 		unsigned short m_port;
 	
 	public:
-		ucBuffer bufInput;
-		ucBuffer bufOutput;
+		/** Data received */
+		ronet::ucBuffer bufInput;
+
+		/** Data left to send */
+		ronet::ucBuffer bufOutput;
 	};
 }
 

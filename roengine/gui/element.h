@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "../texture.h"
+#include "rogl/texture.h"
 #include "../texturemanager.h"
 
 #include "tinyxml/tinyxml.h"
@@ -47,10 +47,11 @@ protected:
 
 	bool m_focusable;
 	bool m_fullscreen;
+	bool m_enabled;
 
 	std::vector<Element*> m_children;
 	Element* m_active_child;
-	Texture::Pointer texture;
+	rogl::Texture::Pointer texture;
 
 	int pos_x, pos_y;
 	int w, h;
@@ -58,16 +59,18 @@ protected:
 	virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	void ParseFromXml(const TiXmlElement*, TextureManager&, FileManager&);
 
-	void Window(float x, float y, const Texture::Pointer& tp) const;
+	void Window(float x, float y, const rogl::Texture::Pointer& tp) const;
 public:
 	Element();
 	Element(Element* parent);
 	Element(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
 	virtual ~Element();
 
-	void setTexture(const Texture::Pointer&);
+	void setTexture(const rogl::Texture::Pointer&);
 
-	virtual void Draw();
+	virtual void Draw(unsigned int delay = 0);
+	virtual void beforeDraw(unsigned int delay = 0);
+	virtual void afterDraw(unsigned int delay = 0);
 
 	/** Adds a child element to this one */
 	void add(Element*);
@@ -83,8 +86,13 @@ public:
 	void setFullscreen(bool = false);
 	void setVisible(bool = true);
 	void setTransparent(bool = false);
+	void setEnabled(bool = true);
 	void setActive();
 	bool setName(const std::string&);
+
+	bool isVisible() const;
+	bool isTransparent() const;
+	bool isEnabled() const;
 
 	const std::string& getName();
 
@@ -95,6 +103,8 @@ public:
 	int getY() const;
 	int getW() const;
 	int getH() const;
+
+	bool isFocusable() const;
 
 	/* Events */
 	virtual bool HandleKeyDown(int key, int mod = 0);
@@ -110,7 +120,6 @@ public:
 	Element* getActiveChild();
 	const Element* getActiveChild() const;
 
-	static Element* loadXml(const std::string&, TextureManager&, FileManager&);
 	static Element* loadXml(Element* parent, const TiXmlElement* node, TextureManager&, FileManager&);
 
 	static Element* getElement(const std::string&);

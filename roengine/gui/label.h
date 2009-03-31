@@ -14,7 +14,7 @@ namespace GUI {
 	public:
 		Label(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
 
-		virtual void Draw();
+		virtual void Draw(unsigned int delay = 0);
 
 		Label& setText(const std::string&);
 		std::string& getText();

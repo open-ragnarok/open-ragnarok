@@ -21,10 +21,16 @@ ronet::TcpConnection::TcpConnection() {
 	m_state = Ready;
 	m_socket = -1;
 	m_direction = Outgoing;
+	m_protocol = TCP;
 }
 
 ronet::TcpConnection::~TcpConnection() {
 }
+
+bool ronet::TcpConnection::isConnected() const {
+	return(m_state == Connected);
+}
+
 
 bool ronet::TcpConnection::Connect(const char* hostname, const unsigned int port) {
 	if (m_socket != -1)
@@ -79,11 +85,14 @@ bool ronet::TcpConnection::Connect(const unsigned long ip, const unsigned int po
 
 	m_ip = ip;
 	m_port = port;
+	m_state = Connected;
 
 	return(true);
 }
 
 bool ronet::TcpConnection::Process() {
+	if (!isConnected())
+		return(false);
 	bool ret;
 
 	ret = SendData();

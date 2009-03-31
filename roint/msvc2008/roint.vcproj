@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
+				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\include\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -174,6 +174,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
 			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
+			UseOfMFC="0"
 			CharacterSet="1"
 			ManagedExtensions="0"
 			WholeProgramOptimization="1"
@@ -198,7 +199,7 @@
 				Optimization="3"
 				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -356,6 +357,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\constants.cc"
 				>
 			</File>
@@ -442,43 +447,51 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\constants.h"
+				RelativePath="..\include\ro\common.h"
 				>
 			</File>
 			<File
-				RelativePath="..\cp949.h"
+				RelativePath="..\include\ro\constants.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro.h"
+				RelativePath="..\include\cp949.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_object.h"
+				RelativePath="..\include\ro\ro.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_seq.h"
+				RelativePath="..\include\ro\ro_object.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_strings.h"
+				RelativePath="..\include\ro\ro_seq.h"
 				>
 			</File>
 			<File
-				RelativePath="..\roint_import.h"
+				RelativePath="..\include\ro\ro_static.h"
 				>
 			</File>
 			<File
-				RelativePath="..\roint_settings.h"
+				RelativePath="..\include\ro\ro_strings.h"
 				>
 			</File>
 			<File
-				RelativePath="..\stdafx.h"
+				RelativePath="..\include\ro\roint_import.h"
 				>
 			</File>
 			<File
-				RelativePath="..\struct_io.h"
+				RelativePath="..\include\ro\roint_settings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ro\struct_io.h"
 				>
 			</File>
 		</Filter>
@@ -496,31 +509,31 @@
 			Name="ROTypes"
 			>
 			<File
-				RelativePath="..\act.h"
+				RelativePath="..\include\ro\types\act.h"
 				>
 			</File>
 			<File
-				RelativePath="..\gat.h"
+				RelativePath="..\include\ro\types\gat.h"
 				>
 			</File>
 			<File
-				RelativePath="..\gnd.h"
+				RelativePath="..\include\ro\types\gnd.h"
 				>
 			</File>
 			<File
-				RelativePath="..\grf.h"
+				RelativePath="..\include\ro\types\grf.h"
 				>
 			</File>
 			<File
-				RelativePath="..\rsm.h"
+				RelativePath="..\include\ro\types\rsm.h"
 				>
 			</File>
 			<File
-				RelativePath="..\rsw.h"
+				RelativePath="..\include\ro\types\rsw.h"
 				>
 			</File>
 			<File
-				RelativePath="..\spr.h"
+				RelativePath="..\include\ro\types\spr.h"
 				>
 			</File>
 		</Filter>
@@ -555,27 +568,27 @@
 				Name="Header"
 				>
 				<File
-					RelativePath="..\python\pyact.h"
+					RelativePath="..\include\ro\python\pyact.h"
 					>
 				</File>
 				<File
-					RelativePath="..\python\pygrf.h"
+					RelativePath="..\include\ro\python\pygrf.h"
 					>
 				</File>
 				<File
-					RelativePath="..\python\pyrsm.h"
+					RelativePath="..\include\ro\python\pyrsm.h"
 					>
 				</File>
 				<File
-					RelativePath="..\python\pyrsw.h"
+					RelativePath="..\include\ro\python\pyrsw.h"
 					>
 				</File>
 				<File
-					RelativePath="..\python\pyspr.h"
+					RelativePath="..\include\ro\python\pyspr.h"
 					>
 				</File>
 				<File
-					RelativePath="..\python\pystrings.h"
+					RelativePath="..\include\ro\python\pystrings.h"
 					>
 				</File>
 			</Filter>
@@ -588,7 +601,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\tinyxml\tinyxml.h"
+				RelativePath="..\include\tinyxml\tinyxml.h"
 				>
 			</File>
 			<File

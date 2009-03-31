@@ -35,7 +35,7 @@ void Camera::TranslateZ(const float& f) {
 }
 
 void Camera::Look() const {
-	printf("eye: %.2f %.2f %.2f\t\r", eye[0], eye[1], eye[2]);
+	// printf("eye: %.2f %.2f %.2f\t\r", eye[0], eye[1], eye[2]);
 	gluLookAt(eye[0], eye[1], eye[2], dest[0], dest[1], dest[2], 0, 1, 0);
 }
 
@@ -46,3 +46,9 @@ void Camera::setEye(const Vector3f& v) {
 void Camera::setDest(const Vector3f& v) {
 	dest = v;
 }
+
+Vector3f& Camera::getEye() { return(eye); }
+Vector3f& Camera::getDest() { return(dest); }
+const Vector3f& Camera::getEye() const { return(eye); }
+const Vector3f& Camera::getDest() const  { return(dest); }
+

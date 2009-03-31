@@ -1,0 +1,39 @@
+#include <windows.h>
+
+#ifdef GCC_WINDRES
+VS_VERSION_INFO		VERSIONINFO
+#else
+VS_VERSION_INFO		VERSIONINFO	MOVEABLE IMPURE LOADONCALL DISCARDABLE
+#endif
+  FILEVERSION		0,0,5,0
+  PRODUCTVERSION	0,0,5,0
+  FILEFLAGSMASK		VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+  FILEFLAGS		1
+#else
+  FILEFLAGS		0
+#endif
+  FILEOS		VOS_DOS_WINDOWS32
+  FILETYPE		VFT_DLL
+  FILESUBTYPE		0	// not used
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    //language ID = U.S. English, char set = Windows, Multilingual
+    BEGIN
+      VALUE "FileDescription",	"Open Ragnarok Client\0"
+      VALUE "FileVersion",	"0.1.0\0"
+      VALUE "InternalName",	"openro.exe\0"
+      VALUE "LegalCopyright",	"(C) 2007-2009 Sergio Moura & Open-Ragnarok.org\0"
+      VALUE "OriginalFilename",	"openro.exe\0"
+      VALUE "ProductName",	"OpenRO\0"
+      VALUE "ProductVersion",	"0.0.5\0"
+      VALUE "Comments","http://www.open-ragnarok.org/\0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 1252
+  END
+END

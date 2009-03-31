@@ -3,7 +3,7 @@
 
 #include "ronet/packets/pkt_serverlist.h"
 
-ronet::pktServerList::pktServerList() : Packet(0x0069) {
+ronet::pktServerList::pktServerList() : Packet(pktServerListID) {
 	servers = NULL;
 	servercount = 0;
 }
@@ -18,7 +18,6 @@ void ronet::pktServerList::Dump() {
 }
 
 bool ronet::pktServerList::Decode(ucBuffer& buf) {
-
 	// Sanity check
 	unsigned short buf_id;
 	buf.peek((unsigned char*)&buf_id, 2);
@@ -56,3 +55,28 @@ bool ronet::pktServerList::Decode(ucBuffer& buf) {
 	//buf.ignore(size);
 	return(true);
 }
+
+const ronet::pktServerList::ServerInfo& ronet::pktServerList::getInfo(const int& i) const {
+	return(servers[i]);
+}
+
+unsigned int ronet::pktServerList::getServerCount() const {
+	return(servercount);
+}
+
+unsigned int ronet::pktServerList::getAccountId() const {
+	return(account_id);
+}
+
+unsigned int ronet::pktServerList::getSessionId1() const {
+	return(sessionid1);
+}
+
+unsigned int ronet::pktServerList::getSessionId2() const {
+	return(sessionid2);
+}
+
+unsigned char ronet::pktServerList::getSex() const {
+	return(sex);
+}
+

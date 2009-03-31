@@ -6,7 +6,8 @@
 namespace GUI {
 	class Font {
 	public:
-		virtual void textOut (const std::string&, float x, float y, float z) const = 0;
+		virtual void textOut(const std::string&, float x, float y, float z) const = 0;
+		virtual float getWidth(const std::string&) const = 0;
 	};
 }
 

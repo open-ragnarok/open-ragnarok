@@ -32,8 +32,8 @@
 			#pragma comment(lib, "ronet.dll.lib")
 		#endif
 	#endif
+	#pragma comment(lib, "wsock32.lib")
 #endif
 
-#pragma comment(lib, "wsock32.lib")
 
 #endif /* __RONET_IMPORT_H */

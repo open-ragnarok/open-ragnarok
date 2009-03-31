@@ -7,24 +7,27 @@
 namespace GUI {
 	class Button : public Element {
 	protected:
-		Texture::Pointer texture_base;
-		Texture::Pointer texture_active;
-		Texture::Pointer texture_hover;
-		Texture::Pointer texture_disabled;
+		rogl::Texture::Pointer texture_base;
+		rogl::Texture::Pointer texture_active;
+		rogl::Texture::Pointer texture_hover;
+		rogl::Texture::Pointer texture_disabled;
 
 		virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 
 	public:
-		Button(Element* parent, const Texture::Pointer& base);
-		Button(Element* parent, const Texture::Pointer& base, const Texture::Pointer& active);
-		Button(Element* parent, const Texture::Pointer& base, const Texture::Pointer& active, const Texture::Pointer& hover);
-		Button(Element* parent, const Texture::Pointer& base, const Texture::Pointer& active, const Texture::Pointer& hover, const Texture::Pointer& disabled);
+		Button(Element* parent, const rogl::Texture::Pointer& base);
+		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active);
+		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover);
+		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover, const rogl::Texture::Pointer& disabled);
 
 		Button(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
 
-		virtual void Draw();
+		virtual void Draw(unsigned int delay = 0);
+
+		void Click();
 
 		virtual bool HandleMouseDown(int x, int y, int button);
+		virtual bool HandleKeyDown(int key, int mod = 0);
 	};
 }
 

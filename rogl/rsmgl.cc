@@ -1,9 +1,9 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "rsmgl.h"
+#include "rogl/rsmgl.h"
 
-bool ROGL::draw(const RO::RSM* rsm, const unsigned int* textures, int time) {
+bool rogl::draw(const RO::RSM* rsm, const unsigned int* textures, int time) {
 	if (rsm == NULL)
 		return(false);
 
@@ -12,7 +12,7 @@ bool ROGL::draw(const RO::RSM* rsm, const unsigned int* textures, int time) {
 	return(true);
 }
 
-bool ROGL::drawBoundingBox(const RO::RSM* rsm) {
+bool rogl::drawBoundingBox(const RO::RSM* rsm) {
 	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	float vertices[8][3] = {
@@ -66,7 +66,7 @@ bool ROGL::drawBoundingBox(const RO::RSM* rsm) {
 	return(true);
 }
 
-bool ROGL::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsigned int* textures) {
+bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsigned int* textures) {
 	if (rsm == NULL)
 		return(false);
 

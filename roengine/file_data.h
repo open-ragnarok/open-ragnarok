@@ -2,15 +2,11 @@
 #ifndef __FILE_DATA_H
 #define __FILE_DATA_H
 
-#include "blob.h"
+#include "rogl/blob.h"
 
 #include <iostream>
 
-class FileData :
-	public DynamicBlob<char>,
-	public std::basic_streambuf<char>,
-	public std::basic_iostream<char>
-		{
+class FileData : public rogl::DynamicBlobChar {
 public:
 	FileData();
 	FileData(const FileData& o);

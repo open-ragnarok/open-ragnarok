@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
-#include "rsw.h"
-#include "ro.h"
+#include "ro/types/rsw.h"
+#include "ro/ro.h"
 
 /*
 RO::RSW::OT_Unknown = 0;
@@ -406,6 +406,9 @@ TiXmlElement *RO::RSW::GenerateXML(const std::string& name, bool utf) const {
 				break;
 			case OT_Sound:
 				object->SetAttribute("type", "sound");
+				break;
+			case OT_Unknown:
+			default:
 				break;
 		}
 

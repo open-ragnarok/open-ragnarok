@@ -46,3 +46,21 @@ void ronet::Packet::Dump() {
 bool ronet::Packet::Decode(ucBuffer&) {
 	return(false);
 }
+
+unsigned short ronet::Packet::getID() const {
+	return(id);
+}
+
+bool ronet::Packet::CheckID(const ucBuffer& buf) const {
+	if (buf.dataSize() < 2)
+		return(false);
+
+	unsigned short buf_id;
+	buf.peek((unsigned char*)&buf_id, 2);
+	if (buf_id != id) {
+		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
+		return(false);
+	}
+
+	return(true);
+}

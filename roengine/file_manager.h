@@ -16,7 +16,7 @@ public:
 	bool writeFile(const std::string& name, std::ostream& os);
 };
 
-#include "grf.h"
+#include "ro/types/grf.h"
 // Reads files from a GRF file
 class GRFFileLoader : public FileLoader {
 protected:

@@ -27,6 +27,13 @@ namespace ronet {
 
 		virtual void Dump(); // For debugging purposes
 		virtual bool Decode(ucBuffer&);
+
+		const ServerInfo& getInfo(const int&) const;
+		unsigned int getServerCount() const;
+		unsigned int getAccountId() const;
+		unsigned int getSessionId1() const;
+		unsigned int getSessionId2() const;
+		unsigned char getSex() const;
 	};
 }
 

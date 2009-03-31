@@ -1,8 +1,8 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "gnd.h"
-#include "ro.h"
+#include "ro/types/gnd.h"
+#include "ro/ro.h"
 
 RO::GND::GND() {
 	m_textures = NULL;
@@ -198,11 +198,11 @@ TiXmlElement* RO::GND::GenerateXML(const std::string& name, bool utf) const {
 		sprintf(buf, "%f", m_cubes[i].height[3]);
 		cube->SetAttribute("height_4", buf);
 
-		sprintf(buf, "%f", m_cubes[i].tile_up);
+		sprintf(buf, "%d", m_cubes[i].tile_up);
 		cube->SetAttribute("tile_up", buf);
-		sprintf(buf, "%f", m_cubes[i].tile_side);
+		sprintf(buf, "%d", m_cubes[i].tile_side);
 		cube->SetAttribute("tile_side", buf);
-		sprintf(buf, "%f", m_cubes[i].tile_aside);
+		sprintf(buf, "%d", m_cubes[i].tile_aside);
 		cube->SetAttribute("tile_aside", buf);
 	}
 

@@ -1,4 +1,4 @@
-# $id$
+# $Id$
 CC=g++
 RM=rm -f
 CP=cp

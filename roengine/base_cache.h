@@ -9,7 +9,7 @@
  * Cache object for storing data associated with values.
  * It deletes all stored values on destruction.
  */
-template <class T, class _Stor = std::string>
+template <typename T, class _Stor = std::string>
 class BaseCache {
 protected:
 	typedef std::map<_Stor, T*> obj_t;

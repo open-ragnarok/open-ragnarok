@@ -1,5 +1,5 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "rogl.h"
+#include "rogl/rogl.h"
 

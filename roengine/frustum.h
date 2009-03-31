@@ -3,8 +3,8 @@
 #define __FRUSTUM_H
 // Thanks to http://robertmarkmorley.com/2008/11/16/frustum-culling-in-opengl/
 
-#include "rsm.h"
-#include "rsw.h"
+#include "ro/types/rsm.h"
+#include "ro/types/rsw.h"
 
 #include "vector.h"
 

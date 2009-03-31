@@ -2,7 +2,7 @@
 #include "stdafx.h"
 
 #include "ro_object_cache.h"
-#include "ro.h"
+#include "ro/ro.h"
 
 #include <sstream>
 
@@ -87,7 +87,7 @@ bool ROObjectCache::ReadGND(const std::string& name, FileManager& fm) {
 
 bool ROObjectCache::ReadACT(const std::string& name, FileManager& fm) {
 	if (exists(name))
-		return(false);
+		return(true);
 
 	FileData data = fm.getFile(name);
 	if (data.blobSize() == 0)

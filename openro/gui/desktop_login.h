@@ -1,0 +1,21 @@
+#ifndef __DESKTOP_LOGIN_H
+#define __DESKTOP_LOGIN_H
+
+// Forward declaration
+#include "ro_desktop.h"
+
+class DesktopLogin : public RODesktop {
+protected:
+	GUI::TextInput* tiUser;
+	GUI::TextInput* tiPass;
+
+public:
+	DesktopLogin(OpenRO*);
+
+	bool handleBtnOk(GUI::Event&);
+	bool handleBtnCancel(GUI::Event&);
+
+	void clear();
+};
+
+#endif /* __DESKTOP_LOGIN_H */

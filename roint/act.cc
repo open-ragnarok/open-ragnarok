@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
-#include "act.h"
-#include "ro.h"
+#include "ro/types/act.h"
+#include "ro/ro.h"
 
 RO::ACT::ACT() : Object() {
 	magicSize = 2;

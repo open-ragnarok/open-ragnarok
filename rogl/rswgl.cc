@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "rswgl.h"
+#include "rogl/rswgl.h"
 
 #define L 10.0f
 

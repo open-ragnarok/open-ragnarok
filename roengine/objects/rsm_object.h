@@ -7,8 +7,8 @@
 #include "../file_manager.h"
 #include "../base_cache.h"
 
-#include "rsm.h"
-#include "rsw.h"
+#include "ro/types/rsm.h"
+#include "ro/types/rsw.h"
 
 #include "../frustum.h"
 
@@ -18,7 +18,7 @@ class RsmObject : public GLObject {
 protected:
 	const RO::RSM* rsm;
 	const RO::RSW::Model* model;
-	Texture::PointerCache textures;
+	rogl::Texture::PointerCache textures;
 
 	static void DrawBoundingBox(const RO::RSM::BoundingBox& box);
 	void DrawMesh(unsigned int meshid = 0);
@@ -34,7 +34,7 @@ public:
 
 	bool loadTextures(TextureManager&, FileManager&);
 	virtual bool isInFrustum(const Frustum&) const;
-	Texture::Pointer getTexture(unsigned int i);
+	rogl::Texture::Pointer getTexture(unsigned int i);
 
 	virtual void Draw();
 };

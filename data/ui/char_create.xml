@@ -22,5 +22,9 @@
 		
 		<button name="char_create/btnOk" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
 		<button name="char_create/btnCancel" x="-45" y="-25" texture="login_interface\btn_cancel.bmp" />
-	</window>
+
+    <button name="char_create/btnStyleDown" x="39" y="150" texture="scroll1left.bmp" />
+    <button name="char_create/btnStyleUp" x="132" y="146" texture="scroll1right.bmp" />
+    <button name="char_create/btnColor" x="92" y="112" texture="scroll0up.bmp" />
+  </window>
 </desktop>

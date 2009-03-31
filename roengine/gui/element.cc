@@ -6,6 +6,12 @@
 
 GUI::Element::Cache GUI::Element::m_elements;
 
+bool GUI::isInside(const GUI::Element* e, int x, int y) {
+	if ((x >= e->getX()) && (y >= e->getY()) && (x <= (e->getX() + e->getW())) && (y <= (e->getY() + e->getH())))
+		return(true);
+	return(false);
+}
+
 bool GUI::Element::Cache::add(GUI::Element* e) {
 	if (e->getName() == "")
 		e->setName(GUI::Element::createName());
@@ -48,6 +54,7 @@ GUI::Element::Element(Element* parent) {
 	m_transparent = false;
 	m_visible = true;
 	m_fullscreen = false;
+	m_enabled = true;
 	pos_x = 0;
 	pos_y = 0;
 	w = 0;
@@ -102,6 +109,11 @@ bool GUI::Element::setName(const std::string& n) {
 	if (name == n)
 		return(true);
 
+	if (name == "") {
+		name = n;
+		return(true);
+	}
+
 	if (!m_elements.rename(name, n))
 		return(false);
 
@@ -114,25 +126,31 @@ const std::string& GUI::Element::getName() {
 	return(name);
 }
 
-void GUI::Element::Draw() {
+void GUI::Element::beforeDraw(unsigned int delay) {}
+void GUI::Element::afterDraw(unsigned int delay) {}
+
+void GUI::Element::Draw(unsigned int delay) {
 	if (!m_visible)
 		return;
 
 	glPushMatrix();
 	glTranslatef((float)pos_x, (float)pos_y, 0);
+	beforeDraw(delay);
+
 	if (!m_transparent)
 		Window(0, 0, texture);
 
 	std::vector<Element*>::iterator itr = m_children.begin();
 	while (itr != m_children.end()) {
-		(*itr)->Draw();
+		(*itr)->Draw(delay);
 		itr++;
 	}
 
+	afterDraw(delay);
 	glPopMatrix();
 }
 
-void GUI::Element::Window(float x, float y, const Texture::Pointer& tp) const {
+void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) const {
 	tp.Activate();
 
 	float w, h;
@@ -182,8 +200,10 @@ void GUI::Element::add(Element* e) {
 	if (e == NULL)
 		return;
 	m_children.push_back(e);
-	if (m_active_child == NULL)
-		m_active_child = e;
+	if (m_active_child == NULL) {
+		if (e->m_focusable)
+			m_active_child = e;
+	}
 }
 
 void GUI::Element::del(const Element* e) {
@@ -208,25 +228,6 @@ void GUI::Element::setSize(const int& w, const int& h) {
 	this->w = w;
 	this->h = h;
 }
-
-GUI::Element* GUI::Element::loadXml(const std::string& name, TextureManager& tm, FileManager& fm) {
-	TiXmlDocument doc;
-	FileData data;
-
-	data = fm.getFile(name);
-	if (data.blobSize() == 0)
-		return(NULL);
-
-	doc.Parse(data.getBuffer());
-
-	TiXmlElement* node;
-	node = doc.FirstChildElement();
-	if (node == NULL)
-		return(NULL);
-
-	return(loadXml(NULL, node, tm, fm));
-}
-
 
 bool GUI::Element::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
 	std::string attrname = attr->Name();
@@ -255,13 +256,29 @@ bool GUI::Element::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, 
 		}
 		return(true);
 	}
-	else if (attrname == "width") {
+	else if (attrname == "transparent") {
+		std::string value = attr->Value();
+		if ((value == "true") || (value == "1"))
+			m_transparent = true;
+		else
+			m_transparent = false;
+		return(true);
+	}
+	else if (attrname == "visible") {
+		std::string value = attr->Value();
+		if ((value == "false") || (value == "0"))
+			m_visible = false;
+		else
+			m_visible = true;
+		return(true);
+	}
+	else if (attrname == "width" || attrname == "w") {
 		if (attr->QueryIntValue(&w) != TIXML_SUCCESS) {
 			printf("ERROR");
 		}
 		return(true);
 	}
-	else if (attrname == "height") {
+	else if (attrname == "height" || attrname == "h") {
 		if (attr->QueryIntValue(&h) != TIXML_SUCCESS) {
 			printf("ERROR");
 		}
@@ -380,13 +397,13 @@ GUI::Element* GUI::Element::loadXml(Element* parent, const TiXmlElement* node, T
 	else if(nodetype == "button") {
 		ret = new GUI::Button(parent, node, tm, fm);
 	}
+	else if (nodetype == "list") {
+		ret = new GUI::List(parent, node, tm, fm);
+	}
 	else {
 		// Default
 		ret = new Element(parent, node, tm, fm);
 	}
-
-	if (nodetype == "desktop")
-		ret->setFullscreen(true);
 
 	if (ret == NULL)
 		return(NULL);
@@ -404,7 +421,7 @@ GUI::Element* GUI::Element::loadXml(Element* parent, const TiXmlElement* node, T
 }
 
 
-void GUI::Element::setTexture(const Texture::Pointer& tp) {
+void GUI::Element::setTexture(const rogl::Texture::Pointer& tp) {
 	texture = tp;
 }
 
@@ -419,6 +436,11 @@ void GUI::Element::setVisible(bool b) {
 void GUI::Element::setTransparent(bool b) {
 	m_transparent = b;
 }
+
+void GUI::Element::setEnabled(bool b) {
+	m_enabled = b;
+}
+
 
 bool GUI::Element::HandleKeyDown(int key, int mod) {
 	if (m_parent == NULL)
@@ -439,14 +461,18 @@ bool GUI::Element::HandleMouseMove(int x, int y) {
 }
 
 bool GUI::Element::HandleMouseDown(int x, int y, int button) {
+	if (!m_enabled)
+		return(false);
 	std::cout << name << "::MouseDown (" << x << ", " << y << ")" << std::endl;
 
 	std::vector<Element*>::iterator itr = m_children.begin();
 
 	while (itr != m_children.end()) {
 		Element* e = *itr;
-		if (isInside(e, x, y))
-			return(e->HandleMouseDown(x - e->getX(), y - e->getY(), button));
+		if (isInside(e, x, y)) {
+			if (e->isVisible())
+				return(e->HandleMouseDown(x - e->getX(), y - e->getY(), button));
+		}
 		itr++;
 	}
 
@@ -493,8 +519,18 @@ GUI::Element* GUI::Element::getElement(const std::string& name) {
 	return(m_elements.get(name));
 }
 
-bool GUI::isInside(const GUI::Element* e, int x, int y) {
-	if ((x >= e->getX()) && (y >= e->getY()) && (x <= (e->getX() + e->getW())) && (y <= (e->getY() + e->getH())))
-		return(true);
-	return(false);
+bool GUI::Element::isFocusable() const {
+	return(m_focusable);
+}
+
+bool GUI::Element::isVisible() const {
+	return(m_visible);
+}
+
+bool GUI::Element::isTransparent() const {
+	return(m_transparent);
+}
+
+bool GUI::Element::isEnabled() const {
+	return(m_enabled);
 }

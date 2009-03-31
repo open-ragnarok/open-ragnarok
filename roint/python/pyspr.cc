@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "pyspr.h"
+#include "ro/python/pyspr.h"
 
 namespace RO {
 	SPR* new_SPR() {

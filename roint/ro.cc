@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "ro.h"
+#include "ro/ro.h"
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 7
@@ -16,7 +16,7 @@ unsigned short RO::Version() {
 }
 
 void RO::printVersion() {
-	printf("0x%04x", strVersion());
+	printf("0x%04x", Version());
 }
 
 const char* RO::strVersion() {

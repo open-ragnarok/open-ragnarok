@@ -13,9 +13,11 @@ public:
 	static const Vector3<T> UNIT_Y;
 	static const Vector3<T> UNIT_Z;
 
+	/** Basic vector constructor, with zero length */
 	Vector3() {
 		_data[0] = _data[1] = _data[2] = 0;
 	}
+
 
 	Vector3(const T& v) {
 		_data[0] = _data[1] = _data[2] = v;
@@ -33,12 +35,14 @@ public:
 		_data[2] = v[2];
 	}
 
+	/** Basic copy constructor. Initializes vector from another vector */
 	Vector3(const Vector3<T>& v) {
 		_data[0] = v._data[0];
 		_data[1] = v._data[1];
 		_data[2] = v._data[2];
 	}
 
+	/** Rotates the current vector around the X Axis */
 	Vector3<T>& rotateX(const T& angle) {
 		T s = sin(angle);
 		T c = cos(angle);
@@ -69,6 +73,7 @@ public:
 		return(*this);
 	}
 
+	/** Rotates the current vector around the Y Axis */
 	Vector3<T>& rotateY(const T& angle) {
 		T s = sin(angle);
 		T c = cos(angle);
@@ -99,6 +104,7 @@ public:
 		return(*this);
 	}
 
+	/** Rotates the current vector around the Z Axis */
 	Vector3<T>& rotateZ(const T& angle) {
 		T s = sin(angle);
 		T c = cos(angle);
@@ -217,6 +223,7 @@ public:
 		return(ret);
 	}
 
+	/** Adds one vector with another */
 	Vector3<T>& add(const Vector3<T>& v) {
 		_data[0] += v._data[0];
 		_data[1] += v._data[1];
@@ -224,6 +231,7 @@ public:
 		return(*this);
 	}
 
+	/** Subtracts one vector with another */
 	Vector3<T>& sub(const Vector3<T>& v) {
 		_data[0] -= v._data[0];
 		_data[1] -= v._data[1];
@@ -239,7 +247,7 @@ public:
 	}
 
 	Vector3<T> operator + (const Vector3<T>& v) const {
-		float x[3];
+		T x[3];
 		x[0] = _data[0] + v._data[0];
 		x[1] = _data[1] + v._data[1];
 		x[2] = _data[2] + v._data[2];
@@ -250,7 +258,7 @@ public:
 	 * Calculates the cross product
 	 */
 	Vector3<T> operator * (const Vector3<T>& v) const {
-		float x[3];
+		T x[3];
 		// Yeah, cheating. I'm lazy. Sue me!
 		x[0] = _data[1] * v._data[2] - _data[2] * v._data[1];
 		x[1] = _data[2] * v._data[0] - _data[0] * v._data[2];
@@ -262,7 +270,7 @@ public:
 	 * Calculates the cross product
 	 */
 	Vector3<T>& operator *= (const Vector3<T>& v) {
-		float x[3];
+		T x[3];
 		// Yeah, cheating. I'm lazy. Sue me!
 		x[0] = _data[1] * v._data[2] - _data[2] * v._data[1];
 		x[1] = _data[2] * v._data[0] - _data[0] * v._data[2];
@@ -282,7 +290,7 @@ public:
 	}
 
 	Vector3<T> operator - (const Vector3<T>& v) const {
-		float x[3];
+		T x[3];
 		x[0] = _data[0] - v._data[0];
 		x[1] = _data[1] - v._data[1];
 		x[2] = _data[2] - v._data[2];
@@ -297,7 +305,7 @@ public:
 	}
 
 	Vector3<T> operator * (const T& v) const {
-		float x[3];
+		T x[3];
 		x[0] = _data[0] * v;
 		x[1] = _data[1] * v;
 		x[2] = _data[2] * v;
@@ -312,7 +320,7 @@ public:
 	}
 
 	Vector3<T> operator / (const T& v) const {
-		float x[3];
+		T x[3];
 		x[0] = _data[0] / v;
 		x[1] = _data[1] / v;
 		x[2] = _data[2] / v;

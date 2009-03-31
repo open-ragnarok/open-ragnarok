@@ -95,6 +95,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
 			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
+			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -119,7 +120,7 @@
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="$(ProjectDir)\..\include\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;RONET_EXPORTS"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -197,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\packet_vector.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\ronet.cc"
 				>
 			</File>
@@ -224,6 +229,46 @@
 				RelativePath="..\tcp_connection.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\ucbuffer.cc"
+				>
+			</File>
+			<Filter
+				Name="Packets"
+				>
+				<File
+					RelativePath="..\packets\pkt_charcreate.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\pkt_charcreated.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charcreateerror.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charlist.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charlogin.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_keepalive.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_login.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_serverlist.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -263,6 +308,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\ronet\packet_vector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\ronet\ronet.h"
 				>
 			</File>
@@ -275,33 +328,65 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\ronet\structures.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\ronet\tcp_connection.h"
 				>
 			</File>
+			<File
+				RelativePath="..\include\ronet\ucbuffer.h"
+				>
+			</File>
+			<Filter
+				Name="Packets"
+				>
+				<File
+					RelativePath="..\include\ronet\packets\packets.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charcreate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charcreated.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charcreateerror.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charlist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charlogin.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_keepalive.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_login.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_serverlist.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-		</Filter>
-		<Filter
-			Name="Packets"
-			>
 			<File
-				RelativePath="..\packets\pkt_login.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\include\ronet\packets\pkt_login.h"
-				>
-			</File>
-			<File
-				RelativePath="..\packets\pkt_serverlist.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\include\ronet\packets\pkt_serverlist.h"
+				RelativePath=".\ronet.rc"
 				>
 			</File>
 		</Filter>

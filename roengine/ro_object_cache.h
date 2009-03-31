@@ -4,7 +4,7 @@
 
 #include "base_cache.h"
 #include "file_manager.h"
-#include "ro_object.h"
+#include "ro/ro_object.h"
 
 #include <string>
 

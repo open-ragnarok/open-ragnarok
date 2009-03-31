@@ -7,7 +7,38 @@
 
 #include "sdl.h"
 
+unsigned int GUI::TextInput::cursor_delay = 160;
+
 GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager& tm, FileManager& fm) : Label(parent, e, tm, fm) {
+	m_focusable = true;
+	m_delay = 0;
+	m_pos = m_text.size();
+	m_start = 0;
+	m_bar = true;
+}
+
+void GUI::TextInput::Draw(unsigned int delay) {
+	m_delay += delay;
+	GUI::Gui& gui = GUI::Gui::getSingleton();
+	const GUI::Font* font = gui.getDefaultFont();
+
+	GUI::Label::Draw(delay);
+	int x = font->getWidth(m_text.substr(m_start, m_pos - m_start));
+
+	while (m_delay > cursor_delay) {
+		m_delay -= cursor_delay;
+		m_bar = !m_bar;
+	}
+	if (m_bar) {
+		glDisable(GL_TEXTURE_2D);
+		glColor3f(0,0,0);
+		glBegin(GL_LINES);
+		glVertex3f((float)x + pos_x, pos_y, 0);
+		glVertex3f((float)x + pos_x, pos_y + 16, 0);
+		glEnd();
+		glColor3f(1,1,1);
+		glEnable(GL_TEXTURE_2D);
+	}
 }
 
 bool GUI::TextInput::HandleKeyDown(int key, int mod) {
@@ -29,11 +60,33 @@ bool GUI::TextInput::HandleKeyDown(int key, int mod) {
 		return(true);
 	}
 
+	if (key == SDLK_HOME) {
+		m_pos = 0;
+		return(true);
+	}
+
+	if (key == SDLK_END) {
+		m_pos = m_text.length();
+		return(true);
+	}
+
 	if (key == SDLK_DELETE) {
-		if (m_pos >= m_text.length() - 1)
+		if (m_pos == m_text.length())
 			return(true);
 		m_text.erase(m_pos, 1);
 		return(true);
+	}
+
+	if (key == SDLK_LEFT) {
+		if(m_pos == 0)
+			return(true);
+		m_pos--;
+	}
+
+	if (key == SDLK_RIGHT) {
+		m_pos++;
+		if (m_pos > m_text.size())
+			m_pos = m_text.size();
 	}
 
 	if ((key >= SDLK_a && key <= SDLK_z) || (key == SDLK_SPACE)) {

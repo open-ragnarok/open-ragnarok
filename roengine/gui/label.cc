@@ -5,6 +5,7 @@
 #include "gui.h"
 
 GUI::Label::Label(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
+	m_focusable = false;
 	if (node != NULL)
 		ParseFromXml(node, tm, fm);
 }
@@ -22,7 +23,7 @@ const std::string& GUI::Label::getText() const {
 	return(m_text);
 }
 
-void GUI::Label::Draw() {
+void GUI::Label::Draw(unsigned int delay) {
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 	const GUI::Font* font = gui.getDefaultFont();
 

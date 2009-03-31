@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
-#include "rsm.h"
-#include "ro.h"
+#include "ro/types/rsm.h"
+#include "ro/ro.h"
 
 #include <vector>
 

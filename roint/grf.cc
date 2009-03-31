@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "grf.h"
+#include "ro/types/grf.h"
 
 #include <fstream>
 #include <sstream>
@@ -59,13 +59,13 @@ static unsigned char NibbleData[4][64]={
 	}
 };
 
-static void NibbleSwap(unsigned char* Src, int len) {
+void NibbleSwap(unsigned char* Src, int len) {
 	for(;0<len;len--,Src++) {
 		*Src = (*Src>>4) | (*Src<<4);
 	}
 }
 
-static void BitConvert(unsigned char* Src, char* BitSwapTable) {
+void BitConvert(unsigned char* Src, char* BitSwapTable) {
 	int lop,prm;
 	unsigned char tmp[8];
 	memset(tmp,0,8);
@@ -297,7 +297,7 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 				delete[] body;
 				return(false);
 			}
-			if (ul != m_items[i].uncompressedLength)
+			if ((long)ul != m_items[i].uncompressedLength)
 				std::cerr << "GRF Warning: Uncompressed lengths for file " << m_items[i].filename << " differs!" << std::endl;
 
 			out.write((char*)uncompressed, ul);

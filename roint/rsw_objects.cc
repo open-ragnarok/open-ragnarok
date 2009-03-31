@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
-#include "rsw.h"
-#include "ro.h"
+#include "ro/types/rsw.h"
+#include "ro/ro.h"
 
 // ===== OBJECT
 RO::RSW::Object::Object(ObjectType t) {

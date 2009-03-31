@@ -3,7 +3,7 @@
 
 #include "gl_object_cache.h"
 
-void GLObjectCache::draw(const Frustum& f, long tickdelay) {
+void GLObjectCache::draw(const Frustum& f, long tickdelay, const Vector3f& camera_look) {
 	obj_drawn = 0;
 	obj_total = objects.size();
 
@@ -13,7 +13,7 @@ void GLObjectCache::draw(const Frustum& f, long tickdelay) {
 		obj = itr->second;
 		if (obj->isVisible()) {
 			if (obj->isInFrustum(f)) {
-				obj->Render(tickdelay);
+				obj->Render(tickdelay, camera_look);
 				obj_drawn++;
 			}
 		}

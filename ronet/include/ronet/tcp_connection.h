@@ -32,6 +32,8 @@ namespace ronet {
 
 		bool Connect(const char* hostname, const unsigned int port);
 		bool Connect(const unsigned long ip, const unsigned int port);
+
+		bool isConnected() const;
 	};
 }
 

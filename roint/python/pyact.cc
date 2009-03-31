@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "pyact.h"
+#include "ro/python/pyact.h"
 #include <fstream>
 
 namespace RO {

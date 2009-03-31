@@ -1,8 +1,8 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "gat.h"
-#include "ro.h"
+#include "ro/types/gat.h"
+#include "ro/ro.h"
 
 RO::GAT::GAT() {
 }
