@@ -25,7 +25,7 @@ namespace RO {
 			OT_Sound = 3,
 			OT_Effect = 4
 		} ObjectType;
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(push)
 #	pragma pack(1)
 #endif
@@ -204,7 +204,7 @@ namespace RO {
 			float alpha;
 		};
 
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(pop)
 #endif
 

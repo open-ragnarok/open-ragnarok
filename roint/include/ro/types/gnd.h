@@ -13,7 +13,7 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI GND : public Object {
 	public:
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(push)
 #	pragma pack(1)
 #endif
@@ -57,7 +57,7 @@ namespace RO {
 			unsigned int y;
 			unsigned int cell;
 		};
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(pop)
 #endif
 

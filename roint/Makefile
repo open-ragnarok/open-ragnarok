@@ -4,7 +4,7 @@ RM=rm -f
 CP=cp
 MKDIR=mkdir -p
 
-CFLAGS=-Wall -g -I.
+CFLAGS=-Wall -g -Iinclude
 
 MAJOR_VER=0
 MINOR_VER=1
@@ -18,8 +18,10 @@ SHARED=$(SHARED_MAJOR).$(MINOR_VER)
 STATIC=$(TARGET).a
 
 SRC=act.cc gat.cc grf.cc ro.cc rsm.cc spr.cc constants.cc gnd.cc \
-	object.cc ro_strings.cc rsw.cc \
-	python/pyspr.cc python/pyrsm.cc
+	ro_strings.cc rsw.cc common.cc ro_object.cc rsw_objects.cc \
+	python/pyspr.cc python/pyrsm.cc python/pyact.cc python/pygrf.cc \
+	python/pyrsw.cc python/pystrings.cc \
+	tinyxml/tinyxml.cc tinyxml/tinyxmlerror.cc tinyxml/tinyxmlparser.cc
 
 SHARED_OBJ=$(SRC:%.cc=%.lo)
 
@@ -30,6 +32,8 @@ PREFIX=/usr/local
 HEADERS=act.h constants.h cp949.h gat.h gnd.h grf.h impdecl.h \
   object.h resource.h ro.h ro_strings.h rsm.h rsw.h spr.h \
   struct_io.h
+  
+LDFLAGS=-lz
 
 all: static shared
 
@@ -49,7 +53,7 @@ uninstall:
 	$(RM) -r $(PREFIX)/include/roint	
 
 shared $(SHARED): $(SHARED_OBJ)
-	$(CC) -shared -Wl,-soname,$(SHARED_MAJOR) -o $(SHARED) $^
+	$(CC) -shared $(LDFLAGS) -Wl,-soname,$(SHARED_MAJOR) -o $(SHARED) $^
 
 static $(STATIC): $(STATIC_OBJ)
 	$(AR) rcs $(STATIC) $^

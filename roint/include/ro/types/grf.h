@@ -17,7 +17,7 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI GRF {
 	public:
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(push)
 #	pragma pack(1)
 #endif
@@ -38,7 +38,7 @@ namespace RO {
 			unsigned char* body;
 			unsigned char* uncompressedBody;
 		};
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(pop)
 #endif
 		/** Presents information on each file inside of the GRF */

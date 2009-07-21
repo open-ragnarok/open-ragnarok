@@ -15,7 +15,7 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI SPR : public Object {
 	public:
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(push)
 #	pragma pack(1)
 #endif
@@ -28,7 +28,7 @@ namespace RO {
 		typedef struct Pal {
 			unsigned char r, g, b, a;
 		};
-#ifndef __psp__
+#ifdef MSVC
 #	pragma pack(pop)
 #endif
 

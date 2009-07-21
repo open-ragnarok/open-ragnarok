@@ -3,7 +3,9 @@
 #ifndef __STDAFX_H
 #define __STDAFX_H
 
-#ifdef WIN32
+#define TIXML_USE_STL
+
+#ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
 #	ifdef ROINT_STATIC
 #		pragma comment(lib, "zlib.lib")

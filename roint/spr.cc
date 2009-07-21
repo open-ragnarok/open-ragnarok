@@ -118,7 +118,7 @@ const RO::SPR::Pal* RO::SPR::getPal(const unsigned char& idx) const {
 	return(&pal[idx]);
 }
 
-#ifndef __PSP__
+#ifdef MSVC
 #	pragma pack(push)
 #	pragma pack(1)
 #endif
@@ -144,7 +144,7 @@ namespace RO {
 		} dib;
 	};
 }
-#ifndef __PSP__
+#ifdef MSVC
 #	pragma pack(pop)
 #endif
 
