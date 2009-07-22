@@ -48,7 +48,7 @@
 #endif
 
 // zLib tweak
-#ifdef __WINDOWS__
+#ifdef _MSC_VER
 #	define ZLIB_WINAPI
 #endif
 
