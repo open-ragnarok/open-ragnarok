@@ -15,7 +15,7 @@
 #endif
 
 
-#ifndef __WINDOWS__
+#ifndef _MSC_VER
 	#define ROINT_DLLAPI
 #else
 	#ifdef ROINT_STATIC
