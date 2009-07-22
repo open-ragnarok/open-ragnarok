@@ -8,7 +8,7 @@
 #	endif
 #endif
 
-#ifndef __WINDOWS__
+#ifndef _MSC_VER
 	#define RONET_DLLAPI
 #else
 	#ifdef RONET_STATIC

@@ -42,7 +42,7 @@ bool ronet::pktServerList::Decode(ucBuffer& buf) {
 	servercount = (size - 47)/32;
 	
 	servers = new ServerInfo[servercount];
-	for (unsigned int i = 0; i < servercount; i++) {
+	for (int i = 0; i < servercount; i++) {
 		buf >> servers[i].ip;
 		buf >> servers[i].port;
 		buf.read((unsigned char*)servers[i].name, 20);

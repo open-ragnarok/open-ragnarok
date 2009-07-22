@@ -3,11 +3,11 @@
 
 #include "ronet/packet.h"
 
-ronet::Packet::Packet() : DynamicBlob() {
+ronet::Packet::Packet() : DynamicBlob<unsigned char>() {
 	id = 0;
 }
 
-ronet::Packet::Packet(unsigned short pktid) : DynamicBlob() {
+ronet::Packet::Packet(unsigned short pktid) : DynamicBlob<unsigned char>() {
 	id = pktid;
 }
 
@@ -15,7 +15,7 @@ ronet::Packet::~Packet() {
 }
 
 void ronet::Packet::setSize(const unsigned long& size) {
-	DynamicBlob::setSize(size);
+	DynamicBlob<unsigned char>::setSize(size);
 	memset(buffer, 0, dataSize);
 }
 
