@@ -1,7 +1,7 @@
 #ifndef __OPENRO_RO_DESKTOP_H
 #define __OPENRO_RO_DESKTOP_H
 
-#include "gui/desktop.h"
+#include "roengine/gui/desktop.h"
 
 class OpenRO;
 

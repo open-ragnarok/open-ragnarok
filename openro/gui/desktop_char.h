@@ -4,7 +4,7 @@
 class DesktopChar;
 #include "ro_desktop.h"
 #include "ronet/structures.h"
-#include "full_act.h"
+#include "roengine/full_act.h"
 
 class DesktopChar : public RODesktop {
 private:

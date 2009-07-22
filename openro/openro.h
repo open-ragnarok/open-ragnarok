@@ -4,7 +4,7 @@
 // Forward definition
 class OpenRO;
 
-#include "ro_engine.h"
+#include "roengine/ro_engine.h"
 #include "gui/desktops.h"
 
 #include "states.h"

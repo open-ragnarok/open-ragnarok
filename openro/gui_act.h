@@ -1,7 +1,7 @@
 #ifndef __GUI_ACT_H
 #define __GUI_ACT_H
 
-#include "objects/act_object.h"
+#include "roengine/objects/act_object.h"
 
 class GuiAct : public ActObject {
 protected:

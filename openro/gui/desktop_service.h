@@ -5,7 +5,7 @@
 class DesktopService;
 
 #include "ro_desktop.h"
-#include "gui/list.h"
+#include "roengine/gui/list.h"
 
 class DesktopService : public RODesktop {
 protected:
