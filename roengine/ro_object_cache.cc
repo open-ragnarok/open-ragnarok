@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "ro_object_cache.h"
+#include "roengine/ro_object_cache.h"
 #include "ro/ro.h"
 
 #include <sstream>

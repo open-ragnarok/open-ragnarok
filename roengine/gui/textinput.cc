@@ -1,11 +1,13 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "textinput.h"
-#include "gui.h"
-#include "font.h"
+#include "roengine/gui/textinput.h"
+#include "roengine/gui/gui.h"
+#include "roengine/gui/font.h"
 
-#include "sdl.h"
+#include <SDL/SDL.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 unsigned int GUI::TextInput::cursor_delay = 160;
 
@@ -23,7 +25,7 @@ void GUI::TextInput::Draw(unsigned int delay) {
 	const GUI::Font* font = gui.getDefaultFont();
 
 	GUI::Label::Draw(delay);
-	int x = font->getWidth(m_text.substr(m_start, m_pos - m_start));
+	int x = (int)(font->getWidth(m_text.substr(m_start, m_pos - m_start)));
 
 	while (m_delay > cursor_delay) {
 		m_delay -= cursor_delay;

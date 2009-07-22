@@ -1,8 +1,11 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "label.h"
-#include "gui.h"
+#include "roengine/gui/label.h"
+#include "roengine/gui/gui.h"
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 GUI::Label::Label(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
 	m_focusable = false;

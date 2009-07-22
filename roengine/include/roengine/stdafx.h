@@ -5,7 +5,7 @@
 #define __ROENGINE_NO_AUTOIMPORT_LIB__
 #define _CRT_SECURE_NO_WARNINGS
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #	include <windows.h>
 #	pragma warning(disable: 4251)
 #endif
@@ -20,6 +20,8 @@
 
 //#pragma comment(lib, "opengl32.lib")
 //#pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "sdl.lib")
+#ifdef _MSC_VER
+#	pragma comment(lib, "sdl.lib")
+#endif
 
 #endif /* __STDAFX_H */

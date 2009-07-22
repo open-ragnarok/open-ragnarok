@@ -1,9 +1,17 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "file_manager.h"
+#include "roengine/file_manager.h"
 
 #include <sys/stat.h>
+
+FileLoader::FileLoader() {
+
+}
+
+FileLoader::~FileLoader() {
+
+}
 
 bool FileLoader::writeFile(const std::string& name, std::ostream& os) {
 	FileData file = getFile(name);
@@ -100,14 +108,14 @@ bool FileManager::LoadIni(const std::string& ini) {
 }
 
 bool FileManager::add(const std::string& name, FileLoader* loader) {
-	if (!BaseCache::add(name, loader))
+	if (!BaseCache<FileLoader>::add(name, loader))
 		return(false);
 	LoadOrder.push_back(name);
 	return(true);
 }
 
 bool FileManager::remove(const std::string& name) {
-	if (!BaseCache::remove(name))
+	if (!BaseCache<FileLoader>::remove(name))
 		return(false);
 	std::vector<std::string>::iterator itr;
 	itr = LoadOrder.begin();

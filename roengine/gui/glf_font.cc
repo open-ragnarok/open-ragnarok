@@ -1,11 +1,13 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "glf_font.h"
+#include "roengine/gui/glf_font.h"
 #include "rogl/blob.h"
 
 #include <iostream>
 #include <fstream>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 GUI::GLFFont::GLFFont() {
 	m_font.Char = NULL;
@@ -43,8 +45,8 @@ bool GUI::GLFFont::load(std::istream& file) {
 	glGenTextures(1, &m_font.Tex);
 	
 	num = m_font.IntEnd - m_font.IntStart + 1; // Number of characters
-	m_font.Char = new Char[num];
-	file.read((char*)m_font.Char, sizeof(Char) * num);
+	m_font.Char = new _Char[num];
+	file.read((char*)m_font.Char, sizeof(_Char) * num);
 
 	num = m_font.TexHeight * m_font.TexWidth * 2; // Texture size
 	rogl::DynamicBlob TexBytes;
@@ -69,7 +71,7 @@ bool GUI::GLFFont::load(std::istream& file) {
 float GUI::GLFFont::getWidth(const std::string& s) const {
 	float ret = 0;
 	for (unsigned int i = 0; i < s.length(); i++) {
-		const Char& c = m_font.Char[s[i] - m_font.IntStart];
+		const _Char& c = m_font.Char[s[i] - m_font.IntStart];
 		ret += c.dx * fontmult;
 	}
 
@@ -81,7 +83,7 @@ void GUI::GLFFont::textOut(const std::string& data, float x, float y, float z) c
 
 	glBegin(GL_QUADS);
 	for (unsigned int i = 0; i < data.length(); i++) {
-		const Char& c = m_font.Char[data[i] - m_font.IntStart];
+		const _Char& c = m_font.Char[data[i] - m_font.IntStart];
 
 		glTexCoord2f(c.tx1, c.ty1);
 		glVertex3f(x, y, z);

@@ -5,11 +5,11 @@
 #include "base_cache.h"
 #include "gl_object.h"
 
-#include "objects/cube_object.h"
-#include "objects/rsm_object.h"
-#include "objects/rsw_object.h"
-#include "frustum.h"
-#include "vector.h"
+#include "roengine/objects/cube_object.h"
+#include "roengine/objects/rsm_object.h"
+#include "roengine/objects/rsw_object.h"
+#include "roengine/frustum.h"
+#include "roengine/vector.h"
 
 class GLObjectCache : public BaseCache<GLObject> {
 public:

@@ -1,7 +1,10 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "gl_object.h"
+#include "roengine/gl_object.h"
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 GLObject::GLObject() {
 	xrot=yrot=zrot=0.0f;

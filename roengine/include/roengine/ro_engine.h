@@ -12,7 +12,7 @@
 
 #include "ro/ro.h"
 #include "rogl/rogl.h"
-#include "sdl.h"
+#include <SDL/SDL.h>
 #include "gui/gui.h"
 
 class ROEngine : public SDLEngine {
@@ -59,8 +59,10 @@ public:
 	Frustum& getFrustum();
 };
 
-#ifndef __ROENGINE_NO_AUTOIMPORT_LIB__
-#	pragma comment(lib, "roengine.lib")
+#ifdef _MSC_VER
+#	ifndef __ROENGINE_NO_AUTOIMPORT_LIB__
+#		pragma comment(lib, "roengine.lib")
+#	endif
 #endif
 
 #endif /* __RO_ENGINE_H */

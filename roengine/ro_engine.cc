@@ -1,8 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "ro_engine.h"
-#include "sdl.h"
+#include "roengine/ro_engine.h"
 
 void ROEngine::HandleKeyboard() {}
 

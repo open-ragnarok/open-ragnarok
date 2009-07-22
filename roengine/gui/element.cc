@@ -1,8 +1,10 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "element.h"
-#include "gui.h"
+#include "roengine/gui/element.h"
+#include "roengine/gui/gui.h"
+
+#include <GL/gl.h>
 
 GUI::Element::Cache GUI::Element::m_elements;
 

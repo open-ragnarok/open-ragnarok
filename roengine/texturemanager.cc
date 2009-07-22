@@ -1,11 +1,14 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "texturemanager.h"
+#include "roengine/texturemanager.h"
 
 #include "rogl/texture.h"
 #include "rogl/image_bmp.h"
 #include "rogl/image_spr.h"
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 // === TEXTURE MANAGER ===
 
@@ -114,5 +117,4 @@ rogl::Texture::PointerCache TextureManager::RegisterSPR(FileManager& fm, ROObjec
 	// We don't need it once we registered the textures.
 	cache.remove(name);
 	return(ret);
-	
 }

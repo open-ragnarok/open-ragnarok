@@ -11,13 +11,13 @@ namespace GUI {
 			float dx, dy;
 			float tx1, ty1;
 			float tx2, ty2;
-		} Char;
+		} _Char;
 
 		typedef struct {
 			unsigned int Tex;
 			int TexWidth, TexHeight;
 			int IntStart, IntEnd;
-			Char *Char;
+			_Char *Char;
 		} Font;
 
 		Font m_font;
@@ -25,7 +25,7 @@ namespace GUI {
 	public:
 		GLFFont();
 		GLFFont(const std::string&);
-		~GLFFont();
+		virtual ~GLFFont();
 
 		bool load(std::istream&);
 		bool load(const std::string&);

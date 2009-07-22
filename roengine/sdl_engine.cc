@@ -1,10 +1,11 @@
 /* $Id$ */
 #include "stdafx.h"
-#include "sdl_engine.h"
+#include "roengine/sdl_engine.h"
 
-#include "sdl.h"
-
+#include <SDL/SDL.h>
 #include <stdio.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 bool SDLEngine::supportPot = false;
 

@@ -1,12 +1,14 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "gui.h"
+#include "roengine/gui/gui.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 namespace GUI {
-#include "arabia-8.glf.h"
-#include "arial-8.glf.h"
-#include "arial-10.glf.h"
+#include "roengine/gui/arabia-8.glf.h"
+#include "roengine/gui/arial-8.glf.h"
+#include "roengine/gui/arial-10.glf.h"
 
 void Mode2DStart(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
@@ -63,7 +65,7 @@ void GUI::Gui::Init(int w, int h) {
 	m_defaultFont = m_fonts["arial-8"];
 }
 
-GUI::Gui::Gui() : Singleton() {
+GUI::Gui::Gui() : Singleton<Gui>() {
 	m_desktop = NULL;
 	active = NULL;
 	m_defaultFont = NULL;

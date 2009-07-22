@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "camera.h"
+#include "roengine/camera.h"
 #include <gl/glu.h>
 
 Camera::Camera() {

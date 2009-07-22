@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "desktop.h"
+#include "roengine/gui/desktop.h"
 
 GUI::Desktop::Desktop() : Window() {
 	m_fullscreen = true;
@@ -43,7 +43,7 @@ bool GUI::Desktop::Load(const std::string& name, TextureManager& tm, FileManager
 
 	data = fm.getFile(name);
 	if (data.blobSize() == 0)
-		return(NULL);
+		return(false);
 
 	doc.Parse((const char*)data.getBuffer());
 

@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "gl_object_cache.h"
+#include "roengine/gl_object_cache.h"
 
 void GLObjectCache::draw(const Frustum& f, long tickdelay, const Vector3f& camera_look) {
 	obj_drawn = 0;

@@ -1,9 +1,12 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "rsm_object.h"
+#include "roengine/objects/rsm_object.h"
 
 #include <math.h>
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 RsmObject::RsmObject(const RO::RSM* o, const RO::RSW::Model* mdl) : GLObject() {
 	rsm = o;

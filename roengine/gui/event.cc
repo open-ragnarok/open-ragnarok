@@ -1,7 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "event.h"
+#include "roengine/gui/event.h"
 
 GUI::Event::Event() {
 	m_source = NULL;

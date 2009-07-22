@@ -1,9 +1,12 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "frustum.h"
+#include "roengine/frustum.h"
 
 #include <math.h>
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 Frustum::Frustum() {
 }

@@ -1,7 +1,10 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "rsw_object.h"
+#include "roengine/objects/rsw_object.h"
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 RswObject::RswObject(const RO::RSW* rsw, ROObjectCache& cache) : GLObject() {
 	this->rsw = rsw;

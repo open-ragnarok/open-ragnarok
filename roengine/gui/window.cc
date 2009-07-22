@@ -1,9 +1,9 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "window.h"
-#include "sdl.h"
-#include "gui.h"
+#include "roengine/gui/window.h"
+#include <SDL/SDL.h>
+#include "roengine/gui/gui.h"
 
 GUI::Window::Window() : Element() {
 }

@@ -1,10 +1,12 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "list.h"
-#include "gui.h"
+#include "roengine/gui/list.h"
+#include "roengine/gui/gui.h"
 
-#include <SDL.h>
+#include <SDL/SDL.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 GUI::List::List(GUI::Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
 	if (node != NULL)
@@ -16,7 +18,7 @@ GUI::List::List(GUI::Element* parent, const TiXmlElement* node, TextureManager& 
 bool GUI::List::HandleKeyDown(int key, int mod) {
 	if (key == SDLK_DOWN) {
 		selected++;
-		if (selected >= m_items.size())
+		if ((unsigned int)selected >= m_items.size())
 			selected = m_items.size() - 1;
 		return(true);
 	}
@@ -49,7 +51,7 @@ bool GUI::List::HandleMouseDown(int x, int y, int button) {
 		return(false);
 	std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
 
-	int itm = y / 18;
+	unsigned int itm = y / 18;
 
 	if ((itm + m_first) < m_items.size())
 		selected = itm + m_first;
@@ -63,7 +65,7 @@ void GUI::List::Draw(unsigned int delay) {
 		return;
 
 	int cy = pos_y;
-	int i;
+	unsigned int i;
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 	const GUI::Font* font = gui.getDefaultFont();
 	glColor3f(0,0,0);

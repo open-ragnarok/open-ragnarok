@@ -9,6 +9,8 @@
 
 class FileLoader {
 public:
+	FileLoader();
+	virtual ~FileLoader();
 	virtual bool fileExists(const std::string& name) const = 0;
 	virtual FileData getFile(const std::string& name) = 0;
 	virtual bool open(const std::string& name) = 0;

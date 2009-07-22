@@ -1,6 +1,9 @@
 #include "stdafx.h"
 
-#include "full_act.h"
+#include "roengine/full_act.h"
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 FullAct::FullAct() {
 	m_act = NULL;

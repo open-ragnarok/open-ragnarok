@@ -1,11 +1,11 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "button.h"
-#include "event.h"
-#include "gui.h"
+#include "roengine/gui/button.h"
+#include "roengine/gui/event.h"
+#include "roengine/gui/gui.h"
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base) : Element(parent) {
 	texture_base = base;
