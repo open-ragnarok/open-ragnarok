@@ -2,7 +2,7 @@
 #include "rogl/texture.h"
 #include "rogl/rogl.h"
 
-#include <SDL.h>
+//#include <SDL.h>
 
 std::list<rogl::Texture*> rogl::Texture::objects;
 int rogl::Texture::m_pot = -1;
@@ -285,13 +285,13 @@ unsigned int rogl::Texture::PointerCache::size() const {
 
 rogl::Texture::Pointer& rogl::Texture::PointerCache::operator[] (const unsigned int& i) {
 	if (i >= size())
-		return(Texture::Pointer());
+		return(pointers[0]);
 	return(pointers[i]);
 }
 
 const rogl::Texture::Pointer& rogl::Texture::PointerCache::operator[] (const unsigned int& i) const {
 	if (i >= size())
-		return(Texture::Pointer());
+		return(pointers[0]);
 	return(pointers[i]);
 }
 

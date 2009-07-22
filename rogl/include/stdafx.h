@@ -5,7 +5,7 @@
 #define _ROGL_DLLAPI_
 #define _ROGL_NOAUTOLIB_
 
-#ifdef WIN32
+#ifdef _MSC_VER
 	#pragma warning(disable: 4251)
 	#define _CRT_SECURE_NO_WARNINGS
 #endif

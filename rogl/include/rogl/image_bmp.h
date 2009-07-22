@@ -25,8 +25,10 @@ namespace rogl {
 
 		header_type _htype;
 
+#ifdef _MSC_VER
 	#pragma pack(push)
 	#pragma pack(1)
+#endif
 		struct HeaderV3 {
 			unsigned int headerSize;
 			int width;
@@ -48,7 +50,9 @@ namespace rogl {
 			short planes; // Always 1
 			short bpp;
 		};
+#ifdef _MSC_VER
 	#pragma pack(pop)
+#endif
 
 		int dataOffset;
 

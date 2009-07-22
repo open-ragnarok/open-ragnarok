@@ -6,7 +6,7 @@
 // building the DLL and importing the classes when build an application 
 // using this DLL.
 
-#ifndef WIN32
+#ifndef _MSC_VER
 	#define ROGL_DLLAPI
 #else
 	#include <windows.h>
@@ -39,8 +39,9 @@
 #	include "ro/ro.h"
 #endif
 
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
+#ifdef _MSC_VER
+#	pragma comment(lib, "opengl32.lib")
+#	pragma comment(lib, "glu32.lib")
+#endif
 
 #endif /* __ROGL_IMPORT_H */
-

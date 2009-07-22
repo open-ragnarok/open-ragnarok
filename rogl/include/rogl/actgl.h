@@ -21,7 +21,7 @@ protected:
 public:
 	ActGL(const ActData*);
 	ActGL(const std::string& name);
-	~ActGL();
+	virtual ~ActGL();
 };
 
 class ROGL_DLLAPI ActData {
