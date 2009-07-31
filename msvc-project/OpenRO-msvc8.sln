@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roint_dll", "..\roint\msvc2008\roint.vcproj", "{D9193DAC-5699-422E-98B0-51FC86E55D39}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D} = {8FD826F8-3739-44E6-8CC8-997122E53B8D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roint_static", "..\roint\msvc2008\roint_static.vcproj", "{D6268DAA-2081-47CC-B98D-DADFACB70615}"
+	ProjectSection(ProjectDependencies) = postProject
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8} = {745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibstat", "zlib123\contrib\vstudio\vc8\zlibstat.vcproj", "{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibvc", "zlib123\contrib\vstudio\vc8\zlibvc.vcproj", "{8FD826F8-3739-44E6-8CC8-997122E53B8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		ReleaseWithoutAsm|Win32 = ReleaseWithoutAsm|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9193DAC-5699-422E-98B0-51FC86E55D39}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D9193DAC-5699-422E-98B0-51FC86E55D39}.Debug|Win32.Build.0 = Debug|Win32
+		{D9193DAC-5699-422E-98B0-51FC86E55D39}.Release|Win32.ActiveCfg = Release|Win32
+		{D9193DAC-5699-422E-98B0-51FC86E55D39}.Release|Win32.Build.0 = Release|Win32
+		{D9193DAC-5699-422E-98B0-51FC86E55D39}.ReleaseWithoutAsm|Win32.ActiveCfg = Release|Win32
+		{D9193DAC-5699-422E-98B0-51FC86E55D39}.ReleaseWithoutAsm|Win32.Build.0 = Release|Win32
+		{D6268DAA-2081-47CC-B98D-DADFACB70615}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D6268DAA-2081-47CC-B98D-DADFACB70615}.Debug|Win32.Build.0 = Debug|Win32
+		{D6268DAA-2081-47CC-B98D-DADFACB70615}.Release|Win32.ActiveCfg = Release|Win32
+		{D6268DAA-2081-47CC-B98D-DADFACB70615}.Release|Win32.Build.0 = Release|Win32
+		{D6268DAA-2081-47CC-B98D-DADFACB70615}.ReleaseWithoutAsm|Win32.ActiveCfg = Release|Win32
+		{D6268DAA-2081-47CC-B98D-DADFACB70615}.ReleaseWithoutAsm|Win32.Build.0 = Release|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Debug|Win32.Build.0 = Debug|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Release|Win32.ActiveCfg = Release|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Release|Win32.Build.0 = Release|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.ReleaseWithoutAsm|Win32.ActiveCfg = ReleaseWithoutAsm|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.ReleaseWithoutAsm|Win32.Build.0 = ReleaseWithoutAsm|Win32
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.Debug|Win32.Build.0 = Debug|Win32
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.Release|Win32.ActiveCfg = Release|Win32
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.Release|Win32.Build.0 = Release|Win32
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.ReleaseWithoutAsm|Win32.ActiveCfg = ReleaseWithoutAsm|Win32
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.ReleaseWithoutAsm|Win32.Build.0 = ReleaseWithoutAsm|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
