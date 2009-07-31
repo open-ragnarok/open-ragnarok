@@ -15,6 +15,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibstat", "zlib123\contrib
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibvc", "zlib123\contrib\vstudio\vc8\zlibvc.vcproj", "{8FD826F8-3739-44E6-8CC8-997122E53B8D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rogl_dll", "..\rogl\msvc2008\rogl.vcproj", "{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D9193DAC-5699-422E-98B0-51FC86E55D39} = {D9193DAC-5699-422E-98B0-51FC86E55D39}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rogl_static", "..\rogl\msvc2008\rogl_static.vcproj", "{C0C3C32E-DE77-4A07-A4E9-5C4A08906CDD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D6268DAA-2081-47CC-B98D-DADFACB70615} = {D6268DAA-2081-47CC-B98D-DADFACB70615}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -46,6 +56,18 @@ Global
 		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.Release|Win32.Build.0 = Release|Win32
 		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.ReleaseWithoutAsm|Win32.ActiveCfg = ReleaseWithoutAsm|Win32
 		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.ReleaseWithoutAsm|Win32.Build.0 = ReleaseWithoutAsm|Win32
+		{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}.Debug|Win32.Build.0 = Debug|Win32
+		{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}.Release|Win32.ActiveCfg = Release|Win32
+		{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}.Release|Win32.Build.0 = Release|Win32
+		{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}.ReleaseWithoutAsm|Win32.ActiveCfg = Release|Win32
+		{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}.ReleaseWithoutAsm|Win32.Build.0 = Release|Win32
+		{C0C3C32E-DE77-4A07-A4E9-5C4A08906CDD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C0C3C32E-DE77-4A07-A4E9-5C4A08906CDD}.Debug|Win32.Build.0 = Debug|Win32
+		{C0C3C32E-DE77-4A07-A4E9-5C4A08906CDD}.Release|Win32.ActiveCfg = Release|Win32
+		{C0C3C32E-DE77-4A07-A4E9-5C4A08906CDD}.Release|Win32.Build.0 = Release|Win32
+		{C0C3C32E-DE77-4A07-A4E9-5C4A08906CDD}.ReleaseWithoutAsm|Win32.ActiveCfg = Release|Win32
+		{C0C3C32E-DE77-4A07-A4E9-5C4A08906CDD}.ReleaseWithoutAsm|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

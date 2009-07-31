@@ -45,9 +45,71 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)roint\"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SDL)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;ROGL_STATIC"
 				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\rogl.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
+			ConfigurationType="4"
+			CharacterSet="1"
+			ManagedExtensions="0"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SDL)\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;ROGL_STATIC"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -111,68 +173,6 @@
 				AdditionalIncludeDirectories="$(SolutionDir)roint\"
 				PreprocessorDefinitions="WIN32;_DEBUG;ROGL_STATIC"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\rogl.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
-			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
-			ConfigurationType="4"
-			CharacterSet="1"
-			ManagedExtensions="0"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(SolutionDir)roint\"
-				PreprocessorDefinitions="WIN32;NDEBUG;ROGL_STATIC"
-				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -298,7 +298,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\rogl.cpp"
+				RelativePath="..\blob.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\image.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\image_bmp.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\image_spr.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\rogl.cc"
 				>
 			</File>
 			<File
@@ -321,7 +337,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -329,7 +345,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -344,6 +360,10 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\texture.cc"
+				>
 			</File>
 		</Filter>
 		<Filter

@@ -29,3 +29,7 @@ ROGL::ActData& ROGL::ActData::operator = (const ROGL::ActData& _act) {
 	this->m_name =  _act.m_name;
 	return(*this);
 }
+
+ROGL::ActGL::ActGL(const ActData*) {}
+ROGL::ActGL::ActGL(const std::string& name) {}
+ROGL::ActGL::~ActGL() {}
