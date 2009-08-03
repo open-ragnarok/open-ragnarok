@@ -11,9 +11,10 @@
 #include "openro.h"
 #include "gui/desktops.h"
 
-#include <SDL/SDL.h>
-
 #ifdef _MSC_VER
+#	include <SDL.h>
 #	pragma comment(lib, "SDLmain.lib")
+#else
+#	include <SDL/SDL.h>
 #endif
 

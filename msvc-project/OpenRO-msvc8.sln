@@ -36,6 +36,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roengine", "..\roengine\msv
 		{D9193DAC-5699-422E-98B0-51FC86E55D39} = {D9193DAC-5699-422E-98B0-51FC86E55D39}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openro", "..\openro\msvc\openro.vcproj", "{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A500A26-AAF3-48B8-B404-68B9A2FF1C82} = {5A500A26-AAF3-48B8-B404-68B9A2FF1C82}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -91,6 +96,12 @@ Global
 		{5A500A26-AAF3-48B8-B404-68B9A2FF1C82}.Release|Win32.Build.0 = Release|Win32
 		{5A500A26-AAF3-48B8-B404-68B9A2FF1C82}.ReleaseWithoutAsm|Win32.ActiveCfg = Release|Win32
 		{5A500A26-AAF3-48B8-B404-68B9A2FF1C82}.ReleaseWithoutAsm|Win32.Build.0 = Release|Win32
+		{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}.Debug|Win32.Build.0 = Debug|Win32
+		{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}.Release|Win32.ActiveCfg = Release|Win32
+		{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}.Release|Win32.Build.0 = Release|Win32
+		{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}.ReleaseWithoutAsm|Win32.ActiveCfg = Release|Win32
+		{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}.ReleaseWithoutAsm|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
