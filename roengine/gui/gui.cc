@@ -94,6 +94,11 @@ void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 	Mode2DEnd();
 }
 
+void GUI::Gui::textOut(const std::string& text, float x, float y, float z) {
+	// TODO: Why is it not working on msvc??
+	//m_defaultFont->textOut(text, x, y, z);
+}
+
 void GUI::Gui::setSize(int w, int h) {
 	m_width = w;
 	m_height = h;
@@ -132,7 +137,6 @@ void GUI::Gui::setDesktop(const std::string& ui) {
 	}
 	setDesktop((Desktop*)e);
 }
-
 
 BaseCache<GUI::Font>& GUI::Gui::FontManager() {
 	return(m_fonts);
@@ -212,7 +216,7 @@ const GUI::Element* GUI::Gui::operator[] (const std::string& n) const {
 void GUI::Gui::PushEvent(const Event& e) {
 	m_events.push_back(e);
 }
-	
+
 GUI::Event GUI::Gui::PopEvent() {
 	std::vector<Event>::iterator itr;
 	itr = m_events.begin();
@@ -234,4 +238,3 @@ void GUI::Gui::ProcessEvents() {
 	while (GetEventCount())
 		m_desktop->HandleEvent(PopEvent());
 }
-

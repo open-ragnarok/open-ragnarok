@@ -12,10 +12,7 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI GAT : public Object {
 	public:
-#ifdef MSVC
-#	pragma pack(push)
-#	pragma pack(1)
-#endif
+#pragma pack(push,1)
 		typedef struct strBlock {
 			float height[4];
 			/**
@@ -34,9 +31,7 @@ namespace RO {
 			unsigned char type;
 			unsigned char unk[3];
 		};
-#ifdef MSVC
-#	pragma pack(pop)
-#endif
+#pragma pack(pop)
 	protected:
 		unsigned int m_width, m_height;
 		strBlock* m_blocks;

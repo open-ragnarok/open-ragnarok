@@ -42,9 +42,10 @@ bool GUI::Desktop::Load(const std::string& name, TextureManager& tm, FileManager
 	FileData data;
 
 	data = fm.getFile(name);
-	if (data.blobSize() == 0)
+	if (data.blobSize() == 0) {
+		std::cerr << "GUI::Desktop::Load(): Error loading file " << name << std::endl;
 		return(false);
-
+	}
 	doc.Parse((const char*)data.getBuffer());
 
 	TiXmlElement* node;

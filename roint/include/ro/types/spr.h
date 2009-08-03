@@ -15,10 +15,7 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI SPR : public Object {
 	public:
-#ifdef MSVC
-#	pragma pack(push)
-#	pragma pack(1)
-#endif
+#pragma pack(push,1)
 		// Structures
 		typedef struct Image {
 			unsigned short w, h;
@@ -28,9 +25,7 @@ namespace RO {
 		typedef struct Pal {
 			unsigned char r, g, b, a;
 		};
-#ifdef MSVC
-#	pragma pack(pop)
-#endif
+#pragma pack(pop)
 
 	protected:
 		unsigned int imgCount;

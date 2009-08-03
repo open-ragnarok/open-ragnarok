@@ -85,6 +85,9 @@ public:
 	void ProcessEvents();
 	int GetEventCount() const;
 
+	/** Outputs a text using the default font */
+	void textOut(const std::string&, float x, float y, float z);
+
 	/** Finds an object of a given name. No two objects can have the same name. */
 	Element* operator[] (const std::string&);
 

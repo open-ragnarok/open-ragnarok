@@ -16,10 +16,7 @@ namespace RO {
 	class ROINT_DLLAPI RSM : public Object {
 	public:
 		// RSM Internal Structures
-#ifdef MSVC
-#	pragma pack(push)
-#	pragma pack(1)
-#endif
+#pragma pack(push,1)
 		typedef struct SprSize {
 		  int width;
 		  int height;
@@ -119,9 +116,7 @@ namespace RO {
 		protected:
 			BoundingBox box;
 		};
-#ifdef MSVC
-#	pragma pack(pop)
-#endif
+#pragma pack(pop)
 	protected:
 		/** Unknown information included in all RSM */
 		char garbage[25];

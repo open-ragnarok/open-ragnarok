@@ -13,10 +13,7 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI GND : public Object {
 	public:
-#ifdef MSVC
-#	pragma pack(push)
-#	pragma pack(1)
-#endif
+#pragma pack(push,1)
 		// Structure definitions
 		struct strTexture {
 			char path[40];
@@ -57,9 +54,7 @@ namespace RO {
 			unsigned int y;
 			unsigned int cell;
 		};
-#ifdef MSVC
-#	pragma pack(pop)
-#endif
+#pragma pack(pop)
 
 	protected:
 		strGndHeader m_gndheader;

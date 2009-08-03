@@ -25,10 +25,7 @@ namespace RO {
 			OT_Sound = 3,
 			OT_Effect = 4
 		} ObjectType;
-#ifdef MSVC
-#	pragma pack(push)
-#	pragma pack(1)
-#endif
+#pragma pack(push,1)
 		/**
 		 * Base class for RSW objects
 		 */
@@ -204,9 +201,7 @@ namespace RO {
 			float alpha;
 		};
 
-#ifdef MSVC
-#	pragma pack(pop)
-#endif
+#pragma pack(pop)
 
 	protected:
 		Object** m_objects;

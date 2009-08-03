@@ -17,10 +17,7 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI GRF {
 	public:
-#ifdef MSVC
-#	pragma pack(push)
-#	pragma pack(1)
-#endif
+#pragma pack(push,1)
 		/** Header common to all GRF files */
 		typedef struct Header {
 			char signature[16];
@@ -38,9 +35,8 @@ namespace RO {
 			unsigned char* body;
 			unsigned char* uncompressedBody;
 		};
-#ifdef MSVC
-#	pragma pack(pop)
-#endif
+#pragma pack(pop)
+
 		/** Presents information on each file inside of the GRF */
 		class ROINT_DLLAPI FileTableItem {
 		public:

@@ -18,6 +18,11 @@ GUI::Label& GUI::Label::setText(const std::string& s) {
 	return(*this);
 }
 
+GUI::Label& GUI::Label::setText(const char* s) {
+	m_text = s;
+	return(*this);
+}
+
 std::string& GUI::Label::getText() {
 	return(m_text);
 }
@@ -28,11 +33,11 @@ const std::string& GUI::Label::getText() const {
 
 void GUI::Label::Draw(unsigned int delay) {
 	GUI::Gui& gui = GUI::Gui::getSingleton();
-	const GUI::Font* font = gui.getDefaultFont();
+	//const GUI::Font* font = gui.getDefaultFont();
 
-	glColor3f(0,0,0);
-	font->textOut(m_text, (float)pos_x, (float)pos_y, 0);
-	glColor3f(1,1,1);
+	glColor3f(0.0f,0.0f,0.0f);
+	gui.textOut(m_text, (float)pos_x, (float)pos_y, 0);
+	glColor3f(1.0f,1.0f,1.0f);
 }
 
 bool GUI::Label::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
