@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\roint\include\&quot;;&quot;$(SolutionDir)\rogl\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;"
 				PreprocessorDefinitions="WIN32,_WINDOWS,_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -51,6 +51,69 @@
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
+			ConfigurationType="4"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;..\roint\include\;..\rogl\include\"
+				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -111,69 +174,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
-			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
-			ConfigurationType="4"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\roint\&quot;;&quot;$(SolutionDir)\rogl\&quot;;&quot;$(SolutionDir)\ronet\include&quot;"
-				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -349,59 +349,59 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\base_cache.h"
+				RelativePath="..\include\roengine\base_cache.h"
 				>
 			</File>
 			<File
-				RelativePath="..\camera.h"
+				RelativePath="..\include\roengine\camera.h"
 				>
 			</File>
 			<File
-				RelativePath="..\file_data.h"
+				RelativePath="..\include\roengine\file_data.h"
 				>
 			</File>
 			<File
-				RelativePath="..\file_manager.h"
+				RelativePath="..\include\roengine\file_manager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\frustum.h"
+				RelativePath="..\include\roengine\frustum.h"
 				>
 			</File>
 			<File
-				RelativePath="..\full_act.h"
+				RelativePath="..\include\roengine\full_act.h"
 				>
 			</File>
 			<File
-				RelativePath="..\gl_object.h"
+				RelativePath="..\include\roengine\gl_object.h"
 				>
 			</File>
 			<File
-				RelativePath="..\gl_object_cache.h"
+				RelativePath="..\include\roengine\gl_object_cache.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_engine.h"
+				RelativePath="..\include\roengine\ro_engine.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_object_cache.h"
+				RelativePath="..\include\roengine\ro_object_cache.h"
 				>
 			</File>
 			<File
-				RelativePath="..\sdl_engine.h"
+				RelativePath="..\include\roengine\sdl_engine.h"
 				>
 			</File>
 			<File
-				RelativePath="..\stdafx.h"
+				RelativePath="..\include\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath="..\texturemanager.h"
+				RelativePath="..\include\roengine\texturemanager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\vector.h"
+				RelativePath="..\include\roengine\vector.h"
 				>
 			</File>
 		</Filter>
@@ -498,15 +498,15 @@
 				Name="Fonts"
 				>
 				<File
-					RelativePath="..\gui\arabia-8.glf.h"
+					RelativePath="..\include\roengine\gui\arabia-8.glf.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\arial-10.glf.h"
+					RelativePath="..\include\roengine\gui\arial-10.glf.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\arial-8.glf.h"
+					RelativePath="..\include\roengine\gui\arial-8.glf.h"
 					>
 				</File>
 			</Filter>
@@ -514,51 +514,51 @@
 				Name="Headers"
 				>
 				<File
-					RelativePath="..\gui\button.h"
+					RelativePath="..\include\roengine\gui\button.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\desktop.h"
+					RelativePath="..\include\roengine\gui\desktop.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\element.h"
+					RelativePath="..\include\roengine\gui\element.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\event.h"
+					RelativePath="..\include\roengine\gui\event.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\font.h"
+					RelativePath="..\include\roengine\gui\font.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\glf_font.h"
+					RelativePath="..\include\roengine\gui\glf_font.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\gui.h"
+					RelativePath="..\include\roengine\gui\gui.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\label.h"
+					RelativePath="..\include\roengine\gui\label.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\list.h"
+					RelativePath="..\include\roengine\gui\list.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\singleton.h"
+					RelativePath="..\include\roengine\gui\singleton.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\textinput.h"
+					RelativePath="..\include\roengine\gui\textinput.h"
 					>
 				</File>
 				<File
-					RelativePath="..\gui\window.h"
+					RelativePath="..\include\roengine\gui\window.h"
 					>
 				</File>
 			</Filter>

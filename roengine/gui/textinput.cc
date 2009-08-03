@@ -5,7 +5,6 @@
 #include "roengine/gui/gui.h"
 #include "roengine/gui/font.h"
 
-#include <SDL/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -35,8 +34,8 @@ void GUI::TextInput::Draw(unsigned int delay) {
 		glDisable(GL_TEXTURE_2D);
 		glColor3f(0,0,0);
 		glBegin(GL_LINES);
-		glVertex3f((float)x + pos_x, pos_y, 0);
-		glVertex3f((float)x + pos_x, pos_y + 16, 0);
+		glVertex3i(x + pos_x, pos_y, 0);
+		glVertex3i(x + pos_x, pos_y + 16, 0);
 		glEnd();
 		glColor3f(1,1,1);
 		glEnable(GL_TEXTURE_2D);

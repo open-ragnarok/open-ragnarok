@@ -4,7 +4,6 @@
 #include "roengine/gui/list.h"
 #include "roengine/gui/gui.h"
 
-#include <SDL/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -72,13 +71,13 @@ void GUI::List::Draw(unsigned int delay) {
 
 	for (i = m_first; i < m_items.size(); i++) {
 		if (i == selected) {
-			glColor3f(0.482352941, 0.580392157, 0.803921569);
+			glColor3f(0.482352941f, 0.580392157f, 0.803921569f);
 			glDisable(GL_TEXTURE_2D);
 			glBegin(GL_QUADS);
-			glVertex3f(pos_x, cy-1, 0);
-			glVertex3f(pos_x + getW(), cy-1, 0);
-			glVertex3f(pos_x + getW(), cy+17, 0);
-			glVertex3f(pos_x, cy+17, 0);
+			glVertex3i(pos_x, cy-1, 0);
+			glVertex3i(pos_x + getW(), cy-1, 0);
+			glVertex3i(pos_x + getW(), cy+17, 0);
+			glVertex3i(pos_x, cy+17, 0);
 			glEnd();
 			glEnable(GL_TEXTURE_2D);
 			glColor3f(0, 0, 0);

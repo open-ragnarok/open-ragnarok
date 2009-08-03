@@ -12,7 +12,11 @@
 
 #include "ro/ro.h"
 #include "rogl/rogl.h"
-#include <SDL/SDL.h>
+#ifdef _MSC_VER
+#	include <SDL.h>
+#else
+#	include <SDL/SDL.h>
+#endif
 #include "gui/gui.h"
 
 class ROEngine : public SDLEngine {

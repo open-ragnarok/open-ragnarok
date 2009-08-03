@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: stdafx.h 61 2009-07-22 14:20:16Z sergio $ */
 #ifndef __STDAFX_H
 #define __STDAFX_H
 
@@ -7,6 +7,7 @@
 
 #ifdef _MSC_VER
 #	include <windows.h>
+#	include <SDL.h>
 #	pragma warning(disable: 4251)
 #endif
 
