@@ -1,0 +1,8 @@
+# Open-Ragnarok ini file
+fs: data
+grf: /var/cache/adata.grf
+grf: /var/cache/basedata.grf
+grf: /var/cache/sdata.grf
+grf: /var/cache/data.grf
+
+; EOF
