@@ -1,4 +1,4 @@
-/* $Id: pkt_login.cc 55 2009-03-01 13:01:04Z sergio $ */
+/* $Id$ */
 #include "stdafx.h"
 
 #include "ronet/packets/pkt_charcreate.h"

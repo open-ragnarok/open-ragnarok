@@ -1,3 +1,4 @@
+/* $Id$ */
 #ifndef __RONET__CHARCREATEERROR_H
 #define __RONET__CHARCREATEERROR_H
 

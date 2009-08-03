@@ -1,8 +1,9 @@
+/* $Id$ */
 #include "stdafx.h"
 
 #include "ronet/packets/pkt_charcreateerror.h"
 
-ronet::pktCharCreateError::pktCharCreateError() : Packet() {
+ronet::pktCharCreateError::pktCharCreateError() : Packet(pktCharCreateErrorID) {
 }
 
 const char& ronet::pktCharCreateError::getId() const {

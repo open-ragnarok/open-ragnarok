@@ -21,6 +21,7 @@ namespace ronet {
 		pktCharDelete2ID = 0x01fb, // 56 bytes
 
 		// To MAP
+		pktMapLoginID = 0x0072, // (19 bytes) S 0072 <id1>.int <id2>.int <id3>.int <tick>.int <gender>.byte
 
 		// == INBOUND == //
 		// From LOGIN
@@ -29,12 +30,15 @@ namespace ronet {
 
 		// From CHAR
 		pktCharListID = 0x006b,
+		pktCharSelectionFailID = 0x006c, // S 006c <unk>.short
+		pktCharPositionID = 0x0071, // (30 bytes) S 0071 <position>.int <mapname>.16B <ip>.int <port>.short
 		pktCharCreatedID = 0x006d, // Also named "NewCharInfo" (108 or 110 bytes)
 		pktCharCreateErrorID = 0x006e, // (3 bytes)
 		pktKeepAliveID = 0x0187,
 		pktCharRenameID = 0x028d,
 
 		// From MAP
+		pktMapLoginSuccessID = 0x0073,
 
 		// == "WTF!?"s == //
 		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

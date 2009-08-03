@@ -1,4 +1,4 @@
-/* $Id: pkt_login.h 55 2009-03-01 13:01:04Z sergio $ */
+/* $Id$ */
 #ifndef __RONET_PACKET_CHARCREATE_H
 #define __RONET_PACKET_CHARCREATE_H
 

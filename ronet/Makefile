@@ -24,7 +24,8 @@ SRC=connection.cc mutex.cc net_tools.cc packet_factory.cc packet_vector.cc packe
 	ronet.cc tcp_connection.cc ucbuffer.cc \
 	packets/pkt_charcreate.cc packets/pkt_charcreated.cc packets/pkt_charcreateerror.cc \
 	packets/pkt_charlist.cc packets/pkt_charlogin.cc packets/pkt_keepalive.cc \
-	packets/pkt_login.cc packets/pkt_serverlist.cc
+	packets/pkt_login.cc packets/pkt_serverlist.cc packets/pkt_charposition.cc \
+	packets/pkt_maplogin.cc packets/pkt_maploginsuccess.cc
 
 SHARED_OBJ=$(SRC:%.cc=$(OBJDIR)/%.lo)
 STATIC_OBJ=$(SRC:%.cc=$(OBJDIR)/%.o)

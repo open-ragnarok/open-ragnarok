@@ -257,11 +257,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_charposition.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_keepalive.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\packets\pkt_login.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_maplogin.cc"
 					>
 				</File>
 				<File
@@ -367,11 +375,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_charposition.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_keepalive.h"
 					>
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_login.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_maplogin.h"
 					>
 				</File>
 				<File
