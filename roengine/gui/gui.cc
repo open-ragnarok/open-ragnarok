@@ -95,8 +95,7 @@ void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 }
 
 void GUI::Gui::textOut(const std::string& text, float x, float y, float z) {
-	// TODO: Why is it not working on msvc??
-	//m_defaultFont->textOut(text, x, y, z);
+	m_defaultFont->textOut(text, x, y, z);
 }
 
 void GUI::Gui::setSize(int w, int h) {

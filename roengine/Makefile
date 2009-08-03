@@ -23,7 +23,7 @@ STATIC=$(TARGET).a
 SRC=camera.cc file_data.cc file_manager.cc frustum.cc full_act.cc gl_object_cache.cc \
 	gl_object.cc ro_engine.cc ro_object_cache.cc sdl_engine.cc texturemanager.cc \
 	gui/button.cc gui/desktop.cc gui/element.cc gui/event.cc gui/glf_font.cc \
-	gui/gui.cc gui/label.cc gui/list.cc gui/textinput.cc gui/window.cc \
+	gui/gui.cc gui/label.cc gui/list.cc gui/textinput.cc gui/window.cc gui/font.cc \
 	objects/act_object.cc objects/cube_object.cc objects/rsm_object.cc \
 	objects/rsw_object.cc
 
