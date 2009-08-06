@@ -7,9 +7,17 @@ namespace RO {
 
 	namespace EUC {
 		char user_interface[] =  "\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba";
+
+		// BODY PARTS
 		char body[] = "\xb8\xf6\xc5\xeb";
 		char head[] = "\xb8\xd3\xb8\xae\xc5\xeb";
+		char weapons[] = "\xb8\xf9\xc5\xa9";
+
+		//CHARACTER TYPE
 		char humans[] = "\xc0\xce\xb0\xa3\xc1\xb7"; // Human family
+		char monsters[] = "\xb8\xf3\xbd\xba\xc5\xcd";
+
+		char water[] = "\xbf\xf6\xc5\xcd";
 
 		// === SEX
 		char female[] = "\xbf\xa9";
@@ -18,99 +26,31 @@ namespace RO {
 			male, female
 		};
 
-		// classes
-
-		char acolyte[] = "";
-		char alchemist[] = "";
-		char archer[] = "";
-		char assassin[] = "";
-		char bard[] = "";
-		char blacksmith[] = "";
-		char crusader[] = "";
-		char dancer[] = "";
-		char gm[] = "";
-		char hunter[] = "";
-		char knight[] = "";
-		char magician[] = "";
+		// classes [kR105]
+		char novice[] = "\xC3\xCA\xBA\xB8\xC0\xDA";
+		char swordsman[] = "\xB0\xCB\xBB\xE7";
+		char magician[] = "\xB8\xB6\xB9\xFD\xBB\xE7";
+		char archer[] = "\xB1\xC3\xBC\xF6";
+		char acolyte[] = "\xBC\xBA\xC1\xF7\x9F\xE0";
+		char merchant[] = "\xBB\xF3\xC0\xCE";
+		char thief[] = "\xB5\xB5\xB5\xCF";
+		char knight[] = "\xB1\xE2\xBB\xE7";
+		char priest[] = "\xC7\xC1\xB8\xAE\xBD\xBA\xC6\xAE";
+		char wizard[] = "\xC0\xA7\xC0\xFA\xB5\xE5";
+		char blacksmith[] = "\xC1\xA6\xC3\xB6";
+		char hunter[] = "\xC7\xE5\xC5\xCD";
+		char assassin[] = "\xBE\xEE\xBC\xBC\xBD\xC5";
+		char knight_mounted[] = "";
+		char crusader[] = "\xC5\xA9\xB7\xE7\xBC\xBC\xC0\xCC\xB4\xF5";
+		char monk[] = "\xB8\xF9\xC5\xA9";
+		char sage[] = "\xBC\xBC\xC0\xCC\xC1\xF6";
+		char rogue[] = "\xB7\xCE\xB1\xD7";
+		char alchemist[] = "\xBF\xAC\xB1\xDD\xBC\xFA\xBB\xE7";
+		char bard[] = "\xB9\xD9\xB5\xE5";
+		char dancer[] = "\xB9\xAB\xC8\xF1";
+		char crusader_mounted[] = "";
+		char gm[] = "\x9D\xC4\xBF\xB5\xC0\xDA";
 		char mercenary[] = "";
-		char merchant[] = "";
-		char monk[] = "";
-		char novice[] = "\xc3\xca\xba\xb8\xc0\xda";
-		char priest[] = "";
-		char rogue[] = "";
-		char sage[] = "";
-		char swordsman[] = "";
-		char thief[] = "";
-		char wizard[] = "";
-
-		char *classname[] = {
-			acolyte,
-			alchemist,
-			archer,
-			assassin,
-			bard,
-			blacksmith,
-			crusader,
-			dancer,
-			gm,
-			hunter,
-			knight,
-			magician,
-			mercenary,
-			merchant,
-			monk,
-			novice,
-			priest,
-			rogue,
-			sage,
-			swordsman,
-			thief,
-			wizard
-		};
-	}
-
-	namespace UTF {
-		char humans[] = "\xec\x9d\xb8\xea\xb0\x84\xec\xa1\xb1"; // Human family
-		char monsters[] = "\xeb\xaa\xac\xec\x8a\xa4\xed\x84\xb0";
-
-		char water[] = "\xec\x9b\x8c\xed\x84\xb0";
-
-		// === SEX
-		char female[] = "\xec\x97\xac";
-		char male[] = "\xeb\x82\xa8";
-
-		char *sex[] = {
-			male, female
-		};
-
-		// BODY PARTS
-		char body[] = "\xeb\xaa\xb8\xed\x86\xb5";
-		char head[] = "\xeb\xa8\xb8\xeb\xa6\xac\xed\x86\xb5";
-		char weapons[] = "\xeb\xaa\xbd\xed\x81\xac";
-
-		// classes
-		char acolyte[] = "\xec\x84\xb1\xec\xa7\x81\xec\x9e";
-		char alchemist[] = "\xec\x97\xb0\xea\xb8\x88\xec\x88\xa0\xec\x82\xac";
-		char archer[] = "\xea\xb6\x81\xec\x88\x98";
-		char assassin[] = "\xec\x96\xb4\xec\x84\xb8\xec\x8b\xa0";
-		char bard[] = "\xeb\xb0\x94\xeb\x93\x9c";
-		char blacksmith[] = "\xec\xa0\x9c\xec\xb2\xa0";
-		char crusader[] = "\xed\x81\xac\xeb\xa3\xa8\xec\x84\xb8\xec\x9d\xb4\xeb\x8d\x94";
-		char dancer[] = "\xeb\xac\xb4\xed\x9d\xac";
-		char gm[] = "\xec\x94\xb4\xec\x98\x81\xec\x9e\x90";
-		char hunter[] = "\xed\x97\x8c\xed\x84\xb0";
-		char knight[] = "\xea\xb8\xb0\xec\x82\xac";
-		char magician[] = "\xeb\xa7\x88\xeb\xb2\x95\xec\x82\xac";
-		char mercenary[] = "";
-		char merchant[] = "\xec\x83\x81\xec\x9d\xb8";
-		char monk[] = "\xeb\xaa\xbd\xed\x81\xac";
-		char novice[] = "\xec\xb4\x88\xeb\xb3\xb4\xec\x9e\x90";
-		char priest[] = "\xed\x94\x84\xeb\xa6\xac\xec\x8a\xa4\xed\x8a\xb8";
-		char rogue[] = "\xeb\xa1\x9c\xea\xb7\xb8";
-		char sage[] = "\xec\x84\xb8\xec\x9d\xb4\xec\xa7\x80";
-		char swordsman[] = "\xea\xb2\x80\xec\x82\xac";
-		char thief[] = "\xeb\x8f\x84\xeb\x91\x91";
-		char wizard[] = "\xec\x9c\x84\xec\xa0\x80\xeb\x93\x9c";
 
 		char *classname[] = {
 			acolyte,
