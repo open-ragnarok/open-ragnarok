@@ -145,9 +145,7 @@ void OpenRO::ParseClientInfo(){
 			TiXmlElement* sclient_child2 = sclient_child->FirstChildElement("address");
 			if(sclient_child2){
 				const char *ip = sclient_child2->GetText();
-				int i;
-				for(i=0;ip[i] != 0x00;i++){} //TODO: Any better way to count bytes?
-				memcpy(OpenRO::ConnectionIP,ip,i+1);
+				strcpy(OpenRO::ConnectionIP, ip);
 			}
 			free(sclient_child2);
 			sclient_child2 = sclient_child->FirstChildElement("port");
