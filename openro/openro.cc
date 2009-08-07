@@ -142,15 +142,14 @@ void OpenRO::ParseClientInfo(){
 	if(sclient_root){
 		TiXmlElement* sclient_child = sclient_root->FirstChildElement("connection");
 		if(sclient_child){
-			TiXmlElement* sclient_child2 = sclient_child->FirstChildElement("address");
-			if(sclient_child2){
-				const char *ip = sclient_child2->GetText();
+			TiXmlElement* sclient_child_addr = sclient_child->FirstChildElement("address");
+			if(sclient_child_addr){
+				const char *ip = sclient_child_addr->GetText();
 				strcpy(OpenRO::ConnectionIP, ip);
 			}
-			free(sclient_child2);
-			sclient_child2 = sclient_child->FirstChildElement("port");
-			if(sclient_child2){
-				const char *port = sclient_child2->GetText();
+			TiXmlElement* sclient_child_port = sclient_child->FirstChildElement("port");
+			if(sclient_child_port){
+				const char *port = sclient_child_port->GetText();
 				OpenRO::ConnectionPort = atoi(port);
 			}
 
