@@ -49,6 +49,9 @@ public:
 	void CreateChar(const std::string& charname, const CharAttributes&, unsigned short color, unsigned short style);
 	void AddChar(CharInformation&);
 	void Quit();
+	void ParseClientInfo();
+	char ConnectionIP[256];
+	unsigned int ConnectionPort;
 };
 
 #endif /* __OPENRO_H */

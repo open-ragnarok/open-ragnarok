@@ -25,7 +25,7 @@ void OpenRO::LoginScreen() {
 }
 
 void OpenRO::ProcessLogin(const std::string& user, const std::string& pass) {
-	m_network.getLogin().Connect("127.0.0.1", 6900);
+	m_network.getLogin().Connect(OpenRO::ConnectionIP, OpenRO::ConnectionPort);
 	m_network.GameLogin(user, pass);
 	dskLogin->setEnabled(false);
 }
@@ -79,13 +79,15 @@ void OpenRO::AfterDraw() {
 }
 
 void OpenRO::BeforeRun() {
+	ParseClientInfo();
+
 	InitDisplay(800, 600, false);
 
 	dskLogin = new DesktopLogin(this);
 	dskService = new DesktopService(this);
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
-	m_gui.setDesktop(dskChar);
+	m_gui.setDesktop(dskLogin);
 }
 
 void OpenRO::hndlServerList(ronet::pktServerList* pkt) {
@@ -120,4 +122,40 @@ void OpenRO::CreateCharWindow(unsigned int& slot) {
 
 void OpenRO::CreateChar(const std::string& charname, const CharAttributes& attr, unsigned short color, unsigned short style) {
 	m_network.CreateChar(charname, attr, m_charslot, color, style);
+}
+
+void OpenRO::ParseClientInfo(){
+	FileManager& fm = OpenRO::getFileManager();
+
+	TiXmlDocument doc;
+	FileData data;
+
+	std::string name = "sclientinfo.xml";
+
+	data = fm.getFile(name);
+	if (data.blobSize() == 0) {
+		std::cerr << "OpenRO::ParseClientInfo(): Error loading file " << name << std::endl;
+	}
+	doc.Parse((const char*)data.getBuffer());
+
+	TiXmlElement* sclient_root = doc.FirstChildElement("clientinfo");
+	if(sclient_root){
+		TiXmlElement* sclient_child = sclient_root->FirstChildElement("connection");
+		if(sclient_child){
+			TiXmlElement* sclient_child2 = sclient_child->FirstChildElement("address");
+			if(sclient_child2){
+				const char *ip = sclient_child2->GetText();
+				int i;
+				for(i=0;ip[i] != 0x00;i++){} //TODO: Any better way to count bytes?
+				memcpy(OpenRO::ConnectionIP,ip,i+1);
+			}
+			free(sclient_child2);
+			sclient_child2 = sclient_child->FirstChildElement("port");
+			if(sclient_child2){
+				const char *port = sclient_child2->GetText();
+				OpenRO::ConnectionPort = atoi(port);
+			}
+
+		}
+	}
 }

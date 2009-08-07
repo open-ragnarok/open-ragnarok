@@ -155,7 +155,7 @@ void PktGen::OutputHeader(FILE* out) {
 	while (itr != params.end()) {
 		ptype = getParameterType(*itr);
 
-		fprintf(out, "\t%s& get%s() const;\n", ptype.c_str(), (*itr).c_str());
+		fprintf(out, "\tconst %s& get%s() const;\n", ptype.c_str(), (*itr).c_str());
 		if (param_size[*itr] > 0) {
 			fprintf(out, "\tvoid set%s(const %s*) const;\n", (*itr).c_str(), ptype.c_str());
 		}
@@ -206,7 +206,7 @@ void PktGen::OutputSource(FILE* out) {
 
 		// Check if we are an array
 		if (param_size[*itr] > 0) {
-			fprintf(out, "\tmemcpy(ptr, %s, sizeof(%s) * %d)\n", (*itr).c_str(), ptype.c_str(), param_size[*itr]);
+			fprintf(out, "\tmemcpy(ptr, %s, sizeof(%s) * %d);\n", (*itr).c_str(), ptype.c_str(), param_size[*itr]);
 			fprintf(out, "\tptr += sizeof(%s) * %d;\n", ptype.c_str(), param_size[*itr]);
 		}
 		else {
@@ -239,7 +239,7 @@ void PktGen::OutputSource(FILE* out) {
 
 		// Check if we are an array
 		if (param_size[*itr] > 0) {
-			fprintf(out, "\tbuf.read((unsigned char*)%s, sizeof(%s) * %d)\n", (*itr).c_str(), ptype.c_str(), param_size[*itr]);
+			fprintf(out, "\tbuf.read((unsigned char*)%s, sizeof(%s) * %d);\n", (*itr).c_str(), ptype.c_str(), param_size[*itr]);
 		}
 		else {
 			fprintf(out, "\tbuf >> %s;\n", (*itr).c_str());
@@ -254,14 +254,17 @@ void PktGen::OutputSource(FILE* out) {
 	while (itr != params.end()) {
 		ptype = getParameterType(*itr);
 
-		fprintf(out, "%s& pkt%s::get%s() const {\n", pktname.c_str(), ptype.c_str(), (*itr).c_str());
-		fprintf(out, "\treturn(%s);\n}\n", (*itr).c_str());
-		if (param_size[*itr] > 0) {
-			fprintf(out, "\tvoid pkt%s::set%s(const %s*) const {\n", pktname.c_str(), (*itr).c_str(), ptype.c_str());
+		fprintf(out, "const %s& pkt%s::get%s() const {\n", ptype.c_str(), pktname.c_str(), (*itr).c_str());
+		fprintf(out, "\treturn((const %s&)%s);\n}\n", ptype.c_str(), (*itr).c_str());
+
+		//TODO: Fix this (below)
+		/*if (param_size[*itr] > 0) {
+			fprintf(out, "\nvoid pkt%s::set%s(const %s*) const {\n", pktname.c_str(), (*itr).c_str(), ptype.c_str());
 		}
 		else {
-			fprintf(out, "\tvoid pkt%s::set%s(const %s&) const {\n", pktname.c_str(), (*itr).c_str(), ptype.c_str());
-		}
+			fprintf(out, "\nvoid pkt%s::set%s(const %s&) const {\n", pktname.c_str(), (*itr).c_str(), ptype.c_str());
+		}*/
+
 		fprintf(out, "\t\n");
 		itr++;
 	}
