@@ -33,6 +33,8 @@ namespace ronet {
 		bool Handle_ServerList(ucBuffer&);
 		bool Handle_CharCreateError(ucBuffer&);
 		bool Handle_CharList(ucBuffer&);
+		bool Handle_LoginError(ucBuffer&);
+		bool Handle_AuthFailed(ucBuffer&);
 
 		void push(Packet*);
 

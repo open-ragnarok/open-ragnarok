@@ -167,6 +167,8 @@ bool ronet::TcpConnection::Close() {
 	if (m_socket == -1)
 		return(false);
 
+	m_state = Disconnected;
+
 #ifdef WIN32
 	closesocket(m_socket);
 #else

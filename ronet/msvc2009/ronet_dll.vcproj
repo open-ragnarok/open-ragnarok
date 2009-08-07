@@ -237,6 +237,10 @@
 				Name="Packets"
 				>
 				<File
+					RelativePath="..\packets\pkt_authfailed.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_charcreate.cc"
 					>
 				</File>
@@ -266,6 +270,10 @@
 				</File>
 				<File
 					RelativePath="..\packets\pkt_login.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_loginerror.cc"
 					>
 				</File>
 				<File
@@ -355,6 +363,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_authfailed.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_charcreate.h"
 					>
 				</File>
@@ -384,6 +396,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_login.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_loginerror.h"
 					>
 				</File>
 				<File

@@ -36,6 +36,9 @@ protected:
 	void hndlServerList(ronet::pktServerList*);
 	void hndlCharList(ronet::pktCharList*);
 
+	void hndlLoginError(ronet::pktLoginError*);
+	void hndlAuthFailed(ronet::pktAuthFailed*);
+
 	int m_charslot;
 
 public:

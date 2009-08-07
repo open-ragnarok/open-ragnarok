@@ -68,6 +68,8 @@ void OpenRO::AfterDraw() {
 			*/
 			HANDLEPKT(ServerList, false);
 			HANDLEPKT(CharList, true);
+			HANDLEPKT(LoginError, true);
+			HANDLEPKT(AuthFailed, true);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << std::endl;
 		}
@@ -112,6 +114,88 @@ void OpenRO::hndlCharList(ronet::pktCharList* pkt) {
 	for (int i = 0; i < count; i++) {
 		dskChar->addChar(pkt->getChar(i));
 	}
+}
+
+//[kR105]
+void OpenRO::hndlLoginError(ronet::pktLoginError* pkt) {
+	short errorId = pkt->getErrorId();
+	char *errorDesc;
+
+	//Error description taken from OpenKore & eAthena
+	switch(errorId){
+		case 0:
+			errorDesc = "Account name doesn't exist";
+			break;
+		case 1:
+			errorDesc = "Password Error";
+			break;
+		case 3:
+			errorDesc = "Rejected from Server";
+			break;
+		case 4:
+			errorDesc = "Your account has been blocked";
+			break;
+		case 5:
+			errorDesc = "Your Game's EXE file is not the latest version";
+			break;
+		case 6:
+			errorDesc = "The server is temporarily blocking your connection";
+			break;
+		default:
+			errorDesc = "Unknown error";
+			break;
+	}
+	printf("Login error: %s (Error number %d)\n", errorDesc, errorId);
+
+	//We don't need the connection anymore.
+	m_network.getLogin().Close();
+}
+
+//[kR105]
+void OpenRO::hndlAuthFailed(ronet::pktAuthFailed* pkt) {
+	short errorId = pkt->getErrorId();
+	char *errorDesc;
+
+	//Error description taken from OpenKore & eAthena
+	switch(errorId){
+		case 0:
+			errorDesc = "Server shutting down.";
+			break;
+		case 1:
+			errorDesc = "Server connection closed.";
+			break;
+		case 2:
+			errorDesc = "Someone has already logged in with this ID.";
+			break;
+		case 3:
+			errorDesc = "You've been disconnected due to a time gap between you and the server.";
+			break;
+		case 4:
+			errorDesc = "Server is jammed due to over population. Please try again shortly.";
+			break;
+		case 5:
+			errorDesc = "You are underaged and cannot join this server.";
+			break;
+		case 8:
+			errorDesc = "Server still recognizes your last log-in. Please try again after a few minutes.";
+			break;
+		case 9:
+			errorDesc = "IP capacity of this Internet Cafe is full. Would you like to pay the personal base?";
+			break;
+		case 10:
+			errorDesc = "You are out of available time paid for. Game will be shut down automatically.";
+			break;
+		case 15:
+			errorDesc = "You have been forced to disconnect by the Game Master Team.";
+			break;
+		default:
+			errorDesc = "Unknown error";
+			break;
+	}
+	printf("Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
+
+	//We don't need the connection anymore.
+	m_network.getLogin().Close();
 }
 
 void OpenRO::CreateCharWindow(unsigned int& slot) {

@@ -294,12 +294,12 @@ void DesktopCreate::drawSpr(float x, float y, GuiAct& o, int pat, int spr, bool 
 	if (!tp.isValid())
 		return;
 	if (cspr.w > 0) {
-		w = cspr.w;
-		h = cspr.h;
+		w = (float)cspr.w;
+		h = (float)cspr.h;
 	}
 	else {
-		w = tp->getWidth();
-		h = tp->getHeight();
+		w = (float)tp->getWidth();
+		h = (float)tp->getHeight();
 	}
 
 	w *= cpat[spr].xMag;

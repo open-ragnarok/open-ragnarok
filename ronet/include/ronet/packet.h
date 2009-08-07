@@ -26,7 +26,8 @@ namespace ronet {
 		// == INBOUND == //
 		// From LOGIN
 		pktServerListID = 0x0069,
-		pktLoginErrorID = 0x006a, // (23 bytes)
+		pktLoginErrorID = 0x006a, // (23 bytes) S 006A <type>.short 0x00 * 20
+		pktAuthFailedID = 0x0081, // (3 bytes) S 0081 <type>.short
 
 		// From CHAR
 		pktCharListID = 0x006b,
