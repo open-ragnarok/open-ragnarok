@@ -40,7 +40,7 @@ struct CharInformation {
 	unsigned short clothes_color;
 	char name[24];
 	CharAttributes attributes;
-	unsigned char slot;
+	unsigned short slot;
 	unsigned short rename;
 };
 

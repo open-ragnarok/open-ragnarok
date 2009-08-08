@@ -31,10 +31,15 @@ void OpenRO::ProcessLogin(const std::string& user, const std::string& pass) {
 }
 
 void OpenRO::ServiceSelect(unsigned int serviceid) {
-	if (serviceid < m_serverlist->getServerCount())
+	if (serviceid < (m_serverlist->getServerCount()-1))
 		return;
 
-	m_network.getChar().Connect(m_serverlist->getInfo(serviceid).ip, m_serverlist->getInfo(serviceid).port);
+	struct in_addr addr;
+	addr.s_addr = (long)m_serverlist->getInfo(serviceid).ip;
+
+	fprintf(stdout,"%s:%d\n",inet_ntoa(addr),m_serverlist->getInfo(serviceid).port);
+
+	m_network.getChar().Connect(inet_ntoa(addr), m_serverlist->getInfo(serviceid).port);
 	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());
 	dskService->setEnabled(false);
 }
@@ -110,9 +115,12 @@ void OpenRO::hndlCharList(ronet::pktCharList* pkt) {
 	printf("Received a list of %d chars\n", count);
 	m_gui.setDesktop(dskChar);
 	dskChar->setEnabled(true);
-
-	for (int i = 0; i < count; i++) {
-		dskChar->addChar(pkt->getChar(i));
+	
+	for(int x=0;x<count;x++){
+		//Currently, we only support 3 characters :P
+		if(x >= 3)
+			break;
+		dskChar->addChar(pkt->getChar(x));
 	}
 }
 

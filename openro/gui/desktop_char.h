@@ -11,7 +11,7 @@ private:
 	void cross(float x, float y, float size);
 
 protected:
-#define CHAR_SLOT_COUNT 10
+#define CHAR_SLOT_COUNT 9 //Only number that can be divided by 3
 	int m_selected;
 	CharInformation m_chars[CHAR_SLOT_COUNT];
 	bool m_used[CHAR_SLOT_COUNT];
@@ -22,11 +22,31 @@ protected:
 
 	virtual void afterDraw(unsigned int delay);
 
+	GUI::Label* lblStr;
+	GUI::Label* lblAgi;
+	GUI::Label* lblVit;
+	GUI::Label* lblInt;
+	GUI::Label* lblDex;
+	GUI::Label* lblLuk;
+
+	GUI::Label* lblNam;
+	GUI::Label* lblJob;
+	GUI::Label* lblLvl;
+	GUI::Label* lblExp;
+	GUI::Label* lblHp;
+	GUI::Label* lblSp;
+
 public:
 	DesktopChar(OpenRO*);
 
 	bool handleSelect(GUI::Event&);
+	bool handleCancel(GUI::Event&);
 	void addChar(const CharInformation&);
+	void addCharScreen(unsigned int screen);
+
+	void setInfo(unsigned int i);
+
+	unsigned int screen;
 };
 
 #endif /* __DESKTOP_CHAR_H */

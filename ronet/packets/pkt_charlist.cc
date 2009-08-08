@@ -24,16 +24,16 @@ bool ronet::pktCharList::Decode(ucBuffer& buf) {
 	size = *(unsigned short*)(buf.getBuffer() + 2);
 	std::cout << "Packet size: " << size << std::endl;
 
-	if (buf.dataSize() < (size + 7)) // Not enough data
+	if (buf.dataSize() < size)//(size + 7)) // Not enough data
 		return(false);
 	
-	int charcount = (size - 24) / 108;
-	m_chars = new CharInformation[charcount];
+	m_count = (size - 24) / 108;
+	m_chars = new CharInformation[m_count];
 
 	buf.ignore(4);
 	buf.ignore(20); // unknowns
 	// Read DATA
-	for (int i = 0; i < charcount; i++) {
+	for (int i = 0; i < m_count; i++) {
 		buf >> m_chars[i].id;
 		buf >> m_chars[i].base_xp;
 		buf >> m_chars[i].zeny;
@@ -72,9 +72,11 @@ bool ronet::pktCharList::Decode(ucBuffer& buf) {
 			if (m_chars[i].rename == 1)
 				buf.ignore(2);
 		}
+		//buf.ignore(1);
 	}
 
-	buf.ignore(7);
+	//buf.ignore(7);
+	buf.clear();
 	return(true);
 }
 

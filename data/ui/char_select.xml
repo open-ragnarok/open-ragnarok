@@ -2,18 +2,18 @@
 <desktop name="char_select_ui" texture="rag_title2.bmp">
 	<!-- $Id$ -->
 	<window name="char_select" texture="login_interface\win_select.bmp" x="-1" y="-1">
-		<label name="char_select/name" x="67" y="202" text="Default_Name" />
-		<label name="char_select/job" x="67" y="218" text="Default_Job" />
-		<label name="char_select/level" x="67" y="234" text="Default_Level" />
-		<label name="char_select/exp" x="67" y="250" text="Default_Exp" />
-		<label name="char_select/hp" x="67" y="266" text="Default_HP" />
-		<label name="char_select/sp" x="67" y="282" text="Default_SP" />
-		<label name="char_select/str" x="211" y="202" text="Default_STR" />
-		<label name="char_select/agi" x="211" y="218" text="Default_Job" />
-		<label name="char_select/vit" x="211" y="234" text="Default_Level" />
-		<label name="char_select/int" x="211" y="250" text="Default_Exp" />
-		<label name="char_select/dex" x="211" y="266" text="Default_HP" />
-		<label name="char_select/luk" x="211" y="282" text="Default_SP" />
+		<label name="char_select/name" x="67" y="203" text="Default_Name" />
+		<label name="char_select/job" x="67" y="219" text="Default_Job" />
+		<label name="char_select/level" x="67" y="235" text="Default_Level" />
+		<label name="char_select/exp" x="67" y="251" text="Default_Exp" />
+		<label name="char_select/hp" x="67" y="267" text="Default_HP" />
+		<label name="char_select/sp" x="67" y="283" text="Default_SP" />
+		<label name="char_select/str" x="211" y="203" text="Default_STR" />
+		<label name="char_select/agi" x="211" y="219" text="Default_Job" />
+		<label name="char_select/vit" x="211" y="236" text="Default_Level" />
+		<label name="char_select/int" x="211" y="251" text="Default_Exp" />
+		<label name="char_select/dex" x="211" y="267" text="Default_HP" />
+		<label name="char_select/luk" x="211" y="283" text="Default_SP" />
 
 		<button name="char_select/btnOk" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
     <button name="char_select/btnCreate" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />

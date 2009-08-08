@@ -252,6 +252,7 @@ namespace RO {
 
 		// classes
 		ROINT_DLLAPI extern char *classname[];
+		ROINT_DLLAPI extern char *classname_en[];
 
 		ROINT_DLLAPI extern char acolyte[];
 		ROINT_DLLAPI extern char alchemist[];

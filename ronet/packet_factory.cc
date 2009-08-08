@@ -100,6 +100,7 @@ bool ronet::PacketFactory::Dispatcher::Call(unsigned short method, ucBuffer& buf
 	itr = m_calls.find(method);
 	if (itr == m_calls.end()) {
 		fprintf(stderr, "Undefined call to method %04x\n", method);
+		buf.clear();
 		return(false);
 	}
 	

@@ -10,6 +10,7 @@ DesktopService::DesktopService(OpenRO* ro) : RODesktop("ui\\service_select.xml",
 }
 
 bool DesktopService::handleBtnOk(GUI::Event&) {
+	m_ro->ServiceSelect(DesktopService::getSelected());
 	return(true);
 }
 
