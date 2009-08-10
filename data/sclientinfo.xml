@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="euc-kr" ?> 
+<clientinfo> 
+	<servicetype>america</servicetype>
+	<servertype>primary</servertype>
+	<connection>
+		<desc>Description</desc>
+		<display>OpenRO</display>
+		<balloon>Popup text</balloon>
+		<address>127.0.0.1</address>
+		<port>6900</port>
+		<version>22</version>
+		<langtype>6</langtype>
+		<registrationweb>http://www.open-ragnarok.org/</registrationweb>
+		<loading>
+			<image>loading00.jpg</image>
+			<image>loading01.jpg</image>
+			<image>loading02.jpg</image>
+		</loading>
+	</connection>
+</clientinfo>
