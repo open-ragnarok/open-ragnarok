@@ -25,9 +25,9 @@ void OpenRO::LoginScreen() {
 }
 
 void OpenRO::ProcessLogin(const std::string& user, const std::string& pass) {
+	dskLogin->setEnabled(false);
 	m_network.getLogin().Connect(OpenRO::ConnectionIP, OpenRO::ConnectionPort);
 	m_network.GameLogin(user, pass);
-	dskLogin->setEnabled(false);
 }
 
 void OpenRO::ServiceSelect(unsigned int serviceid) {

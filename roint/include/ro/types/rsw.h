@@ -29,14 +29,14 @@ namespace RO {
 		/**
 		 * Base class for RSW objects
 		 */
-		class ROINT_DLLAPI Object {
+		class ROINT_DLLAPI RSMObject {
 		public:
 			virtual bool readStream(std::istream&) = 0;
 			virtual bool writeStream(std::ostream&) const = 0;
 			virtual const char* getName() const = 0;
 
-			Object(ObjectType);
-			virtual ~Object();
+			RSMObject(ObjectType);
+			virtual ~RSMObject();
 
 			/** Returns the object type */
 			ObjectType getType() const;
@@ -48,18 +48,18 @@ namespace RO {
 			bool isType(ObjectType) const;
 
 			/** Returns a copy of this object */
-			Object* Copy() const;
+			RSMObject* Copy() const;
 
 		protected:
 			ObjectType m_type;
 			unsigned int datasize;
-			void Copy(const Object& o);
+			void Copy(const RSMObject& o);
 		};
 
 		/**
 		 * RSW Object Model
 		 */
-		class ROINT_DLLAPI Model : public Object {
+		class ROINT_DLLAPI Model : public RSMObject {
 		public:
 			Model();
 			Model(const Model&);
@@ -98,7 +98,7 @@ namespace RO {
 		/**
 		 * RSW Object Light
 		 */
-		class ROINT_DLLAPI Light : public Object {
+		class ROINT_DLLAPI Light : public RSMObject {
 		public:
 			Light();
 			Light(const Light&);
@@ -127,7 +127,7 @@ namespace RO {
 		/**
 		 * RSW Object Sound
 		 */
-		class ROINT_DLLAPI Sound : public Object {
+		class ROINT_DLLAPI Sound : public RSMObject {
 		public:
 			Sound();
 			Sound(const Sound&);
@@ -154,7 +154,7 @@ namespace RO {
 		/**
 		 * RSW Object Effect
 		 */
-		class ROINT_DLLAPI Effect : public Object {
+		class ROINT_DLLAPI Effect : public RSMObject {
 		public:
 			Effect();
 			Effect(const Effect&);
@@ -204,8 +204,8 @@ namespace RO {
 #pragma pack(pop)
 
 	protected:
-		Object** m_objects;
-		Object* readObject(std::istream&);
+		RSMObject** m_objects;
+		RSMObject* readObject(std::istream&);
 
 		unsigned int object_count;
 
@@ -229,11 +229,11 @@ namespace RO {
 
 		unsigned int getObjectCount() const;
 
-		Object* getObject(const unsigned int&);
-		const Object* getObject(const unsigned int&) const;
+		RSMObject* getObject(const unsigned int&);
+		const RSMObject* getObject(const unsigned int&) const;
 
-		Object* operator[] (const unsigned int&);
-		const Object* operator[] (const unsigned int&) const;
+		RSMObject* operator[] (const unsigned int&);
+		const RSMObject* operator[] (const unsigned int&) const;
 
 
 		RSW();

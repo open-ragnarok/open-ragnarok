@@ -10,12 +10,14 @@ bool SDLEngine::supportPot = false;
 
 SDLEngine::SDLEngine() {
 	m_width = m_height = 0;
+	Lastsym = Lastsym2 = SDLK_UNKNOWN;
 	caption = "Open-Ragnarok.org";
 	m_mode2d = false;
 }
 
 SDLEngine::SDLEngine(const std::string& caption) {
 	m_width = m_height = 0;
+	Lastsym = Lastsym2 = SDLK_UNKNOWN;
 	this->caption = caption;
 	m_mode2d = false;
 }
@@ -197,14 +199,25 @@ void SDLEngine::Mode2DEnd() {
 
 void SDLEngine::ProcessKeyboard() {
 	SDL_Event e;
+	long curtick,tickDelayValue;
+
 	while(SDL_PollEvent(&e)) {
 		switch (e.type) {
 			case SDL_KEYDOWN:
 				keys[e.key.keysym.sym] = true;
+				mod = e.key.keysym.mod;
+				Lastsym = e.key.keysym.sym;
 				evtKeyPress(e.key.keysym.sym, e.key.keysym.mod);
+				curtick = SDL_GetTicks();
+				lastTick = curtick;
 				break;
 			case SDL_KEYUP:
 				keys[e.key.keysym.sym] = false;
+				mod = e.key.keysym.mod;
+				if( Lastsym2 == e.key.keysym.sym )
+				{
+					Lastsym2 = SDLK_UNKNOWN;
+				}
 				evtKeyRelease(e.key.keysym.sym, e.key.keysym.mod);
 				break;
             case SDL_MOUSEMOTION:
@@ -215,9 +228,35 @@ void SDLEngine::ProcessKeyboard() {
                 //printf("botão %d do mouse pressionado em (%d,%d)\n", e.button.button, e.button.x, e.button.y);
 				evtMouseClick(e.button.x, e.button.y, e.button.button);
                 break;
+			case SDL_MOUSEBUTTONUP:
+				//printf("botão %d do mouse pressionado em (%d,%d)\n", e.button.button, e.button.x, e.button.y);
+				evtMouseRelease(e.button.x, e.button.y, e.button.button);
+                break;
 			case SDL_QUIT:
 				evtQuit();
 				break;
+		}
+	}
+
+	curtick = SDL_GetTicks();
+	tickDelay = curtick - lastTick;
+
+	if( Lastsym2 == Lastsym )
+	{
+		tickDelayValue = 100;
+	}
+	else
+	{
+		tickDelayValue = 600;
+	}
+
+	if( tickDelay >= tickDelayValue )
+	{
+		lastTick = curtick;
+		if( keys[Lastsym] )
+		{
+			Lastsym2 = Lastsym;
+			evtKeyPress(Lastsym,mod);
 		}
 	}
 }

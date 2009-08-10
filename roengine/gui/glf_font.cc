@@ -78,11 +78,29 @@ float GUI::GLFFont::getWidth(const std::string& s) const {
 	return(ret);
 }
 
-void GUI::GLFFont::textOut(const std::string& data, float x, float y, float z) const {
+void GUI::GLFFont::textOut(const std::string& data, float x, float y, float z, int MaxLen) const {
+	unsigned int i;
+
 	glBindTexture(GL_TEXTURE_2D, m_font.Tex);
 
 	glBegin(GL_QUADS);
-	for (unsigned int i = 0; i < data.length(); i++) {
+
+	if( MaxLen > 0 )
+	{
+		for( i = 0 ; i < data.length() ; i++)
+		{
+			if( getWidth( data.substr(i, data.length() - i) ) <= MaxLen )
+			{
+				break;
+			}
+		}
+	}
+	else
+	{
+		i = 0;
+	}
+
+	for (; i < data.length(); i++) {
 		const _Char& c = m_font.Char[data[i] - m_font.IntStart];
 
 		glTexCoord2f(c.tx1, c.ty1);

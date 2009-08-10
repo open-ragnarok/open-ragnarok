@@ -146,6 +146,14 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 	return(m_gui.InjectMouseClick(x, y, buttons));
 }
 
+bool ROEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) {
+	return(m_gui.InjectMouseRelease(x, y, buttons));
+}
+
+bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
+	return(m_gui.InjectMouseMove(x, y, dx, dy));
+}
+
 TextureManager& ROEngine::getTextureManager() { return(m_texturemanager); }
 GLObjectCache& ROEngine::getGLObjects() { return(m_gl_objects); }
 ROObjectCache& ROEngine::getROObjects() { return(m_ro_objects); }

@@ -82,7 +82,7 @@ void GUI::List::Draw(unsigned int delay) {
 			glEnable(GL_TEXTURE_2D);
 			glColor3f(0, 0, 0);
 		}
-		font->textOut(m_items[i], (float)pos_x + 2, (float)cy, 0);
+		font->textOut(m_items[i], (float)pos_x + 2, (float)cy, 0, 0);
 		cy += 17;
 	}
 
@@ -109,4 +109,14 @@ void GUI::List::clear() {
 	if (m_items.size() > 0)
 		m_items.clear();
 	selected = -1;
+}
+
+void GUI::List::onGetFocus()
+{
+	actived = true;
+}
+
+void GUI::List::onLoseFocus()
+{
+	actived = false;
 }

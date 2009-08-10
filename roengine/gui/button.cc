@@ -10,12 +10,14 @@ GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base) : Eleme
 	texture_active = base;
 	texture_hover = base;
 	texture_disabled = base;
+	m_MouseIn = false;
 }
 GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
 	texture_hover = active;
 	texture_disabled = base;
+	m_MouseIn = false;
 }
 
 GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover) : Element(parent) {
@@ -23,6 +25,7 @@ GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const r
 	texture_active = active;
 	texture_hover = hover;
 	texture_disabled = base;
+	m_MouseIn = false;
 }
 
 GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover, const rogl::Texture::Pointer& disabled) : Element(parent) {
@@ -30,6 +33,7 @@ GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const r
 	texture_active = active;
 	texture_hover = hover;
 	texture_disabled = disabled;
+	m_MouseIn = false;
 }
 
 GUI::Button::Button(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
@@ -37,6 +41,7 @@ GUI::Button::Button(Element* parent, const TiXmlElement* node, TextureManager& t
 		ParseFromXml(node, tm, fm);
 
 	texture_base = texture;
+	m_MouseIn = false;
 
 	if (!texture_active.isValid())
 		texture_active = texture;
@@ -106,6 +111,9 @@ void GUI::Button::Click() {
 	GUI::Gui::getSingleton().PushEvent(e);
 }
 
+void GUI::Button::onGetFocus(){}
+void GUI::Button::onLoseFocus(){}
+
 
 bool GUI::Button::HandleMouseDown(int x, int y, int button) {
 	if (!m_enabled)
@@ -137,6 +145,10 @@ void GUI::Button::Draw(unsigned int delay) {
 	// Are we the active button?
 	if (m_parent != NULL) {
 		if (m_parent->getActiveChild() == this) {
+			texture = texture_active;
+		}
+
+		if ( m_MouseIn ) {
 			texture = texture_active;
 		}
 	}

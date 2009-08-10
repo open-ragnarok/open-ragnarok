@@ -23,6 +23,8 @@ namespace GUI {
 
 		bool Load(const std::string&, TextureManager&, FileManager&);
 		bool Load(const TiXmlElement* node, TextureManager& tm, FileManager& fm);
+
+		//bool HandleMouseDown(int x, int y, int button);
 	};
 }
 

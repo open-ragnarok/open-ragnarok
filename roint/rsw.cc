@@ -18,7 +18,7 @@ RO::RSW::RSW() : RO::Object() {
 
 RO::RSW::RSW(const RSW& rsw) : RO::Object(rsw) {
 	object_count = rsw.object_count;
-	m_objects = new Object*[object_count];
+	m_objects = new RSMObject*[object_count];
 	for(unsigned int i = 0; i < object_count; i++) {
 		m_objects[i] = rsw.m_objects[i]->Copy();
 	}
@@ -93,7 +93,7 @@ bool RO::RSW::readStream(std::istream& s) {
 	s.read((char*)unk, sizeof(int) * 3);
 
 	s.read((char*)&object_count, sizeof(unsigned int));
-	m_objects = new Object*[object_count];
+	m_objects = new RSMObject*[object_count];
 
 	for (unsigned int i = 0; i < object_count; i++) {
 		m_objects[i] = readObject(s);
@@ -104,9 +104,9 @@ bool RO::RSW::readStream(std::istream& s) {
 	return(true);
 }
 
-RO::RSW::Object* RO::RSW::readObject(std::istream& in) {
+RO::RSW::RSMObject* RO::RSW::readObject(std::istream& in) {
 	int objtype;
-	Object* o;
+	RSMObject* o;
 
 	in.read((char*)&objtype, sizeof(int));
 	switch (objtype) {
@@ -204,19 +204,19 @@ unsigned int RO::RSW::getObjectCount() const {
 	return(object_count);
 }
 
-RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) {
+RO::RSW::RSMObject* RO::RSW::getObject(const unsigned int& idx) {
 	return(m_objects[idx]);
 }
 
-const RO::RSW::Object* RO::RSW::getObject(const unsigned int& idx) const {
+const RO::RSW::RSMObject* RO::RSW::getObject(const unsigned int& idx) const {
 	return(m_objects[idx]);
 }
 
-RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) {
+RO::RSW::RSMObject* RO::RSW::operator[] (const unsigned int& idx) {
 	return(m_objects[idx]);
 }
 
-const RO::RSW::Object* RO::RSW::operator[] (const unsigned int& idx) const {
+const RO::RSW::RSMObject* RO::RSW::operator[] (const unsigned int& idx) const {
 	return(m_objects[idx]);
 }
 
@@ -224,7 +224,7 @@ RO::RSW& RO::RSW::operator = (const RO::RSW& rsw) {
 	Clear();
 	rsw.copyHeader(this);
 	object_count = rsw.object_count;
-	m_objects = new Object*[object_count];
+	m_objects = new RSMObject*[object_count];
 	for(unsigned int i = 0; i < object_count; i++) {
 		m_objects[i] = rsw.m_objects[i]->Copy();
 	}

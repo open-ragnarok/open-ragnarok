@@ -14,6 +14,7 @@ namespace GUI {
 		 * Specially useful if we have a long list and not all items are visible at once.
 		 */
 		int m_first;
+		bool actived;
 
 		// virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	public:
@@ -22,6 +23,9 @@ namespace GUI {
 		virtual void Draw(unsigned int delay = 0);
 		virtual bool HandleKeyDown(int key, int mod = 0);
 		virtual bool HandleMouseDown(int x, int y, int button);
+
+		virtual void onGetFocus();
+		virtual void onLoseFocus();
 
 		int getSelected() const;
 		void setSelected(const int&);

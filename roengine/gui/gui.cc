@@ -94,8 +94,8 @@ void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 	Mode2DEnd();
 }
 
-void GUI::Gui::textOut(const std::string& text, float x, float y, float z) {
-	m_defaultFont->textOut(text, x, y, z);
+void GUI::Gui::textOut(const std::string& text, float x, float y, float z,int MaxLen) {
+	m_defaultFont->textOut(text, x, y, z,MaxLen);
 }
 
 void GUI::Gui::setSize(int w, int h) {
@@ -191,6 +191,21 @@ bool GUI::Gui::InjectMouseClick(int x, int y, int buttons, int modifier)  {
 	if (e == NULL)
 		return(false);
 	return(e->HandleMouseDown(x, y, buttons));
+}
+
+bool GUI::Gui::InjectMouseRelease(int x, int y, int buttons, int modifier)  {
+	Element* e = getDesktop();
+	if (e == NULL)
+		return(false);
+	return(e->HandleMouseRelease(x, y, buttons));
+}
+
+bool GUI::Gui::InjectMouseMove(const int& x, const int& y, const int& dx, const int& dy)
+{
+	Element* e = getDesktop();
+	if (e == NULL)
+		return(false);
+	return(e->HandleMouseMove(x, y, dx, dy));
 }
 
 void GUI::Gui::setFocus(Element* e) {

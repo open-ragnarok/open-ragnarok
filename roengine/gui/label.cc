@@ -36,7 +36,7 @@ void GUI::Label::Draw(unsigned int delay) {
 	//const GUI::Font* font = gui.getDefaultFont();
 
 	glColor3f(0.0f,0.0f,0.0f);
-	gui.textOut(m_text, (float)pos_x, (float)pos_y, 0);
+	gui.textOut(m_text, (float)pos_x, (float)pos_y, 0,MaxLen);
 	glColor3f(1.0f,1.0f,1.0f);
 }
 

@@ -4,31 +4,31 @@
 #include "ro/ro.h"
 
 // ===== OBJECT
-RO::RSW::Object::Object(ObjectType t) {
+RO::RSW::RSMObject::RSMObject(RO::RSW::ObjectType t) {
 	m_type = t;
 }
 
-RO::RSW::Object::~Object() {
+RO::RSW::RSMObject::~RSMObject() {
 }
 
-RO::RSW::ObjectType RO::RSW::Object::getType() const {
+RO::RSW::ObjectType RO::RSW::RSMObject::getType() const {
 	return(m_type);
 }
 
-bool RO::RSW::Object::isType(ObjectType t) const {
+bool RO::RSW::RSMObject::isType(RO::RSW::ObjectType t) const {
 	return(m_type == t);
 }
 
-void RO::RSW::Object::Dump(std::ostream& o, const std::string& pfx) const {
+void RO::RSW::RSMObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "No data to dump" << std::endl;
 }
 
-void RO::RSW::Object::Dump(std::ostream& o) const {
+void RO::RSW::RSMObject::Dump(std::ostream& o) const {
 	Dump(o, "");
 }
 
-RO::RSW::Object* RO::RSW::Object::Copy() const {
-	Object* ret = NULL;
+RO::RSW::RSMObject* RO::RSW::RSMObject::Copy() const {
+	RSMObject* ret = NULL;
 	switch(m_type) {
 		case OT_Model:
 			ret = new Model((Model*)this);
@@ -37,10 +37,10 @@ RO::RSW::Object* RO::RSW::Object::Copy() const {
 			ret = new Light((Light*)this);
 			break;
 		case OT_Sound:
-			ret = (Object*)new Sound((Sound*)this);
+			ret = (RSMObject*)new Sound((Sound*)this);
 			break;
 		case OT_Effect:
-			ret = (Object*)new Effect((Effect*)this);
+			ret = (RSMObject*)new Effect((Effect*)this);
 			break;
 		case OT_Unknown:
 		default:
@@ -51,7 +51,7 @@ RO::RSW::Object* RO::RSW::Object::Copy() const {
 	return(ret);
 }
 
-void RO::RSW::Object::Copy(const Object& o) {
+void RO::RSW::RSMObject::Copy(const RSMObject& o) {
 	if (!isType(o.m_type))
 		return;
 	switch(m_type) {
@@ -85,17 +85,17 @@ void RO::RSW::Object::Copy(const Object& o) {
 }
 
 // ===== MODEL
-RO::RSW::Model::Model() : Object(RO::RSW::OT_Model) {
+RO::RSW::Model::Model() : RSMObject(RO::RSW::OT_Model) {
 	memset(&m_data, 0, sizeof(ModelData));
 	data = &m_data;
 }
 
-RO::RSW::Model::Model(const Model& mdl) : Object(RO::RSW::OT_Model) {
+RO::RSW::Model::Model(const Model& mdl) : RSMObject(RO::RSW::OT_Model) {
 	data = &m_data;
 	memcpy(&m_data, &mdl.m_data, sizeof(ModelData));
 }
 
-RO::RSW::Model::Model(const Model* mdl) : Object(RO::RSW::OT_Model) {
+RO::RSW::Model::Model(const Model* mdl) : RSMObject(RO::RSW::OT_Model) {
 	data = &m_data;
 	memcpy(&m_data, &mdl->m_data, sizeof(ModelData));
 }
@@ -142,16 +142,16 @@ RO::RSW::Model& RO::RSW::Model::operator = (const Model* m) {
 
 
 // ===== LIGHT
-RO::RSW::Light::Light() : Object(RO::RSW::OT_Light) {
+RO::RSW::Light::Light() : RSMObject(RO::RSW::OT_Light) {
 	memset(&m_data, 0, sizeof(LightData));
 	data = &m_data;
 }
 
-RO::RSW::Light::Light(const Light& l) : Object(RO::RSW::OT_Light) {
+RO::RSW::Light::Light(const Light& l) : RSMObject(RO::RSW::OT_Light) {
 	Copy(l);
 }
 
-RO::RSW::Light::Light(const Light* l) : Object(RO::RSW::OT_Light) {
+RO::RSW::Light::Light(const Light* l) : RSMObject(RO::RSW::OT_Light) {
 	Copy(*l);
 }
 
@@ -185,16 +185,16 @@ RO::RSW::Light& RO::RSW::Light::operator = (const Light* o) {
 
 
 // ===== SOUND
-RO::RSW::Sound::Sound() : Object(RO::RSW::OT_Sound) {
+RO::RSW::Sound::Sound() : RSMObject(RO::RSW::OT_Sound) {
 	memset(&m_data, 0, sizeof(SoundData));
 	data = &m_data;
 }
 
-RO::RSW::Sound::Sound(const Sound& l) : Object(RO::RSW::OT_Sound) {
+RO::RSW::Sound::Sound(const Sound& l) : RSMObject(RO::RSW::OT_Sound) {
 	Copy(l);
 }
 
-RO::RSW::Sound::Sound(const Sound* l) : Object(RO::RSW::OT_Sound) {
+RO::RSW::Sound::Sound(const Sound* l) : RSMObject(RO::RSW::OT_Sound) {
 	Copy(*l);
 }
 
@@ -227,17 +227,17 @@ RO::RSW::Sound& RO::RSW::Sound::operator = (const Sound* o) {
 }
 
 // ===== EFFECT
-RO::RSW::Effect::Effect() : Object(RO::RSW::OT_Effect) {
+RO::RSW::Effect::Effect() : RSMObject(RO::RSW::OT_Effect) {
 	memset(&m_data, 0, sizeof(EffectData));
 	data = &m_data;
 }
 
 
-RO::RSW::Effect::Effect(const Effect& l) : Object(RO::RSW::OT_Effect) {
+RO::RSW::Effect::Effect(const Effect& l) : RSMObject(RO::RSW::OT_Effect) {
 	Copy(l);
 }
 
-RO::RSW::Effect::Effect(const Effect* l) : Object(RO::RSW::OT_Effect) {
+RO::RSW::Effect::Effect(const Effect* l) : RSMObject(RO::RSW::OT_Effect) {
 	Copy(*l);
 }
 

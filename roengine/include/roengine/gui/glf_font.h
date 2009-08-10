@@ -29,7 +29,7 @@ namespace GUI {
 
 		bool load(std::istream&);
 		bool load(const std::string&);
-		virtual void textOut(const std::string&, float x, float y, float z) const;
+		virtual void textOut(const std::string&, float x, float y, float z, int MaxLen) const;
 		virtual float getWidth(const std::string&) const;
 	};
 

@@ -20,6 +20,7 @@ class Element;
  * @param y int Y coordinate
  */
 bool isInside(const Element* e, int x, int y);
+bool isInsideMoveArea(const GUI::Element* e, int x, int y);
 
 /**
  * Basic class for building the interface. All GUI objects must come from this one.
@@ -48,13 +49,14 @@ protected:
 	bool m_focusable;
 	bool m_fullscreen;
 	bool m_enabled;
+	bool m_MouseIn;
 
 	std::vector<Element*> m_children;
 	Element* m_active_child;
 	rogl::Texture::Pointer texture;
 
-	int pos_x, pos_y;
-	int w, h;
+	int pos_x, pos_y,MaxLen;
+	int w, h,mw, mh;
 
 	virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	void ParseFromXml(const TiXmlElement*, TextureManager&, FileManager&);
@@ -67,6 +69,7 @@ public:
 	virtual ~Element();
 
 	void setTexture(const rogl::Texture::Pointer&);
+	void SetMouseInFlag(bool flag);
 
 	virtual void Draw(unsigned int delay = 0);
 	virtual void beforeDraw(unsigned int delay = 0);
@@ -103,6 +106,8 @@ public:
 	int getY() const;
 	int getW() const;
 	int getH() const;
+	int getMW() const;
+	int getMH() const;
 
 	bool isFocusable() const;
 
@@ -110,8 +115,9 @@ public:
 	virtual bool HandleKeyDown(int key, int mod = 0);
 	virtual bool HandleKeyUp(int key, int mod = 0);
 	virtual bool HandleMouseMove(int x, int y);
+	virtual bool HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 	virtual bool HandleMouseDown(int x, int y, int button);
-	virtual bool HandleMouseUp(int x, int y, int button);
+	virtual bool HandleMouseRelease(int x, int y, int button);
 
 	virtual void onGetFocus();
 	virtual void onLoseFocus();

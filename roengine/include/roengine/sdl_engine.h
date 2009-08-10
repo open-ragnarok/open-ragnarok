@@ -3,6 +3,11 @@
 #define __SDL_ENGINE_H
 
 #include <string>
+#ifdef _MSC_VER
+#	include <SDL.h>
+#else
+#	include <SDL/SDL.h>
+#endif
 
 class SDLEngine {
 private:
@@ -13,6 +18,10 @@ protected:
 	void ProcessKeyboard();
 
 	bool keys[1024];
+	SDLMod mod;
+	SDLKey Lastsym,Lastsym2;
+	long lastTick;
+	long tickDelay;
 	virtual void BeforeInit();
 	virtual void AfterInit();
 

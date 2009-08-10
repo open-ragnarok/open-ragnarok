@@ -55,6 +55,8 @@ public:
 	virtual bool evtKeyPress(const int& key, const int& mod = 0);
 	virtual bool evtKeyRelease(const int& key, const int& mod = 0);
 	virtual bool evtMouseClick(const int& x, const int& y, const int& buttons);
+	virtual bool evtMouseRelease(const int& x, const int& y, const int& buttons);
+	virtual bool evtMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 
 	TextureManager& getTextureManager();
 	GLObjectCache& getGLObjects();

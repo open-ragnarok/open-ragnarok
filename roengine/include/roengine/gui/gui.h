@@ -70,8 +70,10 @@ public:
 
 	void InjectMousePos(int, int);
 	bool InjectMouseClick(int, int, int buttons = 0, int modifier = 0);
+	bool InjectMouseRelease(int, int, int buttons = 0, int modifier = 0);
 	bool InjectKeyPress(const int&, const int& mod = 0);
 	bool InjectKeyRelease(const int&, const int& mod = 0);
+	bool InjectMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 
 	BaseCache<Font>& FontManager();
 	const BaseCache<Font>& FontManager() const;
@@ -86,7 +88,7 @@ public:
 	int GetEventCount() const;
 
 	/** Outputs a text using the default font */
-	void textOut(const std::string&, float x, float y, float z);
+	void textOut(const std::string&, float x, float y, float z, int MaxLen);
 
 	/** Finds an object of a given name. No two objects can have the same name. */
 	Element* operator[] (const std::string&);

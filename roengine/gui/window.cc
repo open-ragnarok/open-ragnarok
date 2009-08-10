@@ -5,6 +5,7 @@
 #include "roengine/gui/gui.h"
 
 GUI::Window::Window() : Element() {
+	IsMouseDowning = false;
 }
 
 GUI::Window::Window(const rogl::Texture::Pointer& t) : Element() {
@@ -19,6 +20,107 @@ void GUI::Window::setCaption(const std::string& n) {
 
 GUI::Window::Window(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent, node, tm, fm) {
 
+}
+
+bool GUI::Window::HandleMouseRelease(int x, int y, int button) {
+	std::cout << getName() << "::MouseRelease (" << x << ", " << y << ")" << std::endl;
+
+	std::vector<Element*>::iterator itr = m_children.begin();
+	GUI::Gui& gui = GUI::Gui::getSingleton();
+
+	if( this == gui.getDesktop() )
+	{
+		if(itr != m_children.end()) {
+			Element* e = *itr;
+
+			if ( button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
+				std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
+				IsMouseDowning = false;
+			}
+		}
+	}
+
+	while (itr != m_children.end()) {
+		Element* e = *itr;
+		if (isInside(e, x, y)) {
+			if (e->isVisible())
+				return(e->HandleMouseRelease(x - e->getX(), y - e->getY(), button));
+		}
+		itr++;
+	}
+
+	return(false);
+}
+
+bool GUI::Window::HandleMouseDown(int x, int y, int button) {
+
+	if (!m_enabled)
+		return(false);
+
+	std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
+	std::vector<Element*>::iterator itr = m_children.begin();
+	GUI::Gui& gui = GUI::Gui::getSingleton();
+
+	if( this == gui.getDesktop() )
+	{
+		if(itr != m_children.end()) {
+			Element* e = *itr;
+
+			if ( button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
+				std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
+				IsMouseDowning = true;
+			}
+		}
+	}
+
+	while (itr != m_children.end()) {
+		Element* e = *itr;
+		if (isInside(e, x, y)) {
+			if (e->isVisible())
+				return(e->HandleMouseDown(x - e->getX(), y - e->getY(), button));
+		}
+		itr++;
+	}
+	return(true);
+}
+
+bool GUI::Window::HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
+
+	if (!m_enabled)
+		return(false);
+
+	std::vector<Element*>::iterator itr = m_children.begin();
+	GUI::Gui& gui = GUI::Gui::getSingleton();
+
+	if( this == gui.getDesktop() )
+	{
+		if(itr != m_children.end()) {
+			Element* e = *itr;
+
+			if ( IsMouseDowning ) {
+				//std::cout << getName() << "::MouseMove (" << x << ", " << y << ")" << std::endl;
+				e->setPos(e->getX()+dx,e->getY()+dy);
+			}
+		}
+	}
+
+	//判断是否鼠标在控件上
+	while (itr != m_children.end()) {
+		Element* e = *itr;
+		if (isInside(e, x, y)) {
+			//std::cout << e->getName() << "::MouseIn (" << x << ", " << y << ")" << std::endl;
+			e->SetMouseInFlag(true);
+			e->HandleMouseMove(x - e->getX(), y - e->getY(), dx, dy);
+		}
+		else
+		{
+			//std::cout << e->getName() << "::MouseOut (" << x << ", " << y << ")" << std::endl;
+			e->SetMouseInFlag(false);
+			e->HandleMouseMove(x - e->getX(), y - e->getY(), dx, dy);
+		}
+		itr++;
+	}
+	return(true);
 }
 
 bool GUI::Window::HandleKeyDown(int key, int mod) {
