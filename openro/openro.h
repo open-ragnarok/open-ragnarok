@@ -53,6 +53,7 @@ public:
 	void AddChar(CharInformation&);
 	void Quit();
 	void ParseClientInfo();
+	void CloseSockets();
 	char ConnectionIP[256];
 	unsigned int ConnectionPort;
 };

@@ -214,8 +214,7 @@ namespace RO {
 		MG_ENERGYCOAT
 	};
 
-	/** \enum CDir enumeration */
-	//TODO: Add desc
+	/** \enum CDir enumeration of cardinal points*/
 	//Taken from eAthena
 	enum CDir {
 		DIR_N,

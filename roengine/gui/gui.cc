@@ -62,7 +62,7 @@ void GUI::Gui::Init(int w, int h) {
 
 	LoadDefaultFonts();
 
-	m_defaultFont = m_fonts["arial-8"];
+	m_defaultFont = m_fonts["arial-10"];
 }
 
 GUI::Gui::Gui() : Singleton<Gui>() {

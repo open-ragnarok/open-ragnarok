@@ -41,10 +41,14 @@ public:
 
 	bool handleSelect(GUI::Event&);
 	bool handleCancel(GUI::Event&);
+	bool handleBack(GUI::Event&);
+	bool handleNext(GUI::Event&);
 	void addChar(const CharInformation&);
-	void addCharScreen(unsigned int screen);
+	void delChar(unsigned int pos);
+	void delAllChars();
 
-	void setInfo(unsigned int i);
+	void setInfo(int i);
+	bool setSelected(int m_selected);
 
 	unsigned int screen;
 };

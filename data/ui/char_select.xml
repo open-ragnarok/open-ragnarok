@@ -9,20 +9,23 @@
 		<label name="char_select/hp" x="67" y="267" text="Default_HP" />
 		<label name="char_select/sp" x="67" y="283" text="Default_SP" />
 		<label name="char_select/str" x="211" y="203" text="Default_STR" />
-		<label name="char_select/agi" x="211" y="219" text="Default_Job" />
-		<label name="char_select/vit" x="211" y="236" text="Default_Level" />
-		<label name="char_select/int" x="211" y="251" text="Default_Exp" />
-		<label name="char_select/dex" x="211" y="267" text="Default_HP" />
-		<label name="char_select/luk" x="211" y="283" text="Default_SP" />
+		<label name="char_select/agi" x="211" y="219" text="Default_AGI" />
+		<label name="char_select/vit" x="211" y="236" text="Default_VIT" />
+		<label name="char_select/int" x="211" y="251" text="Default_INT" />
+		<label name="char_select/dex" x="211" y="267" text="Default_DEX" />
+		<label name="char_select/luk" x="211" y="283" text="Default_LUK" />
 
-		<button name="char_select/btnOk" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
-    <button name="char_select/btnCreate" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
-    <button name="char_select/btnDelete" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
-    <button name="char_select/btnCancel" x="-45" y="-25" texture="login_interface\btn_cancel.bmp" />
-    <button name="char_select/btnMake" x="-90" y="-25" texture="login_interface\btn_make.bmp" visible="0" />
+		<button name="char_select/btnOk" x="-93" y="-24" texture="login_interface\btn_ok.bmp" />
+    <button name="char_select/btnInfo" x="313" y="-24" texture="btn_info.bmp" />
+    <button name="char_select/btnDelete" x="5" y="-24" texture="btn_del.bmp" visible="0" />
+    <button name="char_select/btnCancel" x="-46" y="-24" texture="login_interface\btn_cancel.bmp" />
+    <button name="char_select/btnMake" x="-93" y="-24" texture="login_interface\btn_make.bmp" />
 
-    <button name="char_select/select1" x="55" y="40" texture="login_interface\box_select.bmp" transparent="1" />
-    <button name="char_select/select2" x="220" y="40" texture="login_interface\box_select.bmp" transparent="1" />
+    <button name="char_select/select1" x="56" y="40" texture="login_interface\box_select.bmp" transparent="1" />
+    <button name="char_select/select2" x="219" y="40" texture="login_interface\box_select.bmp" transparent="1" />
     <button name="char_select/select3" x="382" y="40" texture="login_interface\box_select.bmp" transparent="1" />
+
+    <button name="char_select/next" x="520" y="110" texture="scroll1right.bmp" />
+    <button name="char_select/back" x="44" y="110" texture="scroll1left.bmp" />
   </window>
 </desktop>

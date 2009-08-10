@@ -76,7 +76,7 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(LoginError, true);
 			HANDLEPKT(AuthFailed, true);
 			default:
-				std::cerr << "Unhandled packet id " << pkt->getID() << std::endl;
+				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
 
 		if (delpkt)
@@ -117,9 +117,6 @@ void OpenRO::hndlCharList(ronet::pktCharList* pkt) {
 	dskChar->setEnabled(true);
 	
 	for(int x=0;x<count;x++){
-		//Currently, we only support 3 characters :P
-		if(x >= 3)
-			break;
 		dskChar->addChar(pkt->getChar(x));
 	}
 }
@@ -127,30 +124,30 @@ void OpenRO::hndlCharList(ronet::pktCharList* pkt) {
 //[kR105]
 void OpenRO::hndlLoginError(ronet::pktLoginError* pkt) {
 	short errorId = pkt->getErrorId();
-	char *errorDesc;
+	char errorDesc[256];
 
 	//Error description taken from OpenKore & eAthena
 	switch(errorId){
 		case 0:
-			errorDesc = "Account name doesn't exist";
+			sprintf(errorDesc,"Account name doesn't exist");
 			break;
 		case 1:
-			errorDesc = "Password Error";
+			sprintf(errorDesc,"Password Error");
 			break;
 		case 3:
-			errorDesc = "Rejected from Server";
+			sprintf(errorDesc,"Rejected from Server");
 			break;
 		case 4:
-			errorDesc = "Your account has been blocked";
+			sprintf(errorDesc,"Your account has been blocked");
 			break;
 		case 5:
-			errorDesc = "Your Game's EXE file is not the latest version";
+			sprintf(errorDesc,"Your Game's EXE file is not the latest version");
 			break;
 		case 6:
-			errorDesc = "The server is temporarily blocking your connection";
+			sprintf(errorDesc,"The server is temporarily blocking your connection");
 			break;
 		default:
-			errorDesc = "Unknown error";
+			sprintf(errorDesc,"Unknown error");
 			break;
 	}
 	printf("Login error: %s (Error number %d)\n", errorDesc, errorId);
@@ -162,42 +159,42 @@ void OpenRO::hndlLoginError(ronet::pktLoginError* pkt) {
 //[kR105]
 void OpenRO::hndlAuthFailed(ronet::pktAuthFailed* pkt) {
 	short errorId = pkt->getErrorId();
-	char *errorDesc;
+	char errorDesc[256];
 
 	//Error description taken from OpenKore & eAthena
 	switch(errorId){
 		case 0:
-			errorDesc = "Server shutting down.";
+			sprintf(errorDesc,"Server shutting down.");
 			break;
 		case 1:
-			errorDesc = "Server connection closed.";
+			sprintf(errorDesc,"Server connection closed.");
 			break;
 		case 2:
-			errorDesc = "Someone has already logged in with this ID.";
+			sprintf(errorDesc,"Someone has already logged in with this ID.");
 			break;
 		case 3:
-			errorDesc = "You've been disconnected due to a time gap between you and the server.";
+			sprintf(errorDesc,"You've been disconnected due to a time gap between you and the server.");
 			break;
 		case 4:
-			errorDesc = "Server is jammed due to over population. Please try again shortly.";
+			sprintf(errorDesc,"Server is jammed due to over population. Please try again shortly.");
 			break;
 		case 5:
-			errorDesc = "You are underaged and cannot join this server.";
+			sprintf(errorDesc,"You are underaged and cannot join this server.");
 			break;
 		case 8:
-			errorDesc = "Server still recognizes your last log-in. Please try again after a few minutes.";
+			sprintf(errorDesc,"Server still recognizes your last log-in. Please try again after a few minutes.");
 			break;
 		case 9:
-			errorDesc = "IP capacity of this Internet Cafe is full. Would you like to pay the personal base?";
+			sprintf(errorDesc,"IP capacity of this Internet Cafe is full. Would you like to pay the personal base?");
 			break;
 		case 10:
-			errorDesc = "You are out of available time paid for. Game will be shut down automatically.";
+			sprintf(errorDesc,"You are out of available time paid for. Game will be shut down automatically.");
 			break;
 		case 15:
-			errorDesc = "You have been forced to disconnect by the Game Master Team.";
+			sprintf(errorDesc,"You have been forced to disconnect by the Game Master Team.");
 			break;
 		default:
-			errorDesc = "Unknown error";
+			sprintf(errorDesc,"Unknown error");
 			break;
 	}
 	printf("Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
@@ -248,3 +245,11 @@ void OpenRO::ParseClientInfo(){
 		}
 	}
 }
+
+void OpenRO::CloseSockets(){
+	m_network.getLogin().Close();
+	m_network.getChar().Close();
+	m_network.getMap().Close();
+	return;
+}
+

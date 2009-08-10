@@ -90,7 +90,7 @@ bool GUI::TextInput::HandleKeyDown(int key, int mod) {
 			m_pos = m_text.size();
 	}
 
-	if ((key >= SDLK_a && key <= SDLK_z) || (key == SDLK_SPACE)) {
+	if ((key >= SDLK_a && key <= SDLK_z) || (key == SDLK_SPACE) || (key >= SDLK_0 && key <= SDLK_9) || (key >= SDLK_KP0 && key <= SDLK_KP9) || (key == SDLK_UNDERSCORE)) {
 		char buf[2];
 		if (mod & (KMOD_LSHIFT | KMOD_RSHIFT))
 			sprintf(buf, "%c", key + 'A' - 'a');
