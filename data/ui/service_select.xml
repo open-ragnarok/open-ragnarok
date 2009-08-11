@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <desktop name="service_select_ui" texture="rag_title2.bmp">
 	<!-- $Id$ -->
-	<window name="service_select" texture="login_interface\win_service.bmp" x="-1" y="-1">
+	<window name="service_select" texture="login_interface\win_service.bmp" x="-1" y="-1" mw = "250" mh="18">
 		<list name="service_select/servers" x="10" y="19" w="260" h="72" />
 
-		<button name="service_select/btnOk" x="-90" y="-25" texture="login_interface\btn_ok.bmp" />
-		<button name="service_select/btnCancel" x="-45" y="-25" texture="login_interface\btn_cancel.bmp" />
+		<button name="service_select/btnOk" x="-90" y="-25" texture="btn_ok.bmp" active="btn_ok_a.bmp" hover="btn_ok_b.bmp"/>
+		<button name="service_select/btnCancel" x="-45" y="-25" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" hover="btn_cancel_b.bmp"/>
 	</window>
 </desktop>

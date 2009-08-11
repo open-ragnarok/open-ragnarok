@@ -3,23 +3,31 @@
 #include "desktop_char.h"
 
 DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
+	//Add events handlers for character slots
 	ADD_HANDLER("char_select/select1", evtClick, DesktopChar::handleSelect);
 	ADD_HANDLER("char_select/select2", evtClick, DesktopChar::handleSelect);
 	ADD_HANDLER("char_select/select3", evtClick, DesktopChar::handleSelect);
 
+	//Add event handler for button cancel
 	ADD_HANDLER("char_select/btnCancel", evtClick, DesktopChar::handleCancel);
 
+	//Add event handler for back and next buttons
 	ADD_HANDLER("char_select/back", evtClick, DesktopChar::handleBack);
 	ADD_HANDLER("char_select/next", evtClick, DesktopChar::handleNext);
 
+	//Get the char_select window handler
 	window = (GUI::Window*)getElement("char_select");
 
+	//Delete all chars of the slots
 	delAllChars();
 
+	//Set the slot selected to "none"
 	m_selected = -1;
 
+	//Set the current screen to 0
 	screen = 0;
 
+	//Get label handlers
 	lblStr = (GUI::Label*)getElement("char_select/str");
 	lblAgi = (GUI::Label*)getElement("char_select/agi");
 	lblVit = (GUI::Label*)getElement("char_select/vit");
@@ -27,6 +35,7 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 	lblDex = (GUI::Label*)getElement("char_select/dex");
 	lblLuk = (GUI::Label*)getElement("char_select/luk");
 
+	//Get label handlers
 	lblNam = (GUI::Label*)getElement("char_select/name");
 	lblJob = (GUI::Label*)getElement("char_select/job");
 	lblLvl = (GUI::Label*)getElement("char_select/level");
@@ -34,6 +43,7 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 	lblHp = (GUI::Label*)getElement("char_select/hp");
 	lblSp = (GUI::Label*)getElement("char_select/sp");
 
+	//Empty the fields of char information
 	setInfo(-1);
 }
 
@@ -76,6 +86,7 @@ void DesktopChar::setInfo(int i){
 	char buf[16];
 	int x = i + (screen * 3);
 	
+	//If the selected slot is empty
 	if( m_used[x] == NULL || i == -1){
 		sprintf(buf, "%s", "");
 		lblStr->setText(buf);
@@ -236,35 +247,58 @@ bool DesktopChar::handleCancel(GUI::Event& e) {
 	return(true);
 }
 
+/* This function handle the "Back" button in the CharSelect screen */
 bool DesktopChar::handleBack(GUI::Event& e) {
+	//If the selected slot is in the left
 	if(m_selected == 0){
+		//Set it in the right
 		m_selected = 2;
+		//If the current screen is the number 0
 		if(screen == 0){
+			//Set it in the last
 			screen = ((CHAR_SLOT_COUNT / 3) - 1);
 		}else{
+			//Decrease the screen number
 			screen -= 1;
 		}
+	//If nothing selected
+	}else if(m_selected == -1){
+		//Select the left slot
+		m_selected = 0;
 	}else{
+		//Move the selected slot one to the left
 		m_selected -= 1;
 	}
-
+	
+	//Set the selected slot
 	setSelected(m_selected);
 	return(true);
 }
 
+/* This function handle the "Next" button in the CharSelect screen */
 bool DesktopChar::handleNext(GUI::Event& e) {
-
+	//If the selected slot is in the right
 	if(m_selected == 2){
+		//Set it in the left
 		m_selected = 0;
+		//If the current screen is the last
 		if(screen == ((CHAR_SLOT_COUNT / 3) - 1)){
+			//Set it in the first
 			screen = 0;
 		}else{
+			//Increase the screen number
 			screen += 1;
 		}
+	//If nothing selected
+	}else if(m_selected == -1){
+		//Select the right slot
+		m_selected = 2;
 	}else{
+		//Move the selected slot one to the right
 		m_selected += 1;
 	}
-
+	
+	//Set the selected slot
 	setSelected(m_selected);
 	return(true);
 }
