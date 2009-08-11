@@ -9,6 +9,8 @@ protected:
 	GUI::TextInput* tiUser;
 	GUI::TextInput* tiPass;
 
+	virtual void afterDraw(unsigned int delay);
+
 public:
 	DesktopLogin(OpenRO*);
 

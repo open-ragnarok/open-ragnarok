@@ -18,6 +18,7 @@
 #	include <SDL/SDL.h>
 #endif
 #include "gui/gui.h"
+#include "roengine/full_act.h"
 
 class ROEngine : public SDLEngine {
 protected:
@@ -27,6 +28,7 @@ protected:
 	FileManager m_filemanager;
 	Frustum m_frustum;
 	GUI::Gui m_gui;
+	FullAct cursor;
 
 	bool m_quit;
 
@@ -41,6 +43,9 @@ protected:
 	long tickDelay;
 
 	Camera cam;
+
+	int mousex;
+	int mousey;
 
 public:
 	ROEngine(const std::string& name = "");
@@ -63,6 +68,10 @@ public:
 	ROObjectCache& getROObjects();
 	FileManager& getFileManager();
 	Frustum& getFrustum();
+	FullAct& getCursor();
+	void setCursor(FullAct& cur);
+	int getMouseX();
+	int getMouseY();
 };
 
 #ifdef _MSC_VER

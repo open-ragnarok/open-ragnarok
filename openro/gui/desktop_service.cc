@@ -34,3 +34,6 @@ void DesktopService::add(const std::string& s) {
 int DesktopService::getSelected() const {
 	return (slist->getSelected());
 }
+void DesktopService::afterDraw(unsigned int delay) {
+	DrawFullAct(m_ro->getCursor(), (float)m_ro->getMouseX(), (float)m_ro->getMouseY(), 0, 0, false, NULL, false, true);
+}

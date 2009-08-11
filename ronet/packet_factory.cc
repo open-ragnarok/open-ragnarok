@@ -70,7 +70,21 @@ unsigned int ronet::PacketFactory::count() const {
 
 void ronet::PacketFactory::generatePackets(ucBuffer& buffer) {
 	unsigned short id;
+	unsigned short id2;
 	while (buffer.dataSize() > 0) {
+		//TODO: Re-Fix this! (Temporal fix)
+		//If we receive a packet id > 0x0500
+		//we will ignore the first 4 bytes of the buffer
+		buffer.peek((unsigned char*)&id2, 2);
+		if(id2 > 0x0500){
+			if(buffer.dataSize() == 4){
+				buffer.clear();
+				return;
+			}else{
+				buffer.ignore(4);
+			}
+		}
+
 		buffer.peek((unsigned char*)&id, sizeof(short));
 		if(!m_dispatcher.Call(id, buffer))
 			return;

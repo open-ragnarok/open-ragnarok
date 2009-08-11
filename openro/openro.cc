@@ -90,6 +90,9 @@ void OpenRO::BeforeRun() {
 
 	InitDisplay(800, 600, false);
 
+	// Hide the mouse cursor
+	SDL_ShowCursor(0);
+
 	dskLogin = new DesktopLogin(this);
 	dskService = new DesktopService(this);
 	dskCreate = new DesktopCreate(this);
@@ -247,9 +250,13 @@ void OpenRO::ParseClientInfo(){
 }
 
 void OpenRO::CloseSockets(){
+	//Close socket to Login-Server
 	m_network.getLogin().Close();
+
+	//Close socket to Char-Server
 	m_network.getChar().Close();
+
+	//Close socket to Map-Server
 	m_network.getMap().Close();
 	return;
 }
-

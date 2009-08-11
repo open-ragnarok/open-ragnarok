@@ -157,6 +157,8 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], false, true);
 	}
 
+	DrawFullAct(m_ro->getCursor(), (float)(m_ro->getMouseX() - window->getX()), (float)(m_ro->getMouseY() - window->getY()), 0, 0, false, NULL, false, true);
+
 	glPopMatrix();
 }
 
@@ -228,8 +230,8 @@ bool DesktopChar::handleSelect(GUI::Event& e) {
 
 bool DesktopChar::handleCancel(GUI::Event& e) {
 	//Free objects
-	ROObjectCache& ro_objects = m_ro->getROObjects();
-	ro_objects.clear();
+	//ROObjectCache& ro_objects = m_ro->getROObjects();
+	//ro_objects.clear();
 
 	//TODO: Delete ro_objects
 

@@ -151,6 +151,9 @@ bool ROEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) {
 }
 
 bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
+	//Save the mouse pos to draw the spr cursor
+	mousex = x;
+	mousey = y;
 	return(m_gui.InjectMouseMove(x, y, dx, dy));
 }
 
@@ -159,3 +162,7 @@ GLObjectCache& ROEngine::getGLObjects() { return(m_gl_objects); }
 ROObjectCache& ROEngine::getROObjects() { return(m_ro_objects); }
 FileManager& ROEngine::getFileManager() { return(m_filemanager); }
 Frustum& ROEngine::getFrustum() { return(m_frustum); }
+FullAct& ROEngine::getCursor(){return cursor;}
+void ROEngine::setCursor(FullAct& cur){cursor = cur;}
+int ROEngine::getMouseX(){return mousex;}
+int ROEngine::getMouseY(){return mousey;}

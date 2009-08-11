@@ -10,6 +10,7 @@ class DesktopService;
 class DesktopService : public RODesktop {
 protected:
 	GUI::List* slist;
+	virtual void afterDraw(unsigned int delay);
 public:
 	DesktopService(OpenRO*);
 
