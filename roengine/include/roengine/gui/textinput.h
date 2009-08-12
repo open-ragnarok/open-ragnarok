@@ -22,7 +22,7 @@ namespace GUI {
 
 		int m_charpos;
 
-		int GetcharposNum();
+		unsigned int GetcharposNum();
 		int GetcharposNum(int charpos);
 
 	public:

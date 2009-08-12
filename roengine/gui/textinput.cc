@@ -27,7 +27,7 @@ int GUI::TextInput::GetcharposNum(int charpos)
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 	const GUI::Font* font = gui.getDefaultFont();
 
-	int i;
+	unsigned int i;
 
 	for(i = 1 ;i <= m_text.length()-charpos ;i++)
 	{
@@ -43,12 +43,12 @@ int GUI::TextInput::GetcharposNum(int charpos)
 	return 0;
 }
 
-int GUI::TextInput::GetcharposNum()
+unsigned int GUI::TextInput::GetcharposNum()
 {
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 	const GUI::Font* font = gui.getDefaultFont();
 
-	int i;
+	unsigned int i;
 
 	for(i = 1 ;i <= m_text.length()-m_charpos ;i++)
 	{
@@ -78,7 +78,7 @@ void GUI::TextInput::Draw(unsigned int delay) {
 	glColor3f(0.0f,0.0f,0.0f);
 	if( MaxLen > 0 )
 	{
-		int i;
+		unsigned int i;
 		for(i = 1 ;i <= m_text.length()-m_charpos ;i++)
 		{
 			if( font->getWidth( m_text.substr(m_charpos, i) ) > MaxLen )
