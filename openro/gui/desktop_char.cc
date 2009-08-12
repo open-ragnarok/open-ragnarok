@@ -45,6 +45,9 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 
 	//Empty the fields of char information
 	setInfo(-1);
+
+	sprc = 0;
+	penetick = SDL_GetTicks();
 }
 
 void DesktopChar::addChar(const CharInformation& info) {
@@ -157,10 +160,6 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], false, true);
 	}
 
-	DrawFullAct(m_ro->getCursor(), (float)(m_ro->getMouseX() - window->getX()), (float)(m_ro->getMouseY() - window->getY()), 0, 0, false, NULL, false, true);
-
-	glPopMatrix();
-
 	curtick = SDL_GetTicks();
 
 	if(curtick >= (lasttick + 10000)){
@@ -168,6 +167,16 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		lasttick = curtick;
 	}
 
+	if(curtick >= (penetick + 100)){
+		sprc++;
+		penetick = curtick;
+		if(sprc >= 10)
+			sprc = 0;
+	}
+	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
+	DrawFullAct(m_ro->getCursor(), (float)(m_ro->getMouseX() - window->getX()), (float)(m_ro->getMouseY() - window->getY()), 0, sprc, false, NULL, false, true);
+
+	glPopMatrix();
 }
 
 void DesktopChar::cross(float x, float y, float size) {

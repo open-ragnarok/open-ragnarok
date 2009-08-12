@@ -44,6 +44,9 @@ DesktopCreate::DesktopCreate(OpenRO* ro) : RODesktop("ui\\char_create.xml", ro) 
 	m_action = 1;
 	m_dir = 0;
 	elapsed = 0;
+
+	sprc = 0;
+	penetick = SDL_GetTicks();
 }
 
 bool DesktopCreate::handleBtnColor(GUI::Event&) {
@@ -198,6 +201,17 @@ void DesktopCreate::afterDraw(unsigned int delay) {
 	drawChar();
 
 	glPopMatrix();
+
+
+	curtick = SDL_GetTicks();
+	if(curtick >= (penetick + 100)){
+		sprc++;
+		penetick = curtick;
+		if(sprc >= 10)
+			sprc = 0;
+	}
+	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
+	DrawFullAct(m_ro->getCursor(), (float)m_ro->getMouseX(), (float)m_ro->getMouseY(), 0, sprc, false, NULL, false, false);
 }
 
 void cross(float x, float y, float size) {

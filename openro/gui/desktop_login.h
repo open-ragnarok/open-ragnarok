@@ -5,6 +5,10 @@
 #include "ro_desktop.h"
 
 class DesktopLogin : public RODesktop {
+private:
+	long penetick;
+	long curtick;
+	int sprc;
 protected:
 	GUI::TextInput* tiUser;
 	GUI::TextInput* tiPass;

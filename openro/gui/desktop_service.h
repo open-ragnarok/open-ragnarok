@@ -8,6 +8,10 @@ class DesktopService;
 #include "roengine/gui/list.h"
 
 class DesktopService : public RODesktop {
+private:
+	long penetick;
+	long curtick;
+	int sprc;
 protected:
 	GUI::List* slist;
 	virtual void afterDraw(unsigned int delay);

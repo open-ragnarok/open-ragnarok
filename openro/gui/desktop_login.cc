@@ -15,6 +15,8 @@ DesktopLogin::DesktopLogin(OpenRO* ro) : RODesktop("ui\\login.xml", ro) {
 	sprintf(xcursor,"sprite\\cursors");
 	ycursor.Load(xcursor,m_ro->getROObjects(),m_ro->getFileManager(),m_ro->getTextureManager());
 	m_ro->setCursor(ycursor);
+	sprc = 0;
+	penetick = SDL_GetTicks();
 }
 
 bool DesktopLogin::handleBtnOk(GUI::Event& e) {
@@ -38,5 +40,13 @@ bool DesktopLogin::handleBtnCancel(GUI::Event& e) {
 }
 
 void DesktopLogin::afterDraw(unsigned int delay) {
-	DrawFullAct(m_ro->getCursor(), (float)m_ro->getMouseX(), (float)m_ro->getMouseY(), 0, 0, false, NULL, false, true);
+	curtick = SDL_GetTicks();
+	if(curtick >= (penetick + 100)){
+		sprc++;
+		penetick = curtick;
+		if(sprc >= 10)
+			sprc = 0;
+	}
+	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
+	DrawFullAct(m_ro->getCursor(), (float)m_ro->getMouseX(), (float)m_ro->getMouseY(), 0, sprc, false, NULL, false, false);
 }
