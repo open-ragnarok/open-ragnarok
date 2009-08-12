@@ -5,10 +5,6 @@
 #include "../gui_act.h"
 
 class DesktopCreate : public RODesktop {
-private:
-	long penetick;
-	long curtick;
-	int sprc;
 protected:
 	unsigned int m_headnum;
 

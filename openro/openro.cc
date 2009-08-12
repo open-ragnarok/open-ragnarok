@@ -9,6 +9,9 @@ OpenRO::OpenRO() : ROEngine() {
 	//m_showui = true;
 
 	m_serverlist = NULL;
+
+	sprc = 0;
+	penetick = SDL_GetTicks();
 }
 
 OpenRO::~OpenRO() {
@@ -280,4 +283,26 @@ void OpenRO::KeepAliveChar(){
 	//Send the KeepAlive packet
 	m_network.KeepAliveChar(m_serverlist->getAccountId());
 	printf("CharServer KeepAlive sent.\n");
+}
+
+void OpenRO::ProcessMouse(OpenRO* m_ro,int xless, int yless){
+	//If the program will exit
+	if(m_quit){
+		//Free cursor ACT
+		m_ro->getCursor()->~ACT();
+	}
+
+	//Get current tick
+	curtick = SDL_GetTicks();
+
+	//Change the cursor sprite every 100ms
+	if(curtick >= (penetick + 100)){
+		sprc++;
+		penetick = curtick;
+		if(sprc >= 10)
+			sprc = 0;
+	}
+
+	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
+	DrawFullAct(m_ro->getCursor(), (float)(m_ro->getMouseX() - xless), (float)(m_ro->getMouseY() - yless), 0, sprc, false, NULL, false, false);
 }

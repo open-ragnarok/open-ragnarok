@@ -11,8 +11,6 @@ private:
 	void cross(float x, float y, float size);
 	long curtick;
 	long lasttick;
-	long penetick;
-	int sprc;
 protected:
 #define CHAR_SLOT_COUNT 9 //Only number that can be divided by 3
 	int m_selected;

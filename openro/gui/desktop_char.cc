@@ -45,9 +45,6 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 
 	//Empty the fields of char information
 	setInfo(-1);
-
-	sprc = 0;
-	penetick = SDL_GetTicks();
 }
 
 void DesktopChar::addChar(const CharInformation& info) {
@@ -167,14 +164,7 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		lasttick = curtick;
 	}
 
-	if(curtick >= (penetick + 100)){
-		sprc++;
-		penetick = curtick;
-		if(sprc >= 10)
-			sprc = 0;
-	}
-	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
-	DrawFullAct(m_ro->getCursor(), (float)(m_ro->getMouseX() - window->getX()), (float)(m_ro->getMouseY() - window->getY()), 0, sprc, false, NULL, false, true);
+	m_ro->ProcessMouse(m_ro, window->getX(), window->getY());
 
 	glPopMatrix();
 }
@@ -247,8 +237,8 @@ bool DesktopChar::handleSelect(GUI::Event& e) {
 
 bool DesktopChar::handleCancel(GUI::Event& e) {
 	//Free objects
-	//ROObjectCache& ro_objects = m_ro->getROObjects();
-	//ro_objects.clear();
+	ROObjectCache& ro_objects = m_ro->getROObjects();
+	ro_objects.clear();
 
 	//TODO: Delete ro_objects
 
