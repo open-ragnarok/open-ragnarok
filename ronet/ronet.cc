@@ -68,3 +68,13 @@ bool ronet::RONet::CreateChar(const std::string& charname, const CharAttributes&
 	return(true);
 }
 
+void ronet::RONet::KeepAliveChar(unsigned int acc_id) {
+	if (!m_char.isConnected()) {
+		std::cerr << "[RONet::KeepAliveChar() Error] Not connected to char server" << std::endl;
+		return;
+	}
+
+	ronet::pktKeepAlive pkt(acc_id);
+	pkt >> m_char.bufOutput;
+	return;
+}

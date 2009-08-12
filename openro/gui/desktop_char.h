@@ -9,6 +9,8 @@ class DesktopChar;
 class DesktopChar : public RODesktop {
 private:
 	void cross(float x, float y, float size);
+	long curtick;
+	long lasttick;
 
 protected:
 #define CHAR_SLOT_COUNT 9 //Only number that can be divided by 3

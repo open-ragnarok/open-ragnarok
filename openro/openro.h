@@ -56,6 +56,7 @@ public:
 	void CloseSockets();
 	char ConnectionIP[256];
 	unsigned int ConnectionPort;
+	void OpenRO::KeepAliveChar();
 };
 
 #endif /* __OPENRO_H */

@@ -160,6 +160,14 @@ void DesktopChar::afterDraw(unsigned int delay) {
 	DrawFullAct(m_ro->getCursor(), (float)(m_ro->getMouseX() - window->getX()), (float)(m_ro->getMouseY() - window->getY()), 0, 0, false, NULL, false, true);
 
 	glPopMatrix();
+
+	curtick = SDL_GetTicks();
+
+	if(curtick >= (lasttick + 10000)){
+		m_ro->KeepAliveChar();
+		lasttick = curtick;
+	}
+
 }
 
 void DesktopChar::cross(float x, float y, float size) {

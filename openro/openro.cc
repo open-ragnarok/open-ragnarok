@@ -31,17 +31,28 @@ void OpenRO::ProcessLogin(const std::string& user, const std::string& pass) {
 }
 
 void OpenRO::ServiceSelect(unsigned int serviceid) {
+	//If nothing selected
 	if (serviceid < (m_serverlist->getServerCount()-1))
 		return;
 
+	//Hide the service select window
+	dskService->setEnabled(false);
+
+	//Close the socket to the login server
+	m_network.getLogin().Close();
+
+	//Convert the IP to string (stored in long)
 	struct in_addr addr;
 	addr.s_addr = (long)m_serverlist->getInfo(serviceid).ip;
 
+	//Debug info
 	fprintf(stdout,"%s:%d\n",inet_ntoa(addr),m_serverlist->getInfo(serviceid).port);
 
+	//Connect to the charserver
 	m_network.getChar().Connect(inet_ntoa(addr), m_serverlist->getInfo(serviceid).port);
+
+	//Login to the charserver
 	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());
-	dskService->setEnabled(false);
 }
 
 void OpenRO::HandleKeyboard() {
@@ -259,4 +270,14 @@ void OpenRO::CloseSockets(){
 	//Close socket to Map-Server
 	m_network.getMap().Close();
 	return;
+}
+
+void OpenRO::KeepAliveChar(){
+	//If the socket to charserver is closed
+	if(!m_network.getChar().isConnected())
+		return;
+
+	//Send the KeepAlive packet
+	m_network.KeepAliveChar(m_serverlist->getAccountId());
+	printf("CharServer KeepAlive sent.\n");
 }
