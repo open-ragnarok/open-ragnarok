@@ -6,26 +6,29 @@
 #include "event.h"
 
 namespace GUI {
-	class Desktop : public Window {
-	protected:
+class Desktop : public Window {
+protected:
+	/*
+	 Helper to associate function handlers for the events.
+	 */
 #define ADD_HANDLER(name, evt, func) addHandler(GUI::Event(name, GUI::Event:: evt), (Handler)& func)
-		typedef bool (Desktop::*Handler)(const Event&);
-		bool addHandler(Event, Handler);
+	typedef bool (Desktop::*Handler)(const Event&);
+	bool addHandler(Event, Handler);
 
-	private:
-		std::map<std::string, Handler> m_handlers;
+private:
+	std::map<std::string, Handler> m_handlers;
 
-	public:
-		Desktop();
-		Desktop(const std::string&, TextureManager&, FileManager&);
-		
-		bool HandleEvent(const Event&);
+public:
+	Desktop();
+	Desktop(const std::string&, TextureManager&, FileManager&);
+	
+	bool HandleEvent(const Event&);
 
-		bool Load(const std::string&, TextureManager&, FileManager&);
-		bool Load(const TiXmlElement* node, TextureManager& tm, FileManager& fm);
+	bool Load(const std::string&, TextureManager&, FileManager&);
+	bool Load(const TiXmlElement* node, TextureManager& tm, FileManager& fm);
 
-		//bool HandleMouseDown(int x, int y, int button);
-	};
+	//bool HandleMouseDown(int x, int y, int button);
+};
 }
 
 #endif /* __GUI_DESKTOP_H */

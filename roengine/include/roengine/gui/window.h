@@ -12,9 +12,23 @@ protected:
 public:
 	bool IsMouseDowning;
 	Window();
-	virtual ~Window();
-	Window(const rogl::Texture::Pointer&);
+	Window(Element* parent);
+	Window(const rogl::Texture::Pointer&, Element* parent = NULL);
 	Window(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+
+	/**
+	 * Creates an window with a given parent, loads the background parameter and sets the element size to the
+	 * texture size.
+	 * If the texture cannot be loaded, this function behaves like the constructor Window(Element* parent);
+     *
+	 * @param parent the Parent element
+     * @param background the background name
+	 * @param tm
+	 * @param fm
+	 */
+	Window(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm);
+
+	virtual ~Window();
 
 	void setCaption(const std::string&);
 	virtual bool HandleKeyDown(int key, int mod = 0);

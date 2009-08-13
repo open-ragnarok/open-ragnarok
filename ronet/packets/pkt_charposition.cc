@@ -26,19 +26,3 @@ bool ronet::pktCharPosition::Decode(ucBuffer& buf) {
 
 	return(true);
 }
-
-unsigned int ronet::pktCharPosition::getIp() const {
-	return ip;
-}
-
-const char* ronet::pktCharPosition::getMapname() const {
-	return mapname;
-}
-
-unsigned short ronet::pktCharPosition::getPort() const {
-	return port;
-}
-
-unsigned int ronet::pktCharPosition::getPosition() const {
-	return position;
-}

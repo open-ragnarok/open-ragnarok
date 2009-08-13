@@ -14,10 +14,6 @@ class OpenRO;
 #include <string>
 
 class OpenRO : public ROEngine {
-private:
-	long penetick;
-	long curtick;
-	int sprc;
 protected:
 	ROState m_state;
 	ronet::RONet m_network;
@@ -63,7 +59,6 @@ public:
 	char ConnectionIP[256];
 	unsigned int ConnectionPort;
 	void KeepAliveChar();
-	void ProcessMouse(OpenRO* m_ro, int xless = 0, int yless = 0);
 };
 
 #endif /* __OPENRO_H */

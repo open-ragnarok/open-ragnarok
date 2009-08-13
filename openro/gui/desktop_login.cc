@@ -9,12 +9,6 @@ DesktopLogin::DesktopLogin(OpenRO* ro) : RODesktop("ui\\login.xml", ro) {
 
 	tiUser = (GUI::TextInput*)getElement("login_window/login");
 	tiPass = (GUI::TextInput*)getElement("login_window/password");
-
-	FullAct ycursor;
-	char xcursor[256];
-	sprintf(xcursor,"sprite\\cursors");
-	ycursor.Load(xcursor,m_ro->getROObjects(),m_ro->getFileManager(),m_ro->getTextureManager());
-	m_ro->setCursor(ycursor);
 }
 
 bool DesktopLogin::handleBtnOk(GUI::Event& e) {
@@ -38,5 +32,5 @@ bool DesktopLogin::handleBtnCancel(GUI::Event& e) {
 }
 
 void DesktopLogin::afterDraw(unsigned int delay) {
-	m_ro->ProcessMouse(m_ro);
+	//m_ro->ProcessMouse();
 }

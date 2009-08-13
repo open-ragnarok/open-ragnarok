@@ -25,34 +25,45 @@ std::string GUI::Event::toString() const {
 	std::string ret;
 	ret = m_name;
 	ret += "::";
+	ret += getTypeAsString();
+	return(ret);
+}
+
+std::string GUI::Event::getTypeAsString() const {
+	std::string ret;
 	switch(m_type) {
 		case evtClick:
-			ret += "evtClick";
+			ret = "evtClick";
 			break;
 		case evtDoubleClick:
-			ret += "evtDoubleClick";
+			ret = "evtDoubleClick";
 			break;
 		case evtKeyDown:
-			ret += "evtKeyDown";
+			ret = "evtKeyDown";
 			break;
 		case evtKeyUp:
-			ret += "evtKeyUp";
+			ret = "evtKeyUp";
 			break;
 		case evtMouseIn:
-			ret += "evtMouseIn";
+			ret = "evtMouseIn";
 			break;
 		case evtMouseOut:
-			ret += "evtMouseOut";
+			ret = "evtMouseOut";
 			break;
 		case evtMouseMove:
-			ret += "evtMouseMove";
+			ret = "evtMouseMove";
+			break;
+		case evtDialog:
+			ret = "evtDialog";
 			break;
 		case evtUnknown:
 		default:
-			ret += "evtUnknown";
+			ret = "evtUnknown";
 	}
+
 	return(ret);
 }
+
 
 
 std::string GUI::Event::getName() const {

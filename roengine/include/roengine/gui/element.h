@@ -39,7 +39,9 @@ protected:
 	static GUI::Element::Cache m_elements;
 	static std::string createName();
 
+	/** Pointer to the parent element (if any) */
 	Element* m_parent;
+
 	/** Indicates if this object is visible or not. If it's false, not the object nor its children will be drawn */
 	bool m_visible;
 
@@ -56,7 +58,7 @@ protected:
 	rogl::Texture::Pointer texture;
 
 	int pos_x, pos_y,MaxLen;
-	int w, h,mw, mh;
+	int w, h, mw, mh;
 
 	virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	void ParseFromXml(const TiXmlElement*, TextureManager&, FileManager&);
@@ -64,8 +66,25 @@ protected:
 	void Window(float x, float y, const rogl::Texture::Pointer& tp) const;
 public:
 	Element();
+
+	/**
+	 * Creates an empty element with a parent
+	 * @param parent the Parent element
+	 */
 	Element(Element* parent);
 	Element(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+
+	/**
+	 * Creates an element with a given parent, loads the background parameter and sets the element size to the
+	 * texture size.
+	 * If the texture cannot be loaded, this function behaves like the constructor Element(Element* parent);
+     *
+	 * @param parent the Parent element
+     * @param background the background name
+	 * @param tm
+	 * @param fm
+	 */
+	Element(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm);
 	virtual ~Element();
 
 	void setTexture(const rogl::Texture::Pointer&);
@@ -87,7 +106,7 @@ public:
 	/** Sets the element size. If the element size is not set manually, it will use the texture size. */
 	void setSize(const int&, const int&);
 	void setFullscreen(bool = false);
-	void setVisible(bool = true);
+	virtual void setVisible(bool = true);
 	void setTransparent(bool = false);
 	void setEnabled(bool = true);
 	void setActive();

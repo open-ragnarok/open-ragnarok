@@ -30,6 +30,12 @@ protected:
 	GUI::Gui m_gui;
 	FullAct cursor;
 
+	/** Indicates the current cursor sprite in use */
+	int m_cursorSprite;
+
+	/** Stores the tick count to handle mouse animation */
+	long m_cursorTick;
+
 	bool m_quit;
 
 	virtual void HandleKeyboard();
@@ -70,7 +76,14 @@ public:
 	Frustum& getFrustum();
 	FullAct& getCursor();
 	void setCursor(FullAct& cur);
+
+	/** Process mouse animation and drawing */
+	void ProcessMouse(int xless = 0, int yless = 0);
+
+	/** Retrieve mouse X position */
 	int getMouseX();
+
+	/** Retrieve mouse Y position */
 	int getMouseY();
 };
 

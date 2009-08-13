@@ -8,18 +8,27 @@ GUI::Window::Window() : Element() {
 	IsMouseDowning = false;
 }
 
-GUI::Window::Window(const rogl::Texture::Pointer& t) : Element() {
+GUI::Window::Window(Element* parent) : Element(parent) {
+	IsMouseDowning = false;
+}
+
+GUI::Window::Window(const rogl::Texture::Pointer& t, Element* parent) : Element(parent) {
+	IsMouseDowning = false;
 	texture = t;
+}
+
+GUI::Window::Window(Element* parent, class TiXmlElement const * xml, TextureManager& tm, FileManager& fm) : Element(parent, xml, tm, fm) {
+	IsMouseDowning = false;
+}
+
+GUI::Window::Window(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) : Element(parent, background, tm, fm) {
+	IsMouseDowning = false;
 }
 
 GUI::Window::~Window() {}
 
 void GUI::Window::setCaption(const std::string& n) {
 	caption = n;
-}
-
-GUI::Window::Window(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent, node, tm, fm) {
-
 }
 
 bool GUI::Window::HandleMouseRelease(int x, int y, int button) {

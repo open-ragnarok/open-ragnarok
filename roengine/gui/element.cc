@@ -94,6 +94,30 @@ GUI::Element::Element(Element* parent, const TiXmlElement* node, TextureManager&
 		ParseFromXml(node, tm, fm);
 }
 
+GUI::Element::Element(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) {
+	m_parent = parent;
+	m_focusable = true;
+	m_transparent = false;
+	m_visible = true;
+	m_fullscreen = false;
+	m_enabled = true;
+	m_MouseIn = false;
+	pos_x = 0;
+	pos_y = 0;
+	MaxLen = 0;
+	w = 0;
+	h = 0;
+	m_active_child = NULL;
+
+	m_elements.add(this);
+
+	rogl::Texture::Pointer ptr = tm.Register(fm, background);
+	if (ptr.isValid()) {
+		texture = ptr;
+		setSize(texture->getWidth(), texture->getHeight());
+	}
+}
+
 GUI::Element::Cache& GUI::Element::getCache() {
 	return(m_elements);
 }

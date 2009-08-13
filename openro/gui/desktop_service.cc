@@ -1,3 +1,4 @@
+/* $Id$ */
 #include "stdafx.h"
 
 #include "desktop_service.h"
@@ -35,5 +36,5 @@ int DesktopService::getSelected() const {
 	return (slist->getSelected());
 }
 void DesktopService::afterDraw(unsigned int delay) {
-	m_ro->ProcessMouse(m_ro);
+	//m_ro->ProcessMouse();
 }

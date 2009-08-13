@@ -1,4 +1,5 @@
-#include "stdafx.h"
+
+/* $Id$ */#include "stdafx.h"
 
 #include "ro_desktop.h"
 #include "openro.h"

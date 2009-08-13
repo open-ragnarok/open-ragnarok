@@ -18,6 +18,7 @@ public:
 	FullAct& operator = (const FullAct&);
 
 	bool Load(const std::string& act, ROObjectCache& m_ro_objects, FileManager& m_filemanager, TextureManager& m_texturemanager);
+	void Clear();
 
 	const RO::ACT* getAct() const;
 	const rogl::Texture::PointerCache& getTextures() const;

@@ -20,6 +20,12 @@ FullAct& FullAct::operator = (const FullAct& act) {
 	return(*this);
 }
 
+void FullAct::Clear() {
+	// TODO: is this =NULL safe?
+	m_act = NULL;
+	m_textures.clear();
+}
+
 FullAct::FullAct(const RO::ACT* a, const rogl::Texture::PointerCache& t) {
 	m_act = a;
 	m_textures = t;

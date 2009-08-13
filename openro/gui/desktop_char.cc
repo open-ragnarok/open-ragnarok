@@ -1,3 +1,4 @@
+/* $Id$ */
 #include "stdafx.h"
 
 #include "desktop_char.h"
@@ -156,8 +157,8 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		if (!m_used[p+i])
 			continue;
 
-		DrawFullAct(bodies[p+i], (float)x[i], 158, 0, 0, false, NULL, false, true);
-		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], false, true);
+		DrawFullAct(bodies[p+i], (float)x[i], 158, 0, 0, false, NULL, false, false);
+		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], false, false);
 	}
 
 	curtick = SDL_GetTicks();
@@ -167,7 +168,7 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		lasttick = curtick;
 	}
 
-	m_ro->ProcessMouse(m_ro, window->getX(), window->getY());
+	//m_ro->ProcessMouse(window->getX(), window->getY());
 
 	glPopMatrix();
 }

@@ -1,3 +1,4 @@
+/* $Id$ */
 #include "stdafx.h"
 
 #include "desktop_create.h"
@@ -201,7 +202,7 @@ void DesktopCreate::afterDraw(unsigned int delay) {
 
 	glPopMatrix();
 
-	m_ro->ProcessMouse(m_ro);
+	//m_ro->ProcessMouse();
 }
 
 void cross(float x, float y, float size) {

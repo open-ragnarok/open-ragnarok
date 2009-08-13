@@ -5,6 +5,10 @@
 #include "roengine/gui/event.h"
 #include "roengine/gui/gui.h"
 
+GUI::Button::Button(Element* parent) : Element(parent) {
+	m_MouseIn = false;
+}
+
 GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base) : Element(parent) {
 	texture_base = base;
 	texture_active = base;
@@ -12,6 +16,7 @@ GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base) : Eleme
 	texture_disabled = base;
 	m_MouseIn = false;
 }
+
 GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
@@ -49,6 +54,13 @@ GUI::Button::Button(Element* parent, const TiXmlElement* node, TextureManager& t
 		texture_hover = texture;
 	if (!texture_disabled.isValid())
 		texture_disabled = texture;
+}
+
+GUI::Button::Button(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) : Element(parent, background, tm, fm) {
+	texture_base = texture;
+	texture_active = texture;
+	texture_hover = texture;
+	texture_disabled = texture;
 }
 
 bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {

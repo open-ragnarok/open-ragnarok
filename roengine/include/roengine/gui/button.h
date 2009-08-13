@@ -15,12 +15,25 @@ namespace GUI {
 		virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 
 	public:
+		Button(Element* parent);
 		Button(Element* parent, const rogl::Texture::Pointer& base);
 		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active);
 		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover);
 		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover, const rogl::Texture::Pointer& disabled);
 
 		Button(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+
+		/**
+		 * Creates an window with a given parent, loads the background parameter and sets the element size to the
+		 * texture size.
+		 * If the texture cannot be loaded, this function behaves like the constructor Button(Element* parent);
+		 *
+		 * @param parent the Parent element
+		 * @param background the background name
+		 * @param tm
+		 * @param fm
+		 */
+		Button(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm);
 
 		virtual void Draw(unsigned int delay = 0);
 

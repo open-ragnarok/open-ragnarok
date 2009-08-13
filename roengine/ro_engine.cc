@@ -72,6 +72,7 @@ ROEngine::ROEngine(const std::string& name) : SDLEngine(name) {
 		keys[i] = false;
 
 	m_quit = false;
+	m_cursorSprite = 0;
 }
 
 ROEngine::~ROEngine() {
@@ -103,6 +104,7 @@ void ROEngine::AfterInit() {
 void ROEngine::Run() {
 	long curtick;
 	m_quit = false;
+	curtick = SDL_GetTicks();
 
 	Vector3f camera_look;
 
@@ -126,11 +128,23 @@ void ROEngine::Run() {
 		camera_look = cam.getEye() - cam.getDest();
 		m_gl_objects.draw(m_frustum, tickDelay, camera_look);
 		m_gui.Draw(tickDelay);
+
+		//TODO: This is redundant. 2D mode should start in GUI and finish here. Maybe put this inside the Gui::Draw?
+		Mode2DStart();
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.45f);
+		ProcessMouse();
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_TEXTURE_2D);
+		Mode2DEnd();
+		
 		m_gui.ProcessEvents();
 
 		AfterDraw();
 		Sync();
 	}
+	getCursor().Clear();
 	AfterRun();
 }
 
@@ -155,6 +169,21 @@ bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int
 	mousex = x;
 	mousey = y;
 	return(m_gui.InjectMouseMove(x, y, dx, dy));
+}
+
+void ROEngine::ProcessMouse(int xless, int yless){
+	//Change the cursor sprite every 100ms
+	m_cursorTick += tickDelay;
+	while (m_cursorTick >= 100) {
+		m_cursorTick = m_cursorTick % (100 * 10);
+		m_cursorSprite++;
+		m_cursorTick -= 100;
+		if(m_cursorSprite >= 10)
+			m_cursorSprite = 0;
+	}
+
+	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
+	DrawFullAct(getCursor(), (float)(getMouseX() - xless), (float)(getMouseY() - yless), 0, m_cursorSprite, false, NULL, false, false);
 }
 
 TextureManager& ROEngine::getTextureManager() { return(m_texturemanager); }

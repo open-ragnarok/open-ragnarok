@@ -5,11 +5,18 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "roengine/gui/glf_font.h"
+
 namespace GUI {
 #include "roengine/gui/arabia-8.glf.h"
 #include "roengine/gui/arial-8.glf.h"
 #include "roengine/gui/arial-10.glf.h"
 
+/**
+ * Starts OpenGL 2D Mode
+ * @param width int the window width
+ * @param height int the window height
+ */
 void Mode2DStart(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -22,6 +29,10 @@ void Mode2DStart(int width, int height) {
 	glDisable(GL_DEPTH_TEST);
 }
 
+/**
+ * Ends OpenGL 2D Mode and resets the matrix back to the state
+ * when Mode2DStart() was called.
+ */
 void Mode2DEnd() {
 	glEnable(GL_DEPTH_TEST);
 	
@@ -42,6 +53,11 @@ Font* getDefaultFont(const unsigned char data[], unsigned int data_size) {
 	return((Font*)f);
 }
 
+/**
+ * Loads the basic fonts for the engine (even if there are no external fonts available,
+ * these will be).
+ * Provided fonts are Arial (sizes 8 and 10) and Arabia (size 8).
+ */
 void LoadDefaultFonts() {
 	Gui& gui = Gui::getSingleton();
 	Font* f;
@@ -67,12 +83,49 @@ void GUI::Gui::Init(int w, int h) {
 
 GUI::Gui::Gui() : Singleton<Gui>() {
 	m_desktop = NULL;
+	m_inactiveDesktop = NULL;
 	active = NULL;
 	m_defaultFont = NULL;
+	m_msgbox_bg = "login_interface\\win_service.bmp";
+	m_msgbox_btnok = "login_interface\\btn_ok.bmp";
+	m_msgbox_btncancel = "login_interface\\btn_cancel.bmp";
+	m_msgbox_btnexit = "login_interface\\btn_exit.bmp";
 }
 
 GUI::Gui::~Gui() {
 	clear();
+}
+
+const std::string GUI::Gui::getMsgboxBg() {
+	std::string aux = "texture\\";
+	aux += RO::EUC::user_interface;
+	aux += "\\";
+	aux += m_msgbox_bg;
+	return(aux);
+}
+
+const std::string GUI::Gui::getMsgboxOk() {
+	std::string aux = "texture\\";
+	aux += RO::EUC::user_interface;
+	aux += "\\";
+	aux += m_msgbox_btnok;
+	return(aux);
+}
+
+const std::string GUI::Gui::getMsgboxCancel() {
+	std::string aux = "texture\\";
+	aux += RO::EUC::user_interface;
+	aux += "\\";
+	aux += m_msgbox_btncancel;
+	return(aux);
+}
+
+const std::string GUI::Gui::getMsgboxExit() {
+	std::string aux = "texture\\";
+	aux += RO::EUC::user_interface;
+	aux += "\\";
+	aux += m_msgbox_btnexit;
+	return(aux);
 }
 
 void GUI::Gui::clear() {
@@ -80,14 +133,19 @@ void GUI::Gui::clear() {
 }
 
 void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
-	if (!m_desktop)
+	if (!m_desktop && !m_inactiveDesktop)
 		return;
+
 	Mode2DStart(m_width, m_height);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.45f);
 
-	m_desktop->Draw(delay);
+	if (m_inactiveDesktop)
+		m_inactiveDesktop->Draw(delay);
+
+	if (m_desktop)
+		m_desktop->Draw(delay);
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_TEXTURE_2D);
@@ -124,17 +182,18 @@ void GUI::Gui::setDesktop(Desktop* e) {
 	}
 }
 
-void GUI::Gui::setDesktop(const std::string& ui) {
+bool GUI::Gui::setDesktop(const std::string& ui) {
 	if (ui == "") {
 		setDesktop(NULL);
-		return;
+		return(true);
 	}
 	Element* e = GUI::Element::getElement(ui);
 	if (e == NULL) {
 		std::cerr << "No GUI element named " << ui << " found." << std::endl;
-		return;
+		return(false);
 	}
 	setDesktop((Desktop*)e);
+	return(true);
 }
 
 BaseCache<GUI::Font>& GUI::Gui::FontManager() {
@@ -251,4 +310,12 @@ void GUI::Gui::ProcessEvents() {
 
 	while (GetEventCount())
 		m_desktop->HandleEvent(PopEvent());
+}
+
+void GUI::Gui::Dialog(const std::string& title, const std::string& text, TextureManager& tm, FileManager& fm, int buttons) {
+	GUI::Dialog* dialog;
+	dialog = new GUI::Dialog(title, text, tm, fm);
+	m_inactiveDesktop = m_desktop;
+	m_desktop = dialog;
+	dialog->setVisible(true);
 }

@@ -24,17 +24,24 @@ bool GUI::Desktop::addHandler(Event e, Handler h) {
 }
 
 bool GUI::Desktop::HandleEvent(const Event& e) {
+	// Try to find an registered handler with the event name.
 	std::map<std::string, Handler>::iterator itr;
 	std::string evtName = e.toString();
 	itr = m_handlers.find(evtName);
 
-	if (itr == m_handlers.end())
-		return(false);
+	if (itr == m_handlers.end()) {
+		// No event registered for the object source. Check if we have a generic handler
+		// for the event (a handler with an empty name).
+		evtName = "::";
+		evtName += e.getTypeAsString();
+		itr = m_handlers.find(evtName);
+		if (itr == m_handlers.end()) {
+			return(false);
+		}
+	}
 
 	Handler c = itr->second;
 	return((this->*c)(e));
-
-	return(false);
 }
 
 bool GUI::Desktop::Load(const std::string& name, TextureManager& tm, FileManager& fm) {
