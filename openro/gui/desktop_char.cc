@@ -8,8 +8,9 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 	ADD_HANDLER("char_select/select2", evtClick, DesktopChar::handleSelect);
 	ADD_HANDLER("char_select/select3", evtClick, DesktopChar::handleSelect);
 
-	//Add event handler for button cancel
+	//Add event handler for buttons
 	ADD_HANDLER("char_select/btnCancel", evtClick, DesktopChar::handleCancel);
+	ADD_HANDLER("char_select/btnMake", evtClick, DesktopChar::handleMake);
 
 	//Add event handler for back and next buttons
 	ADD_HANDLER("char_select/back", evtClick, DesktopChar::handleBack);
@@ -62,8 +63,8 @@ void DesktopChar::addChar(const CharInformation& info) {
 	char novice_head[256];
 	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::male, RO::EUC::classname[m_chars[i].Class], RO::EUC::male);
 	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::male, m_chars[i].hair, RO::EUC::male);
-	printf("Loading %s (%d) body: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, novice_body);
-	printf("Loading %s (%d) head: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, novice_head);
+	printf("Loading %s (%d) body in slot %d: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, i, novice_body);
+	printf("Loading %s (%d) head in slot %d: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, i, novice_head);
 
 	bodies[i].Load(novice_body, ro_objects, fm, tm);
 	heads[i].Load(novice_head, ro_objects, fm, tm);
@@ -83,7 +84,7 @@ void DesktopChar::delAllChars() {
 }
 
 void DesktopChar::setInfo(int i){
-	char buf[16];
+	char buf[24];
 	int x = i + (screen * 3);
 	
 	//If the selected slot is empty
@@ -139,6 +140,8 @@ void DesktopChar::setInfo(int i){
 	
 	sprintf(buf, "%d", m_chars[x].sp);
 	lblSp->setText(buf);
+
+	memset(&buf,0x00,sizeof(buf));
 }
 
 void DesktopChar::afterDraw(unsigned int delay) {
@@ -159,7 +162,7 @@ void DesktopChar::afterDraw(unsigned int delay) {
 
 	curtick = SDL_GetTicks();
 
-	if(curtick >= (lasttick + 10000)){
+	if(curtick >= (lasttick + 12000)){
 		m_ro->KeepAliveChar();
 		lasttick = curtick;
 	}
@@ -237,8 +240,8 @@ bool DesktopChar::handleSelect(GUI::Event& e) {
 
 bool DesktopChar::handleCancel(GUI::Event& e) {
 	//Free objects
-	ROObjectCache& ro_objects = m_ro->getROObjects();
-	ro_objects.clear();
+	//ROObjectCache& ro_objects = m_ro->getROObjects();
+	//ro_objects.clear();
 
 	//TODO: Delete ro_objects
 
@@ -309,5 +312,10 @@ bool DesktopChar::handleNext(GUI::Event& e) {
 	
 	//Set the selected slot
 	setSelected(m_selected);
+	return(true);
+}
+
+bool DesktopChar::handleMake(GUI::Event& e) {
+	m_ro->CreateCharWindow(m_selected + (screen * 3));
 	return(true);
 }

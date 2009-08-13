@@ -43,6 +43,8 @@ protected:
 	void hndlLoginError(ronet::pktLoginError*);
 	void hndlAuthFailed(ronet::pktAuthFailed*);
 
+	void hndlCharCreated(ronet::pktCharCreated*);
+
 	int m_charslot;
 
 public:
@@ -52,8 +54,8 @@ public:
 	void LoginScreen();
 	void ProcessLogin(const std::string&, const std::string&);
 	void ServiceSelect(unsigned int serviceid);
-	void CreateCharWindow(unsigned int& slot);
-	void CreateChar(const std::string& charname, const CharAttributes&, unsigned short color, unsigned short style);
+	void CreateCharWindow(int slot);
+	void CreateChar(const std::string& charname, const CharAttributes&, int slott, unsigned short color, unsigned short style);
 	void AddChar(CharInformation&);
 	void Quit();
 	void ParseClientInfo();

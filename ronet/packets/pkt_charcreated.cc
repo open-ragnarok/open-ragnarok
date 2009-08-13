@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "ronet/packets/pkt_charlist.h"
+#include "ronet/packets/pkt_charcreated.h"
 
 ronet::pktCharCreated::pktCharCreated() : Packet(pktCharCreatedID) {
 }
@@ -53,5 +53,11 @@ bool ronet::pktCharCreated::Decode(ronet::ucBuffer & buf) {
 			buf.ignore(2);
 	}
 
+	buf.clear();
+
 	return(true);
+}
+
+CharInformation ronet::pktCharCreated::getChar(){
+	return m_char;
 }

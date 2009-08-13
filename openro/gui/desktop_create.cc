@@ -23,6 +23,8 @@ DesktopCreate::DesktopCreate(OpenRO* ro) : RODesktop("ui\\char_create.xml", ro) 
 	ADD_HANDLER("char_create/btnDex", evtClick, DesktopCreate::handleDex);
 	ADD_HANDLER("char_create/btnLuk", evtClick, DesktopCreate::handleLuk);
 
+	ADD_HANDLER("char_create/btnOk", evtClick, DesktopCreate::handleBtnOk);
+
 	ADD_HANDLER("char_create/btnStyleDown", evtClick, DesktopCreate::handleBtnStyleDown);
 	ADD_HANDLER("char_create/btnStyleUp", evtClick, DesktopCreate::handleBtnStyleUp);
 	ADD_HANDLER("char_create/btnColor", evtClick, DesktopCreate::handleBtnColor);
@@ -436,6 +438,21 @@ bool DesktopCreate::handleLuk(GUI::Event&) {
 	Luk++;
 	Agi--;
 	updateLabels();
+	return(true);
+}
+
+bool DesktopCreate::handleBtnOk(GUI::Event&) {
+	CharAttributes attr;
+
+	attr.Str = Str;
+	attr.Agi = Agi;
+	attr.Vit = Vit;
+	attr.Int = Int;
+	attr.Dex = Dex;
+	attr.Luk = Luk;
+
+	m_ro->CreateChar(txtName->getText(),attr,slot,0,m_headnum);
+
 	return(true);
 }
 

@@ -13,6 +13,7 @@ namespace ronet {
 		pktCharCreated();
 
 		virtual bool Decode(ucBuffer&);
+		CharInformation getChar();
 	};
 }
 

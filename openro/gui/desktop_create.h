@@ -54,6 +54,8 @@ public:
 	bool handleBtnStyleUp(GUI::Event&);
 	bool handleBtnStyleDown(GUI::Event&);
 
+	bool handleBtnOk(GUI::Event&);
+
 	int getStr() const;
 	int getAgi() const;
 	int getVit() const;
@@ -61,6 +63,8 @@ public:
 	int getDex() const;
 	int getLuk() const;
 	const std::string& getName() const;
+
+	int slot;
 };
 
 #endif /* __DESKTOP_CREATE_H */

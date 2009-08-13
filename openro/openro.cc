@@ -89,6 +89,7 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(CharList, true);
 			HANDLEPKT(LoginError, true);
 			HANDLEPKT(AuthFailed, true);
+			HANDLEPKT(CharCreated, true);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
@@ -220,14 +221,25 @@ void OpenRO::hndlAuthFailed(ronet::pktAuthFailed* pkt) {
 	m_network.getLogin().Close();
 }
 
-void OpenRO::CreateCharWindow(unsigned int& slot) {
-	m_charslot = slot;
+void OpenRO::hndlCharCreated(ronet::pktCharCreated* pkt) {
+	unsigned short cid = pkt->getID();
+	printf("Received the new character created with ID %d\n", cid);
+	
+	CharInformation newchar = pkt->getChar();
+	dskChar->addChar(newchar);
+}
+
+void OpenRO::CreateCharWindow(int slot) {
+	dskCreate->slot = slot;
 	m_gui.setDesktop(dskCreate);
 	dskCreate->setEnabled(true);
 }
 
-void OpenRO::CreateChar(const std::string& charname, const CharAttributes& attr, unsigned short color, unsigned short style) {
-	m_network.CreateChar(charname, attr, m_charslot, color, style);
+void OpenRO::CreateChar(const std::string& charname, const CharAttributes& attr, int slott, unsigned short color, unsigned short style) {
+	printf("Creating char in slot %d\n",slott);
+	dskCreate->setEnabled(false);
+	m_network.CreateChar(charname, attr, slott, color, style);
+	m_gui.setDesktop(dskChar);
 }
 
 void OpenRO::ParseClientInfo(){

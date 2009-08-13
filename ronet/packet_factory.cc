@@ -18,6 +18,7 @@ HANDLER(CharList)
 HANDLER(CharCreateError)
 HANDLER(LoginError)
 HANDLER(AuthFailed)
+HANDLER(CharCreated)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(ServerList);
@@ -25,6 +26,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(CharCreateError);
 	CALLER(LoginError);
 	CALLER(AuthFailed);
+	CALLER(CharCreated);
 	//m_dispatcher.Register(0x0069, &ronet::PacketFactory::Handle_ServerList);
 }
 
