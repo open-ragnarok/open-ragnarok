@@ -15,6 +15,7 @@ class OpenRO;
 
 class OpenRO : public ROEngine {
 protected:
+	/** Current client state */
 	ROState m_state;
 	ronet::RONet m_network;
 
@@ -43,6 +44,15 @@ protected:
 
 	int m_charslot;
 
+	/** IP address to connect */
+	char ConnectionIP[256];
+
+	/** Port to connect */
+	unsigned int ConnectionPort;
+
+	/** Parses the client information on the given xml file */
+	void ParseClientInfo(const std::string& name = "sclientinfo.xml");
+
 public:
 	OpenRO();
 	virtual ~OpenRO();
@@ -53,11 +63,13 @@ public:
 	void CreateCharWindow(int slot);
 	void CreateChar(const std::string& charname, const CharAttributes&, int slott, unsigned short color, unsigned short style);
 	void AddChar(CharInformation&);
+
+	/** Quits the game */
 	void Quit();
-	void ParseClientInfo();
+
+	/** Closes all connections */
 	void CloseSockets();
-	char ConnectionIP[256];
-	unsigned int ConnectionPort;
+
 	void KeepAliveChar();
 };
 

@@ -41,7 +41,19 @@ bool GUI::Dialog::handleSelect(GUI::Event& e) {
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 
 	if (e.getSource()->getName() == "dialog/btnOk") {
-		printf("Ok!\n");
+		gui.PushEvent(Event("ok", GUI::Event::evtDialog, NULL));
+		setVisible(false);
+		return(true);
+	}
+	if (e.getSource()->getName() == "dialog/btnCancel") {
+		gui.PushEvent(Event("cancel", GUI::Event::evtDialog, NULL));
+		setVisible(false);
+		return(true);
+	}
+	if (e.getSource()->getName() == "dialog/btnExit") {
+		gui.PushEvent(Event("exit", GUI::Event::evtDialog, NULL));
+		setVisible(false);
+		return(true);
 	}
 
 	return(false);

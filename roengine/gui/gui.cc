@@ -141,8 +141,16 @@ void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.45f);
 
-	if (m_inactiveDesktop)
-		m_inactiveDesktop->Draw(delay);
+	if (m_inactiveDesktop) {
+		if (!m_desktop->isVisible()) {
+			delete(m_desktop);
+			m_desktop = m_inactiveDesktop;
+			m_inactiveDesktop = NULL;
+		}
+		else {
+			m_inactiveDesktop->Draw(delay);
+		}
+	}
 
 	if (m_desktop)
 		m_desktop->Draw(delay);

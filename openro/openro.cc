@@ -250,13 +250,11 @@ void OpenRO::CreateChar(const std::string& charname, const CharAttributes& attr,
 	m_gui.setDesktop(dskChar);
 }
 
-void OpenRO::ParseClientInfo(){
+void OpenRO::ParseClientInfo(const std::string& name){
 	FileManager& fm = OpenRO::getFileManager();
 
 	TiXmlDocument doc;
 	FileData data;
-
-	std::string name = "sclientinfo.xml";
 
 	data = fm.getFile(name);
 	if (data.blobSize() == 0) {
