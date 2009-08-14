@@ -245,7 +245,7 @@ bool GUI::TextInput::HandleKeyDown(int key, int mod) {
 				break;
 		}
 
-		m_charpos = i;
+		m_charpos = i + 1;
 		m_pos = m_text.length() - 1 - i;
 		return(true);
 	}

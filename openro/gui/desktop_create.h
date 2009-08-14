@@ -13,6 +13,7 @@ protected:
 	unsigned int m_act;
 	unsigned int m_dir;
 	int elapsed;
+	unsigned int ptick;
 
 	GUI::Label* lblStr;
 	GUI::Label* lblAgi;
@@ -38,8 +39,6 @@ protected:
 	void drawAct(float x, float y, GuiAct&, int pat, bool ext = false);
 	void drawSpr(float x, float y, GuiAct&, int pat, int spr, bool ext = false);
 
-	void readObjects();
-
 public:
 	DesktopCreate(OpenRO*);
 
@@ -55,6 +54,7 @@ public:
 	bool handleBtnStyleDown(GUI::Event&);
 
 	bool handleBtnOk(GUI::Event&);
+	bool handleBtnCancel(GUI::Event&);
 
 	int getStr() const;
 	int getAgi() const;
@@ -63,6 +63,9 @@ public:
 	int getDex() const;
 	int getLuk() const;
 	const std::string& getName() const;
+	void readObjects();
+
+	void clear();
 
 	int slot;
 };

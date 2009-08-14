@@ -24,6 +24,12 @@ void OpenRO::LoginScreen() {
 	m_network.getLogin().Close();
 }
 
+void OpenRO::CharSelectScreen() {
+	dskChar->setEnabled(true);
+	dskCreate->clear();
+	m_gui.setDesktop(dskChar);
+}
+
 void OpenRO::ProcessLogin(const std::string& user, const std::string& pass) {
 	dskLogin->setEnabled(false);
 	m_network.getLogin().Connect(OpenRO::ConnectionIP, OpenRO::ConnectionPort);
@@ -226,7 +232,9 @@ void OpenRO::hndlAuthFailed(ronet::pktAuthFailed* pkt) {
 	printf("Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
 
 	//We don't need the connection anymore.
-	m_network.getLogin().Close();
+	CloseSockets();
+
+	LoginScreen();
 }
 
 void OpenRO::hndlCharCreated(ronet::pktCharCreated* pkt) {
@@ -239,6 +247,7 @@ void OpenRO::hndlCharCreated(ronet::pktCharCreated* pkt) {
 
 void OpenRO::CreateCharWindow(int slot) {
 	dskCreate->slot = slot;
+	dskCreate->readObjects();
 	m_gui.setDesktop(dskCreate);
 	dskCreate->setEnabled(true);
 }
@@ -303,3 +312,19 @@ void OpenRO::KeepAliveChar(){
 	printf("CharServer KeepAlive sent.\n");
 }
 
+unsigned int OpenRO::GetAccountID(){return m_serverlist->getAccountId();}
+unsigned char OpenRO::GetAccountSex(){
+	unsigned char male = 0x01; //m
+	unsigned char female = 0x02; //f
+	
+	if(!m_network.getChar().isConnected())
+		return 0; 
+	if(m_serverlist->getSex() == male )
+		return 0; 
+	else if (m_serverlist->getSex() == female )
+		return 1;
+	else{
+		printf("Error getting account sex! Defaulting to male.\n");
+		return 0;
+	}
+}

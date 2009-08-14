@@ -25,6 +25,7 @@ DesktopCreate::DesktopCreate(OpenRO* ro) : RODesktop("ui\\char_create.xml", ro) 
 	ADD_HANDLER("char_create/btnLuk", evtClick, DesktopCreate::handleLuk);
 
 	ADD_HANDLER("char_create/btnOk", evtClick, DesktopCreate::handleBtnOk);
+	ADD_HANDLER("char_create/btnCancel", evtClick, DesktopCreate::handleBtnCancel);
 
 	ADD_HANDLER("char_create/btnStyleDown", evtClick, DesktopCreate::handleBtnStyleDown);
 	ADD_HANDLER("char_create/btnStyleUp", evtClick, DesktopCreate::handleBtnStyleUp);
@@ -54,7 +55,11 @@ bool DesktopCreate::handleBtnColor(GUI::Event&) {
 }
 
 bool DesktopCreate::handleBtnStyleUp(GUI::Event&) {
-	m_headnum++;
+	if(m_headnum >= 23)
+		m_headnum = 2;
+	else
+		m_headnum++;
+
 	readObjects();
 	return(true);
 }
@@ -75,8 +80,9 @@ void DesktopCreate::readObjects() {
 	// 2 = novice
 	char novice_body[256];
 	char novice_head[256];
-	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::female, RO::EUC::novice, RO::EUC::female);
-	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::female, m_headnum, RO::EUC::female);
+	int accsex = m_ro->GetAccountSex();
+	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::sex[accsex], RO::EUC::novice, RO::EUC::sex[accsex]);
+	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[accsex], m_headnum, RO::EUC::sex[accsex]);
 	printf("Novice body: %s\n", novice_body);
 	printf("Novice head: %s\n", novice_head);
 
@@ -84,8 +90,8 @@ void DesktopCreate::readObjects() {
 	obj.setPos(94, 180, 0);
 
 	if (!head.Load(novice_head, ro_objects, fm, tm)) {
-		m_headnum = 0;
-		sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::female, m_headnum, RO::EUC::female);
+		m_headnum = 2;
+		sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[accsex], m_headnum,RO::EUC::sex[accsex]);
 		head.Load(novice_head, ro_objects, fm, tm);
 	}
 }
@@ -197,10 +203,17 @@ void DesktopCreate::afterDraw(unsigned int delay) {
 	glEnable(GL_TEXTURE_2D);
 
 	elapsed += delay;
+	ptick += delay;
 
 	drawChar();
 
 	glPopMatrix();
+
+	//Keep Alive packet to CharServer
+	if(ptick >= 12000){
+		m_ro->KeepAliveChar();
+		ptick = 0;
+	}
 
 	//m_ro->ProcessMouse();
 }
@@ -454,6 +467,18 @@ bool DesktopCreate::handleBtnOk(GUI::Event&) {
 
 	m_ro->CreateChar(txtName->getText(),attr,slot,0,m_headnum);
 
+	return(true);
+}
+
+void DesktopCreate::clear() {
+	m_headnum = 2;
+	txtName->setText("");
+	Str = Agi = Vit = Int = Dex = Luk = 5;
+	updateLabels();
+}
+
+bool DesktopCreate::handleBtnCancel(GUI::Event&) {
+	m_ro->CharSelectScreen();
 	return(true);
 }
 

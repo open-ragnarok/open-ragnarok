@@ -58,6 +58,7 @@ public:
 	virtual ~OpenRO();
 
 	void LoginScreen();
+	void CharSelectScreen();
 	void ProcessLogin(const std::string&, const std::string&);
 	void ServiceSelect(unsigned int serviceid);
 	void CreateCharWindow(int slot);
@@ -71,6 +72,9 @@ public:
 	void CloseSockets();
 
 	void KeepAliveChar();
+
+	unsigned int GetAccountID();
+	unsigned char GetAccountSex();
 };
 
 #endif /* __OPENRO_H */

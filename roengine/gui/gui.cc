@@ -86,7 +86,7 @@ GUI::Gui::Gui() : Singleton<Gui>() {
 	m_inactiveDesktop = NULL;
 	active = NULL;
 	m_defaultFont = NULL;
-	m_msgbox_bg = "login_interface\\win_service.bmp";
+	m_msgbox_bg = "win_msgbox.bmp";
 	m_msgbox_btnok = "login_interface\\btn_ok.bmp";
 	m_msgbox_btncancel = "login_interface\\btn_cancel.bmp";
 	m_msgbox_btnexit = "login_interface\\btn_exit.bmp";

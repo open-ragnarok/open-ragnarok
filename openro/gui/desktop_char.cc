@@ -62,8 +62,9 @@ void DesktopChar::addChar(const CharInformation& info) {
 
 	char novice_body[256];
 	char novice_head[256];
-	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::male, RO::EUC::classname[m_chars[i].Class], RO::EUC::male);
-	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::male, m_chars[i].hair, RO::EUC::male);
+	int accsex = m_ro->GetAccountSex();
+	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::sex[accsex], RO::EUC::classname[m_chars[i].Class], RO::EUC::sex[accsex]);
+	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[accsex], m_chars[i].hair, RO::EUC::sex[accsex]);
 	printf("Loading %s (%d) body in slot %d: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, i, novice_body);
 	printf("Loading %s (%d) head in slot %d: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, i, novice_head);
 
