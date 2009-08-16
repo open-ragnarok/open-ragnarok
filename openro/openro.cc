@@ -106,6 +106,7 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(LoginError, true);
 			HANDLEPKT(AuthFailed, true);
 			HANDLEPKT(CharCreated, true);
+			HANDLEPKT(CharPosition, true);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
@@ -252,6 +253,20 @@ void OpenRO::hndlCharCreated(ronet::pktCharCreated* pkt) {
 	
 	CharInformation newchar = pkt->getChar();
 	dskChar->addChar(newchar);
+}
+
+void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
+	//Convert the IP to string (stored in long)
+	struct in_addr addr;
+	addr.s_addr = pkt->getIp();
+	
+	char IP[256];
+	sprintf(IP,"%s",inet_ntoa(addr));
+
+	printf("MapServer IP: %s\n",IP);
+	printf("MapServer Port: %d\n",pkt->getPort());
+	printf("Character Position: %s\n",pkt->getMapname());
+	printf("Character ID: %d\n",pkt->getID());
 }
 
 void OpenRO::CreateCharWindow(int slot) {

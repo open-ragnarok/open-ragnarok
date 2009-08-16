@@ -8,7 +8,7 @@ namespace ronet {
 /**
  * Packet describing the player position, map and ip/port where the character is located at.
  */
-class pktCharPosition: public Packet {
+class RONET_DLLAPI pktCharPosition: public Packet {
 protected:
 	unsigned int position;
 	char mapname[16];

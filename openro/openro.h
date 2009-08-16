@@ -42,6 +42,8 @@ protected:
 
 	void hndlCharCreated(ronet::pktCharCreated*);
 
+	void hndlCharPosition(ronet::pktCharPosition*);
+
 	int m_charslot;
 
 	/** IP address to connect */

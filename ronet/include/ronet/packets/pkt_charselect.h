@@ -1,4 +1,4 @@
-/* $Id: pkt_keepalive.h 73 2009-08-03 16:45:59Z sergio $ */
+/* $Id: pkt_charselect.h 73 2009-08-03 16:45:59Z sergio $ */
 #ifndef __RONET_PACKET_CHARSELECT_H
 #define __RONET_PACKET_CHARSELECT_H
 
