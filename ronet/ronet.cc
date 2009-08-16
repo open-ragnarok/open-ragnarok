@@ -78,3 +78,14 @@ void ronet::RONet::KeepAliveChar(unsigned int acc_id) {
 	pkt >> m_char.bufOutput;
 	return;
 }
+
+void ronet::RONet::CharSelect(unsigned int slot) {
+	if (!m_char.isConnected()) {
+		std::cerr << "[RONet::KeepAliveChar() Error] Not connected to char server" << std::endl;
+		return;
+	}
+
+	ronet::pktCharSelect pkt(slot);
+	pkt >> m_char.bufOutput;
+	return;
+}

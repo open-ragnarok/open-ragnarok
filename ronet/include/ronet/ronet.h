@@ -32,7 +32,8 @@ namespace ronet {
 		bool GameLogin(const std::string& name, const std::string& pass);
 		bool CharLogin(unsigned int acctid, unsigned int sid1, unsigned int sid2, unsigned char sex);
 		bool CreateChar(const std::string& charname, const CharAttributes& attr, unsigned short slot, unsigned short color, unsigned short style);
-		void ronet::RONet::KeepAliveChar(unsigned int acc_id);
+		void KeepAliveChar(unsigned int acc_id);
+		void CharSelect(unsigned int slot);
 	};
 }
 

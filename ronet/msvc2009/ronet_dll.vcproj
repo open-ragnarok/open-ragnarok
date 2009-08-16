@@ -265,6 +265,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_charselect.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_keepalive.cc"
 					>
 				</File>
@@ -388,6 +392,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_charposition.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charselect.h"
 					>
 				</File>
 				<File

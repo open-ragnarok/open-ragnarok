@@ -45,6 +45,7 @@ public:
 	bool handleBack(GUI::Event&);
 	bool handleNext(GUI::Event&);
 	bool handleMake(GUI::Event&);
+	bool handleOk(GUI::Event&);
 	void addChar(const CharInformation&);
 	void delChar(unsigned int pos);
 	void delAllChars();

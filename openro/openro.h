@@ -61,6 +61,7 @@ public:
 	void CharSelectScreen();
 	void ProcessLogin(const std::string&, const std::string&);
 	void ServiceSelect(unsigned int serviceid);
+	void CharSelect(unsigned int slot);
 	void CreateCharWindow(int slot);
 	void CreateChar(const std::string& charname, const CharAttributes&, int slott, unsigned short color, unsigned short style);
 	void AddChar(CharInformation&);

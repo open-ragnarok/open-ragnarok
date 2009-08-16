@@ -15,7 +15,7 @@ namespace ronet {
 
 		// To CHAR
 		pktCharLoginID = 0x0065, //  17 bytes
-		pktCharSelectID = 0x0066, // 3 bytes
+		pktCharSelectID = 0x0066, // 3 bytes -- S 0066 <character number>.B
 		pktCharCreateID = 0x0067, // 37 bytes -- S 0067 <name>.24B <str>.B <agi>.B <vit>.B <int>.B <dex>.B <luk>.B <slot>.B <hair color>.W <hair style>.W
 		pktCharDeleteID = 0x0068, // 46 bytes
 		pktCharDelete2ID = 0x01fb, // 56 bytes

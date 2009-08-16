@@ -61,6 +61,15 @@ void OpenRO::ServiceSelect(unsigned int serviceid) {
 	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());
 }
 
+void OpenRO::CharSelect(unsigned int slot){
+	//If the socket to charserver is closed
+	if(!m_network.getChar().isConnected())
+		return;
+
+	m_network.CharSelect(slot);
+	printf("Seleccionado char numero %d.\n",slot);
+}
+
 void OpenRO::HandleKeyboard() {
 	if (keys[SDLK_ESCAPE])
 		m_quit = true;

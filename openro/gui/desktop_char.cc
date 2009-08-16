@@ -12,6 +12,7 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 	//Add event handler for buttons
 	ADD_HANDLER("char_select/btnCancel", evtClick, DesktopChar::handleCancel);
 	ADD_HANDLER("char_select/btnMake", evtClick, DesktopChar::handleMake);
+	ADD_HANDLER("char_select/btnOk", evtClick, DesktopChar::handleOk);
 
 	//Add event handler for back and next buttons
 	ADD_HANDLER("char_select/back", evtClick, DesktopChar::handleBack);
@@ -319,5 +320,10 @@ bool DesktopChar::handleNext(GUI::Event& e) {
 
 bool DesktopChar::handleMake(GUI::Event& e) {
 	m_ro->CreateCharWindow(m_selected + (screen * 3));
+	return(true);
+}
+
+bool DesktopChar::handleOk(GUI::Event& e) {
+	m_ro->CharSelect(m_selected + (screen * 3));
 	return(true);
 }
