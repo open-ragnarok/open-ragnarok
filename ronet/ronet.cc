@@ -63,7 +63,7 @@ bool ronet::RONet::CreateChar(const std::string& charname, const CharAttributes&
 		return(false);
 	}
 
-	ronet::pktCharCreate pkt(charname, attr, slot, color, style);
+	ronet::pktCharCreate pkt(charname, attr, (unsigned char)slot, color, style);
 	pkt >> m_char.bufOutput;
 	return(true);
 }
@@ -81,11 +81,22 @@ void ronet::RONet::KeepAliveChar(unsigned int acc_id) {
 
 void ronet::RONet::CharSelect(unsigned int slot) {
 	if (!m_char.isConnected()) {
-		std::cerr << "[RONet::KeepAliveChar() Error] Not connected to char server" << std::endl;
+		std::cerr << "[RONet::CharSelect() Error] Not connected to char server" << std::endl;
 		return;
 	}
 
 	ronet::pktCharSelect pkt(slot);
 	pkt >> m_char.bufOutput;
 	return;
+}
+
+bool ronet::RONet::MapLogin(int acctid, int sid1, int sid2, unsigned int tick, int sex) {
+	if (!m_map.isConnected()) {
+		std::cerr << "[RONet::MapLogin() Error] Not connected to map server" << std::endl;
+		return(false);
+	}
+
+	ronet::pktMapLogin pkt(acctid, sid1, sid2, tick, sex);
+	pkt >> m_map.bufOutput;
+	return(true);
 }

@@ -16,8 +16,10 @@ bool ronet::pktCharPosition::Decode(ucBuffer& buf) {
 	unsigned short size;
 	size = *(unsigned short*)(buf.getBuffer() + 2);
 
-	if (buf.dataSize() < 30) // Not enough data
+	if (buf.dataSize() < 28) // Not enough data
 		return(false);
+
+	position = 0;
 	buf.ignore(2);
 	buf >> position;
 	buf.read((unsigned char*)mapname, 16);
@@ -39,6 +41,6 @@ unsigned short ronet::pktCharPosition::getPort() const {
 	return port;
 }
 
-unsigned int ronet::pktCharPosition::getPosition() const {
+int ronet::pktCharPosition::getCharID() const {
 	return position;
 }

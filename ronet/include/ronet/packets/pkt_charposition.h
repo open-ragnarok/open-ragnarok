@@ -10,7 +10,7 @@ namespace ronet {
  */
 class RONET_DLLAPI pktCharPosition: public Packet {
 protected:
-	unsigned int position;
+	int position;
 	char mapname[16];
 	unsigned int ip;
 	unsigned short port;
@@ -20,7 +20,7 @@ public:
 	unsigned int getIp() const;
 	const char* getMapname() const;
 	unsigned short getPort() const;
-	unsigned int getPosition() const;
+	int getCharID() const;
 };
 }
 

@@ -34,6 +34,7 @@ namespace ronet {
 		bool CreateChar(const std::string& charname, const CharAttributes& attr, unsigned short slot, unsigned short color, unsigned short style);
 		void KeepAliveChar(unsigned int acc_id);
 		void CharSelect(unsigned int slot);
+		bool MapLogin(int acctid, int sid1, int sid2, unsigned int tick, int sex);
 	};
 }
 

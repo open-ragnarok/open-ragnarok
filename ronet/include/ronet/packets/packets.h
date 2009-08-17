@@ -13,5 +13,6 @@
 #include "pkt_authfailed.h" //[kR105]
 #include "pkt_charselect.h" //[kR105]
 #include "pkt_charposition.h"
+#include "pkt_maplogin.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

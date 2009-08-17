@@ -52,7 +52,7 @@ unsigned int GUI::TextInput::GetcharposNum()
 
 	for(i = 1 ;i <= m_text.length()-m_charpos ;i++)
 	{
-		std::cout << "i:" << i<< "len"<< font->getWidth( m_text.substr(m_charpos, i)) << std::endl;
+		//std::cout << "i:" << i<< "len"<< font->getWidth( m_text.substr(m_charpos, i)) << std::endl;
 		if( font->getWidth( m_text.substr(m_charpos, i) ) > MaxLen )
 		{
 			std::cout << i-1<< std::endl;
@@ -179,7 +179,7 @@ bool GUI::TextInput::HandleKeyDown(int key, int mod) {
 			return(true);
 		m_text.erase(m_charpos+m_pos - 1, 1);
 		m_pos--;
-		std::cout << "m_pos:"<< m_pos<< std::endl;
+		//std::cout << "m_pos:"<< m_pos<< std::endl;
 		if( m_pos <= 0 )
 		{
 			if( m_charpos >= 5 )
@@ -388,7 +388,7 @@ bool GUI::TextInput::HandleKeyDown(int key, int mod) {
 		if ( m_charpos+m_pos >= m_text.length()) {
 			m_text += buf;
 			m_pos++;
-			std::cout << "m_pos:" << m_pos <<  "m_charpos:" << m_charpos <<std::endl;
+			//std::cout << "m_pos:" << m_pos <<  "m_charpos:" << m_charpos <<std::endl;
 			if( MaxLen > 0 && m_pos >= GetcharposNum() )
 			{
 				while(true)
@@ -449,7 +449,7 @@ bool GUI::TextInput::HandleKeyDown(int key, int mod) {
 		if (m_charpos+m_pos >= m_text.length()) {
 			m_text += buf;
 			m_pos++;
-			std::cout << "m_pos:" << m_pos <<  "m_charpos:" << m_charpos <<std::endl;
+			//std::cout << "m_pos:" << m_pos <<  "m_charpos:" << m_charpos <<std::endl;
 			if( MaxLen > 0 && m_pos >= GetcharposNum() )
 			{
 				while(true)

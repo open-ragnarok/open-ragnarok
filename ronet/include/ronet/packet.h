@@ -22,7 +22,7 @@ namespace ronet {
 		pktKeepAliveID = 0x0187,
 
 		// To MAP
-		pktMapLoginID = 0x0072, // (19 bytes) S 0072 <id1>.int <id2>.int <id3>.int <tick>.int <gender>.byte
+		pktMapLoginID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
 
 		// == INBOUND == //
 		// From LOGIN

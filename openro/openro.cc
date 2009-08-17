@@ -41,7 +41,7 @@ void OpenRO::ServiceSelect(unsigned int serviceid) {
 	if (serviceid < (m_serverlist->getServerCount()-1))
 		return;
 
-	//Hide the service select window
+	//Disable the service select window
 	dskService->setEnabled(false);
 
 	//Close the socket to the login server
@@ -65,6 +65,8 @@ void OpenRO::CharSelect(unsigned int slot){
 	//If the socket to charserver is closed
 	if(!m_network.getChar().isConnected())
 		return;
+
+	dskChar->setEnabled(false);
 
 	m_network.CharSelect(slot);
 	printf("Seleccionado char numero %d.\n",slot);
@@ -106,7 +108,7 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(LoginError, true);
 			HANDLEPKT(AuthFailed, true);
 			HANDLEPKT(CharCreated, true);
-			HANDLEPKT(CharPosition, true);
+			HANDLEPKT(CharPosition, false);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
@@ -266,7 +268,16 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 	printf("MapServer IP: %s\n",IP);
 	printf("MapServer Port: %d\n",pkt->getPort());
 	printf("Character Position: %s\n",pkt->getMapname());
-	printf("Character ID: %d\n",pkt->getID());
+	printf("Character ID: %d\n",pkt->getCharID());
+
+	//Close the socket to the char server
+	m_network.getChar().Close();
+
+	//Connect to the mapserver
+	printf("result qlo: %d\n",m_network.getMap().Connect(IP, pkt->getPort()));
+
+	//Login to the mapserver
+	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
 }
 
 void OpenRO::CreateCharWindow(int slot) {
