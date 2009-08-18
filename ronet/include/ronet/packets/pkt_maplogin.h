@@ -8,7 +8,7 @@ namespace ronet {
 /**
  * Packet describing the player position, map and ip/port where the character is located at.
  */
-class pktMapLogin: public Packet {
+class RONET_DLLAPI pktMapLogin: public Packet {
 protected:
 	virtual bool PrepareData();
 	int account_id;

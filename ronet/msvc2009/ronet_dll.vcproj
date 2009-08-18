@@ -281,7 +281,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_mapacctsend.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_maplogin.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_maploginsuccess.cc"
 					>
 				</File>
 				<File
@@ -411,7 +419,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_mapacctsend.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_maplogin.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_maploginsuccess.h"
 					>
 				</File>
 				<File

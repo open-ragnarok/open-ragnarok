@@ -4,7 +4,7 @@
  *
  *  Created on: 03/08/2009
  */
-
+#include "stdafx.h" 
 #include "ronet/packets/pkt_maploginsuccess.h"
 
 namespace ronet {
@@ -26,33 +26,28 @@ bool pktMapLoginSuccess::Decode(ucBuffer& buf) {
 	if (buf.dataSize() < 11) // Not enough data
 		return (false);
 	buf.ignore(2);
-	buf >> unk1;
-	buf >> unk2;
-	buf >> pos1;
-	buf >> pos2;
-	buf >> pos3;
-
+	buf >> server_tick;
+	buf >> pos_x;
+	buf >> pos_y;
+	buf >> pos_dir;
+	buf.ignore(2);
 	return (true);
 }
 
-char pktMapLoginSuccess::getPos1() const {
-	return pos1;
+short pktMapLoginSuccess::getPosX() const {
+	return pos_x;
 }
 
-char pktMapLoginSuccess::getPos2() const {
-	return pos2;
+short pktMapLoginSuccess::getPosY() const {
+	return pos_y;
 }
 
-char pktMapLoginSuccess::getPos3() const {
-	return pos3;
+unsigned char pktMapLoginSuccess::getPosDir() const {
+	return pos_dir;
 }
 
-unsigned int pktMapLoginSuccess::getUnk1() const {
-	return unk1;
-}
-
-unsigned short pktMapLoginSuccess::getUnk2() const {
-	return unk2;
+unsigned int pktMapLoginSuccess::getServerTick() const {
+	return server_tick;
 }
 
 }

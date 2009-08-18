@@ -9,10 +9,12 @@
 #include "pkt_keepalive.h"
 #include "pkt_login.h"
 #include "pkt_serverlist.h"
-#include "pkt_loginerror.h" //[kR105]
-#include "pkt_authfailed.h" //[kR105]
-#include "pkt_charselect.h" //[kR105]
+#include "pkt_loginerror.h"			//[kR105]
+#include "pkt_authfailed.h"			//[kR105]
+#include "pkt_charselect.h"			//[kR105]
 #include "pkt_charposition.h"
 #include "pkt_maplogin.h"
+#include "pkt_mapacctsend.h"		//[kR105] 
+#include "pkt_maploginsuccess.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

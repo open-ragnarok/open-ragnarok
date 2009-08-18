@@ -109,6 +109,8 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(AuthFailed, true);
 			HANDLEPKT(CharCreated, true);
 			HANDLEPKT(CharPosition, false);
+			HANDLEPKT(MapAcctSend, false);
+			HANDLEPKT(MapLoginSuccess, false);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
@@ -274,10 +276,24 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 	m_network.getChar().Close();
 
 	//Connect to the mapserver
-	printf("result qlo: %d\n",m_network.getMap().Connect(IP, pkt->getPort()));
+	m_network.getMap().Connect(IP, pkt->getPort());
 
 	//Login to the mapserver
 	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
+}
+
+void OpenRO::hndlMapAcctSend(ronet::pktMapAcctSend* pkt) {
+	printf("Received accountID from mapserver: %d\n", pkt->getAccountId());
+}
+
+void OpenRO::hndlMapLoginSuccess(ronet::pktMapLoginSuccess* pkt) {
+	//TODO: Fix this.. still not 100% functional
+	short pos_x = pkt->getPosX(); 
+	short pos_y = pkt->getPosY();
+	unsigned char pos_dir = pkt->getPosDir();
+	unsigned int server_tick = pkt->getServerTick();
+
+	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n\n\n",pos_x,pos_y,pos_dir,server_tick);
 }
 
 void OpenRO::CreateCharWindow(int slot) {

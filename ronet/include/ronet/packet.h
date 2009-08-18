@@ -39,7 +39,8 @@ namespace ronet {
 		pktCharRenameID = 0x028d,
 
 		// From MAP
-		pktMapLoginSuccessID = 0x0073,
+		pktMapLoginSuccessID = 0x0073, // R 0073 <server tick>.uint <coordidate>.3B ?.2B
+		pktMapAcctSendID = 0x0283, // (6 bytes) R 0283 <account id>.int
 
 		// == "WTF!?"s == //
 		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

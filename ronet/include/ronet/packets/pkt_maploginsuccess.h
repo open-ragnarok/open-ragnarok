@@ -11,29 +11,26 @@
 #include "ronet/packet.h"
 
 namespace ronet {
-class pktMapLoginSuccess: public Packet {
-protected:
-	unsigned int unk1;
-	unsigned short unk2;
-	char pos1;
-	char pos2;
-	char pos3;
-public:
-	pktMapLoginSuccess();
+	class RONET_DLLAPI pktMapLoginSuccess : public Packet {
+	protected:
+		unsigned int server_tick;
+		unsigned char pos_x;
+		unsigned char pos_y; 
+		unsigned char pos_dir;
+	public:
+		pktMapLoginSuccess();
 
-	bool Decode(ucBuffer& buf);
+		bool Decode(ucBuffer& buf);
 
-	char getPos1() const;
+		short getPosX() const;
 
-	char getPos2() const;
+		short getPosY() const;
 
-	char getPos3() const;
+		unsigned char getPosDir() const;
 
-	unsigned int getUnk1() const;
+		unsigned int getServerTick() const;
 
-	unsigned short getUnk2() const;
-
-};
+	};
 }
 
 #endif /* __RONET_PACKET_LOGINSUCCESS_H */
