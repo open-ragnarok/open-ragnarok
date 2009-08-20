@@ -519,16 +519,16 @@ void GUI::Element::setEnabled(bool b) {
 }
 
 
-bool GUI::Element::HandleKeyDown(int key, int mod) {
+bool GUI::Element::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	if (m_parent == NULL)
 		return(false);
-	return(m_parent->HandleKeyDown(key, mod));
+	return(m_parent->HandleKeyDown(sdlEvent, mod));
 }
 
-bool GUI::Element::HandleKeyUp(int key, int mod) {
+bool GUI::Element::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
 	if (m_parent == NULL)
 		return(false);
-	return(m_parent->HandleKeyUp(key, mod));
+	return(m_parent->HandleKeyUp(sdlEvent, mod));
 }
 
 bool GUI::Element::HandleMouseMove(int x, int y) {

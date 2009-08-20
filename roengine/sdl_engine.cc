@@ -60,6 +60,7 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 
 #endif /* _DEBUG */
 	int flags = SDL_OPENGL | SDL_ANYFORMAT;
+	//int flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
 
 	if (fullscreen)
 		flags |= SDL_FULLSCREEN;
@@ -80,6 +81,15 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, bpp);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	SDL_EnableUNICODE(1);
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+
+	if (TTF_Init() != 0)
+	{
+		fprintf(stderr, "ERROR in TTF_Init: %s\n", SDL_GetError());
+		return(false);
+	}
 
 	SDL_putenv("SDL_VIDEO_CENTERED=center");
 
@@ -199,17 +209,26 @@ void SDLEngine::Mode2DEnd() {
 
 void SDLEngine::ProcessKeyboard() {
 	SDL_Event e;
-	long curtick,tickDelayValue;
+//	long curtick,tickDelayValue;
 
 	while(SDL_PollEvent(&e)) {
 		switch (e.type) {
 			case SDL_KEYDOWN:
-				keys[e.key.keysym.sym] = true;
-				mod = e.key.keysym.mod;
-				Lastsym = e.key.keysym.sym;
-				evtKeyPress(e.key.keysym.sym, e.key.keysym.mod);
-				curtick = SDL_GetTicks();
-				lastTick = curtick;
+				if( e.key.keysym.unicode != 0 )
+				{
+					//printf("e.key.keysym.unicode:%s\n",&e.key.keysym.unicode);
+					evtKeyPress(&e, e.key.keysym.mod);
+				}
+				else
+				{
+					keys[e.key.keysym.sym] = true;
+					mod = e.key.keysym.mod;
+					//Lastsym = e.key.keysym.sym;
+					//printf("%c\n", Lastsym);
+					evtKeyPress(&e, e.key.keysym.mod);
+					//curtick = SDL_GetTicks();
+					//lastTick = curtick;
+				}
 				break;
 			case SDL_KEYUP:
 				keys[e.key.keysym.sym] = false;
@@ -218,7 +237,7 @@ void SDLEngine::ProcessKeyboard() {
 				{
 					Lastsym2 = SDLK_UNKNOWN;
 				}
-				evtKeyRelease(e.key.keysym.sym, e.key.keysym.mod);
+				evtKeyRelease(&e, e.key.keysym.mod);
 				break;
             case SDL_MOUSEMOTION:
                 //printf("Mouse foi movido de %d,%d para (%d,%d)\n", e.motion.xrel, e.motion.yrel, e.motion.x, e.motion.y);
@@ -238,7 +257,7 @@ void SDLEngine::ProcessKeyboard() {
 		}
 	}
 
-	curtick = SDL_GetTicks();
+/*	curtick = SDL_GetTicks();
 	tickDelay = curtick - lastTick;
 
 	if( Lastsym2 == Lastsym )
@@ -259,11 +278,12 @@ void SDLEngine::ProcessKeyboard() {
 			evtKeyPress(Lastsym,mod);
 		}
 	}
+*/
 }
 
 void SDLEngine::evtQuit() {}
-bool SDLEngine::evtKeyPress(const int& key, const int& mod) { return(false); }
-bool SDLEngine::evtKeyRelease(const int& key, const int& mod) { return(false); }
+bool SDLEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) { return(false); }
+bool SDLEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) { return(false); }
 bool SDLEngine::evtMouseClick(const int& x, const int& y, const int& buttons) { return(false); }
 bool SDLEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) { return(false); }
 bool SDLEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int& dy) { return(false); }

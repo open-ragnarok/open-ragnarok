@@ -14,7 +14,9 @@ GUI::List::List(GUI::Element* parent, const TiXmlElement* node, TextureManager& 
 	m_first = 0;
 }
 
-bool GUI::List::HandleKeyDown(int key, int mod) {
+bool GUI::List::HandleKeyDown(SDL_Event  *sdlEvent, int mod) {
+
+	SDLKey key = sdlEvent->key.keysym.sym;
 	if (key == SDLK_DOWN) {
 		selected++;
 		if ((unsigned int)selected >= m_items.size())
@@ -42,7 +44,7 @@ bool GUI::List::HandleKeyDown(int key, int mod) {
 		return(true);
 	}
 
-	return(GUI::Element::HandleKeyDown(key, mod));
+	return(GUI::Element::HandleKeyDown(sdlEvent, mod));
 }
 
 bool GUI::List::HandleMouseDown(int x, int y, int button) {

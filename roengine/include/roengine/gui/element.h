@@ -9,6 +9,47 @@
 
 #include "tinyxml/tinyxml.h"
 
+#define  SDL_OPACITY            255
+
+#define  SDL_BLACK              0
+#define  SDL_WHITE              16777215
+#define  SDL_TURQUOISE          65535
+#define  SDL_BLUE               255
+#define  SDL_PINK               16711935
+#define  SDL_RED                16711680
+#define  SDL_YELLOW             16776960
+#define  SDL_GREEN              65280
+#define  SDL_SILVER             12632256
+#define  SDL_BLOWN              10040064
+#define  SDL_MAROON             8388608
+#define  SDL_GRAY               8421504
+#define  SDL_ROSE               16751052
+#define  SDL_ORANGE             16737792
+#define  SDL_SHALLOW_YELLOW     16777113
+#define  SDL_GOLD               16763904
+#define  SDL_TAWNY              16764057
+#define  SDL_OLIVE              3355392
+#define  SDL_DARK_YELLOW        8421376
+#define  SDL_SEA_GREEN          3381606
+#define  SDL_BOTTLE_GREEN       13056
+#define  SDL_SKY_BLUE           52479
+#define  SDL_BABY_BLUE          10079487
+#define  SDL_VIOLET             8388766
+#define  SDL_LAVENDER           13408767
+#define  SDL_LIME               10079232
+
+#ifdef UNICODE
+        typedef  unsigned short LCHAR;
+#else
+        typedef  char LCHAR;
+#endif
+
+#ifdef UNICODE
+        #define  AU(str)  L##str   
+#else
+        #define  AU(str)  str      
+#endif
+
 namespace GUI {
 
 class Element;
@@ -41,7 +82,7 @@ protected:
 
 	/** Pointer to the parent element (if any) */
 	Element* m_parent;
-
+	
 	/** Indicates if this object is visible or not. If it's false, not the object nor its children will be drawn */
 	bool m_visible;
 
@@ -58,7 +99,7 @@ protected:
 	rogl::Texture::Pointer texture;
 
 	int pos_x, pos_y,MaxLen;
-	int w, h, mw, mh;
+	int w, h,mw, mh;
 
 	virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	void ParseFromXml(const TiXmlElement*, TextureManager&, FileManager&);
@@ -66,14 +107,14 @@ protected:
 	void Window(float x, float y, const rogl::Texture::Pointer& tp) const;
 public:
 	Element();
-
+	
 	/**
 	 * Creates an empty element with a parent
 	 * @param parent the Parent element
 	 */
 	Element(Element* parent);
 	Element(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
-
+	
 	/**
 	 * Creates an element with a given parent, loads the background parameter and sets the element size to the
 	 * texture size.
@@ -131,8 +172,8 @@ public:
 	bool isFocusable() const;
 
 	/* Events */
-	virtual bool HandleKeyDown(int key, int mod = 0);
-	virtual bool HandleKeyUp(int key, int mod = 0);
+	virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);
+	virtual bool HandleKeyUp(SDL_Event *sdlEvent, int mod = 0);
 	virtual bool HandleMouseMove(int x, int y);
 	virtual bool HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 	virtual bool HandleMouseDown(int x, int y, int button);

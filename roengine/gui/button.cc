@@ -139,15 +139,15 @@ bool GUI::Button::HandleMouseDown(int x, int y, int button) {
 	return(true);
 }
 
-bool GUI::Button::HandleKeyDown(int key, int mod) {
+bool GUI::Button::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	if (!m_enabled)
 		return(false);
 
-	if (key == SDLK_SPACE || key == SDLK_RETURN) {
+	if (sdlEvent->key.keysym.sym == SDLK_SPACE || sdlEvent->key.keysym.sym == SDLK_RETURN) {
 		Click();
 		return(true);
 	}
-	return(GUI::Element::HandleKeyDown(key, mod));
+	return(GUI::Element::HandleKeyDown(sdlEvent, mod));
 }
 
 void GUI::Button::Draw(unsigned int delay) {

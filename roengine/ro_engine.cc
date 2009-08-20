@@ -148,12 +148,12 @@ void ROEngine::Run() {
 	AfterRun();
 }
 
-bool ROEngine::evtKeyPress(const int& key, const int& mod) {
-	return(m_gui.InjectKeyPress(key, mod));
+bool ROEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) {
+	return(m_gui.InjectKeyPress(sdlEvent, mod));
 }
 
-bool ROEngine::evtKeyRelease(const int& key, const int& mod) {
-	return(m_gui.InjectKeyRelease(key, mod));
+bool ROEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) {
+	return(m_gui.InjectKeyRelease(sdlEvent, mod));
 }
 
 bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {

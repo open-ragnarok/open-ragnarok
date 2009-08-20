@@ -2,7 +2,7 @@
 <desktop name="char_create_ui" texture="rag_title3.bmp">
 	<!-- $Id$ -->
 	<window name="char_create" texture="login_interface\win_make.bmp" x="-1" y="-1" mw = "250" mh="18">
-		<textarea name="char_create/name" x="63" y="245" text="Character Name" />
+		<textarea name="char_create/name" x="63" y="245" w="120" h="18" MaxLen="12" text="Character Name" />
 
 		<label name="char_create/str" x="459" y="38" text="Default_STR" />
 		<label name="char_create/agi" x="459" y="54" text="Default_AGI" />

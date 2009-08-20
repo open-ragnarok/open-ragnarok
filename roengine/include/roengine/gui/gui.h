@@ -148,8 +148,8 @@ public:
 	 */
 	bool InjectMouseClick(int x, int y, int buttons = 0, int modifier = 0);
 	bool InjectMouseRelease(int, int, int buttons = 0, int modifier = 0);
-	bool InjectKeyPress(const int&, const int& mod = 0);
-	bool InjectKeyRelease(const int&, const int& mod = 0);
+	bool InjectKeyPress(SDL_Event*, const int& mod = 0);
+	bool InjectKeyRelease(SDL_Event*, const int& mod = 0);
 	bool InjectMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 
 	BaseCache<Font>& FontManager();
@@ -176,6 +176,9 @@ public:
 	 * @param MaxLen Maximum number of characters to be drawn
 	 */
 	void textOut(const std::string& text, float x, float y, float z, int MaxLen);
+	//int TextOutEx(IN TTF_Font *Font, IN const LCHAR *Text, IN float x, IN float y,IN float z, IN Uint32 FColor, IN Uint32 BColor, IN Uint8 Alpha);
+	int TextOutEx(TextEditor *G_Text);
+	void ClearFont_Screen(TextEditor *G_Text);
 
 	/**
 	 * Finds an object of a given name. No two objects can have the same name.

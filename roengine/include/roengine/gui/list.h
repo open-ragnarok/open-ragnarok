@@ -21,7 +21,7 @@ namespace GUI {
 		List(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
 
 		virtual void Draw(unsigned int delay = 0);
-		virtual bool HandleKeyDown(int key, int mod = 0);
+		virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);
 		virtual bool HandleMouseDown(int x, int y, int button);
 
 		virtual void onGetFocus();

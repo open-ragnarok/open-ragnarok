@@ -132,10 +132,11 @@ bool GUI::Window::HandleMouseMove(const int& x, const int& y, const int& dx, con
 	return(true);
 }
 
-bool GUI::Window::HandleKeyDown(int key, int mod) {
+bool GUI::Window::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
+	SDLKey key = sdlEvent->key.keysym.sym;
 	if (key != SDLK_TAB) {
 		if (m_parent != NULL)
-			return(m_parent->HandleKeyDown(key, mod));
+			return(m_parent->HandleKeyDown(sdlEvent, mod));
 		return(false);
 	}
 	std::vector<Element*>::iterator itr = m_children.begin();

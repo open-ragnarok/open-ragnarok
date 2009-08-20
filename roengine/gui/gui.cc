@@ -239,18 +239,18 @@ GUI::Element* GUI::Gui::getActiveElement() {
 	return(active);
 }
 
-bool GUI::Gui::InjectKeyPress(const int& key, const int& mod) {
+bool GUI::Gui::InjectKeyPress(SDL_Event *sdlEvent, const int& mod) {
 	Element* e = getActiveElement();
 	if (e == NULL)
 		return(false);
-	return(e->HandleKeyDown(key, mod));
+	return(e->HandleKeyDown(sdlEvent, mod));
 }
 
-bool GUI::Gui::InjectKeyRelease(const int& key, const int& mod) {
+bool GUI::Gui::InjectKeyRelease(SDL_Event *sdlEvent, const int& mod) {
 	Element* e = getActiveElement();
 	if (e == NULL)
 		return(false);
-	return(e->HandleKeyUp(key, mod));
+	return(e->HandleKeyUp(sdlEvent, mod));
 }
 
 bool GUI::Gui::InjectMouseClick(int x, int y, int buttons, int modifier)  {
@@ -326,4 +326,152 @@ void GUI::Gui::Dialog(const std::string& title, const std::string& text, Texture
 	m_inactiveDesktop = m_desktop;
 	m_desktop = dialog;
 	dialog->setVisible(true);
+}
+
+SDL_Color GetRGB(IN SDL_Surface *Surface, IN Uint32 Color){
+	SDL_Color Rgb;
+	SDL_GetRGB(Color, Surface->format, &(Rgb.r), &(Rgb.g), &(Rgb.b));
+	return Rgb;
+}
+
+void GUI::Gui::ClearFont_Screen(TextEditor *G_Text){
+	NODE *i;
+
+	for (i=G_Text->Start; i != NULL ; i=i->Next)
+	{
+		if( i->Font_Screen != NULL )
+		{
+			SDL_FreeSurface(i->Font_Screen);
+			i->Font_Screen = NULL;
+		}
+	}
+}
+
+inline int next_p2(int a){
+	int rval=1;
+	while(rval<a) rval<<=1;
+	return rval;
+}
+
+
+int GUI::Gui::TextOutEx(TextEditor *G_Text){
+	//SDL_Surface *Font_Screen = NULL;
+	SDL_Color Font_FColor, Font_BColor, Font_SBColor, Font_SFColor;
+
+	NODE *i;
+	int  j=0, w, h,FontW,FontH;
+	SDL_Rect rect ={0};
+	LCHAR Ch[2] = {0};
+
+	if( G_Text->Start == NULL )
+	{
+		return 0;
+	}
+
+	Font_FColor = GetRGB(SDL_GetVideoSurface(), G_Text->FColor);
+	Font_BColor = GetRGB(SDL_GetVideoSurface(), G_Text->BColor);
+	Font_SFColor = GetRGB(SDL_GetVideoSurface(), G_Text->SFColor);
+	Font_SBColor = GetRGB(SDL_GetVideoSurface(), G_Text->SBColor);
+
+	for (i=G_Text->Start; i != NULL ; i=i->Next)
+	{
+		G_Text->m_text[j++] = i->Ch;
+		G_Text->m_text[j] = AU('\0');
+		TTF_SizeUNICODE(G_Text->Font, G_Text->m_text, &w, &h);
+		FontH = h;
+		Ch[0] = i->Ch;
+		if ( w <= G_Text->EffectWidth )
+		{
+			FontW = w;
+			if( i->selected )
+			{
+				/* 输出字体 */
+				i->Font_Screen = TTF_RenderUNICODE_Shaded(G_Text->Font, Ch, Font_SFColor, Font_SBColor);
+			}
+			else
+			{
+				/* 输出字体 */
+				i->Font_Screen = TTF_RenderUNICODE_Shaded(G_Text->Font, Ch, Font_FColor, Font_BColor);
+				SDL_SetColorKey(i->Font_Screen, SDL_SRCCOLORKEY, SDL_MapRGB(i->Font_Screen->format, Font_BColor.r, Font_BColor.g, Font_BColor.b));
+				if (G_Text->Alpha != SDL_ALPHA_OPAQUE)
+				{
+					SDL_SetAlpha(i->Font_Screen, SDL_SRCALPHA, G_Text->Alpha);
+				}
+			}
+
+			if (i->Font_Screen == NULL)
+			{
+				std::cout << "::CreateFont failed: " << i->Ch << std::endl;
+				ClearFont_Screen(G_Text);
+				return -1;
+			}
+		}
+		else
+		{
+			G_Text->m_text[j-1] = AU('\0');
+			break;
+		}
+
+	}
+
+	GLuint hudTextureID;
+	SDL_Surface  *tmp = NULL;
+	int nWidthPowerOfTwo = next_p2(FontW);
+	int nHeightPowerOfTwo = next_p2(FontH);
+
+	tmp = SDL_CreateRGBSurface(SDL_SWSURFACE|SDL_SRCCOLORKEY, nWidthPowerOfTwo, nHeightPowerOfTwo, 32, 0xff, 0xff00, 0xff0000, 0xFF000000);
+
+	if (!tmp)
+	{
+		ClearFont_Screen(G_Text);
+		return -1;
+	}
+
+	for (i=G_Text->Start; i != NULL ; i=i->Next)
+	{
+		if( i->Font_Screen == NULL )
+		{
+			break;
+		}
+
+		rect.x += rect.w;
+		rect.y = 0;
+		rect.w = i->Font_Screen->w;
+		rect.h = i->Font_Screen->h;
+
+		if (SDL_BlitSurface(i->Font_Screen, NULL, tmp, &rect))
+		{
+			SDL_FreeSurface(tmp);
+			ClearFont_Screen(G_Text);
+			return -1;
+		}
+		//SDL_SaveBMP( i->Font_Screen, "hello.bmp" );
+	}
+
+	//SDL_SaveBMP( tmp, "hello2.bmp" );
+
+	glGenTextures(1, &hudTextureID);
+	glBindTexture(GL_TEXTURE_2D, hudTextureID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nWidthPowerOfTwo, nHeightPowerOfTwo, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0,1);
+	glVertex3f(G_Text->x, G_Text->y+nHeightPowerOfTwo+1, 0);
+	glTexCoord2f(0,0);
+	glVertex3f(G_Text->x, G_Text->y+1, 0);
+	glTexCoord2f(1,0);
+	glVertex3f(G_Text->x+nWidthPowerOfTwo, G_Text->y+1, 0);
+	glTexCoord2f(1,1);
+	glVertex3f(G_Text->x+nWidthPowerOfTwo, G_Text->y+nHeightPowerOfTwo+1, 0);
+	glEnd();
+
+	glDeleteTextures(1,&hudTextureID);
+
+	SDL_FreeSurface(tmp);
+	ClearFont_Screen(G_Text);
+	return 0;
 }

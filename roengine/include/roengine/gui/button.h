@@ -40,7 +40,7 @@ namespace GUI {
 		void Click();
 
 		virtual bool HandleMouseDown(int x, int y, int button);
-		virtual bool HandleKeyDown(int key, int mod = 0);
+		virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);
 		virtual void onGetFocus();
 		virtual void onLoseFocus();
 	};

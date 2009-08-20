@@ -1,6 +1,8 @@
 /* $Id$ */
 #ifndef __GUI_FONT_H
 #define __GUI_FONT_H
+#include "SDL_ttf.h"
+#include "element.h"
 
 #include <string>
 

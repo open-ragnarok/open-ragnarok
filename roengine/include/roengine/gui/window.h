@@ -31,7 +31,7 @@ public:
 	virtual ~Window();
 
 	void setCaption(const std::string&);
-	virtual bool HandleKeyDown(int key, int mod = 0);
+	virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);
 	virtual bool HandleMouseDown(int x, int y, int button);
 	virtual bool HandleMouseRelease(int x, int y, int button);
 	virtual bool HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy);

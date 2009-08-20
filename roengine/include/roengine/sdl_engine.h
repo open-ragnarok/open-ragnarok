@@ -5,8 +5,10 @@
 #include <string>
 #ifdef _MSC_VER
 #	include <SDL.h>
+#	include <SDL_ttf.h>
 #else
 #	include <SDL/SDL.h>
+#	include <SDL_ttf.h>
 #endif
 
 class SDLEngine {
@@ -26,7 +28,7 @@ protected:
 	virtual void AfterInit();
 
 public:
-
+	SDL_Surface *Surface;
 	static bool supportPot;
 
 	SDLEngine();
@@ -48,8 +50,8 @@ public:
 
 	// Events
 	virtual void evtQuit();
-	virtual bool evtKeyPress(const int& key, const int& mod = 0);
-	virtual bool evtKeyRelease(const int& key, const int& mod = 0);
+	virtual bool evtKeyPress(SDL_Event *sdlEvent, const int& mod = 0);
+	virtual bool evtKeyRelease(SDL_Event *sdlEvent, const int& mod = 0);
 	virtual bool evtMouseClick(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseRelease(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseMove(const int& x, const int& y, const int& dx, const int& dy);

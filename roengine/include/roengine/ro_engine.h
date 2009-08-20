@@ -63,8 +63,8 @@ public:
 
 	virtual void evtQuit();
 
-	virtual bool evtKeyPress(const int& key, const int& mod = 0);
-	virtual bool evtKeyRelease(const int& key, const int& mod = 0);
+	virtual bool evtKeyPress(SDL_Event *sdlEvent, const int& mod = 0);
+	virtual bool evtKeyRelease(SDL_Event *sdlEvent, const int& mod = 0);
 	virtual bool evtMouseClick(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseRelease(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseMove(const int& x, const int& y, const int& dx, const int& dy);
@@ -76,7 +76,7 @@ public:
 	Frustum& getFrustum();
 	FullAct& getCursor();
 	void setCursor(FullAct& cur);
-
+	
 	/** Process mouse animation and drawing */
 	void ProcessMouse(int xless = 0, int yless = 0);
 
