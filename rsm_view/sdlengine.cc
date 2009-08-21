@@ -1,4 +1,5 @@
 /* $Id$ */
+
 #include "stdafx.h"
 #include "sdlengine.h"
 

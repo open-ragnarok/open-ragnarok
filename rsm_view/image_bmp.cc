@@ -17,6 +17,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "stdafx.h"
 #include "image_bmp.h"
 #include <sstream>
 
@@ -152,7 +153,8 @@ bool ImageBMP::Read8BPP(std::istream& input, const bool& flipvertical) {
 	this->buffer = new char[dataSize];
 	
 	// printf("Reading BMP %d x %d\n", width, height);
-	int idx, offset;
+	int offset;
+	unsigned char idx;
 
 	unsigned char alpha;
 
@@ -171,13 +173,18 @@ bool ImageBMP::Read8BPP(std::istream& input, const bool& flipvertical) {
 		for(int x = 0; x < width; x++) {
 			//idx = pixels[(bpr << y) + x];
 			idx = pixels[(bpr * y) + x];
-#if 1
+
+			if (idx < 0) {
+				fprintf(stderr, "Index error on coordinates %d x %d: %d\n", x, y, idx);
+				idx = 0;
+			}
+
 			// This hack is to simulate transparency based on Ragnarok textures using the #FF00FF color for transparent.
 			if ((colors[idx].r == 255) && (colors[idx].g == 0) && (colors[idx].b == 255))
 				alpha = 0;
 			else
 				alpha = 255;
-#endif
+
 			offset = 4 * (width * (flipvertical?(height-y-1):y) + x);
 			this->buffer[offset  ] = colors[idx].r;
 			this->buffer[offset+1] = colors[idx].g;

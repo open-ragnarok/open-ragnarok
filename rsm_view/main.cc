@@ -1,8 +1,9 @@
 /* $Id$ */
-#ifdef WIN32
-	#define _CRT_SECURE_NO_WARNINGS
-	#define _SDL_main_h
-#endif
+#include "stdafx.h"
+
+#include <windows.h>
+
+#include <SDL.h>
 
 #include <stdio.h>
 #include <iostream>
@@ -11,19 +12,27 @@
 
 #include "sdlengine.h"
 
-#include "ro.h"
-#include "rogl.h"
-
 #include "image_bmp.h"
 
+/** VERY simple wrapper to store the Model data and its textures */
 class MyRSM {
 protected:
 	RO::RSM* rsm;
-
 	unsigned int* textures;
 
+	bool m_valid;
+
 public:
-	MyRSM(const std::string& fn) {
+	RO::GRF* grf;
+
+	MyRSM(const std::string& fn, RO::GRF* grf) {
+		rsm = NULL;
+		this->grf = grf;
+		textures = NULL;
+
+		read(fn);
+
+		m_valid = false;
 	}
 
 	unsigned int getTexture(unsigned int i) const {
@@ -40,6 +49,7 @@ public:
 		rsm = NULL;
 		grf = NULL;
 		textures = NULL;
+		m_valid = false;
 	}
 
 	~MyRSM() {
@@ -60,13 +70,15 @@ public:
 	}
 
 	void Draw() const {
+		if (!m_valid) {
+			return;
+		}
 		glColor3f(1, 1, 1);
-		ROGL::draw(rsm, textures);
+		rogl::draw(rsm, textures);
 		glColor3f(1, 0, 0);
-		ROGL::drawBoundingBox(rsm);
+		rogl::drawBoundingBox(rsm);
 	}
 
-	RO::GRF* grf;
 
 	bool read(const std::string& fn) {
 		if (grf == NULL) {
@@ -91,6 +103,7 @@ public:
 
 		loadTextures();
 
+		m_valid = true;
 		return(true);
 	}
 

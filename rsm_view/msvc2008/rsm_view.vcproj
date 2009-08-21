@@ -42,9 +42,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(ProjectDir)..\..\win32_env\include;$(ProjectDir)..\..\roint;$(ProjectDir)..\..\rogl"
+				AdditionalIncludeDirectories="&quot;$(SDL)\include&quot;;&quot;$(ProjectDir)..\..\roint\include&quot;;&quot;$(ProjectDir)..\..\rogl\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -59,9 +60,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdlmain.lib sdl.lib user32.lib opengl32.lib glu32.lib roint.dll.lib rogl.dll.lib $(NOINHERIT)"
+				AdditionalDependencies="sdlmain.lib sdl.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;$(ProjectDir)..\..\win32_env\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;$(SDL)\lib&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				TargetMachine="1"
@@ -114,8 +115,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(SDL)\include&quot;;&quot;$(ProjectDir)..\..\roint\include&quot;;&quot;$(ProjectDir)..\..\rogl\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -132,6 +135,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(NoInherit)"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;$(SDL)\lib&quot;"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -182,6 +186,18 @@
 				RelativePath="..\sdlengine.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\stdafx.cc"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -202,6 +218,10 @@
 			</File>
 			<File
 				RelativePath="..\sdlengine.h"
+				>
+			</File>
+			<File
+				RelativePath="..\stdafx.h"
 				>
 			</File>
 		</Filter>
