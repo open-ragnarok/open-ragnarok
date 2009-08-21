@@ -403,47 +403,43 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\constants.h"
+				RelativePath="..\include\ro\common.h"
 				>
 			</File>
 			<File
-				RelativePath="..\cp949.h"
+				RelativePath="..\include\ro\constants.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro.h"
+				RelativePath="..\include\ro\ro.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_object.h"
+				RelativePath="..\include\ro\ro_object.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_seq.h"
+				RelativePath="..\include\ro\ro_seq.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_static.h"
+				RelativePath="..\include\ro\ro_static.h"
 				>
 			</File>
 			<File
-				RelativePath="..\ro_strings.h"
+				RelativePath="..\include\ro\ro_strings.h"
 				>
 			</File>
 			<File
-				RelativePath="..\roint_import.h"
+				RelativePath="..\include\ro\roint_import.h"
 				>
 			</File>
 			<File
-				RelativePath="..\roint_settings.h"
+				RelativePath="..\include\ro\roint_settings.h"
 				>
 			</File>
 			<File
-				RelativePath="..\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\struct_io.h"
+				RelativePath="..\include\ro\struct_io.h"
 				>
 			</File>
 		</Filter>

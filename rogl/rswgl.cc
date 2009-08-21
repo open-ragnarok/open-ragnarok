@@ -5,7 +5,7 @@
 
 #define L 10.0f
 
-bool ROGL::draw(const RO::GND* gnd, const unsigned int* textures) {
+bool rogl::draw(const RO::GND* gnd, const unsigned int* textures) {
 	if(textures != NULL) {
 		printf("Yes! Textures!\n");
 		glEnable(GL_TEXTURE_2D);
@@ -245,7 +245,7 @@ bool ROGL::draw(const RO::GND* gnd, const unsigned int* textures) {
 	return(true);
 }
 
-bool ROGL::draw(const RO::RSW* rsw, const RO::GND* gnd, const unsigned int* textures) {
+bool rogl::draw(const RO::RSW* rsw, const RO::GND* gnd, const unsigned int* textures) {
 	if (rsw == NULL) {
 #ifdef _DEBUG
 		std::cerr << "ROGL::draw() ERROR: rsw pointer is null" << std::endl;

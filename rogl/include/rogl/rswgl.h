@@ -7,7 +7,7 @@
 #include "ro/types/rsw.h"
 #include "ro/types/gnd.h"
 
-namespace ROGL {
+namespace rogl {
 	ROGL_DLLAPI bool draw(const RO::GND*, const unsigned int* textures = NULL);
 	ROGL_DLLAPI bool draw(const RO::RSW*, const RO::GND*, const unsigned int* textures = NULL);
 }
