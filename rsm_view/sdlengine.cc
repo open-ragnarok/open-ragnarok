@@ -5,10 +5,17 @@
 
 SDLEngine::SDLEngine() {
 	m_width = m_height = 0;
+	for (int i = 0; i < 1024; i++) {
+		keys[i] = false;
+	}
 }
 
 SDLEngine::~SDLEngine() {
 	CloseDisplay();
+}
+
+bool SDLEngine::getKey(unsigned int k) const {
+	return(keys[k]);
 }
 
 bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const bool& fullscreen, const unsigned int& bpp) {
@@ -116,6 +123,7 @@ void SDLEngine::Sync() {
 	SDL_GL_SwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	ProcessKeyboard();
 }
 
 void SDLEngine::setTransparency(bool t) const {
@@ -133,3 +141,51 @@ void SDLEngine::Draw() {
 
 void SDLEngine::BeforeClose() {
 }
+
+void SDLEngine::ProcessKeyboard() {
+	SDL_Event e;
+//	long curtick,tickDelayValue;
+
+	while(SDL_PollEvent(&e)) {
+		switch (e.type) {
+			case SDL_KEYDOWN:
+				if( e.key.keysym.unicode != 0 ) {
+					evtKeyPress(&e, e.key.keysym.mod);
+				}
+				else {
+					keys[e.key.keysym.sym] = true;
+					mod = e.key.keysym.mod;
+					evtKeyPress(&e, e.key.keysym.mod);
+				}
+				break;
+			case SDL_KEYUP:
+				keys[e.key.keysym.sym] = false;
+				mod = e.key.keysym.mod;
+				if( Lastsym2 == e.key.keysym.sym )
+				{
+					Lastsym2 = SDLK_UNKNOWN;
+				}
+				evtKeyRelease(&e, e.key.keysym.mod);
+				break;
+            case SDL_MOUSEMOTION:
+				evtMouseMove(e.button.x, e.button.y, e.motion.xrel, e.motion.yrel);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+				evtMouseClick(e.button.x, e.button.y, e.button.button);
+                break;
+			case SDL_MOUSEBUTTONUP:
+				evtMouseRelease(e.button.x, e.button.y, e.button.button);
+                break;
+			case SDL_QUIT:
+				evtQuit();
+				break;
+		}
+	}
+}
+
+void SDLEngine::evtQuit() {}
+bool SDLEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) { return(false); }
+bool SDLEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) { return(false); }
+bool SDLEngine::evtMouseClick(const int& x, const int& y, const int& buttons) { return(false); }
+bool SDLEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) { return(false); }
+bool SDLEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int& dy) { return(false); }

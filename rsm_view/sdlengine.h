@@ -15,6 +15,15 @@
 class SDLEngine {
 protected:
 	unsigned int m_width, m_height;
+	void ProcessKeyboard();
+
+	bool keys[1024];
+
+	SDLMod mod;
+	SDLKey Lastsym,Lastsym2;
+	long lastTick;
+	long tickDelay;
+
 public:
 	SDLEngine();
 	virtual ~SDLEngine();
@@ -28,11 +37,21 @@ public:
 	void Sync();
 	virtual void WindowResize();
 
+	bool getKey(unsigned int) const;
+
 	/**
 	 * Draws the image before Sync()
 	 */
 	virtual void Draw();
 	virtual void BeforeClose();
+
+	// Events
+	virtual void evtQuit();
+	virtual bool evtKeyPress(SDL_Event *sdlEvent, const int& mod = 0);
+	virtual bool evtKeyRelease(SDL_Event *sdlEvent, const int& mod = 0);
+	virtual bool evtMouseClick(const int& x, const int& y, const int& buttons);
+	virtual bool evtMouseRelease(const int& x, const int& y, const int& buttons);
+	virtual bool evtMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 
 	void setTransparency(bool) const;
 };

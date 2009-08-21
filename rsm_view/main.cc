@@ -303,6 +303,20 @@ void saveList(const RO::GRF& grf, std::ostream& out) {
 unsigned char fn[] = { 0xb6, 0xf3, 0xc7, 0xef, '\\', 0xb9, 0xce, 0xb0, 0xa1, '0', '3', 0x2e, 'r', 's', 'm', 0 };
 char* model_fn = (char*)fn;
 
+void Draw(const MyRSM& rsm, float x, float y, float z, float rx = -90, float ry = 0, float rz = 0, float scale = 1.0f) {
+	glLoadIdentity();
+	glTranslatef(x, y, z);
+	glRotatef(ry, 0, 1, 0);
+	glRotatef(rz, 0, 0, 1);
+	glRotatef(rx, 1, 0, 0);
+	glPushMatrix();
+	if (scale != 1.0f) {
+		glScalef(scale,scale,scale);
+	}
+	rsm.Draw();
+	glPopMatrix();
+}
+
 int main(int argc, char* argv[]) {
 	std::string grf_fn;
 	std::string rsm_fn;
@@ -335,8 +349,16 @@ int main(int argc, char* argv[]) {
 	rsm.grf = &grf;
 	rsm.read(fnp);
 
+	/** X Coordinate */
+	float x = 0;
+	/** Y Coordinate */
+	float y = 0;
+	/** Z Coordinate */
 	float z = -4.0f;
-	float r = 0.0f;
+
+	float rx = -90.0f;
+	float ry = 0.0f;
+	float rz = 0.0f;
 	float s = -z/67.03f;
 
 #if 0
@@ -344,24 +366,64 @@ int main(int argc, char* argv[]) {
 	rsm.Dump(of);
 	of.close();
 #endif
-	engine.setTransparency(true);
+	glAlphaFunc ( GL_GREATER, 0.2 ) ;
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_TEXTURE_2D);
 	
-	for (int i = 0; i < 1000; i++) {
-		glLoadIdentity();
-		glTranslatef(0, 0, z);
-		//glRotatef(-90, 1, 0, 0);
-		glRotatef(r, 0, 1, 0);
-		glRotatef(-90, 1, 0, 0);
-		glPushMatrix();
-		glScalef(s,s,s);
-		rsm.Draw();
-		//cube();
-		glPopMatrix();
+	bool m_quit = false;
+	while(!m_quit) {
+		Draw(rsm, x, y, z, rx, ry, rz, s);
 		engine.Sync();
-		printf("\r%d", i);
 		Sleep(9);
 		// z+= 0.05f;
-		r += 0.8f;
+
+		if (engine.getKey(SDLK_SPACE)) {
+			x = 0;
+			y = 0;
+			z = -4.0f;
+			rx = -90.0f;
+			ry = 0.0f;
+			rz = 0.0f;
+			s = -z/67.03f;
+		}
+
+		if (engine.getKey(SDLK_d)) {
+			ry += 0.8f;
+		}
+		if (engine.getKey(SDLK_a)) {
+			ry -= 0.8f;
+		}
+		if (engine.getKey(SDLK_w)) {
+			rx += 0.8f;
+		}
+		if (engine.getKey(SDLK_s)) {
+			rx -= 0.8f;
+		}
+		if (engine.getKey(SDLK_q)) {
+			rz += 0.8f;
+		}
+		if (engine.getKey(SDLK_e)) {
+			rz -= 0.8f;
+		}
+		if (engine.getKey(SDLK_r)) {
+			z += 0.1f;
+		}
+		if (engine.getKey(SDLK_f)) {
+			z -= 0.1f;
+		}
+		if (engine.getKey(SDLK_RIGHT)) {
+			x += 0.1f;
+		}
+		if (engine.getKey(SDLK_LEFT)) {
+			x -= 0.1f;
+		}
+		if (engine.getKey(SDLK_UP)) {
+			y += 0.1f;
+		}
+		if (engine.getKey(SDLK_DOWN)) {
+			y -= 0.1f;
+		}
+		m_quit = engine.getKey(SDLK_ESCAPE);
 	}
 
 	rsm.close();
