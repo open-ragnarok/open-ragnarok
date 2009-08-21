@@ -4,6 +4,9 @@
 
 #ifdef WIN32
 #	define _CRT_SECURE_NO_WARNINGS
+#	ifndef _WIN32_WINNT
+#		define _WIN32_WINNT 0x400
+#	endif
 #endif
 
 #define _RONET_DLLAPI_
