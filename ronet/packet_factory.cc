@@ -13,6 +13,7 @@
 #define CALLER(x) m_dispatcher.Register(pkt ##x ##ID, &ronet::PacketFactory::Handle_ ##x )
 // List of packets that we know how to decode
 
+//Add new packets here
 HANDLER(ServerList)
 HANDLER(CharList)
 HANDLER(CharCreateError)
@@ -22,8 +23,11 @@ HANDLER(CharCreated)
 HANDLER(CharPosition)
 HANDLER(MapAcctSend)
 HANDLER(MapLoginSuccess)
+HANDLER(OwnSpeech)
+HANDLER(SkillList)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
+	//Add new packets here
 	CALLER(ServerList);
 	CALLER(CharList);
 	CALLER(CharCreateError);
@@ -33,6 +37,8 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(CharPosition);
 	CALLER(MapAcctSend);
 	CALLER(MapLoginSuccess);
+	CALLER(OwnSpeech);
+	CALLER(SkillList);
 	//m_dispatcher.Register(0x0069, &ronet::PacketFactory::Handle_ServerList);
 }
 

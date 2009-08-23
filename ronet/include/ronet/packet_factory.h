@@ -30,6 +30,7 @@ namespace ronet {
 			bool Call(unsigned short, ucBuffer&);
 		};
 
+		//Add new packets here
 		bool Handle_ServerList(ucBuffer&);
 		bool Handle_CharCreateError(ucBuffer&);
 		bool Handle_CharList(ucBuffer&);
@@ -39,6 +40,8 @@ namespace ronet {
 		bool Handle_CharPosition(ucBuffer&);
 		bool Handle_MapAcctSend(ucBuffer&);
 		bool Handle_MapLoginSuccess(ucBuffer&);
+		bool Handle_OwnSpeech(ucBuffer&);
+		bool Handle_SkillList(ucBuffer&);
 
 		void push(Packet*);
 

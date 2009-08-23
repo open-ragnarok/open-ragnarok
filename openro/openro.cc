@@ -103,6 +103,7 @@ void OpenRO::AfterDraw() {
 				hndlServerList((ronet::pktServerList*)pkt);
 				break;
 			*/
+			//Add new packets here
 			HANDLEPKT(ServerList, false);
 			HANDLEPKT(CharList, true);
 			HANDLEPKT(LoginError, true);
@@ -111,6 +112,8 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(CharPosition, false);
 			HANDLEPKT(MapAcctSend, false);
 			HANDLEPKT(MapLoginSuccess, false);
+			HANDLEPKT(OwnSpeech, false);
+			HANDLEPKT(SkillList, false);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
@@ -142,6 +145,8 @@ void OpenRO::BeforeRun() {
 	setCursor(ycursor);
 
 }
+
+//Add new packets here
 
 void OpenRO::hndlServerList(ronet::pktServerList* pkt) {
 	m_serverlist = pkt;
@@ -287,13 +292,20 @@ void OpenRO::hndlMapAcctSend(ronet::pktMapAcctSend* pkt) {
 }
 
 void OpenRO::hndlMapLoginSuccess(ronet::pktMapLoginSuccess* pkt) {
-	//TODO: Fix this.. still not 100% functional
 	short pos_x = pkt->getPosX(); 
 	short pos_y = pkt->getPosY();
-	unsigned char pos_dir = pkt->getPosDir();
+	short pos_dir = pkt->getPosDir();
 	unsigned int server_tick = pkt->getServerTick();
 
 	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n\n\n",pos_x,pos_y,pos_dir,server_tick);
+}
+
+void OpenRO::hndlOwnSpeech(ronet::pktOwnSpeech* pkt) {
+	printf("OwnSpeech: %s \n",pkt->getText());
+}
+
+void OpenRO::hndlSkillList(ronet::pktSkillList* pkt) {
+	printf("Received skill list.\n");
 }
 
 void OpenRO::CreateCharWindow(int slot) {

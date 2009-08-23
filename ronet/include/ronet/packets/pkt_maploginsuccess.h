@@ -14,9 +14,9 @@ namespace ronet {
 	class RONET_DLLAPI pktMapLoginSuccess : public Packet {
 	protected:
 		unsigned int server_tick;
-		unsigned char pos_x;
-		unsigned char pos_y; 
-		unsigned char pos_dir;
+		short pos_x;
+		short pos_y; 
+		short pos_dir;
 	public:
 		pktMapLoginSuccess();
 
@@ -26,9 +26,11 @@ namespace ronet {
 
 		short getPosY() const;
 
-		unsigned char getPosDir() const;
+		short getPosDir() const;
 
 		unsigned int getServerTick() const;
+
+		void pktMapLoginSuccess::XYdecode(unsigned char buf[3]);
 
 	};
 }

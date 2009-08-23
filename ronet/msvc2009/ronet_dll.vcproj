@@ -293,7 +293,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_ownspeech.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_serverlist.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_skilllist.cc"
 					>
 				</File>
 			</Filter>
@@ -431,7 +439,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_ownspeech.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_serverlist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_skilllist.h"
 					>
 				</File>
 			</Filter>

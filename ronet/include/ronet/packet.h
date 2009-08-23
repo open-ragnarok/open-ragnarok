@@ -40,7 +40,9 @@ namespace ronet {
 
 		// From MAP
 		pktMapLoginSuccessID = 0x0073, // R 0073 <server tick>.uint <coordidate>.3B ?.2B
+		pktOwnSpeechID = 0x008e, // R 008e <len>.w <str>.?B
 		pktMapAcctSendID = 0x0283, // (6 bytes) R 0283 <account id>.int
+		pktSkillListID = 0x010f, // R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 
 		// == "WTF!?"s == //
 		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

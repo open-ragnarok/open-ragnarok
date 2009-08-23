@@ -34,19 +34,17 @@ protected:
 	// Useful Packets
 	ronet::pktServerList* m_serverlist;
 
+	//Add new packets here
 	void hndlServerList(ronet::pktServerList*);
 	void hndlCharList(ronet::pktCharList*);
-
 	void hndlLoginError(ronet::pktLoginError*);
 	void hndlAuthFailed(ronet::pktAuthFailed*);
-
 	void hndlCharCreated(ronet::pktCharCreated*);
-
 	void hndlCharPosition(ronet::pktCharPosition*);
-
 	void hndlMapAcctSend(ronet::pktMapAcctSend*);
-
 	void hndlMapLoginSuccess(ronet::pktMapLoginSuccess*); 
+	void hndlOwnSpeech(ronet::pktOwnSpeech*);
+	void hndlSkillList(ronet::pktSkillList*);
 
 	int m_charslot;
 
