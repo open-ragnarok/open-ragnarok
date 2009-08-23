@@ -45,6 +45,7 @@ GUI::Element::Element() {
 	m_parent = NULL;
 	m_focusable = true;
 	m_transparent = false;
+	m_stransparent = false;
 	m_visible = true;
 	m_fullscreen = false;
 	m_MouseIn = false;
@@ -61,6 +62,7 @@ GUI::Element::Element(Element* parent) {
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
+	m_stransparent = false;
 	m_visible = true;
 	m_fullscreen = false;
 	m_enabled = true;
@@ -79,6 +81,7 @@ GUI::Element::Element(Element* parent, const TiXmlElement* node, TextureManager&
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
+	m_stransparent = false;
 	m_visible = true;
 	m_fullscreen = false;
 	m_MouseIn = false;
@@ -98,6 +101,7 @@ GUI::Element::Element(Element* parent, const std::string& background, TextureMan
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
+	m_stransparent = false;
 	m_visible = true;
 	m_fullscreen = false;
 	m_enabled = true;
@@ -214,7 +218,15 @@ void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) co
 		u = 0;
 		v = 0;
 	}
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	if(m_stransparent){
+	glColor4f(1.0f,1.0f,1.0f,0.5f);			
+	}
+	else
+	{
+	glColor4f(1.0f,1.0f,1.0f,1.0f);	
+	}
 	glBegin(GL_QUADS);
 
 	glTexCoord2f(0.0f, v);
@@ -230,6 +242,7 @@ void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) co
 	glVertex3f(x+w, y,   0);
 
 	glEnd();
+	glDisable(GL_BLEND);
 }
 
 void GUI::Element::add(Element* e) {
@@ -514,6 +527,20 @@ void GUI::Element::setTransparent(bool b) {
 	m_transparent = b;
 }
 
+void GUI::Element::setStransparent(bool b) {
+
+	if(m_active_child != NULL)
+	{
+	m_stransparent = b;
+	std::vector<Element*>::iterator itr = m_children.begin();
+	while (itr != m_children.end()) {
+		Element* e = *itr;
+		e->setStransparent(b);
+		itr++;
+	}
+	}else{m_stransparent = b;}
+}
+
 void GUI::Element::setEnabled(bool b) {
 	m_enabled = b;
 }
@@ -638,6 +665,10 @@ bool GUI::Element::isVisible() const {
 
 bool GUI::Element::isTransparent() const {
 	return(m_transparent);
+}
+
+bool GUI::Element::isStransparent() const {
+	return(m_stransparent);
 }
 
 bool GUI::Element::isEnabled() const {

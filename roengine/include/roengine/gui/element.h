@@ -89,6 +89,9 @@ protected:
 	/** Indicates if this object is transparent or not. If it's false, the object will not be drawn, but its children will */
 	bool m_transparent;
 
+	/** Indicates if this object is semi-transparent or not. If it's true, the object will be drawn 50% trensparent, with it's childen too */
+	bool m_stransparent;
+
 	bool m_focusable;
 	bool m_fullscreen;
 	bool m_enabled;
@@ -149,12 +152,14 @@ public:
 	void setFullscreen(bool = false);
 	virtual void setVisible(bool = true);
 	void setTransparent(bool = false);
+	void setStransparent(bool = false);
 	void setEnabled(bool = true);
 	void setActive();
 	bool setName(const std::string&);
 
 	bool isVisible() const;
 	bool isTransparent() const;
+	bool isStransparent() const;
 	bool isEnabled() const;
 
 	const std::string& getName();

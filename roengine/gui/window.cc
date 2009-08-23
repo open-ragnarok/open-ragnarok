@@ -45,6 +45,7 @@ bool GUI::Window::HandleMouseRelease(int x, int y, int button) {
 			if ( button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
 				std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
 				IsMouseDowning = false;
+				e->setStransparent(false);
 			}
 		}
 	}
@@ -78,6 +79,7 @@ bool GUI::Window::HandleMouseDown(int x, int y, int button) {
 			if ( button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
 				std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
 				IsMouseDowning = true;
+				e->setStransparent(true);
 			}
 		}
 	}
