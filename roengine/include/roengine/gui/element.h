@@ -107,10 +107,10 @@ protected:
 	virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	void ParseFromXml(const TiXmlElement*, TextureManager&, FileManager&);
 
-	void Window(float x, float y, const rogl::Texture::Pointer& tp) const;
+	void Window(float x, float y, const rogl::Texture::Pointer& tp);
 public:
 	Element();
-	
+	double opacity;
 	/**
 	 * Creates an empty element with a parent
 	 * @param parent the Parent element

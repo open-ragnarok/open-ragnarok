@@ -46,6 +46,7 @@ GUI::Element::Element() {
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
+	opacity = 1;
 	m_visible = true;
 	m_fullscreen = false;
 	m_MouseIn = false;
@@ -63,6 +64,7 @@ GUI::Element::Element(Element* parent) {
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
+	opacity = 1;
 	m_visible = true;
 	m_fullscreen = false;
 	m_enabled = true;
@@ -82,6 +84,7 @@ GUI::Element::Element(Element* parent, const TiXmlElement* node, TextureManager&
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
+	opacity = 1;
 	m_visible = true;
 	m_fullscreen = false;
 	m_MouseIn = false;
@@ -102,6 +105,7 @@ GUI::Element::Element(Element* parent, const std::string& background, TextureMan
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
+	opacity = 1;
 	m_visible = true;
 	m_fullscreen = false;
 	m_enabled = true;
@@ -190,7 +194,7 @@ void GUI::Element::Draw(unsigned int delay) {
 	glPopMatrix();
 }
 
-void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) const {
+void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) {
 	tp.Activate();
 
 	float w, h;
@@ -221,11 +225,23 @@ void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) co
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	if(m_stransparent){
-	glColor4f(1.0f,1.0f,1.0f,0.5f);			
+		if(opacity > 0.5){
+			opacity-=0.006;
+	glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
+	}
+		else{
+			glColor4f(1.0f,1.0f,1.0f,0.5f);
+		}
 	}
 	else
 	{
-	glColor4f(1.0f,1.0f,1.0f,1.0f);	
+		if(opacity < 1){
+			opacity+=0.006;
+	glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
+	}
+		else{
+			glColor4f(1.0f,1.0f,1.0f,1.0f);
+		}
 	}
 	glBegin(GL_QUADS);
 
