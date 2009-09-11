@@ -118,7 +118,7 @@ bool FTFont::open(const char* fn, unsigned int size, unsigned int startchar, uns
 #endif
 	}
 
-	m_height = maxAscent + maxDescent; // calculate height_ for text
+	m_height = maxAscent + maxDescent; // calculate height for text
 
 	// Compute how high the texture has to be.
 	size_t neededHeight = (maxAscent + maxDescent + MARGIN) * lines + MARGIN;
@@ -196,7 +196,7 @@ bool FTFont::open(const char* fn, unsigned int size, unsigned int startchar, uns
 	return (true);
 }
 
-void FTFont::draw(const Rect& rect, const char* buf) const {
+void FTFont::draw(const Rect& rect, const unsigned short* buf) const {
     if(!valid()) {
         throw std::logic_error("Invalid Font::drawText call.");
     }
@@ -207,8 +207,8 @@ void FTFont::draw(const Rect& rect, const char* buf) const {
 
     glPushMatrix();
     glTranslated(rect.x, rect.y, 0);
-    for(unsigned int i=0; i < strlen(buf); ++i) {
-        unsigned char ch(buf[i] - m_startchar);     // ch - m_startchar = DisplayList offset
+    for(unsigned int i=0; buf[i] != 0; ++i) {
+        unsigned short ch = buf[i] - m_startchar;     // ch - m_startchar = DisplayList offset
         // replace characters outside the valid range with undrawable
         if(ch > m_charcount) {
             ch = m_charcount-1;   // last character is 'undrawable'
@@ -231,6 +231,19 @@ void FTFont::draw(const Rect& rect, const char* buf) const {
     glPopMatrix();
 }
 
+void FTFont::getSize(const unsigned short* text, int* w, int* h) const {
+	*h = m_height;
+	unsigned int i;
+	*w = 0;
+
+	for(i = 0; text[i] != 0; i++) {
+		unsigned short ch(text[i] - m_startchar);
+        if(ch > m_charcount) {
+            ch = m_charcount-1;   // last character is 'undrawable'
+        }
+		*w += m_widths[ch]; // Increment our used width.
+	}
+}
 
 float FTFont::getWidth(const char *str, ...) const {
     if(!valid()) {

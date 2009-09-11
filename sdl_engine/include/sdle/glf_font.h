@@ -43,12 +43,13 @@ public:
 	virtual void textOut(const std::string&, float x, float y, float z, int MaxLen) const;
 	virtual float getWidth(const std::string&) const;
 
-	virtual void draw(const Rect& rect, const char* text) const;
+	virtual void draw(const Rect& rect, const unsigned short* text) const;
+	virtual void getSize(const unsigned short* text, int* w, int* h) const;
 };
 
-extern const GLFFont Font_Arabia8;
-extern const GLFFont Font_Arial8;
-extern const GLFFont Font_Arial10;
+extern GLFFont Font_Arabia8;
+extern GLFFont Font_Arial8;
+extern GLFFont Font_Arial10;
 
 }
 

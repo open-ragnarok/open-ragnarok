@@ -27,6 +27,14 @@ public:
 	/** Draws the text in the given xy position */
 	void drawText(float x, float y, const char *str, ...) const;
 
+	/** 
+	 * Draws the text in the given xy position
+	 * @param x
+	 * @param y
+	 * @param str array of unsigned shorts containing the text to be drawn. Works with unicode strings.
+	 */
+	void drawText(float x, float y, const unsigned short *str) const;
+
 	/**
 	 * Draws the text to fit in a box (the box is not actually drawn. It's just used for clipping.)
 	 * Currently param "h" is ignored.
@@ -34,9 +42,26 @@ public:
 	void drawTextBox(float x, float y, float w, float h, const char *str, ...) const;
 
 	/** 
-	 * Function that actually draws the text. Must be overloaded by children classes.
+	 * Draws the text in the given xy position
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h height of the text (currently ignored)
+	 * @param str array of unsigned shorts containing the text to be drawn. Works with unicode strings.
 	 */
-	virtual void draw(const Rect& rect, const char* text) const = 0;
+	void drawTextBox(float x, float y, float w, float h, const unsigned short *str) const;
+
+	/** 
+	 * Function that actually draws the text. Must be overloaded by children classes.
+	 * @param rect
+	 * @param text unsigned short vector containing the characters (thus, supporting unicode characters)
+	 */
+	virtual void draw(const Rect& rect, const unsigned short* text) const = 0;
+
+	/**
+	 * Retrieves the size (width and height) of the given text
+	 */
+	virtual void getSize(const unsigned short* text, int* w, int* h) const = 0;
 };
 
 }

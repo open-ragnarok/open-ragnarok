@@ -28,9 +28,9 @@ namespace sdle {
  * The data (2 bytes per pixel, resulting in a buffer size of (texture_width * texture_height * 2) long.
  */
 
-const GLFFont Font_Arabia8(glf_arabia8, glf_arabia8_size);
-const GLFFont Font_Arial8(glf_arial8, glf_arial8_size);
-const GLFFont Font_Arial10(glf_arial10, glf_arial10_size);
+GLFFont Font_Arabia8(glf_arabia8, glf_arabia8_size);
+GLFFont Font_Arial8(glf_arial8, glf_arial8_size);
+GLFFont Font_Arial10(glf_arial10, glf_arial10_size);
 
 
 GLFFont::GLFFont() : Font() {
@@ -114,6 +114,19 @@ bool GLFFont::load(std::istream& file) {
 	return(true);
 }
 
+void GLFFont::getSize(const unsigned short* text, int* w, int* h) const {
+	unsigned int i;
+	*h = 10; // TODO: Fix this.
+
+	float rw = 0;
+
+	for(i = 0; text[i] != 0; i++) {
+		const _Char& c = m_font.Char[text[i] - m_font.IntStart];
+		rw += c.dx * fontmult;
+	}
+	*w = (int)rw;
+}
+
 float GLFFont::getWidth(const std::string& s) const {
 	float ret = 0;
 	for (unsigned int i = 0; i < s.length(); i++) {
@@ -124,19 +137,19 @@ float GLFFont::getWidth(const std::string& s) const {
 	return(ret);
 }
 
-void GLFFont::draw(const Rect& rect, const char* text) const {
+void GLFFont::draw(const Rect& rect, const unsigned short* text) const {
 	if (!valid()) return;
 
 	float used_w = 0;
 
 	m_texture.Activate();
 	
-	int ch;
+	unsigned short ch;
 
 	glPushMatrix();
 	glTranslated(rect.x, rect.y, 0);
 	glBegin(GL_QUADS);
-	for (unsigned int i = 0; i < strlen(text); i++) {
+	for (unsigned int i = 0; text[i] != 0; i++) {
 		ch = text[i];
 		if (ch > m_font.IntEnd)
 			continue;

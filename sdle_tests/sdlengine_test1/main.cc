@@ -16,7 +16,7 @@
 
 #include "sdle/sdl_engine.h"
 #include "sdle/texture_png.h"
-#include "sdle/font.h"
+#include "sdle/ft_font.h"
 
 void cube(const float& side) {
 	float aux = side / 2;
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Load a font
-	sdle::Font f;
+	sdle::FTFont f;
 	f.open("verdana.ttf", 12);
 	if (!f.valid()) {
 		printf("font not valid!\n");

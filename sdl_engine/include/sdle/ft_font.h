@@ -44,10 +44,10 @@ protected:
 	Texture m_texture;
 
 	/** Character that the reading started from */
-	unsigned int m_startchar;
+	unsigned short m_startchar;
 
 	/** Number of characters stored in our texture */
-	unsigned int m_charcount;
+	unsigned short m_charcount;
 
 	/** The maximum text height */
 	unsigned int m_height;
@@ -78,7 +78,9 @@ public:
 	 */
 	float getWidth(const char *str, ...) const;
 
-	virtual void draw(const Rect& rect, const char* text) const;
+	virtual void draw(const Rect& rect, const unsigned short* text) const;
+	virtual void getSize(const unsigned short* text, int* w, int* h) const;
+
 };
 
 }

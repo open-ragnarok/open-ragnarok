@@ -39,7 +39,42 @@ void Font::drawText(float x, float y, const char *str, ...) const {
 	r.w = 0;
 	r.h = 0;
 
-	draw(r, buf);
+	unsigned int buflen = strlen(buf);
+	unsigned short *sbuf = new unsigned short[buflen + 1];
+	for (unsigned int i = 0; i <= buflen; i++) // Yes, <=. It also copies the ending '0'.
+		sbuf[i] = (unsigned short)buf[i];
+
+	draw(r, sbuf);
+
+	delete[] sbuf;
+}
+
+void Font::drawText(float x, float y, const unsigned short *str) const {
+    if(!valid()) {
+        throw std::logic_error("Invalid Font::drawText call.");
+    }
+
+	Rect r;
+	r.x = x;
+	r.y = y;
+	r.w = 0;
+	r.h = 0;
+
+	draw(r, str);
+}
+
+void Font::drawTextBox(float x, float y, float w, float h, const unsigned short *str) const {
+    if(!valid()) {
+        throw std::logic_error("Invalid Font::drawText call.");
+    }
+
+	Rect r;
+	r.x = x;
+	r.y = y;
+	r.w = w;
+	r.h = h;
+
+	draw(r, str);
 }
 
 void Font::drawTextBox(float x, float y, float w, float h, const char *str, ...) const {
@@ -64,7 +99,14 @@ void Font::drawTextBox(float x, float y, float w, float h, const char *str, ...)
 	r.w = w;
 	r.h = h;
 
-	draw(r, buf);
+	unsigned int buflen = strlen(buf);
+	unsigned short *sbuf = new unsigned short[buflen + 1];
+	for (unsigned int i = 0; i <= buflen; i++) // Yes, <=. It also copies the ending '0'.
+		sbuf[i] = (unsigned short)buf[i];
+
+	draw(r, sbuf);
+
+	delete[] sbuf;
 }
 
 
