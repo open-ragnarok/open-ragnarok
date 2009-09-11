@@ -151,6 +151,19 @@ bool Texture::Activate() const {
 	return(true);
 }
 
+bool Texture::Root::Create(unsigned int texid, int width, int height) {
+	if (glIsTexture(texid) == GL_FALSE) {
+		return(false);
+	}
+	m_texid = texid;
+	m_width = width;
+	m_height = height;
+	m_maxu = 1.0f;
+	m_maxv = 1.0f;
+	return(true);
+}
+
+
 bool Texture::Root::Create(const Image* img) {
 	return(Create((void*)img->getBuffer(), img->getWidth(), img->getHeight(), img->getBpp()));
 }

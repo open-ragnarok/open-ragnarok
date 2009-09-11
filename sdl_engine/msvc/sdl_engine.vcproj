@@ -321,6 +321,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\ft_font.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\glf_font.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gui.cc"
 				>
 			</File>
@@ -395,6 +403,18 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\include\sdle\arabia-8.glf.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\arial-10.glf.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\arial-8.glf.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\sdle\blob.h"
 				>
 			</File>
@@ -408,6 +428,14 @@
 			</File>
 			<File
 				RelativePath="..\include\sdle\frame.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\ft_font.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\glf_font.h"
 				>
 			</File>
 			<File

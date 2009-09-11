@@ -42,8 +42,16 @@ public:
 
 		/** Creates a texture from raw memory data */
 		bool Create(void* data, int w, int h, int bpp = 32);
+
 		/** Creates a texture from an Image object */
 		bool Create(const Image*);
+
+		/** 
+		 * Creates a texture from an already created id and given properties.
+		 * maxu and maxv will be set to 1.0f
+		 * texid will be check for validity
+		 */
+		bool Create(unsigned int texid, int width, int height);
 
 		int m_width, m_height;
 		float m_maxu, m_maxv;

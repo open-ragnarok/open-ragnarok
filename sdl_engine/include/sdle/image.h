@@ -1,4 +1,4 @@
-/* $Id: image.h 18 2008-09-05 16:45:17Z sergio $ */
+/* $Id$ */
 /*
  Open Ragnarok Project 
 
