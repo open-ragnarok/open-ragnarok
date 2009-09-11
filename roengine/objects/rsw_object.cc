@@ -17,7 +17,7 @@ RswObject::~RswObject() {
 
 bool RswObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	unsigned int i;
-	rogl::Texture::Pointer tex;
+	sdle::Texture tex;
 	std::string texname;
 
 	for (i = 0; i < gnd->getTextureCount(); i++) {

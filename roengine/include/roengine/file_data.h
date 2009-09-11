@@ -2,11 +2,11 @@
 #ifndef __FILE_DATA_H
 #define __FILE_DATA_H
 
-#include "rogl/blob.h"
+#include "sdle/blob.h"
 
 #include <iostream>
 
-class FileData : public rogl::DynamicBlobChar {
+class FileData : public sdle::DynamicBlob {
 public:
 	FileData();
 	FileData(const FileData& o);

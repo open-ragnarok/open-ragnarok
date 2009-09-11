@@ -9,7 +9,7 @@ GUI::Button::Button(Element* parent) : Element(parent) {
 	m_MouseIn = false;
 }
 
-GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base) : Element(parent) {
+GUI::Button::Button(Element* parent, const sdle::Texture& base) : Element(parent) {
 	texture_base = base;
 	texture_active = base;
 	texture_hover = base;
@@ -17,7 +17,7 @@ GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base) : Eleme
 	m_MouseIn = false;
 }
 
-GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active) : Element(parent) {
+GUI::Button::Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
 	texture_hover = active;
@@ -25,7 +25,7 @@ GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const r
 	m_MouseIn = false;
 }
 
-GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover) : Element(parent) {
+GUI::Button::Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active, const sdle::Texture& hover) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
 	texture_hover = hover;
@@ -33,7 +33,7 @@ GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const r
 	m_MouseIn = false;
 }
 
-GUI::Button::Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover, const rogl::Texture::Pointer& disabled) : Element(parent) {
+GUI::Button::Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active, const sdle::Texture& hover, const sdle::Texture& disabled) : Element(parent) {
 	texture_base = base;
 	texture_active = active;
 	texture_hover = hover;
@@ -48,11 +48,11 @@ GUI::Button::Button(Element* parent, const TiXmlElement* node, TextureManager& t
 	texture_base = texture;
 	m_MouseIn = false;
 
-	if (!texture_active.isValid())
+	if (!texture_active.Valid())
 		texture_active = texture;
-	if (!texture_hover.isValid())
+	if (!texture_hover.Valid())
 		texture_hover = texture;
-	if (!texture_disabled.isValid())
+	if (!texture_disabled.Valid())
 		texture_disabled = texture;
 }
 

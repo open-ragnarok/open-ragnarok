@@ -11,24 +11,24 @@ FullAct::FullAct() {
 
 FullAct::FullAct(const FullAct& act) {
 	m_act = act.m_act;
-	m_textures = act.m_textures;
+	m_spr = act.m_spr;
 }
 
 FullAct& FullAct::operator = (const FullAct& act) {
 	m_act = act.m_act;
-	m_textures = act.m_textures;
+	m_spr = act.m_spr;
 	return(*this);
 }
 
 void FullAct::Clear() {
 	// TODO: is this =NULL safe?
 	m_act = NULL;
-	m_textures.clear();
+	m_spr.release();
 }
 
-FullAct::FullAct(const RO::ACT* a, const rogl::Texture::PointerCache& t) {
+FullAct::FullAct(const RO::ACT* a, const rogl::SprGL& spr) {
 	m_act = a;
-	m_textures = t;
+	m_spr = spr;
 }
 
 bool FullAct::Load(const std::string& name, ROObjectCache& objects, FileManager& fm, TextureManager& tm) {
@@ -41,10 +41,17 @@ bool FullAct::Load(const std::string& name, ROObjectCache& objects, FileManager&
 	if (!objects.ReadACT(act_n, fm)) {
 		return(false);
 	}
-	m_act = (RO::ACT*)objects[act_n];
-	m_textures = tm.RegisterSPR(fm, objects, spr_n);
-	if (m_textures.size() == 0)
+
+	if (!objects.ReadSPR(spr_n, fm)) {
 		return(false);
+	}
+
+	m_act = (RO::ACT*)objects[act_n];
+	if (!m_spr.open((RO::SPR*)objects[spr_n])) {
+		return(false);
+	}
+
+	tm.Register(spr_n, m_spr.getTexture());
 
 	return(true);
 }
@@ -52,8 +59,7 @@ bool FullAct::Load(const std::string& name, ROObjectCache& objects, FileManager&
 
 const RO::ACT* FullAct::getAct() const { return(m_act); }
 const RO::ACT* FullAct::operator -> () const { return(m_act); }
-const rogl::Texture::PointerCache& FullAct::getTextures() const { return(m_textures); }
-
+const sdle::Texture& FullAct::getTextures() const { return(m_spr.getTexture()); }
 
 void DrawActCross(float x, float y, float size) {
 	glDisable(GL_TEXTURE_2D);
@@ -66,12 +72,16 @@ void DrawActCross(float x, float y, float size) {
 	glEnable(GL_TEXTURE_2D);
 }
 
+const rogl::SprGL& FullAct::getSpr() const {
+	return(m_spr);
+}
+
 void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, bool ext, const FullAct* parent, bool v_mirror, bool cross) {
 #define CROSS_SIZE 10
 	unsigned int spr;
-	float w, h;
-	float u[2], v[2];
-	rogl::Texture::Pointer tp;
+	//float w, h;
+	//float u[2], v[2];
+	// rogl::Texture::Pointer tp;
 
 	if (parent != NULL) {
 		const RO::ACT::Act& pact = parent->getAct()->getAct(act_no);
@@ -101,22 +111,14 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	const RO::ACT::Pat& cpat = cact[pat_no];
 
 	for (spr = 0; spr < cpat.spr.size(); spr++) {
+		act.getSpr().Draw(cpat, spr, x, y, v_mirror, ext);
+
+/*
 		if (cpat[spr].sprNo < 0)
 			continue;
 		const RO::ACT::Spr& cspr = cpat[cpat[spr].sprNo];
 
 		tp = act.getTextures()[cpat[spr].sprNo];
-		if (!tp.isValid())
-			return;
-
-		if (cspr.w > 0) {
-			w = (float)cspr.w;
-			h = (float)cspr.h;
-		}
-		else {
-			w = (float)tp->getWidth();
-			h = (float)tp->getHeight();
-		}
 
 		w *= cpat[spr].xMag;
 		h *= cpat[spr].yMag;
@@ -156,5 +158,6 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 		glTexCoord2f(u[1], v[0]);
 		glVertex3f(x + w/2, y - h/2, 0);
 		glEnd();
+*/
 	}
 }

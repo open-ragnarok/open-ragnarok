@@ -14,42 +14,24 @@
 #	endif
 #endif
 
-
 #ifndef _MSC_VER
-	#define ROINT_DLLAPI
+#	define ROINT_DLLAPI
 #else
-	#ifdef ROINT_STATIC
-		#define ROINT_DLLAPI
-	#else
-		#ifdef _ROINT_DLLAPI_
-		    #define ROINT_DLLAPI  __declspec( dllexport )
-		#else
-		    #define ROINT_DLLAPI  __declspec( dllimport )
-		#endif
-	#endif
-
-// The following will ensure that when building an application (or another
-// DLL) using this DLL, the appropriate .LIB file will automatically be used
-// when linking.
-
-	#ifndef _ROINT_NOAUTOLIB_
-		#ifdef ROINT_STATIC
-			#pragma comment(lib, "roint.lib")
-		#else
-			#pragma comment(lib, "roint.dll.lib")
-		#endif
-	#endif
+#	ifndef ROINT_DLL
+#		define ROINT_DLLAPI
+#	else
+#		ifdef ROINT_INTERNAL
+#			define ROINT_DLLAPI  __declspec( dllexport )
+#		else
+#			define ROINT_DLLAPI  __declspec( dllimport )
+#		endif
+#	endif
 #endif
 
 // Use XML?
 #ifdef ROINT_USE_XML
 #	define TIXML_USE_STL
 #	include "tinyxml/tinyxml.h"
-#endif
-
-// zLib tweak
-#ifdef _MSC_VER
-#	define ZLIB_WINAPI
 #endif
 
 #endif /* __ROINT_IMPORT_H */

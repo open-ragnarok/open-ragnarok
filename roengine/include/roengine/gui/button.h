@@ -7,19 +7,19 @@
 namespace GUI {
 	class Button : public Element {
 	protected:
-		rogl::Texture::Pointer texture_base;
-		rogl::Texture::Pointer texture_active;
-		rogl::Texture::Pointer texture_hover;
-		rogl::Texture::Pointer texture_disabled;
+		sdle::Texture texture_base;
+		sdle::Texture texture_active;
+		sdle::Texture texture_hover;
+		sdle::Texture texture_disabled;
 
 		virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 
 	public:
 		Button(Element* parent);
-		Button(Element* parent, const rogl::Texture::Pointer& base);
-		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active);
-		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover);
-		Button(Element* parent, const rogl::Texture::Pointer& base, const rogl::Texture::Pointer& active, const rogl::Texture::Pointer& hover, const rogl::Texture::Pointer& disabled);
+		Button(Element* parent, const sdle::Texture& base);
+		Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active);
+		Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active, const sdle::Texture& hover);
+		Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active, const sdle::Texture& hover, const sdle::Texture& disabled);
 
 		Button(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
 

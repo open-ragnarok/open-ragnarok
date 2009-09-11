@@ -3,14 +3,14 @@
 
 #include "roengine/file_data.h"
 
-FileData::FileData() : DynamicBlobChar() {
+FileData::FileData() : DynamicBlob() {
 
 }
 
-FileData::FileData(const FileData& o) : DynamicBlobChar(o) {
+FileData::FileData(const FileData& o) : DynamicBlob(o) {
 }
 
-FileData::FileData(const char* data, unsigned int size) : DynamicBlobChar(size) {
+FileData::FileData(const char* data, unsigned int size) : DynamicBlob(size) {
 	memcpy(this->buffer, data, size);
 }
 

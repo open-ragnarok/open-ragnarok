@@ -13,7 +13,7 @@ public:
 	bool IsMouseDowning;
 	Window();
 	Window(Element* parent);
-	Window(const rogl::Texture::Pointer&, Element* parent = NULL);
+	Window(const sdle::Texture&, Element* parent = NULL);
 	Window(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
 
 	/**

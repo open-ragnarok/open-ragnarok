@@ -85,7 +85,7 @@ FileData FSFileLoader::getFile(const std::string& name) {
 	int size = file.tellg();
 	file.seekg(0, std::ios_base::beg);
 	ret.setSize(size);
-	file.read((char*)*ret, size);
+	file.read(ret.getBuffer(), size);
 
 	return(ret);
 }

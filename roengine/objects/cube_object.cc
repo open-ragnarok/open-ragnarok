@@ -15,9 +15,9 @@ void CubeObject::Draw() {
 
 	float u = 1.0f;
 	float v = 1.0f;
-	if (m_texture.isValid()) {
-		u = m_texture->getMaxU();
-		v = m_texture->getMaxV();
+	if (m_texture.Valid()) {
+		u = m_texture.getMaxU();
+		v = m_texture.getMaxV();
 	}
 	// Thanks, NeHe! http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=06
 	glBegin(GL_QUADS);

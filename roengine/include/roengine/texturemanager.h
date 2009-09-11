@@ -4,8 +4,8 @@
 
 #include "file_manager.h"
 #include "ro_object_cache.h"
-#include "rogl/image.h"
-#include "rogl/texture.h"
+#include "sdle/image.h"
+#include "sdle/texture.h"
 
 #include <string>
 #include <map>
@@ -13,7 +13,7 @@
 
 class TextureManager {
 protected:
-	typedef std::map<std::string, rogl::Texture*> tex_t;
+	typedef std::map<std::string, sdle::Texture> tex_t;
 	tex_t textures;
 public:
 	TextureManager();
@@ -21,14 +21,16 @@ public:
 
 	void Clear();
 
-	rogl::Texture::Pointer Register(FileManager&, const std::string& name);
-	rogl::Texture::Pointer Register(const std::string& name, const rogl::Image& img);
-	rogl::Texture::PointerCache RegisterSPR(FileManager&, ROObjectCache&, const std::string& name);
+	sdle::Texture Register(FileManager&, const std::string& name);
+	sdle::Texture Register(const std::string& name, const sdle::Image& img);
+	sdle::Texture Register(const std::string& name, const sdle::Texture& t);
+	// TODO: Urgently redo this. Look at rogl info at image_spr.h
+	//rogl::Texture::PointerCache RegisterSPR(FileManager&, ROObjectCache&, const std::string& name);
 	bool UnRegister(const std::string& name);
 	bool IsRegistered(const std::string& name) const;
 	bool Activate(const std::string& name) const;
 
-	rogl::Texture::Pointer operator [](const std::string& name) const;
+	sdle::Texture operator [](const std::string& name) const;
 };
 
 #endif /* __TEXTUREMANAGER_H */

@@ -7,41 +7,24 @@
 // using this DLL.
 
 #ifndef _MSC_VER
-	#define ROGL_DLLAPI
+#	define ROGL_DLLAPI
 #else
-	#include <windows.h>
-	#ifdef ROGL_STATIC
-		#define ROGL_DLLAPI
-	#else
-		#ifdef _ROGL_DLLAPI_
-			#define ROGL_DLLAPI  __declspec( dllexport )
-		#else
-		    #define ROGL_DLLAPI  __declspec( dllimport )
-		#endif
-	#endif
-
-// The following will ensure that when building an application (or another
-// DLL) using this DLL, the appropriate .LIB file will automatically be used
-// when linking.
-
-	#ifndef _ROGL_NOAUTOLIB_
-		#ifdef ROGL_STATIC
-			#pragma comment(lib, "rogl.lib")
-		#else
-			#pragma comment(lib, "rogl.dll.lib")
-		#endif
-	#endif
+#	include <windows.h>
+#	ifndef ROGL_DLL
+#		define ROGL_DLLAPI
+#	else
+#		ifdef ROGL_INTERNAL
+#			define ROGL_DLLAPI  __declspec( dllexport )
+#		else
+#			define ROGL_DLLAPI  __declspec( dllimport )
+#		endif
+#	endif
 #endif
 
-#ifdef ROGL_STATIC
-#	include "ro/ro_static.h"
-#else
-#	include "ro/ro.h"
+#ifdef ROGL_DLL
+#	define ROINT_DLL
 #endif
 
-#ifdef _MSC_VER
-#	pragma comment(lib, "opengl32.lib")
-#	pragma comment(lib, "glu32.lib")
-#endif
+#include "ro/ro.h"
 
 #endif /* __ROGL_IMPORT_H */

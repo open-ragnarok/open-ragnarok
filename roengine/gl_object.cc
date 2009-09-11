@@ -105,7 +105,7 @@ void GLObject::setRotZ(const float& z) {
 	zrot = z;
 }
 
-void GLObject::setTexture(rogl::Texture::Pointer& tex) {
+void GLObject::setTexture(sdle::Texture& tex) {
 	m_texture = tex;
 }
 

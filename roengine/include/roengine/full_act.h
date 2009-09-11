@@ -4,16 +4,17 @@
 #include "texturemanager.h"
 #include "ro/types/act.h"
 #include "ro/types/spr.h"
+#include "rogl/sprgl.h"
 
 class FullAct {
 protected:
 	const RO::ACT* m_act;
-	rogl::Texture::PointerCache m_textures;
+	rogl::SprGL m_spr;
 
 public:
 	FullAct();
 	FullAct(const FullAct&);
-	FullAct(const RO::ACT*, const rogl::Texture::PointerCache&);
+	FullAct(const RO::ACT*, const rogl::SprGL&);
 
 	FullAct& operator = (const FullAct&);
 
@@ -21,7 +22,8 @@ public:
 	void Clear();
 
 	const RO::ACT* getAct() const;
-	const rogl::Texture::PointerCache& getTextures() const;
+	const sdle::Texture& getTextures() const;
+	const rogl::SprGL& getSpr() const;
 	const RO::ACT* operator -> () const;
 };
 

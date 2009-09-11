@@ -300,24 +300,27 @@ void DesktopCreate::drawAct(float x, float y, GuiAct& o, int pat, bool ext) {
 }
 
 void DesktopCreate::drawSpr(float x, float y, GuiAct& o, int pat, int spr, bool ext) {
-	float w, h;
-	float u[2], v[2];
+	//float w, h;
+	//float u[2], v[2];
 	const RO::ACT::Pat& cpat = o->getAct(m_act)[pat];
-	rogl::Texture::Pointer tp;
+	//sdle::Texture tp;
 
+	o.getSpr().Draw(cpat, spr, x, y, false, ext);
+
+	/*
 	if (cpat[spr].sprNo < 0)
 		return;
 	const RO::ACT::Spr& cspr = cpat[cpat[spr].sprNo];
 	tp = o.getTextures()[cpat[spr].sprNo];
-	if (!tp.isValid())
+	if (!tp.Valid())
 		return;
 	if (cspr.w > 0) {
 		w = (float)cspr.w;
 		h = (float)cspr.h;
 	}
 	else {
-		w = (float)tp->getWidth();
-		h = (float)tp->getHeight();
+		w = (float)tp.getWidth();
+		h = (float)tp.getHeight();
 	}
 
 	w *= cpat[spr].xMag;
@@ -375,6 +378,7 @@ void DesktopCreate::drawSpr(float x, float y, GuiAct& o, int pat, int spr, bool 
 	glColor3f(1,1,1);
 	glEnable(GL_TEXTURE_2D);
 #endif
+	*/
 }
 
 

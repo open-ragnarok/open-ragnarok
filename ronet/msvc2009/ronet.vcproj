@@ -2,18 +2,15 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="rogl"
-	ProjectGUID="{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}"
-	RootNamespace="rogl"
-	Keyword="ManagedCProj"
+	Name="ronet"
+	ProjectGUID="{275A3E0D-3F51-473D-8CCD-747F38454450}"
+	RootNamespace="ronet"
+	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
 			Name="Win32"
-		/>
-		<Platform
-			Name="x64"
 		/>
 	</Platforms>
 	<ToolFiles>
@@ -25,7 +22,6 @@
 			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			CharacterSet="1"
-			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -45,13 +41,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)..\sdl_engine\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SDL)\include&quot;"
+				AdditionalIncludeDirectories="$(ProjectDir)\..\include\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -88,7 +85,6 @@
 			ConfigurationType="4"
 			UseOfMFC="0"
 			CharacterSet="1"
-			ManagedExtensions="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -108,9 +104,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)..\sdl_engine\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SDL)\include&quot;"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="$(ProjectDir)\..\include\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -149,7 +148,6 @@
 			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
-			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -169,13 +167,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)..\sdl_engine\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SDL)\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;ROGL_DLL"
+				AdditionalIncludeDirectories="$(ProjectDir)\..\include\"
+				PreprocessorDefinitions="WIN32;_DEBUG;RONET_DLL"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="1"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -188,12 +187,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\rogl.dll"
+				OutputFile="$(OutDir)\ronet.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(OutDir);$(SDL)\lib\"
 				GenerateDebugInformation="true"
-				AssemblyDebug="1"
-				ImportLibrary="$(OutDir)\rogl.dll.lib"
+				SubSystem="2"
+				ImportLibrary="$(TargetDir)\ronet.dll.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -225,7 +223,6 @@
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
-			ManagedExtensions="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -245,9 +242,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)..\sdl_engine\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SDL)\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;ROGL_DLL"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="$(ProjectDir)\..\include\"
+				PreprocessorDefinitions="WIN32;NDEBUG;RONET_DLL"
 				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -263,162 +263,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\rogl.dll"
+				OutputFile="$(OutDir)\ronet.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(OutDir);$(SDL)\lib\"
 				GenerateDebugInformation="true"
-				ImportLibrary="$(OutDir)\rogl.dll.lib"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(TargetDir)\ronet.dll.lib"
 				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)\"
-			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
-			ConfigurationType="2"
-			CharacterSet="1"
-			ManagedExtensions="0"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)roint\"
-				PreprocessorDefinitions="WIN32;_DEBUG"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile="$(ProjectDir)$(ConfigurationName)\$(TargetName).pch"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\rogl.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(OutDir)"
-				GenerateDebugInformation="true"
-				AssemblyDebug="1"
-				ImportLibrary="$(OutDir)\rogl.dll.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)\"
-			IntermediateDirectory="$(OutDir)$(ProjectName)\$(PlatformName)\$(ConfigurationName)\"
-			ConfigurationType="2"
-			CharacterSet="1"
-			ManagedExtensions="0"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(SolutionDir)roint\"
-				PreprocessorDefinitions="WIN32;NDEBUG"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\rogl.dll"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(OutDir)"
-				GenerateDebugInformation="true"
-				ImportLibrary="$(OutDir)\rogl.dll.lib"
-				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -444,21 +296,6 @@
 		</Configuration>
 	</Configurations>
 	<References>
-		<AssemblyReference
-			RelativePath="System.dll"
-			AssemblyName="System, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
-			MinFrameworkVersion="131072"
-		/>
-		<AssemblyReference
-			RelativePath="System.Data.dll"
-			AssemblyName="System.Data, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=x86"
-			MinFrameworkVersion="131072"
-		/>
-		<AssemblyReference
-			RelativePath="System.XML.dll"
-			AssemblyName="System.Xml, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
-			MinFrameworkVersion="131072"
-		/>
 	</References>
 	<Files>
 		<Filter
@@ -467,27 +304,35 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\actgl.cc"
+				RelativePath="..\connection.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\rogl.cc"
+				RelativePath="..\mutex.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\rsmgl.cc"
+				RelativePath="..\net_tools.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\rswgl.cc"
+				RelativePath="..\packet.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\sprgl.cc"
+				RelativePath="..\packet_factory.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\stdafx.cpp"
+				RelativePath="..\packet_vector.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\ronet.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\stdafx.cc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -521,23 +366,87 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\tcp_connection.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\ucbuffer.cc"
+				>
+			</File>
+			<Filter
+				Name="Packets"
+				>
+				<File
+					RelativePath="..\packets\pkt_authfailed.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charcreate.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charcreated.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charcreateerror.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charlist.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charlogin.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charposition.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_charselect.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_keepalive.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_login.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_loginerror.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_mapacctsend.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_maplogin.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_maploginsuccess.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_ownspeech.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_serverlist.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_skilllist.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -545,41 +454,145 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\include\rogl\actgl.h"
+				RelativePath="..\include\ronet\blob.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\rogl\globject.h"
+				RelativePath="..\include\ronet\buffer.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\rogl\rogl.h"
+				RelativePath="..\include\ronet\connection.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\rogl\rogl_import.h"
+				RelativePath="..\include\ronet\mutex.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\rogl\rogl_static.h"
+				RelativePath="..\include\ronet\mutex_buffer.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\rogl\rsmgl.h"
+				RelativePath="..\include\ronet\net_tools.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\rogl\rswgl.h"
+				RelativePath="..\include\ronet\packet.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\rogl\sprgl.h"
+				RelativePath="..\include\ronet\packet_factory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ronet\packet_vector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ronet\ronet.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ronet\ronet_import.h"
 				>
 			</File>
 			<File
 				RelativePath="..\include\stdafx.h"
 				>
 			</File>
+			<File
+				RelativePath="..\include\ronet\structures.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ronet\tcp_connection.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ronet\ucbuffer.h"
+				>
+			</File>
+			<Filter
+				Name="Packets"
+				>
+				<File
+					RelativePath="..\include\ronet\packets\packets.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_authfailed.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charcreate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charcreated.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charcreateerror.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charlist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charlogin.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charposition.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charselect.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_keepalive.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_login.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_loginerror.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_mapacctsend.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_maplogin.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_maploginsuccess.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_ownspeech.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_serverlist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_skilllist.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -587,14 +600,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\rogl.rc"
+				RelativePath=".\ronet.rc"
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\readme.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -3,9 +3,8 @@
 
 #include "roengine/texturemanager.h"
 
-#include "rogl/texture.h"
-#include "rogl/image_bmp.h"
-#include "rogl/image_spr.h"
+#include "sdle/image.h"
+#include "sdle/image_bmp.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -20,24 +19,13 @@ TextureManager::~TextureManager() {
 }
 
 void TextureManager::Clear() {
-	tex_t::iterator itr = textures.begin();
-	rogl::Texture* tp;
-
-	unsigned int glTex;
-	while (itr != textures.end()) {
-		tp = itr->second;
-		glTex = tp->getIdx();
-		//std::cout << "Unregistering texture " << itr->first << std::endl;
-		delete(tp);
-		itr++;
-	}
 	textures.clear();
 }
 
-rogl::Texture::Pointer TextureManager::Register(FileManager& fm, const std::string& name) {
+sdle::Texture TextureManager::Register(FileManager& fm, const std::string& name) {
 	if (!fm.fileExists(name)) {
 		std::cerr << "Can't load texture " << name << std::endl;
-		return(0);
+		return(sdle::Texture());
 	}
 
 	if (IsRegistered(name))
@@ -46,27 +34,34 @@ rogl::Texture::Pointer TextureManager::Register(FileManager& fm, const std::stri
 	FileData data = fm.getFile(name);
 	std::stringstream imgfile;
 	data.write(imgfile);
-	rogl::ImageBMP img(imgfile);
+	sdle::ImageBMP img(imgfile);
 	return(Register(name, img));
 }
 
-rogl::Texture::Pointer TextureManager::Register(const std::string& name, const rogl::Image& img) {
+sdle::Texture TextureManager::Register(const std::string& name, const sdle::Image& img) {
 	if (IsRegistered(name))
 		return(textures[name]);
 
-	textures[name] = new rogl::Texture(img, name);
-	rogl::Texture::Pointer tp(textures[name]);
+	sdle::Texture::Root* r = new sdle::Texture::Root();
+	if (r->Create(&img) == false) {
+		std::cerr << "Can't store texture in memory " << name << std::endl;
+		delete(r);
+		return(sdle::Texture());
+	}
 
-	return(tp);
+	return(sdle::Texture(r));
 }
+
+sdle::Texture TextureManager::Register(const std::string& name, const sdle::Texture& t) {
+	textures[name] = t;
+	return(t);
+}
+
 
 bool TextureManager::UnRegister(const std::string& name) {
 	if (!IsRegistered(name))
 		return(false);
 	tex_t::iterator itr = textures.find(name);
-
-	unsigned int glTex = itr->second->getIdx();
-	glDeleteTextures(1, &glTex);
 	textures.erase(itr);
 
 	return(true);
@@ -83,22 +78,21 @@ bool TextureManager::Activate(const std::string& name) const {
 	if (itr == textures.end())
 		return(false);
 
-	if (!glIsTexture(itr->second->getIdx()))
+	if (!itr->second.Activate())
 		return(false);
 
-	glBindTexture(GL_TEXTURE_2D, itr->second->getIdx());
 	return(true);
 }
 
 
-rogl::Texture::Pointer TextureManager::operator [](const std::string& name) const {
+sdle::Texture TextureManager::operator [](const std::string& name) const {
 	tex_t::const_iterator itr = textures.find(name);
 	if (itr == textures.end())
-		return(0);
-	rogl::Texture::Pointer ptr(itr->second);
-	return(ptr);
+		return(sdle::Texture());
+	return(itr->second);
 }
 
+/*
 rogl::Texture::PointerCache TextureManager::RegisterSPR(FileManager& fm, ROObjectCache& cache, const std::string& name) {
 	const RO::SPR* spr;
 	rogl::Texture::PointerCache ret;
@@ -118,3 +112,4 @@ rogl::Texture::PointerCache TextureManager::RegisterSPR(FileManager& fm, ROObjec
 	cache.remove(name);
 	return(ret);
 }
+*/

@@ -43,8 +43,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;"
-				PreprocessorDefinitions="WIN32,_WINDOWS,_DEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;;&quot;$(SolutionDir)\freetype2\include\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -107,8 +107,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;..\roint\include\;..\rogl\include\"
-				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -138,6 +138,145 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="DebugDLL|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;ROENGINE_DLL"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalLibraryDirectories="$(SDL)\lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="ReleaseDLL|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
+			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
+			ConfigurationType="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;ROENGINE_DLL"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalLibraryDirectories="$(SDL)\lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -315,10 +454,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\sdl_engine.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\stdafx.cc"
 				>
 				<FileConfiguration
@@ -337,6 +472,26 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugDLL|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseDLL|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\texturecache.cc"
+				>
 			</File>
 			<File
 				RelativePath="..\texturemanager.cc"
@@ -389,11 +544,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\roengine\sdl_engine.h"
+				RelativePath="..\include\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\stdafx.h"
+				RelativePath="..\include\roengine\texturecache.h"
 				>
 			</File>
 			<File
@@ -475,14 +630,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\gui\font.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\gui\glf_font.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\gui\gui.cc"
 				>
 			</File>
@@ -502,22 +649,6 @@
 				RelativePath="..\gui\window.cc"
 				>
 			</File>
-			<Filter
-				Name="Fonts"
-				>
-				<File
-					RelativePath="..\include\roengine\gui\arabia-8.glf.h"
-					>
-				</File>
-				<File
-					RelativePath="..\include\roengine\gui\arial-10.glf.h"
-					>
-				</File>
-				<File
-					RelativePath="..\include\roengine\gui\arial-8.glf.h"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="Headers"
 				>
@@ -539,14 +670,6 @@
 				</File>
 				<File
 					RelativePath="..\include\roengine\gui\event.h"
-					>
-				</File>
-				<File
-					RelativePath="..\include\roengine\gui\font.h"
-					>
-				</File>
-				<File
-					RelativePath="..\include\roengine\gui\glf_font.h"
 					>
 				</File>
 				<File

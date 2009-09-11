@@ -2,7 +2,7 @@
 #ifndef __RO_ENGINE_H
 #define __RO_ENGINE_H
 
-#include "sdl_engine.h"
+#include "sdle/sdl_engine.h"
 #include "ro_object_cache.h"
 #include "gl_object_cache.h"
 #include "texturemanager.h"
@@ -20,7 +20,7 @@
 #include "gui/gui.h"
 #include "roengine/full_act.h"
 
-class ROEngine : public SDLEngine {
+class ROEngine : public sdle::SDLEngine {
 protected:
 	TextureManager m_texturemanager;
 	GLObjectCache m_gl_objects;

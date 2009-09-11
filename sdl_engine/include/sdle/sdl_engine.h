@@ -15,8 +15,10 @@
 
 #ifndef _MSC_VER
 #	include <SDL/SDL_keysym.h>
+#	include <SDL/SDL_events.h>
 #else
 #	include <SDL_keysym.h>
+#	include <SDL_events.h>
 #endif
 
 namespace sdle {
@@ -123,8 +125,8 @@ public:
 
 	// Events
 	virtual void evtQuit();
-	virtual bool evtKeyPress(const int& key, const int& mod = 0);
-	virtual bool evtKeyRelease(const int& key, const int& mod = 0);
+	virtual bool evtKeyPress(SDL_Event *sdlEvent, const int& mod = 0);
+	virtual bool evtKeyRelease(SDL_Event *sdlEvent, const int& mod = 0);
 	virtual bool evtMouseClick(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseRelease(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseMove(const int& x, const int& y, const int& dx, const int& dy);

@@ -7,7 +7,7 @@
 
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
-#	ifdef ROINT_STATIC
+#	ifndef ROINT_DLL
 #		pragma comment(lib, "zlib.lib")
 #	else
 #		pragma comment(lib, "zlib.dll.lib")
@@ -16,8 +16,7 @@
 
 #include "ro/roint_settings.h"
 
-#define _ROINT_DLLAPI_
-#define _ROINT_NOAUTOLIB_
+#define ROINT_INTERNAL
 
 #include "ro/roint_import.h"
 

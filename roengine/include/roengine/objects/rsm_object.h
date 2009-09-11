@@ -12,13 +12,15 @@
 
 #include "../frustum.h"
 
+#include "../texturecache.h"
+
 #include <vector>
 
 class RsmObject : public GLObject {
 protected:
 	const RO::RSM* rsm;
 	const RO::RSW::Model* model;
-	rogl::Texture::PointerCache textures;
+	TextureCache textures;
 
 	static void DrawBoundingBox(const RO::RSM::BoundingBox& box);
 	void DrawMesh(unsigned int meshid = 0);
@@ -34,7 +36,7 @@ public:
 
 	bool loadTextures(TextureManager&, FileManager&);
 	virtual bool isInFrustum(const Frustum&) const;
-	rogl::Texture::Pointer getTexture(unsigned int i);
+	sdle::Texture getTexture(unsigned int i);
 
 	virtual void Draw();
 };

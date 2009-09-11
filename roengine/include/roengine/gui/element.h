@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "rogl/texture.h"
+#include "sdle/texture.h"
 #include "../texturemanager.h"
 
 #include "tinyxml/tinyxml.h"
@@ -99,7 +99,7 @@ protected:
 
 	std::vector<Element*> m_children;
 	Element* m_active_child;
-	rogl::Texture::Pointer texture;
+	sdle::Texture texture;
 
 	int pos_x, pos_y,MaxLen;
 	int w, h,mw, mh;
@@ -107,7 +107,7 @@ protected:
 	virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	void ParseFromXml(const TiXmlElement*, TextureManager&, FileManager&);
 
-	void Window(float x, float y, const rogl::Texture::Pointer& tp);
+	void Window(float x, float y, const sdle::Texture& tp);
 public:
 	Element();
 	double opacity;
@@ -131,7 +131,7 @@ public:
 	Element(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm);
 	virtual ~Element();
 
-	void setTexture(const rogl::Texture::Pointer&);
+	void setTexture(const sdle::Texture&);
 	void SetMouseInFlag(bool flag);
 
 	virtual void Draw(unsigned int delay = 0);

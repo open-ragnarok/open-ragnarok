@@ -277,13 +277,13 @@ void SDLEngine::ProcessKeyboard() {
                 keys[e.key.keysym.sym] = true;
 				m_mod = e.key.keysym.mod;
 				m_lastkey = e.key.keysym.sym;
-                evtKeyPress(e.key.keysym.sym, e.key.keysym.mod);
+                evtKeyPress(&e, e.key.keysym.mod);
                 break;
             case SDL_KEYUP:
                 keys[e.key.keysym.sym] = false;
 				if (m_lastkey = e.key.keysym.sym)
 					m_lastkey = SDLK_UNKNOWN;
-                evtKeyRelease(e.key.keysym.sym, e.key.keysym.mod);
+                evtKeyRelease(&e, e.key.keysym.mod);
                 break;
             case SDL_MOUSEMOTION:
                 evtMouseMove(e.button.x, e.button.y, e.motion.xrel, e.motion.yrel);
@@ -301,11 +301,11 @@ void SDLEngine::ProcessKeyboard() {
 void SDLEngine::evtQuit() {
 }
 
-bool SDLEngine::evtKeyPress(const int& key, const int& mod) {
+bool SDLEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) {
     return (false);
 }
 
-bool SDLEngine::evtKeyRelease(const int& key, const int& mod) {
+bool SDLEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) {
     return (false);
 }
 

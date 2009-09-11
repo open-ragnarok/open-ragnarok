@@ -13,13 +13,13 @@ protected:
 	RO::CDir direction;
 
 	void Billboard();
-	void Window(float x, float y, const rogl::Texture::Pointer& tex, bool mirrorX = false, bool mirrorY = false);
-	virtual void DrawAct(const RO::ACT::Pat& pat, rogl::Texture::Pointer& t);
+	void Window(float x, float y, const sdle::Texture& tex, bool mirrorX = false, bool mirrorY = false);
+	virtual void DrawAct(const RO::ACT::Pat& pat, sdle::Texture& t);
 
 public:
 	ActObject();
 	ActObject(const ActObject&);
-	ActObject(const RO::ACT*, const rogl::Texture::PointerCache&);
+	ActObject(const RO::ACT*, const rogl::SprGL&);
 	virtual ~ActObject();
 
 	virtual void Draw();

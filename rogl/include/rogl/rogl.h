@@ -14,5 +14,6 @@ namespace rogl {
 
 #include "rogl/rsmgl.h"
 #include "rogl/rswgl.h"
+#include "rogl/sprgl.h"
 
 #endif /* __ROGL_H */

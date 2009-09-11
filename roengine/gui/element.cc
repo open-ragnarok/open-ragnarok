@@ -119,10 +119,10 @@ GUI::Element::Element(Element* parent, const std::string& background, TextureMan
 
 	m_elements.add(this);
 
-	rogl::Texture::Pointer ptr = tm.Register(fm, background);
-	if (ptr.isValid()) {
+	sdle::Texture ptr = tm.Register(fm, background);
+	if (ptr.Valid()) {
 		texture = ptr;
-		setSize(texture->getWidth(), texture->getHeight());
+		setSize(texture.getWidth(), texture.getHeight());
 	}
 }
 
@@ -194,7 +194,7 @@ void GUI::Element::Draw(unsigned int delay) {
 	glPopMatrix();
 }
 
-void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) {
+void GUI::Element::Window(float x, float y, const sdle::Texture& tp) {
 	tp.Activate();
 
 	float w, h;
@@ -205,59 +205,52 @@ void GUI::Element::Window(float x, float y, const rogl::Texture::Pointer& tp) {
 		w = (float)gui->getWidth();
 		h = (float)gui->getHeight();
 	}
-	else if (!tp.isValid()) {
+	else if (!tp.Valid()) {
 		w = (float)this->w;
 		h = (float)this->h;
 	}
 	else {
-		w = (float)tp->getWidth();
-		h = (float)tp->getHeight();
+		w = (float)tp.getWidth();
+		h = (float)tp.getHeight();
 	}
 
-	if (tp.isValid()) {
-		u = tp->getMaxU();
-		v = tp->getMaxV();
+	if (tp.Valid()) {
+		u = tp.getMaxU();
+		v = tp.getMaxV();
 	}
 	else {
 		u = 0;
 		v = 0;
 	}
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
 	if(m_stransparent){
 		if(opacity > 0.5){
 			opacity-=0.006;
-	glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
-	}
-		else{
+			glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
+		}
+		else {
 			glColor4f(1.0f,1.0f,1.0f,0.5f);
 		}
 	}
-	else
-	{
-		if(opacity < 1){
+	else {
+		if(opacity < 1) {
 			opacity+=0.006;
-	glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
-	}
-		else{
+			glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
+		}
+		else {
 			glColor4f(1.0f,1.0f,1.0f,1.0f);
 		}
 	}
 	glBegin(GL_QUADS);
-
-	glTexCoord2f(0.0f, v);
-	glVertex3f(x,   y,   0);
-
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(x,   y+h, 0);
-
-	glTexCoord2f(u, 0.0f);
-	glVertex3f(x+w, y+h, 0);
-
-	glTexCoord2f(u, v);
-	glVertex3f(x+w, y,   0);
-
+	glTexCoord2f(0.0f, v);		glVertex3f(x,   y,   0);
+	glTexCoord2f(0.0f, 0.0f);	glVertex3f(x,   y+h, 0);
+	glTexCoord2f(u, 0.0f);		glVertex3f(x+w, y+h, 0);
+	glTexCoord2f(u, v);			glVertex3f(x+w, y,   0);
 	glEnd();
+
 	glDisable(GL_BLEND);
 }
 
@@ -416,10 +409,10 @@ void GUI::Element::ParseFromXml(const TiXmlElement* node, TextureManager& tm, Fi
 		attr = attr->Next();
 	}
 
-	if (w == 0 && texture.isValid())
-		w = texture->getWidth();
-	if (h == 0 && texture.isValid())
-		h = texture->getHeight();
+	if (w == 0 && texture.Valid())
+		w = texture.getWidth();
+	if (h == 0 && texture.Valid())
+		h = texture.getHeight();
 
 	if (pos_x == -1)
 		CenterX();
@@ -440,8 +433,8 @@ int GUI::Element::getW() const {
 		if (w != 0)
 			return(w);
 		else
-			if (texture.isValid())
-				return(texture->getWidth());
+			if (texture.Valid())
+				return(texture.getWidth());
 		return(0);
 	}
 	return(Gui::getSingleton().getWidth());
@@ -452,8 +445,8 @@ int GUI::Element::getH() const {
 		if (h != 0)
 			return(h);
 		else
-			if (texture.isValid())
-				return(texture->getHeight());
+			if (texture.Valid())
+				return(texture.getHeight());
 		return(0);
 	}
 	return(Gui::getSingleton().getHeight());
@@ -527,7 +520,7 @@ GUI::Element* GUI::Element::loadXml(Element* parent, const TiXmlElement* node, T
 }
 
 
-void GUI::Element::setTexture(const rogl::Texture::Pointer& tp) {
+void GUI::Element::setTexture(const sdle::Texture& tp) {
 	texture = tp;
 }
 

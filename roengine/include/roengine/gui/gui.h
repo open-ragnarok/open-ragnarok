@@ -16,11 +16,7 @@
 #include "singleton.h"
 #include "../base_cache.h"
 #include "../vector.h"
-#include "font.h"
 #include "event.h"
-
-// Font handlers
-#include "font.h"
 
 #include <string>
 #include <vector>
@@ -51,11 +47,11 @@ protected:
 	int m_height;
 
 	/** Stores the registered fonts. These are all destroyed when this object is destroyed. */
-	BaseCache<Font> m_fonts;
+	BaseCache<sdle::Font> m_fonts;
 	std::vector<Event> m_events;
 
 	/** Our default font. If not changed, it's always the first loaded font. */
-	const Font* m_defaultFont;
+	const sdle::Font* m_defaultFont;
 
 	/** Background for the dialog box */
 	std::string m_msgbox_bg;
@@ -73,10 +69,10 @@ public:
 	Gui();
 	~Gui();
 
-	const std::string getMsgboxBg();
-	const std::string getMsgboxOk();
-	const std::string getMsgboxCancel();
-	const std::string getMsgboxExit();
+	std::string getMsgboxBg();
+	std::string getMsgboxOk();
+	std::string getMsgboxCancel();
+	std::string getMsgboxExit();
 
 	/** Intializes GUI, loads default fonts and register textures */
 	void Init(int, int);
@@ -152,9 +148,9 @@ public:
 	bool InjectKeyRelease(SDL_Event*, const int& mod = 0);
 	bool InjectMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 
-	BaseCache<Font>& FontManager();
-	const BaseCache<Font>& FontManager() const;
-	const Font* getDefaultFont();
+	BaseCache<sdle::Font>& FontManager();
+	const BaseCache<sdle::Font>& FontManager() const;
+	const sdle::Font* getDefaultFont();
 
 	/** Retrieves current width */
 	int getWidth() const;

@@ -18,7 +18,7 @@ class SDLENGINE_DLLAPI ImageBMP : public Image {
 protected:
 	ImageBMP(char*, int, int);
 	
-	bool ReadFromStream(std::istream& input, bool flipvertical = true);
+	bool ReadFromStream(std::istream& input, bool flipvertical = false);
 	bool Read8BPP(std::istream& input, const bool& flipvertical);
 	bool Read24BPP(std::istream& input, const bool& flipvertical);
 	

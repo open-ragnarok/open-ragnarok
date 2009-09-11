@@ -4,13 +4,10 @@
 #include "roengine/gui/gui.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
-
-#include "roengine/gui/glf_font.h"
+#include "sdle/glf_font.h"
+#include "sdle/ft_font.h"
 
 namespace GUI {
-#include "roengine/gui/arabia-8.glf.h"
-#include "roengine/gui/arial-8.glf.h"
-#include "roengine/gui/arial-10.glf.h"
 
 /**
  * Starts OpenGL 2D Mode
@@ -42,46 +39,13 @@ void Mode2DEnd() {
 	glPopMatrix();
 }
 
-Font* getDefaultFont(const unsigned char data[], unsigned int data_size) {
-	std::stringstream ss;
-	GLFFont* f = new GLFFont();
-	ss.write((char*)data, data_size);
-	if (!f->load(ss)) {
-		delete(f);
-		return(NULL);
-	}
-	return((Font*)f);
-}
-
-/**
- * Loads the basic fonts for the engine (even if there are no external fonts available,
- * these will be).
- * Provided fonts are Arial (sizes 8 and 10) and Arabia (size 8).
- */
-void LoadDefaultFonts() {
-	Gui& gui = Gui::getSingleton();
-	Font* f;
-
-	f = getDefaultFont(glf_arial8, glf_arial8_size);
-	gui.FontManager().add("arial-8", f);
-
-	f = getDefaultFont(glf_arial10, glf_arial10_size);
-	gui.FontManager().add("arial-10", f);
-
-	f = getDefaultFont(glf_arabia8, glf_arabia8_size);
-	gui.FontManager().add("arabia-8", f);
-}
-}
-
-void GUI::Gui::Init(int w, int h) {
+void Gui::Init(int w, int h) {
 	setSize(w, h);
 
-	LoadDefaultFonts();
-
-	m_defaultFont = m_fonts["arial-10"];
+	m_defaultFont = &sdle::Font_Arial10;
 }
 
-GUI::Gui::Gui() : Singleton<Gui>() {
+Gui::Gui() : Singleton<Gui>() {
 	m_desktop = NULL;
 	m_inactiveDesktop = NULL;
 	active = NULL;
@@ -92,11 +56,11 @@ GUI::Gui::Gui() : Singleton<Gui>() {
 	m_msgbox_btnexit = "login_interface\\btn_exit.bmp";
 }
 
-GUI::Gui::~Gui() {
+Gui::~Gui() {
 	clear();
 }
 
-const std::string GUI::Gui::getMsgboxBg() {
+std::string Gui::getMsgboxBg() {
 	std::string aux = "texture\\";
 	aux += RO::EUC::user_interface;
 	aux += "\\";
@@ -104,7 +68,7 @@ const std::string GUI::Gui::getMsgboxBg() {
 	return(aux);
 }
 
-const std::string GUI::Gui::getMsgboxOk() {
+std::string Gui::getMsgboxOk() {
 	std::string aux = "texture\\";
 	aux += RO::EUC::user_interface;
 	aux += "\\";
@@ -112,7 +76,7 @@ const std::string GUI::Gui::getMsgboxOk() {
 	return(aux);
 }
 
-const std::string GUI::Gui::getMsgboxCancel() {
+std::string Gui::getMsgboxCancel() {
 	std::string aux = "texture\\";
 	aux += RO::EUC::user_interface;
 	aux += "\\";
@@ -120,7 +84,7 @@ const std::string GUI::Gui::getMsgboxCancel() {
 	return(aux);
 }
 
-const std::string GUI::Gui::getMsgboxExit() {
+std::string Gui::getMsgboxExit() {
 	std::string aux = "texture\\";
 	aux += RO::EUC::user_interface;
 	aux += "\\";
@@ -128,11 +92,11 @@ const std::string GUI::Gui::getMsgboxExit() {
 	return(aux);
 }
 
-void GUI::Gui::clear() {
+void Gui::clear() {
 	GUI::Element::getCache().clear();
 }
 
-void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
+void Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 	if (!m_desktop && !m_inactiveDesktop)
 		return;
 
@@ -160,24 +124,25 @@ void GUI::Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 	Mode2DEnd();
 }
 
-void GUI::Gui::textOut(const std::string& text, float x, float y, float z,int MaxLen) {
-	m_defaultFont->textOut(text, x, y, z,MaxLen);
+void Gui::textOut(const std::string& text, float x, float y, float z,int MaxLen) {
+	// TODO: Create a MaxLen method on sdle::Font
+	m_defaultFont->drawText(x, y, text.c_str());
 }
 
-void GUI::Gui::setSize(int w, int h) {
+void Gui::setSize(int w, int h) {
 	m_width = w;
 	m_height = h;
 }
 
-GUI::Desktop* GUI::Gui::getDesktop() {
+Desktop* Gui::getDesktop() {
 	return(m_desktop);
 }
 
-const GUI::Desktop* GUI::Gui::getDesktop() const {
+const Desktop* Gui::getDesktop() const {
 	return(m_desktop);
 }
 
-void GUI::Gui::setDesktop(Desktop* e) {
+void Gui::setDesktop(Desktop* e) {
 	if (m_desktop == e)
 		return;
 	m_desktop = e;
@@ -190,7 +155,7 @@ void GUI::Gui::setDesktop(Desktop* e) {
 	}
 }
 
-bool GUI::Gui::setDesktop(const std::string& ui) {
+bool Gui::setDesktop(const std::string& ui) {
 	if (ui == "") {
 		setDesktop(NULL);
 		return(true);
@@ -204,27 +169,27 @@ bool GUI::Gui::setDesktop(const std::string& ui) {
 	return(true);
 }
 
-BaseCache<GUI::Font>& GUI::Gui::FontManager() {
+BaseCache<sdle::Font>& Gui::FontManager() {
 	return(m_fonts);
 }
 
-const BaseCache<GUI::Font>& GUI::Gui::FontManager() const {
+const BaseCache<sdle::Font>& Gui::FontManager() const {
 	return(m_fonts);
 }
 
-const GUI::Font* GUI::Gui::getDefaultFont() {
+const sdle::Font* Gui::getDefaultFont() {
 	return(m_defaultFont);
 }
 
-int GUI::Gui::getWidth() const {
+int Gui::getWidth() const {
 	return(m_width);
 }
 
-int GUI::Gui::getHeight() const {
+int Gui::getHeight() const {
 	return(m_height);
 }
 
-GUI::Element* GUI::Gui::getActiveElement() {
+Element* Gui::getActiveElement() {
 	if (active == NULL) {
 		if (m_desktop != NULL) {
 			Element* next;
@@ -239,43 +204,42 @@ GUI::Element* GUI::Gui::getActiveElement() {
 	return(active);
 }
 
-bool GUI::Gui::InjectKeyPress(SDL_Event *sdlEvent, const int& mod) {
+bool Gui::InjectKeyPress(SDL_Event *sdlEvent, const int& mod) {
 	Element* e = getActiveElement();
 	if (e == NULL)
 		return(false);
 	return(e->HandleKeyDown(sdlEvent, mod));
 }
 
-bool GUI::Gui::InjectKeyRelease(SDL_Event *sdlEvent, const int& mod) {
+bool Gui::InjectKeyRelease(SDL_Event *sdlEvent, const int& mod) {
 	Element* e = getActiveElement();
 	if (e == NULL)
 		return(false);
 	return(e->HandleKeyUp(sdlEvent, mod));
 }
 
-bool GUI::Gui::InjectMouseClick(int x, int y, int buttons, int modifier)  {
+bool Gui::InjectMouseClick(int x, int y, int buttons, int modifier)  {
 	Element* e = getDesktop();
 	if (e == NULL)
 		return(false);
 	return(e->HandleMouseDown(x, y, buttons));
 }
 
-bool GUI::Gui::InjectMouseRelease(int x, int y, int buttons, int modifier)  {
+bool Gui::InjectMouseRelease(int x, int y, int buttons, int modifier)  {
 	Element* e = getDesktop();
 	if (e == NULL)
 		return(false);
 	return(e->HandleMouseRelease(x, y, buttons));
 }
 
-bool GUI::Gui::InjectMouseMove(const int& x, const int& y, const int& dx, const int& dy)
-{
+bool Gui::InjectMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
 	Element* e = getDesktop();
 	if (e == NULL)
 		return(false);
 	return(e->HandleMouseMove(x, y, dx, dy));
 }
 
-void GUI::Gui::setFocus(Element* e) {
+void Gui::setFocus(Element* e) {
 	if (active != e) {
 		if (active != NULL)
 			active->onLoseFocus();
@@ -286,19 +250,19 @@ void GUI::Gui::setFocus(Element* e) {
 	}
 }
 
-GUI::Element* GUI::Gui::operator[] (const std::string& n) {
+Element* Gui::operator[] (const std::string& n) {
 	return(Element::getElement(n));
 }
 
-const GUI::Element* GUI::Gui::operator[] (const std::string& n) const {
+const Element* Gui::operator[] (const std::string& n) const {
 	return(Element::getElement(n));
 }
 
-void GUI::Gui::PushEvent(const Event& e) {
+void Gui::PushEvent(const Event& e) {
 	m_events.push_back(e);
 }
 
-GUI::Event GUI::Gui::PopEvent() {
+Event Gui::PopEvent() {
 	std::vector<Event>::iterator itr;
 	itr = m_events.begin();
 	if (itr == m_events.end())
@@ -308,11 +272,11 @@ GUI::Event GUI::Gui::PopEvent() {
 	return(ret);
 }
 
-int GUI::Gui::GetEventCount() const {
+int Gui::GetEventCount() const {
 	return(m_events.size());
 }
 
-void GUI::Gui::ProcessEvents() {
+void Gui::ProcessEvents() {
 	if (m_desktop == NULL)
 		return;
 
@@ -320,7 +284,7 @@ void GUI::Gui::ProcessEvents() {
 		m_desktop->HandleEvent(PopEvent());
 }
 
-void GUI::Gui::Dialog(const std::string& title, const std::string& text, TextureManager& tm, FileManager& fm, int buttons) {
+void Gui::Dialog(const std::string& title, const std::string& text, TextureManager& tm, FileManager& fm, int buttons) {
 	GUI::Dialog* dialog;
 	dialog = new GUI::Dialog(title, text, tm, fm);
 	m_inactiveDesktop = m_desktop;
@@ -334,13 +298,11 @@ SDL_Color GetRGB(IN SDL_Surface *Surface, IN Uint32 Color){
 	return Rgb;
 }
 
-void GUI::Gui::ClearFont_Screen(TextEditor *G_Text){
+void Gui::ClearFont_Screen(TextEditor *G_Text) {
 	NODE *i;
 
-	for (i=G_Text->Start; i != NULL ; i=i->Next)
-	{
-		if( i->Font_Screen != NULL )
-		{
+	for (i=G_Text->Start; i != NULL ; i=i->Next) {
+		if( i->Font_Screen != NULL ) {
 			SDL_FreeSurface(i->Font_Screen);
 			i->Font_Screen = NULL;
 		}
@@ -354,7 +316,25 @@ inline int next_p2(int a){
 }
 
 
-int GUI::Gui::TextOutEx(TextEditor *G_Text){
+int Gui::TextOutEx(TextEditor *G_Text) {
+#if 1
+	if (G_Text->Start == NULL)
+		return(0);
+	// BIG hack to make SDLEngine and FreeType work for now
+	unsigned short text[128];
+	unsigned int i = 0;
+	NODE* n = G_Text->Start;
+	while (n != NULL) {
+		text[i] = n->Ch;
+		i++;
+		text[i] = 0;
+		n = n->Next;
+	}
+
+	glColor3f(0, 0, 0);
+	G_Text->Font->drawText(G_Text->x, G_Text->y, text);
+	glColor3f(1, 1, 1);
+#else
 	//SDL_Surface *Font_Screen = NULL;
 	SDL_Color Font_FColor, Font_BColor, Font_SBColor, Font_SFColor;
 
@@ -363,8 +343,7 @@ int GUI::Gui::TextOutEx(TextEditor *G_Text){
 	SDL_Rect rect ={0};
 	LCHAR Ch[2] = {0};
 
-	if( G_Text->Start == NULL )
-	{
+	if( G_Text->Start == NULL ) {
 		return 0;
 	}
 
@@ -373,23 +352,19 @@ int GUI::Gui::TextOutEx(TextEditor *G_Text){
 	Font_SFColor = GetRGB(SDL_GetVideoSurface(), G_Text->SFColor);
 	Font_SBColor = GetRGB(SDL_GetVideoSurface(), G_Text->SBColor);
 
-	for (i=G_Text->Start; i != NULL ; i=i->Next)
-	{
+	for (i=G_Text->Start; i != NULL ; i=i->Next) {
 		G_Text->m_text[j++] = i->Ch;
 		G_Text->m_text[j] = AU('\0');
 		TTF_SizeUNICODE(G_Text->Font, G_Text->m_text, &w, &h);
 		FontH = h;
 		Ch[0] = i->Ch;
-		if ( w <= G_Text->EffectWidth )
-		{
+		if ( w <= G_Text->EffectWidth ) {
 			FontW = w;
-			if( i->selected )
-			{
+			if( i->selected ) {
 				/* 输出字体 */
 				i->Font_Screen = TTF_RenderUNICODE_Shaded(G_Text->Font, Ch, Font_SFColor, Font_SBColor);
 			}
-			else
-			{
+			else {
 				/* 输出字体 */
 				i->Font_Screen = TTF_RenderUNICODE_Shaded(G_Text->Font, Ch, Font_FColor, Font_BColor);
 				SDL_SetColorKey(i->Font_Screen, SDL_SRCCOLORKEY, SDL_MapRGB(i->Font_Screen->format, Font_BColor.r, Font_BColor.g, Font_BColor.b));
@@ -399,15 +374,13 @@ int GUI::Gui::TextOutEx(TextEditor *G_Text){
 				}
 			}
 
-			if (i->Font_Screen == NULL)
-			{
+			if (i->Font_Screen == NULL) {
 				std::cout << "::CreateFont failed: " << i->Ch << std::endl;
 				ClearFont_Screen(G_Text);
 				return -1;
 			}
 		}
-		else
-		{
+		else {
 			G_Text->m_text[j-1] = AU('\0');
 			break;
 		}
@@ -459,19 +432,18 @@ int GUI::Gui::TextOutEx(TextEditor *G_Text){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0,1);
-	glVertex3f(G_Text->x, G_Text->y+nHeightPowerOfTwo+1, 0);
-	glTexCoord2f(0,0);
-	glVertex3f(G_Text->x, G_Text->y+1, 0);
-	glTexCoord2f(1,0);
-	glVertex3f(G_Text->x+nWidthPowerOfTwo, G_Text->y+1, 0);
-	glTexCoord2f(1,1);
-	glVertex3f(G_Text->x+nWidthPowerOfTwo, G_Text->y+nHeightPowerOfTwo+1, 0);
+	glTexCoord2i(0,1); glVertex3i(G_Text->x, G_Text->y+nHeightPowerOfTwo+1, 0);
+	glTexCoord2i(0,0); glVertex3i(G_Text->x, G_Text->y+1, 0);
+	glTexCoord2i(1,0); glVertex3i(G_Text->x+nWidthPowerOfTwo, G_Text->y+1, 0);
+	glTexCoord2i(1,1); glVertex3i(G_Text->x+nWidthPowerOfTwo, G_Text->y+nHeightPowerOfTwo+1, 0);
 	glEnd();
 
 	glDeleteTextures(1,&hudTextureID);
 
 	SDL_FreeSurface(tmp);
 	ClearFont_Screen(G_Text);
+#endif
 	return 0;
+}
+
 }

@@ -14,6 +14,7 @@
 #ifdef _MSC_VER
 #	include <SDL.h>
 #	pragma comment(lib, "SDLmain.lib")
+#	pragma comment(lib, "sdlengine.lib")
 #else
 #	include <SDL/SDL.h>
 #endif

@@ -68,7 +68,7 @@ void GUI::List::Draw(unsigned int delay) {
 	int cy = pos_y;
 	unsigned int i;
 	GUI::Gui& gui = GUI::Gui::getSingleton();
-	const GUI::Font* font = gui.getDefaultFont();
+	const sdle::Font* font = gui.getDefaultFont();
 	glColor3f(0,0,0);
 
 	for (i = m_first; i < m_items.size(); i++) {
@@ -84,7 +84,7 @@ void GUI::List::Draw(unsigned int delay) {
 			glEnable(GL_TEXTURE_2D);
 			glColor3f(0, 0, 0);
 		}
-		font->textOut(m_items[i], (float)pos_x + 2, (float)cy, 0, 0);
+		font->drawText((float)pos_x + 2, (float)cy, m_items[i].c_str());
 		cy += 17;
 	}
 

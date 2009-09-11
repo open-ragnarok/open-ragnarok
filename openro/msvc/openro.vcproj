@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SDL)\include&quot;;&quot;$(SolutionDir)..\roint\include&quot;;&quot;$(SolutionDir)..\rogl\include&quot;;&quot;$(SolutionDir)..\ronet\include&quot;;&quot;$(SolutionDir)..\roengine\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SDL)\include&quot;;&quot;$(SolutionDir)..\sdl_engine\include&quot;;&quot;$(SolutionDir)..\roint\include&quot;;&quot;$(SolutionDir)..\rogl\include&quot;;&quot;$(SolutionDir)..\ronet\include&quot;;&quot;$(SolutionDir)..\roengine\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;$(SDL)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;$(SDL)\lib&quot;;$(SolutionDir)\freetype2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"

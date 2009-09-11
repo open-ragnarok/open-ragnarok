@@ -3,7 +3,7 @@
 #define __GL_OBJECT_H
 
 #include "frustum.h"
-#include "rogl/texture.h"
+#include "sdle/texture.h"
 #include "vector.h"
 
 class GLObject {
@@ -16,7 +16,7 @@ protected:
 	virtual void BeforeDraw();
 
 	bool m_useTexture;
-	rogl::Texture::Pointer m_texture;
+	sdle::Texture m_texture;
 	bool m_visible;
 	long m_tickdelay;
 	bool m_frustum_check;
@@ -40,7 +40,7 @@ public:
 	Vector3f& getPos();
 	const Vector3f& getPos() const;
 
-	void setTexture(rogl::Texture::Pointer& tex);
+	void setTexture(sdle::Texture& tex);
 	void useTexture(bool);
 	void setVisible(bool = true);
 	void setFrustumCheck(bool = true);

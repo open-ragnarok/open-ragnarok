@@ -9,8 +9,8 @@ GUI::Dialog::Dialog(const std::string& title, const std::string& msg, TextureMan
 	setName("dialog");
 
 	texture = tm.Register(fm, Gui::getSingleton().getMsgboxBg());
-	if (texture.isValid()) {
-		setSize(texture->getWidth(), texture->getHeight());
+	if (texture.Valid()) {
+		setSize(texture.getWidth(), texture.getHeight());
 	}
 
 	btnOk = new Button(this, Gui::getSingleton().getMsgboxOk(), tm, fm);

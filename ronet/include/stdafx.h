@@ -2,15 +2,11 @@
 #ifndef __STDAFX_H
 #define __STDAFX_H
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
-#	ifndef _WIN32_WINNT
-#		define _WIN32_WINNT 0x400
-#	endif
 #endif
 
-#define _RONET_DLLAPI_
-#define _RONET_NOAUTOLIB_
+#define RONET_INTERNAL
 
 #include "ronet/packet_vector.h"
 
@@ -33,5 +29,7 @@
 	#define INVALID_SOCKET -1
 	#define SOCKET_ERROR -1
 #endif
+
+#pragma comment(lib, "wsock32.lib")
 
 #endif /* __STDAFX_H */

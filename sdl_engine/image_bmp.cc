@@ -127,25 +127,16 @@ bool ImageBMP::Read8BPP(std::istream& input, const bool& flipvertical) {
 	this->buffer = new char[dataSize];
 	
 	// printf("Reading BMP %d x %d\n", width, height);
-	int idx, offset;
-
+	unsigned int idx;
+	int offset;
 	unsigned char alpha;
 
-/*
-#ifdef _DEBUG
-	{
-		int x = 0;
-		for (x = 0; x < 10; x++) {
-			std::cout << "Color " << x << ": " << (int)colors[x].r << ", " << (int)colors[x].g << ", " << (int)colors[x].b << ", " << (int)colors[x].a << std::endl;
-		}
-	}
-#endif
-*/
-	
+	unsigned char* px = (unsigned char*)pixels.getBuffer();
+
 	for(int y = 0; y < m_height; y++) {
 		for(int x = 0; x < m_width; x++) {
 			//idx = pixels[(bpr << y) + x];
-			idx = pixels[(bpr * y) + x];
+			idx = px[(bpr * y) + x];
 #if 1
 			// This hack is to simulate transparency based on Ragnarok textures using the #FF00FF color for transparent.
 			if ((colors[idx].r == 255) && (colors[idx].g == 0) && (colors[idx].b == 255))

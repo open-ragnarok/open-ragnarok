@@ -3,7 +3,7 @@
 
 #include "roengine/gui/textinput.h"
 #include "roengine/gui/gui.h"
-#include "roengine/gui/font.h"
+#include "sdle/ft_font.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -13,7 +13,7 @@
 unsigned int GUI::TextInput::cursor_delay = 500;
 
 GUI::TextInput::~TextInput(){
-	TTF_CloseFont(G_Text.Font);
+	delete G_Text.Font;
 }
 GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager& tm, FileManager& fm) : Label(parent, e, tm, fm) {
 	m_focusable = true;
@@ -28,8 +28,7 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager
 
 	G_Text.Surface  = SDL_GetVideoSurface();
 	G_Text.Text_Changed	= false;
-	if( MaxLen <= 0 )
-	{
+	if( MaxLen <= 0 ) {
 		MaxLen = 0;
 	}
 	G_Text.Len		= MaxLen;
@@ -44,7 +43,10 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager
 	G_Text.Alpha    = SDL_OPACITY;
 	G_Text.m_text   = (LCHAR*)calloc(MaxLen+sizeof(LCHAR), sizeof(LCHAR));
 
-	G_Text.Font = TTF_OpenFont("data\\font\\lsans.ttf", 12);
+	// TODO: put this in the FontManager
+	sdle::FTFont *font = new sdle::FTFont();
+	G_Text.Font = font;
+	font->open("..\\data\\font\\lsans.ttf", 12);
 
 	G_Text.Head = G_Text.Start  = G_Text.Current = G_Text.select1 = G_Text.select2 = NULL;// G_Text.End = NewNode(NULL, NULL, AU('\0'));
 }
@@ -79,8 +81,8 @@ void GUI::TextInput::Draw(unsigned int delay) {
 
 	return;
 
-	if (G_Text.Text_Changed)
-	{
+/*
+	if (G_Text.Text_Changed) {
 		ShowCursor(true);
 	}
 
@@ -100,6 +102,7 @@ void GUI::TextInput::Draw(unsigned int delay) {
 		glColor3f(1,1,1);
 		glEnable(GL_TEXTURE_2D);
 	}
+*/
 }
 
 bool GUI::TextInput::HandleMouseRelease(int x, int y, int button) {
@@ -190,6 +193,14 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 		SelectAll();
 	else if(sdlEvent->key.keysym.unicode != 0)
 		Insert(sdlEvent->key.keysym.unicode);
+	else
+		Insert(sdlEvent->key.keysym.sym);
+
+	printf("Text input:\t");
+	printf("Unicode: %d\t", sdlEvent->key.keysym.unicode);
+	printf("Sym: %d", sdlEvent->key.keysym.sym);
+	printf("Char: [%c]", sdlEvent->key.keysym.sym);
+	printf("\n");
 
 
 	if (m_parent == NULL)
@@ -294,18 +305,15 @@ void GUI::TextInput::GetStringFromNode(void)
 	NODE *i;
 	int  j=0, w, h;
 
-	if( G_Text.Start == NULL )
-	{
+	if( G_Text.Start == NULL ) {
 		G_Text.m_text[j] = AU('\0');
 		return;
 	}
-	for (i=G_Text.Start; i != NULL ; i=i->Next)
-	{
+	for (i=G_Text.Start; i != NULL ; i=i->Next) {
 		G_Text.m_text[j++] = i->Ch;
 		G_Text.m_text[j] = AU('\0');
-		TTF_SizeUNICODE(G_Text.Font, G_Text.m_text, &w, &h);
-		if (w > this->w)
-		{
+		G_Text.Font->getSize(G_Text.m_text, &w, &h);
+		if (w > this->w) {
 			G_Text.m_text[j-1] = AU('\0');
 			break;
 		}
@@ -536,7 +544,7 @@ int GUI::TextInput::GetCursorX()
 		{
 			Buffer[k++] = i->Ch;
 			Buffer[k] = AU('\0');
-			TTF_SizeUNICODE(G_Text.Font, Buffer, &w, &h);
+			G_Text.Font->getSize(Buffer, &w, &h);
 			if (w > this->w)
 			{
 				k--;
@@ -545,7 +553,7 @@ int GUI::TextInput::GetCursorX()
 		}
 	}
 	Buffer[k] = AU('\0');
-	TTF_SizeUNICODE(G_Text.Font, Buffer, &w, &h);
+	G_Text.Font->getSize(Buffer, &w, &h);
 	delete []Buffer;
 	return ( G_Text.x + w );
 }
@@ -595,7 +603,7 @@ bool GUI::TextInput::CheckPos()
 	}
 
 	Buffer[k] = AU('\0');
-	TTF_SizeUNICODE(G_Text.Font, Buffer, &w, &h);
+	G_Text.Font->getSize(Buffer, &w, &h);
 	delete []Buffer;
 	if( w > this->w )
 	{
@@ -642,7 +650,7 @@ void GUI::TextInput::ClickPos(int x)
 	{
 		Buffer[k++] = i->Ch;
 		Buffer[k] = AU('\0');
-		TTF_SizeUNICODE(G_Text.Font, Buffer, &w, &h);
+		G_Text.Font->getSize(Buffer, &w, &h);
 		if (w > this->w)
 		{
 			G_Text.Current = i->Prev;

@@ -5,7 +5,7 @@
 
 class GuiAct : public ActObject {
 protected:
-	virtual void DrawAct(const RO::ACT::Pat& pat, rogl::Texture::Pointer& t);
+	virtual void DrawAct(const RO::ACT::Pat& pat, sdle::Texture& t);
 };
 
 #endif /* __GUI_ACT_H */

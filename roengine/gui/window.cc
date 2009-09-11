@@ -12,7 +12,7 @@ GUI::Window::Window(Element* parent) : Element(parent) {
 	IsMouseDowning = false;
 }
 
-GUI::Window::Window(const rogl::Texture::Pointer& t, Element* parent) : Element(parent) {
+GUI::Window::Window(const sdle::Texture& t, Element* parent) : Element(parent) {
 	IsMouseDowning = false;
 	texture = t;
 }

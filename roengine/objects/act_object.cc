@@ -25,7 +25,7 @@ ActObject::ActObject(const ActObject& o) : FullAct(o) {
 	curaction = o.curaction;
 }
 
-ActObject::ActObject(const RO::ACT* a, const rogl::Texture::PointerCache& t) : FullAct(a, t) {
+ActObject::ActObject(const RO::ACT* a, const rogl::SprGL& t) : FullAct(a, t) {
 	curframe = 0;
 	curaction = 0;
 }
@@ -61,53 +61,49 @@ void ActObject::Billboard() {
 	glLoadMatrixf(modelview);
 }
 
-void ActObject::Window(float x, float y, const rogl::Texture::Pointer& tex, bool mirrorX, bool mirrorY) {
+void ActObject::Window(float x, float y, const sdle::Texture& tex, bool mirrorX, bool mirrorY) {
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.90f);
 
 	tex.Activate();
 
-	float w = (float)tex->getWidth();
-	float h = (float)tex->getHeight();
+	float w = (float)tex.getWidth();
+	float h = (float)tex.getHeight();
 
 	float u, u1;
 	float v, v1;
 
 	if (!mirrorY) {
 		v1 = 0.0f;
-		v = tex->getMaxV();
+		v = tex.getMaxV();
 	}
 	else {
 		v = 0.0f;
-		v1 = tex->getMaxV();
+		v1 = tex.getMaxV();
 	}
 
 	if (!mirrorX) {
 		u1 = 0.0f;
-		u = tex->getMaxU();
+		u = tex.getMaxU();
 	}
 	else {
 		u = 0.0f;
-		u1 = tex->getMaxU();
+		u1 = tex.getMaxU();
 	}
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(u1, v);
-	glVertex3f(x - w/2, y,     0);
-	glTexCoord2f(u1, v1);
-	glVertex3f(x - w/2, y + h, 0);
-	glTexCoord2f(u, v1);
-	glVertex3f(x + w/2, y + h, 0);
-	glTexCoord2f(u, v);
-	glVertex3f(x + w/2, y,     0);
+	glTexCoord2f(u1, v);  glVertex3f(x - w/2, y,     0);
+	glTexCoord2f(u1, v1); glVertex3f(x - w/2, y + h, 0);
+	glTexCoord2f(u, v1);  glVertex3f(x + w/2, y + h, 0);
+	glTexCoord2f(u, v);   glVertex3f(x + w/2, y,     0);
 	glEnd();
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_TEXTURE_2D);
 }
 
-void ActObject::DrawAct(const RO::ACT::Pat& pat, rogl::Texture::Pointer& t) {
+void ActObject::DrawAct(const RO::ACT::Pat& pat, sdle::Texture& t) {
 	Billboard();
 	Window((float)pat.spr[0].x, (float)pat.spr[0].y, t, (pat.spr[0].mirrorOn == 1));
 }
@@ -173,5 +169,6 @@ void ActObject::Draw() {
 	mirror = (cpat.spr[0].mirrorOn == 1)?true:false;
 
 	glTranslatef(pos[0], pos[1], pos[2]);
-	DrawAct(cpat, m_textures[texidx]);
+	// TODO: FIX
+	//DrawAct(cpat, m_textures[texidx]);
 }

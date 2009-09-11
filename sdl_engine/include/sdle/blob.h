@@ -135,6 +135,14 @@ public:
 	const T* getBuffer() const {
 		return(buffer);
 	}
+
+	T* operator *() {
+		return(buffer);
+	}
+
+	const T* operator *() const {
+		return(buffer);
+	}
 };
 
 class SDLENGINE_DLLAPI DynamicBlob : public base_DynamicBlob<char> {

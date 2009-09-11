@@ -8,12 +8,13 @@
 #include "../texturemanager.h"
 #include "../file_manager.h"
 #include "../ro_object_cache.h"
+#include "../texturecache.h"
 
 class RswObject : public GLObject {
 protected:
 	const RO::RSW* rsw;
 	const RO::GND* gnd;
-	rogl::Texture::PointerCache textures;
+	TextureCache textures;
 
 	void DrawGND();
 

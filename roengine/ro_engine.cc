@@ -67,7 +67,7 @@ void ROEngine::ReadIni(const std::string& name) {
 	ini.close();
 }
 
-ROEngine::ROEngine(const std::string& name) : SDLEngine(name) {
+ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 	for (int i = 0; i < 1024; i++)
 		keys[i] = false;
 
@@ -98,7 +98,7 @@ void ROEngine::BeforeDraw() {}
 void ROEngine::AfterDraw() {}
 
 void ROEngine::AfterInit() {
-	m_gui.Init(m_width, m_height);
+	m_gui.Init(getWidth(), getHeight());
 }
 
 void ROEngine::Run() {

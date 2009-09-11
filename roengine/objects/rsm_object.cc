@@ -31,7 +31,7 @@ RsmObject::~RsmObject() {
 
 bool RsmObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	unsigned int i;
-	rogl::Texture::Pointer tex;
+	sdle::Texture tex;
 	std::string texname;
 
 	for (i = 0; i < rsm->getTextureCount(); i++) {
@@ -330,6 +330,6 @@ bool RsmObject::isInFrustum(const Frustum& f) const {
 	return(f.ModelVisible(rsm, model));
 }
 
-rogl::Texture::Pointer RsmObject::getTexture(unsigned int i) {
+sdle::Texture RsmObject::getTexture(unsigned int i) {
 	return(textures[i]);
 }
