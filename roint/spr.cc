@@ -219,9 +219,11 @@ const RO::SPR::Image* RO::SPR::getImage(const unsigned short idx, const ImageTyp
 		case IT_PAL:
 			if (idx < m_imgCountPal)
 				return(&m_imagesPal[idx]);
+			break;
 		case IT_RGBA:
 			if (idx < m_imgCountRgba)
 				return(&m_imagesRgba[idx]);
+			break;
 	}
 	return(NULL);
 }
