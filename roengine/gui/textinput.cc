@@ -46,7 +46,7 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager
 	// TODO: put this in the FontManager
 	sdle::FTFont *font = new sdle::FTFont();
 	G_Text.Font = font;
-	font->open("..\\data\\font\\lsans.ttf", 12);
+	font->open("data\\font\\lsans.ttf", 12);
 
 	G_Text.Head = G_Text.Start  = G_Text.Current = G_Text.select1 = G_Text.select2 = NULL;// G_Text.End = NewNode(NULL, NULL, AU('\0'));
 }
