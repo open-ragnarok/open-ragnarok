@@ -502,6 +502,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\pal.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\ro.cc"
 				>
 			</File>
@@ -663,6 +667,10 @@
 			</File>
 			<File
 				RelativePath="..\include\ro\types\grf.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ro\types\pal.h"
 				>
 			</File>
 			<File

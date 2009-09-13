@@ -150,7 +150,7 @@ bool SprGL::open(const RO::SPR* spr) {
 				image[4 * (px + py * imageWidth) + 1] = pal->g;
 				image[4 * (px + py * imageWidth) + 2] = pal->b;
 				if (palpos == 0) {
-					image[4 * (px + py * imageWidth) + 3] = pal->a;
+					image[4 * (px + py * imageWidth) + 3] = 0;
 				}
 				else {
 					image[4 * (px + py * imageWidth) + 3] = 255;
