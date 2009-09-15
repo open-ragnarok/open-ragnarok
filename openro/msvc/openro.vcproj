@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SDL)\include&quot;;&quot;$(SolutionDir)..\sdl_engine\include&quot;;&quot;$(SolutionDir)..\roint\include&quot;;&quot;$(SolutionDir)..\rogl\include&quot;;&quot;$(SolutionDir)..\ronet\include&quot;;&quot;$(SolutionDir)..\roengine\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SDL)\include&quot;;&quot;$(SolutionDir)..\sdl_engine\include&quot;;&quot;$(SolutionDir)..\roint\include&quot;;&quot;$(SolutionDir)..\rogl\include&quot;;&quot;$(SolutionDir)..\ronet\include&quot;;&quot;$(SolutionDir)..\roengine\include&quot;;&quot;$(SolutionDir)\freetype2\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -117,7 +117,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SDL)\include&quot;;&quot;$(SolutionDir)..\roint\include&quot;;&quot;$(SolutionDir)..\rogl\include&quot;;&quot;$(SolutionDir)..\ronet\include&quot;;&quot;$(SolutionDir)..\roengine\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SDL)\include&quot;;&quot;$(SolutionDir)..\sdl_engine\include&quot;;&quot;$(SolutionDir)..\roint\include&quot;;&quot;$(SolutionDir)..\rogl\include&quot;;&quot;$(SolutionDir)..\ronet\include&quot;;&quot;$(SolutionDir)..\roengine\include&quot;;&quot;$(SolutionDir)\freetype2\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

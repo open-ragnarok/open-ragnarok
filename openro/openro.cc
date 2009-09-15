@@ -3,6 +3,8 @@
 
 #include "openro.h"
 
+#include "sdle/ft_font.h"
+
 OpenRO::OpenRO() : ROEngine() {
 	ReadIni("data.ini");
 	m_state = ST_Login;
@@ -128,6 +130,14 @@ void OpenRO::BeforeRun() {
 	ParseClientInfo();
 
 	InitDisplay(800, 600, false);
+
+	sdle::FTFont* lsans = new sdle::FTFont();
+	FileData data = m_filemanager.getFile("font\\lsans.ttf");
+	if (!lsans->openFromMemory(data.getBuffer(), data.blobSize(), 12)) {
+		fprintf(stderr, "Erorr loading font 'font\\lsans.ttf'\n");
+	}
+	m_gui.FontManager().add("lsans.ttf", lsans);
+	m_gui.setDefaultFont(lsans);
 
 	// Hide the mouse cursor
 	SDL_ShowCursor(0);

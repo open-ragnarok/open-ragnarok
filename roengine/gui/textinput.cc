@@ -12,9 +12,9 @@
 
 unsigned int GUI::TextInput::cursor_delay = 500;
 
-GUI::TextInput::~TextInput(){
-	delete G_Text.Font;
+GUI::TextInput::~TextInput() {
 }
+
 GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager& tm, FileManager& fm) : Label(parent, e, tm, fm) {
 	m_focusable = true;
 	m_delay = 0;
@@ -44,9 +44,9 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager
 	G_Text.m_text   = (LCHAR*)calloc(MaxLen+sizeof(LCHAR), sizeof(LCHAR));
 
 	// TODO: put this in the FontManager
-	sdle::FTFont *font = new sdle::FTFont();
-	G_Text.Font = font;
-	font->open("data\\font\\lsans.ttf", 12);
+	//sdle::FTFont *font = new sdle::FTFont();
+	//G_Text.Font = font;
+	//font->open("data\\font\\lsans.ttf", 12);
 
 	G_Text.Head = G_Text.Start  = G_Text.Current = G_Text.select1 = G_Text.select2 = NULL;// G_Text.End = NewNode(NULL, NULL, AU('\0'));
 }
@@ -106,7 +106,6 @@ void GUI::TextInput::Draw(unsigned int delay) {
 }
 
 bool GUI::TextInput::HandleMouseRelease(int x, int y, int button) {
-
 	SelectFlag = false;
 	return(false);
 }
@@ -124,34 +123,29 @@ bool GUI::TextInput::HandleMouseDown(int x, int y, int button) {
 	ClickPos(x);
 
 	if (m_parent != NULL) {
-		if (m_parent->getActiveChild() != NULL)
-		{
+		if (m_parent->getActiveChild() != NULL) {
 			//m_parent->getActiveChild()->onLoseFocus();
 			m_parent->setActiveChild(this);
 			//onGetFocus();
 			GUI::Gui& gui = GUI::Gui::getSingleton();
 			gui.setFocus(this);
 		}
-		else
-		{
+		else {
 			return(false);
 		}
 	}
-	else
-	{
+	else {
 		return(false);
 	}
 
 	return(true);
 }
 
-void GUI::TextInput::onGetFocus()
-{
+void GUI::TextInput::onGetFocus() {
 	actived = true;
 }
 
-void GUI::TextInput::onLoseFocus()
-{
+void GUI::TextInput::onLoseFocus() {
 	actived = false;
 }
 
@@ -211,65 +205,52 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 //==================================================================================
 // 从结构key.keysym.unicode插入字符
 //==================================================================================
-bool GUI::TextInput::Insert(Uint16 Ch)
-{
+bool GUI::TextInput::Insert(Uint16 Ch) {
 	NODE *tmp;
 	if (G_Text.Len <= 0)
 		return false;
 
-	if( G_Text.Head == NULL )
-	{
+	if (G_Text.Head == NULL) {
 		G_Text.Head = G_Text.Start  = G_Text.Current = NewNode(NULL, NULL, Ch);
 		G_Text.Len--;
 		return true;
 	}
 
-	if( Ch <= 31)
-	{
+	if (Ch <= 31) {
 		return false;
 	}
 
-	if( G_Text.Current != NULL )
-	{
-		if( G_Text.Current->Next != NULL )
-		{
+	if (G_Text.Current != NULL) {
+		if (G_Text.Current->Next != NULL) {
 			tmp = G_Text.Current->Next;
 			G_Text.Current->Next = NewNode(G_Text.Current, tmp, Ch);
-			if (G_Text.Current->Next == NULL)
-			{
+			if (G_Text.Current->Next == NULL) {
 				G_Text.Current->Next = tmp;
 				return false;
 			}
 
 			tmp->Prev = G_Text.Current->Next;
-			if( G_Text.Current->Next != NULL )
-			{
+			if (G_Text.Current->Next != NULL) {
 				G_Text.Current = G_Text.Current->Next;
 			}
 		}
-		else
-		{
+		else {
 			G_Text.Current->Next = NewNode(G_Text.Current, NULL, Ch);
-			if( G_Text.Current->Next != NULL )
-			{
+			if (G_Text.Current->Next != NULL) {
 				G_Text.Current = G_Text.Current->Next;
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		}
 	}
-	else
-	{
+	else {
 		tmp = NewNode(NULL, G_Text.Start, Ch);
-		if( tmp != NULL )
-		{
+		if (tmp != NULL) {
 			G_Text.Start->Prev = tmp;
 			G_Text.Head = G_Text.Start = G_Text.Current = tmp;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
@@ -282,11 +263,9 @@ bool GUI::TextInput::Insert(Uint16 Ch)
 //==================================================================================
 // 新的节点
 //==================================================================================
-NODE* GUI::TextInput::NewNode(OUT NODE *Front, OUT NODE *Behind, IN LCHAR Ch)
-{
+NODE* GUI::TextInput::NewNode(OUT NODE *Front, OUT NODE *Behind, IN LCHAR Ch) {
 	NODE *Tmp = (NODE*)malloc(sizeof(NODE));
-	if (Tmp != NULL)
-	{
+	if (Tmp != NULL) {
 		Tmp->Ch   = Ch;
 		Tmp->selected   = false;
 		Tmp->Prev = Front;
@@ -300,19 +279,22 @@ NODE* GUI::TextInput::NewNode(OUT NODE *Front, OUT NODE *Behind, IN LCHAR Ch)
 //==================================================================================
 // 从节点获取字符保存成串
 //==================================================================================
-void GUI::TextInput::GetStringFromNode(void)
-{       
+void GUI::TextInput::GetStringFromNode(void) {       
 	NODE *i;
 	int  j=0, w, h;
 
-	if( G_Text.Start == NULL ) {
+	const sdle::Font* font = GUI::Gui::getSingleton().getDefaultFont();
+	if (font == NULL)
+		return;
+
+	if (G_Text.Start == NULL) {
 		G_Text.m_text[j] = AU('\0');
 		return;
 	}
-	for (i=G_Text.Start; i != NULL ; i=i->Next) {
+	for (i = G_Text.Start; i != NULL; i = i->Next) {
 		G_Text.m_text[j++] = i->Ch;
 		G_Text.m_text[j] = AU('\0');
-		G_Text.Font->getSize(G_Text.m_text, &w, &h);
+		font->getSize(G_Text.m_text, &w, &h);
 		if (w > this->w) {
 			G_Text.m_text[j-1] = AU('\0');
 			break;
@@ -325,31 +307,25 @@ void GUI::TextInput::GetStringFromNode(void)
 //==================================================================================
 // 删除左边一个字符
 //==================================================================================
-bool GUI::TextInput::RemoveLeft(void)
-{
+bool GUI::TextInput::RemoveLeft(void) {
 	NODE *tmp;
 
-	if( G_Text.Start == NULL || G_Text.Current == NULL )
-	{
+	if( G_Text.Start == NULL || G_Text.Current == NULL ) {
 		return false;
 	}
 
-	if( G_Text.Current->Prev != NULL )
-	{
-		if( G_Text.Current->Prev->Prev != NULL )
-		{
+	if (G_Text.Current->Prev != NULL) {
+		if (G_Text.Current->Prev->Prev != NULL) {
 			tmp = G_Text.Current;
 			G_Text.Current = tmp->Prev;
 			G_Text.Current->Next = tmp->Next;
-			if( tmp->Next != NULL )
-			{
+			if (tmp->Next != NULL) {
 				tmp->Next->Prev = G_Text.Current;
 			}
 
 			free(tmp);
 		}
-		else
-		{
+		else {
 			tmp = G_Text.Current;
 			G_Text.Current = tmp->Prev;
 			G_Text.Current->Next = tmp->Next;
@@ -358,13 +334,11 @@ bool GUI::TextInput::RemoveLeft(void)
 			free(tmp);
 		}
 	}
-	else
-	{
+	else {
 		tmp = G_Text.Current;
 		G_Text.Current = NULL;
 		G_Text.Head = G_Text.Start = tmp->Next;
-		if( G_Text.Start != NULL )
-		{
+		if (G_Text.Start != NULL) {
 			G_Text.Start->Prev = NULL;
 		}
 		free(tmp);
@@ -378,44 +352,35 @@ bool GUI::TextInput::RemoveLeft(void)
 //==================================================================================
 // 删除右边一个字符
 //==================================================================================
-bool GUI::TextInput::RemoveRight(void)
-{       
+bool GUI::TextInput::RemoveRight(void) {       
 	NODE *tmp;
 
-	if( G_Text.Start == NULL )
-	{
+	if (G_Text.Start == NULL) {
 		return false;
 	}
 
-	if( G_Text.Current != NULL )
-	{
-		if( G_Text.Current->Next != NULL )
-		{
-			if( G_Text.Current->Next->Next != NULL )
-			{
+	if (G_Text.Current != NULL) {
+		if (G_Text.Current->Next != NULL) {
+			if (G_Text.Current->Next->Next != NULL) {
 				tmp = G_Text.Current->Next;
 				G_Text.Current->Next = tmp->Next;
 				tmp->Next->Prev = G_Text.Current;
 
 				free(tmp);
 			}
-			else
-			{
+			else {
 				tmp = G_Text.Current->Next;
 				G_Text.Current->Next = NULL;
 
 				free(tmp);
 			}
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
-	else
-	{
-		if( G_Text.Start->Next != NULL )
-		{
+	else {
+		if (G_Text.Start->Next != NULL) {
 			tmp = G_Text.Start->Next;
 			G_Text.Head = G_Text.Start = tmp;
 			tmp = G_Text.Start->Prev;
@@ -423,8 +388,7 @@ bool GUI::TextInput::RemoveRight(void)
 
 			free(tmp);
 		}
-		else
-		{
+		else {
 			free(G_Text.Start);
 			G_Text.Head = G_Text.Start = NULL;
 		}
@@ -438,19 +402,16 @@ bool GUI::TextInput::RemoveRight(void)
 //==================================================================================
 // 左移动一个字符
 //==================================================================================
-bool GUI::TextInput::MoveLeft(void)
-{
-	if( G_Text.Start == NULL || G_Text.Current == NULL )
-	{
+bool GUI::TextInput::MoveLeft(void) {
+	if (G_Text.Start == NULL || G_Text.Current == NULL) {
 		return false;
 	}
 	G_Text.Text_Changed = false;
-	if( G_Text.Current->Prev != NULL )
-	{
+
+	if (G_Text.Current->Prev != NULL) {
 		G_Text.Current = G_Text.Current->Prev;
 	}
-	else
-	{
+	else {
 		G_Text.Current = NULL;
 	}
 
@@ -461,27 +422,21 @@ bool GUI::TextInput::MoveLeft(void)
 //==================================================================================
 // 右移动一个字符
 //==================================================================================
-bool GUI::TextInput::MoveRight(void)
-{
-	if( G_Text.Start == NULL )
-	{
+bool GUI::TextInput::MoveRight(void) {
+	if (G_Text.Start == NULL) {
 		return false;
 	}
 
 	G_Text.Text_Changed = false;
 
-	if( G_Text.Current == NULL )
-	{
+	if (G_Text.Current == NULL) {
 		G_Text.Current = G_Text.Start;
 	}
-	else
-	{
-		if( G_Text.Current->Next != NULL )
-		{
+	else {
+		if (G_Text.Current->Next != NULL) {
 			G_Text.Current = G_Text.Current->Next;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
@@ -493,8 +448,7 @@ bool GUI::TextInput::MoveRight(void)
 //==================================================================================
 // 移动到字符串开始
 //==================================================================================
-bool GUI::TextInput::MoveStart(void)
-{
+bool GUI::TextInput::MoveStart(void) {
 	G_Text.Start = G_Text.Head;
 	G_Text.Current = NULL;
 	return true;
@@ -502,8 +456,7 @@ bool GUI::TextInput::MoveStart(void)
 //==================================================================================
 // 移动到字符串尾
 //==================================================================================
-bool GUI::TextInput::MoveEnd(void)
-{
+bool GUI::TextInput::MoveEnd(void) {
 	while( MoveRight() )
 		;
 	return true;
@@ -511,13 +464,11 @@ bool GUI::TextInput::MoveEnd(void)
 //==================================================================================
 // 释放字符串
 //==================================================================================
-void GUI::TextInput::FreeString(void)
-{
+void GUI::TextInput::FreeString(void) {
 	NODE *Tmp;
 
 	G_Text.Start = G_Text.Head;
-	while (G_Text.Start != NULL)
-	{
+	while (G_Text.Start != NULL) {
 		Tmp = G_Text.Start->Next;
 		free(G_Text.Start);
 		G_Text.Start = Tmp;
@@ -527,61 +478,60 @@ void GUI::TextInput::FreeString(void)
 //==================================================================================
 // 获取鼠标X坐标
 //==================================================================================
-int GUI::TextInput::GetCursorX()
-{
+int GUI::TextInput::GetCursorX() {
 	NODE *i;
 	int k = 0, w, h;
 	LCHAR *Buffer = NULL;
 
 	Buffer = new LCHAR[MaxLen+1];
 
-	if( Buffer == NULL )
+	const sdle::Font* font = GUI::Gui::getSingleton().getDefaultFont();
+	if (font == NULL)
+		return(0);
+
+
+	if (Buffer == NULL)
 		return 0;
 
-	if( G_Text.Start != NULL && G_Text.Current != NULL )
-	{
-		for (i=G_Text.Start; i!=G_Text.Current->Next; i=i->Next)
-		{
+	if (G_Text.Start != NULL && G_Text.Current != NULL) {
+		for (i = G_Text.Start; i != G_Text.Current->Next; i = i->Next) {
 			Buffer[k++] = i->Ch;
 			Buffer[k] = AU('\0');
-			G_Text.Font->getSize(Buffer, &w, &h);
-			if (w > this->w)
-			{
+			font->getSize(Buffer, &w, &h);
+			if (w > this->w) {
 				k--;
 				break;
 			}
 		}
 	}
 	Buffer[k] = AU('\0');
-	G_Text.Font->getSize(Buffer, &w, &h);
+	font->getSize(Buffer, &w, &h);
 	delete []Buffer;
-	return ( G_Text.x + w );
+	return (G_Text.x + w);
 }
 //==================================================================================
 // 判断左右极限
 //==================================================================================
-bool GUI::TextInput::CheckPos()
-{
+bool GUI::TextInput::CheckPos() {
 	int Step = 3;
 	NODE *i;
 	int k = 0, w, h;
 	LCHAR *Buffer = NULL;
 
-	if( G_Text.Start == NULL || G_Text.Current == NULL )
-	{
+	const sdle::Font* font = GUI::Gui::getSingleton().getDefaultFont();
+	if (font == NULL)
+		return(false);
+
+	if (G_Text.Start == NULL || G_Text.Current == NULL) {
 		return false;
 	}
 
-	if( G_Text.Current == G_Text.Start )
-	{
-		for(int i = 0; i < Step ;i++)
-		{
-			if( G_Text.Start->Prev == NULL )
-			{
+	if (G_Text.Current == G_Text.Start) {
+		for(int i = 0; i < Step; i++) {
+			if (G_Text.Start->Prev == NULL) {
 				break;
 			}
-			else
-			{
+			else {
 				G_Text.Start = G_Text.Start->Prev;
 			}
 		}
@@ -590,37 +540,28 @@ bool GUI::TextInput::CheckPos()
 
 	Buffer = new LCHAR[MaxLen+1];
 
-	if( Buffer == NULL )
+	if (Buffer == NULL)
 		return false;
 
-	for (i=G_Text.Start; i != NULL  ; i=i->Next)
-	{
+	for (i = G_Text.Start; i != NULL; i = i->Next) {
 		Buffer[k++] = i->Ch;
-		if( i == G_Text.Current->Next )
-		{
+		if(i == G_Text.Current->Next)
 			break;
-		}
 	}
 
 	Buffer[k] = AU('\0');
-	G_Text.Font->getSize(Buffer, &w, &h);
+	font->getSize(Buffer, &w, &h);
 	delete []Buffer;
-	if( w > this->w )
-	{
-		if( G_Text.Current->Next == NULL )
-		{
+	if (w > this->w) {
+		if (G_Text.Current->Next == NULL) {
 			Step = 2;
 		}
-		for(int i = 0; i < Step ;i++)
-		{
-			if( G_Text.Start->Next != NULL )
-			{
+
+		for(int i = 0; i < Step ;i++) {
+			if (G_Text.Start->Next != NULL)
 				G_Text.Start = G_Text.Start->Next;
-			}
 			else
-			{
 				break;
-			}
 		}
 		return true;
 	}
@@ -630,39 +571,37 @@ bool GUI::TextInput::CheckPos()
 //==================================================================================
 // 获取鼠标点击
 //==================================================================================
-void GUI::TextInput::ClickPos(int x)
-{
+void GUI::TextInput::ClickPos(int x) {
 	NODE *i;
 	int k = 0, w, h;
 	LCHAR *Buffer = NULL;
 
-	if( G_Text.Start == NULL )
-	{
+	const sdle::Font* font = GUI::Gui::getSingleton().getDefaultFont();
+	if (font == NULL)
+		return;
+
+	if (G_Text.Start == NULL) {
 		return;
 	}
 
 	Buffer = new LCHAR[MaxLen+1];
 
-	if( Buffer == NULL )
+	if (Buffer == NULL)
 		return;
 
-	for (i=G_Text.Start; i != NULL ; i=i->Next)
-	{
+	for (i = G_Text.Start; i != NULL; i=i->Next) {
 		Buffer[k++] = i->Ch;
 		Buffer[k] = AU('\0');
-		G_Text.Font->getSize(Buffer, &w, &h);
-		if (w > this->w)
-		{
+		font->getSize(Buffer, &w, &h);
+		if (w > this->w) {
 			G_Text.Current = i->Prev;
 			break;
 		}
-		else if( w > x)
-		{
+		else if (w > x) {
 			G_Text.Current = i->Prev;
 			break;
 		}
-		else
-		{
+		else {
 			G_Text.Current = i;
 		}
 	}
@@ -671,7 +610,7 @@ void GUI::TextInput::ClickPos(int x)
 	CheckPos();
 }
 
-std::string& GUI::TextInput::getText(){
+std::string& GUI::TextInput::getText() {
 	NODE *i;
 	int  j=0;
 	LCHAR *Buffer = NULL;
@@ -680,16 +619,13 @@ std::string& GUI::TextInput::getText(){
 
 	Buffer = new LCHAR[MaxLen+1];
 
-	if( Buffer == NULL )
-	{
+	if (Buffer == NULL) {
 		return m_text;
 	}
-	if( G_Text.Start == NULL )
-	{
+	if (G_Text.Start == NULL) {
 		return m_text;
 	}
-	for (i=G_Text.Start; i != NULL ; i=i->Next)
-	{
+	for (i = G_Text.Start; i != NULL; i = i->Next) {
 		G_Text.m_text[j++] = i->Ch;
 	}
 
@@ -698,8 +634,7 @@ std::string& GUI::TextInput::getText(){
 	DWORD dwNum = WideCharToMultiByte(CP_OEMCP,NULL,(LPCWSTR)G_Text.m_text,-1,NULL,0,NULL,FALSE);
 	char *psText;
 	psText = new char[dwNum];
-	if(!psText)
-	{
+	if(!psText) {
 		delete []Buffer;
 		return m_text;
 	}
@@ -710,8 +645,8 @@ std::string& GUI::TextInput::getText(){
 
 	return m_text;
 }
-void GUI::TextInput::SelectAll()
-{
+
+void GUI::TextInput::SelectAll() {
 	NODE *i;
 
 	MoveEnd();
@@ -724,13 +659,12 @@ void GUI::TextInput::SelectAll()
 		i = i->Next;
 	}
 }
-void GUI::TextInput::UnSelectAll()
-{
+
+void GUI::TextInput::UnSelectAll() {
 	NODE *i;
 
 	i = G_Text.Head;
-	while (i != NULL)
-	{
+	while (i != NULL) {
 		i->selected = false;
 		i = i->Next;
 	}

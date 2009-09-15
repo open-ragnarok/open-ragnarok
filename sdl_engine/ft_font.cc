@@ -58,7 +58,7 @@ void FTFont::release() {
 	m_texture = NULL;
 }
 
-bool FTFont::open(const char* buffer, unsigned int bufsize, unsigned int size, unsigned int startchar, unsigned int charcount) {
+bool FTFont::openFromMemory(const char* buffer, unsigned int bufsize, unsigned int size, unsigned int startchar, unsigned int charcount) {
 	const static size_t MARGIN = 0;
 
 	if (valid())
@@ -75,7 +75,7 @@ bool FTFont::open(const char* buffer, unsigned int bufsize, unsigned int size, u
 	FT_Face face;
 
 	if (FT_New_Memory_Face(library, (FT_Byte*)buffer, bufsize, 0, &face) != 0)
-		throw std::runtime_error("Could not load font file.");
+		throw std::runtime_error("Could not load font.");
 
 	// Abort if this is not a scalable font.
 	if (!(face->face_flags & FT_FACE_FLAG_SCALABLE) || !(face->face_flags

@@ -78,7 +78,7 @@ public:
 	 * @param startchar the character to start loading from (default: space ' ', 0x20)
 	 * @param charcount number of chars to read from the font file
 	 */
-	bool open(const char* buffer, unsigned int bufsize, unsigned int size, unsigned int startchar = 32, unsigned int charcount = 96);
+	bool openFromMemory(const char* buffer, unsigned int bufsize, unsigned int size, unsigned int startchar = 32, unsigned int charcount = 96);
 
 	/** Erases the font */
 	void release();

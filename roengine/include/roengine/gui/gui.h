@@ -50,7 +50,12 @@ protected:
 	BaseCache<sdle::Font> m_fonts;
 	std::vector<Event> m_events;
 
-	/** Our default font. If not changed, it's always the first loaded font. */
+	/** 
+	 * The default font used by GUI Components.
+	 * If not changed, it's always the first loaded font.
+	 * Objects not explicitally using a custom font will use this one. Changing this font will
+	 * change the entire user interface font.
+	 */
 	const sdle::Font* m_defaultFont;
 
 	/** Background for the dialog box */
@@ -191,6 +196,8 @@ public:
 	const Element* operator[] (const std::string& obj) const;
 
 	void Dialog(const std::string& title, const std::string& text, TextureManager&, FileManager&, int buttons = BTN_OK | BTN_CANCEL);
+
+	void setDefaultFont(const sdle::Font*);
 };
 
 }

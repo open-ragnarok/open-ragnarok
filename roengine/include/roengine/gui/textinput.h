@@ -16,7 +16,7 @@ typedef struct _Node {
 
 typedef struct _TextEditor {
 	SDL_Surface	*Surface;           //目标表面
-	sdle::Font	*Font;              //字体
+	//sdle::Font	*Font;              //字体
 
 	NODE		*Head;             //一行文字的开始
 	NODE		*Start;            //一行文字的开始

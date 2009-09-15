@@ -328,6 +328,9 @@ void SDLEngine::ProcessKeyboard() {
             case SDL_MOUSEBUTTONDOWN:
                 evtMouseClick(e.button.x, e.button.y, e.button.button);
                 break;
+            case SDL_MOUSEBUTTONUP:
+                evtMouseRelease(e.button.x, e.button.y, e.button.button);
+                break;
             case SDL_QUIT:
                 evtQuit();
                 break;

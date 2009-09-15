@@ -320,6 +320,10 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 #if 1
 	if (G_Text->Start == NULL)
 		return(0);
+
+	if (m_defaultFont == NULL)
+		return(0);
+
 	// BIG hack to make SDLEngine and FreeType work for now
 	unsigned short text[128];
 	unsigned int i = 0;
@@ -332,7 +336,7 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 	}
 
 	glColor3f(0, 0, 0);
-	G_Text->Font->drawText(G_Text->x, G_Text->y, text);
+	m_defaultFont->drawText(G_Text->x, G_Text->y, text);
 	glColor3f(1, 1, 1);
 #else
 	//SDL_Surface *Font_Screen = NULL;
@@ -445,5 +449,11 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 #endif
 	return 0;
 }
+
+void Gui::setDefaultFont(const sdle::Font* f) {
+	if (f != NULL)
+		m_defaultFont = f;
+}
+
 
 }
