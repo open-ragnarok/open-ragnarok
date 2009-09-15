@@ -82,13 +82,15 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	//float w, h;
 	//float u[2], v[2];
 	// rogl::Texture::Pointer tp;
-
+	
 	if (parent != NULL) {
-		const RO::ACT::Act& pact = parent->getAct()->getAct(act_no);
-		const RO::ACT::Pat& ppat = pact[pat_no];
+		if (parent->getAct() != NULL) {
+			const RO::ACT::Act& pact = parent->getAct()->getAct(act_no);
+			const RO::ACT::Pat& ppat = pact[pat_no];
 
-		x = x + ppat.ext_x;
-		y = y + ppat.ext_y;
+			x = x + ppat.ext_x;
+			y = y + ppat.ext_y;
+		}
 	}
 
 	if (cross) {

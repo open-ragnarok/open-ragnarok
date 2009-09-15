@@ -132,6 +132,43 @@ bool ronet::TcpConnection::SendData() {
 	return(true);
 }
 
+void hexdump(const unsigned char* buf, unsigned int buflen) {
+	unsigned int pos = 0;
+	unsigned int tbufpos = 0;
+	char tbuf[32];
+	char c;
+
+	tbuf[0] = 0;
+
+	for (pos = 0; pos < buflen; pos++) {
+		if (pos % 16 == 0) {
+			tbuf[tbufpos] = 0;
+			if (pos > 0) {
+				printf("| %s\n", tbuf);
+			}
+			printf("%04x | ", pos);
+			tbufpos = 0;
+		}
+		else if (pos % 8 == 0) {
+			tbuf[tbufpos++] = ' ';
+			printf(" ");
+		}
+		printf("%02x ", buf[pos]);
+		c = buf[pos];
+		if (c < ' ' || c > 'z')
+			c = '.';
+
+		tbuf[tbufpos++] = c;
+	}
+	int rest = 16 - (pos % 16);
+	if (rest >= 8)
+		printf(" ");
+	for (int i = 0; i < rest; i++)
+		printf("   ");
+	tbuf[tbufpos] = 0;
+	printf("| %s\n", tbuf);
+}
+
 bool ronet::TcpConnection::RecvData() {
 	if (m_socket == -1) {
 		std::cerr << "Trying to read data on a not connected socket!" << std::endl;
@@ -142,7 +179,10 @@ bool ronet::TcpConnection::RecvData() {
 
 	bufsize = recv(m_socket, (char*)recbuf, RECBUFSIZE, MSG_DONTWAIT);
 	if (bufsize > 0) {
+#if defined(DEBUG) || defined(_DEBUG)
 		std::cout << "[DEBUG] received "<< bufsize <<" bytes of data" << std::endl;
+		hexdump(recbuf, bufsize);
+#endif
 		bufInput.write(recbuf, bufsize);
 	}
 	else if (bufsize == 0) {

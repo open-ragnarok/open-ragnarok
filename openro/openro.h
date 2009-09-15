@@ -70,6 +70,9 @@ public:
 	void CreateChar(const std::string& charname, const CharAttributes&, int slott, unsigned short color, unsigned short style);
 	void AddChar(CharInformation&);
 
+	/** Loads a map and sets it as default */
+	void LoadMap(const char* map);
+
 	/** Quits the game */
 	void Quit();
 

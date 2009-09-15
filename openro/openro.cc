@@ -71,8 +71,8 @@ void OpenRO::CharSelect(unsigned int slot){
 
 	dskChar->setEnabled(false);
 
+	printf("Char slot %d selected.\n",slot);
 	m_network.CharSelect(slot);
-	printf("Seleccionado char numero %d.\n",slot);
 }
 
 void OpenRO::HandleKeyboard() {
@@ -127,30 +127,32 @@ void OpenRO::AfterDraw() {
 	}
 }
 
-void debug_LoadMap(OpenRO& ro, const char* map) {
+void OpenRO::LoadMap(const char* map) {
 	RO::RSW* rsw;
+
+	// TODO: Delete active map (if any)
 
 	std::string rsw_fn(map);
 	rsw_fn += ".rsw";
 	// Load the rsw object
-	if (!ro.getROObjects().ReadRSW(rsw_fn.c_str(), ro.getFileManager())) {
+	if (!getROObjects().ReadRSW(rsw_fn.c_str(), getFileManager())) {
 		fprintf(stderr, "Error loading RSW file %s\n", rsw_fn.c_str());
 		return;
 	}
-	rsw = (RO::RSW*)ro.getROObjects().get(rsw_fn);
-	if (!ro.getROObjects().ReadGND(rsw->gnd_file, ro.getFileManager())) {
+	rsw = (RO::RSW*)getROObjects().get(rsw_fn);
+	if (!getROObjects().ReadGND(rsw->gnd_file, getFileManager())) {
 		fprintf(stderr, "Error loading GND file %s\n", rsw->gnd_file);
 		return;
 	}
-	if (!ro.getROObjects().ReadGAT(rsw->gat_file, ro.getFileManager())) {
+	if (!getROObjects().ReadGAT(rsw->gat_file, getFileManager())) {
 		fprintf(stderr, "Error loading GAT file %s\n", rsw->gat_file);
 		return;
 	}
 
-	RswObject* obj = new RswObject(rsw, ro.getROObjects());
-	obj->loadTextures(ro.getTextureManager(), ro.getFileManager());
+	RswObject* obj = new RswObject(rsw, getROObjects());
+	obj->loadTextures(getTextureManager(), getFileManager());
 	
-	ro.setMap(obj);
+	setMap(obj);
 }
 
 void OpenRO::BeforeRun() {
@@ -329,6 +331,22 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 
 	//Login to the mapserver
 	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
+
+	char map[32];
+	strcpy(map, pkt->getMapname());
+
+	int i = 0;
+	while (map[i] != 0) {
+		if (map[i] == '.') {
+			map[i] = 0;
+			break;
+		}
+		i++;
+	}
+
+	LoadMap(map);
+	// TODO: Set desktop to the ingame desktop
+	m_gui.setDesktop(NULL);
 }
 
 void OpenRO::hndlMapAcctSend(ronet::pktMapAcctSend* pkt) {
