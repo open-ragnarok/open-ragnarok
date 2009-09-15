@@ -53,10 +53,16 @@ protected:
 	int mousex;
 	int mousey;
 
+	/**
+	 * The active map.
+	 * Will be drawn if not null
+	 */
+	RswObject* m_map;
+
 public:
 	ROEngine(const std::string& name = "");
-
 	~ROEngine();
+
 	void Run();
 
 	void ReadIni(const std::string& name = "data.ini");
@@ -76,6 +82,9 @@ public:
 	Frustum& getFrustum();
 	FullAct& getCursor();
 	void setCursor(FullAct& cur);
+
+	/** Sets the current map */
+	void setMap(RswObject*);
 	
 	/** Process mouse animation and drawing */
 	void ProcessMouse(int xless = 0, int yless = 0);

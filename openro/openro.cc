@@ -11,6 +11,7 @@ OpenRO::OpenRO() : ROEngine() {
 	//m_showui = true;
 
 	m_serverlist = NULL;
+	m_map = NULL;
 }
 
 OpenRO::~OpenRO() {
@@ -126,11 +127,38 @@ void OpenRO::AfterDraw() {
 	}
 }
 
+void debug_LoadMap(OpenRO& ro, const char* map) {
+	RO::RSW* rsw;
+
+	std::string rsw_fn(map);
+	rsw_fn += ".rsw";
+	// Load the rsw object
+	if (!ro.getROObjects().ReadRSW(rsw_fn.c_str(), ro.getFileManager())) {
+		fprintf(stderr, "Error loading RSW file %s\n", rsw_fn.c_str());
+		return;
+	}
+	rsw = (RO::RSW*)ro.getROObjects().get(rsw_fn);
+	if (!ro.getROObjects().ReadGND(rsw->gnd_file, ro.getFileManager())) {
+		fprintf(stderr, "Error loading GND file %s\n", rsw->gnd_file);
+		return;
+	}
+	if (!ro.getROObjects().ReadGAT(rsw->gat_file, ro.getFileManager())) {
+		fprintf(stderr, "Error loading GAT file %s\n", rsw->gat_file);
+		return;
+	}
+
+	RswObject* obj = new RswObject(rsw, ro.getROObjects());
+	obj->loadTextures(ro.getTextureManager(), ro.getFileManager());
+	
+	ro.setMap(obj);
+}
+
 void OpenRO::BeforeRun() {
 	ParseClientInfo();
 
-	InitDisplay(800, 600, false);
+	InitDisplay(1024, 768, false);
 
+	// TODO: This should be a parameter
 	sdle::FTFont* lsans = new sdle::FTFont();
 	FileData data = m_filemanager.getFile("font\\lsans.ttf");
 	if (!lsans->openFromMemory(data.getBuffer(), data.blobSize(), 12)) {
@@ -139,6 +167,8 @@ void OpenRO::BeforeRun() {
 	m_gui.FontManager().add("lsans.ttf", lsans);
 	m_gui.setDefaultFont(lsans);
 
+	m_texturemanager.RegisterPNG(getFileManager(), "openro\\selected.png");
+
 	// Hide the mouse cursor
 	SDL_ShowCursor(0);
 
@@ -146,7 +176,11 @@ void OpenRO::BeforeRun() {
 	dskService = new DesktopService(this);
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
+#if 1
 	m_gui.setDesktop(dskLogin);
+#else
+	debug_LoadMap(*this, "new_zone01");
+#endif
 
 	FullAct ycursor;
 	char xcursor[256];

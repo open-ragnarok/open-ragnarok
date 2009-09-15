@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;;&quot;$(SolutionDir)\freetype2\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SolutionDir)\freetype2\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -107,7 +107,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SolutionDir)\freetype2\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -168,7 +168,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SolutionDir)\freetype2\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;ROENGINE_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -239,7 +239,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\include\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)..\roint\include\&quot;;&quot;$(SolutionDir)..\rogl\include\&quot;;&quot;$(SolutionDir)\..\sdl_engine\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SolutionDir)\freetype2\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;ROENGINE_DLL"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -589,19 +589,19 @@
 				Name="Headers"
 				>
 				<File
-					RelativePath="..\objects\act_object.h"
+					RelativePath="..\include\roengine\objects\act_object.h"
 					>
 				</File>
 				<File
-					RelativePath="..\objects\cube_object.h"
+					RelativePath="..\include\roengine\objects\cube_object.h"
 					>
 				</File>
 				<File
-					RelativePath="..\objects\rsm_object.h"
+					RelativePath="..\include\roengine\objects\rsm_object.h"
 					>
 				</File>
 				<File
-					RelativePath="..\objects\rsw_object.h"
+					RelativePath="..\include\roengine\objects\rsw_object.h"
 					>
 				</File>
 			</Filter>

@@ -10,6 +10,7 @@
 #include "sdle_import.h"
 #include "sdle_settings.h"
 #include "sdle_string.h"
+#include "vertex.h"
 
 #include <string>
 
@@ -108,17 +109,19 @@ public:
 	unsigned int getWidth() const;
 	unsigned int getHeight() const;
 
-
 	/**
 	 * Initializes SDL and OpenGL
 	 * @returns bool true on success
 	 */
 	bool InitDisplay(const unsigned int& = 640, const unsigned int& = 480, const bool& = false, const unsigned int& bpp = 16);
+
 	/** Closes the window */
 	void CloseDisplay();
+
 	/** Copies the backbuffer into the screen buffer and resets the transformation matrix */
 	void Sync(unsigned long = 0.0f);
 	virtual void WindowResize();
+
 	/**
 	 * Alters the matrix for our purposes
 	 * @param sX eyeX
@@ -129,6 +132,11 @@ public:
 	 * @param dZ destinationZ
 	 */
 	void LookAt(float sX, float sY, float sZ, float dX = 0.0f, float dY = 0.0f, float dZ = 0.0f);
+
+	/**
+	 * Retrieves the world coordinates for the given screen coordinates
+	 */
+	void unProject(int x, int y, Vertex* ret);
 
 	void ProcessKeyboard();
 	const bool* getKeys() const;

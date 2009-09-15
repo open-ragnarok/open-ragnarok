@@ -85,6 +85,25 @@ bool ROObjectCache::ReadGND(const std::string& name, FileManager& fm) {
 	return(true);
 }
 
+bool ROObjectCache::ReadGAT(const std::string& name, FileManager& fm) {
+	if (exists(name))
+		return(false);
+
+	FileData data = fm.getFile(name);
+	if (data.blobSize() == 0)
+		return(false);
+
+	RO::GAT* obj = new RO::GAT();
+	std::stringstream ss;
+	data.write(ss);
+	if (!obj->readStream(ss)) {
+		delete(obj);
+		return(false);
+	}
+	add(name, obj);
+	return(true);
+}
+
 bool ROObjectCache::ReadACT(const std::string& name, FileManager& fm) {
 	if (exists(name))
 		return(true);

@@ -31,7 +31,15 @@ public:
 
 };
 
+/** Loads a PNG from a file and creates a Texture */
 SDLENGINE_DLLAPI Texture loadPngTexture(const char*);
+
+/**
+ * Loads a PNG from a the memory and creates a Texture
+ * @param buf
+ * @param buflen Length of the buf parameter
+ */
+SDLENGINE_DLLAPI Texture loadPngTexture(const char* buf, unsigned int buflen);
 }
 
 #endif /* TEXTURE_PNG_H_ */

@@ -239,6 +239,30 @@ void SDLEngine::Sync(unsigned long delay) {
 		SDL_Delay(delay);
 }
 
+void SDLEngine::unProject(int x, int y, Vertex* ret) {
+	GLdouble modelMatrix[16];
+	GLdouble projMatrix[16];
+	int viewport[4];
+	int realY;
+	GLfloat winZ;
+
+	double px, py, pz;
+
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+	glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	realY = viewport[3] - y;
+
+	glReadPixels(x, realY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+
+	gluUnProject(x, realY, winZ, modelMatrix, projMatrix, viewport, &px, &py, &pz);
+
+	ret->x = (float)px;
+	ret->y = (float)py;
+	ret->z = (float)pz;
+}
+
 void SDLEngine::Mode2DStart() {
 	if (m_mode2d)
 		return;

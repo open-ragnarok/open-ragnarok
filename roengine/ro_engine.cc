@@ -73,6 +73,8 @@ ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 
 	m_quit = false;
 	m_cursorSprite = 0;
+	m_map = NULL;
+	cam.getEye().set(200, 200, 200);
 }
 
 ROEngine::~ROEngine() {
@@ -87,7 +89,6 @@ void ROEngine::AfterRun() {
 	m_ro_objects.clear();
 	m_gui.clear();
 	m_texturemanager.Clear();
-	CloseDisplay();
 }
 
 void ROEngine::evtQuit() {
@@ -122,11 +123,30 @@ void ROEngine::Run() {
 
 		BeforeDraw();
 
-		cam.Look();
-		m_frustum.Calculate();
+		if (m_map != NULL) {
+			float wx, wy, wz;
+			int mapx, mapy;
+			cam.Look();
+			m_frustum.Calculate();
+			m_map->DrawRSW(mousex, mousey);
+			wx = m_map->getWorldX();
+			wy = m_map->getWorldY();
+			wz = m_map->getWorldZ();
 
-		camera_look = cam.getEye() - cam.getDest();
-		m_gl_objects.draw(m_frustum, tickDelay, camera_look);
+			mapx = (int)(wx/10);
+			mapy = (int)(wy/10);
+			m_texturemanager["openro\\selected.png"].Activate();
+			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			m_map->DrawSelection(mapx, mapy);
+			glDisable(GL_BLEND);
+			glDisable(GL_TEXTURE_2D);
+
+			printf("World position: %.2f, %.2f, %.2f\tMap position: %d, %d\t\r", wx, wy, wz, mapx, mapy);
+			camera_look = cam.getEye() - cam.getDest();
+			m_gl_objects.draw(m_frustum, tickDelay, camera_look);
+		}
+
 		m_gui.Draw(tickDelay);
 
 		//TODO: This is redundant. 2D mode should start in GUI and finish here. Maybe put this inside the Gui::Draw?
@@ -185,6 +205,12 @@ void ROEngine::ProcessMouse(int xless, int yless){
 	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
 	DrawFullAct(getCursor(), (float)(getMouseX() - xless), (float)(getMouseY() - yless), 0, m_cursorSprite, false, NULL, false, false);
 }
+
+/** Sets the current map */
+void ROEngine::setMap(RswObject* map) {
+	m_map = map;
+}
+
 
 TextureManager& ROEngine::getTextureManager() { return(m_texturemanager); }
 GLObjectCache& ROEngine::getGLObjects() { return(m_gl_objects); }
