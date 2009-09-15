@@ -47,9 +47,9 @@ public:
 	virtual void getSize(const unsigned short* text, int* w, int* h) const;
 };
 
-extern GLFFont Font_Arabia8;
-extern GLFFont Font_Arial8;
-extern GLFFont Font_Arial10;
+extern GLFFont* Font_Arabia8;
+extern GLFFont* Font_Arial8;
+extern GLFFont* Font_Arial10;
 
 }
 

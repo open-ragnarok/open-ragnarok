@@ -309,6 +309,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\console.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\engine.cc"
 				>
 			</File>
@@ -342,6 +346,10 @@
 			</File>
 			<File
 				RelativePath="..\sdl_engine.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\sdle_string.cc"
 				>
 			</File>
 			<File
@@ -419,6 +427,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\sdle\console.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\sdle\engine.h"
 				>
 			</File>
@@ -456,6 +468,14 @@
 			</File>
 			<File
 				RelativePath="..\include\sdle\sdle_import.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\sdle_settings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\sdle_string.h"
 				>
 			</File>
 			<File

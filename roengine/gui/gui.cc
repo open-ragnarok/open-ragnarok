@@ -42,7 +42,7 @@ void Mode2DEnd() {
 void Gui::Init(int w, int h) {
 	setSize(w, h);
 
-	m_defaultFont = &sdle::Font_Arial10;
+	m_defaultFont = (sdle::Font*)sdle::Font_Arial10;
 }
 
 Gui::Gui() : Singleton<Gui>() {

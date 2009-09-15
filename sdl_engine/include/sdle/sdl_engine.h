@@ -8,6 +8,8 @@
 #define __SDL_ENGINE_H
 
 #include "sdle_import.h"
+#include "sdle_settings.h"
+#include "sdle_string.h"
 
 #include <string>
 
@@ -19,6 +21,10 @@
 #else
 #	include <SDL_keysym.h>
 #	include <SDL_events.h>
+#endif
+
+#ifdef SDLENGINE_CONSOLE
+#	include "console.h"
 #endif
 
 namespace sdle {
@@ -66,6 +72,18 @@ private:
 	/** Last key that was pressed */
 	unsigned int m_lastkey;
 
+	/** Initializes all internal variables */
+	void init();
+
+	/** Singleton pointer.
+	 * Aka: We should have ONE and ONLY ONE SDLEngine active.
+	 */
+	static SDLEngine* m_singleton;
+
+#ifdef SDLENGINE_CONSOLE
+	Console m_console;
+#endif
+
 protected:
 	bool keys[1024];
 
@@ -80,6 +98,8 @@ public:
 	SDLEngine(const char* caption);
 	virtual ~SDLEngine();
 
+	static SDLEngine* getSingleton();
+
 	static bool supportPot();
 
 	void setNearClip(float);
@@ -87,6 +107,7 @@ public:
 
 	unsigned int getWidth() const;
 	unsigned int getHeight() const;
+
 
 	/**
 	 * Initializes SDL and OpenGL
@@ -123,6 +144,11 @@ public:
 	 */
 	void Mode2DEnd();
 
+	/**
+	 * Checks if mode 2D is set.
+	 */
+	bool Mode2D() const;
+
 	// Events
 	virtual void evtQuit();
 	virtual bool evtKeyPress(SDL_Event *sdlEvent, const int& mod = 0);
@@ -141,6 +167,10 @@ public:
 
 	void enableTexture2D();
 	void disableTexture2D();
+
+#ifdef SDLENGINE_CONSOLE
+	Console& getConsole();
+#endif
 };
 
 }

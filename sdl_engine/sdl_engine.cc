@@ -1,6 +1,11 @@
 /* $Id$ */
 #include "stdafx.h"
 #include "sdle/sdl_engine.h"
+#include "sdle/glf_font.h"
+
+#include "sdle/arabia-8.glf.h"
+#include "sdle/arial-8.glf.h"
+#include "sdle/arial-10.glf.h"
 
 #ifndef _MSC_VER
 #	include <SDL/SDL.h>
@@ -14,26 +19,38 @@
 namespace sdle {
 bool SDLEngine::m_supportPot = false;
 
+SDLEngine *SDLEngine::m_singleton = NULL;
+
 SDLEngine::SDLEngine() {
-    m_width = m_height = 0;
+	init();
+}
+
+SDLEngine::SDLEngine(const char* caption) {
+	init();
+	strcpy(this->caption, caption);
+}
+
+SDLEngine::~SDLEngine() {
+    CloseDisplay();
+	m_singleton = NULL;
+}
+
+SDLEngine* SDLEngine::getSingleton() {
+	return(m_singleton);
+}
+
+void SDLEngine::init() {
+	if (m_singleton != NULL)
+		fprintf(stderr, "[ERROR] We are opening another instance of SDLEngine. This SHOULD NEVER HAPPEN!");
+
+	m_singleton = this;
+
+	m_width = m_height = 0;
     strcpy(this->caption, "SDL Engine");
     m_mode2d = false;
 
     near_clip = 20.0f;
     far_clip = 1000.0f;
-}
-
-SDLEngine::SDLEngine(const char* caption) {
-    m_width = m_height = 0;
-    strcpy(this->caption, caption);
-    m_mode2d = false;
-
-    near_clip = 20.0f;
-    far_clip = 1000.0f;
-}
-
-SDLEngine::~SDLEngine() {
-    CloseDisplay();
 }
 
 bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const bool& fullscreen, const unsigned int& bpp) {
@@ -158,6 +175,10 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	for (int i = 0; i < 1024; i++)
 		keys[i] = false;
 
+	Font_Arabia8 = new GLFFont(glf_arabia8, glf_arabia8_size);
+	Font_Arial8 = new GLFFont(glf_arial8, glf_arial8_size);
+	Font_Arial10 = new GLFFont(glf_arial10, glf_arial10_size);
+
     return (true);
 }
 
@@ -167,6 +188,9 @@ bool SDLEngine::supportPot() {
 
 
 void SDLEngine::CloseDisplay() {
+	delete Font_Arabia8;
+	delete Font_Arial8;
+	delete Font_Arial10;
     SDL_Quit();
 }
 
@@ -205,6 +229,9 @@ void SDLEngine::LookAt(float sX, float sY, float sZ, float dX, float dY, float d
 void SDLEngine::Sync(unsigned long delay) {
     if (m_mode2d)
         Mode2DEnd();
+#ifdef SDLENGINE_CONSOLE
+	m_console.Draw();
+#endif
     SDL_GL_SwapBuffers();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -269,6 +296,10 @@ void SDLEngine::Mode2DEnd() {
     }
 }
 
+bool SDLEngine::Mode2D() const {
+	return(m_mode2d);
+}
+
 void SDLEngine::ProcessKeyboard() {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
@@ -277,12 +308,18 @@ void SDLEngine::ProcessKeyboard() {
                 keys[e.key.keysym.sym] = true;
 				m_mod = e.key.keysym.mod;
 				m_lastkey = e.key.keysym.sym;
+#ifdef SDLENGINE_CONSOLE
+				if (!m_console.InjectKeyDown(&e))
+#endif
                 evtKeyPress(&e, e.key.keysym.mod);
                 break;
             case SDL_KEYUP:
                 keys[e.key.keysym.sym] = false;
 				if (m_lastkey = e.key.keysym.sym)
 					m_lastkey = SDLK_UNKNOWN;
+#ifdef SDLENGINE_CONSOLE
+				if (!m_console.InjectKeyUp(&e))
+#endif
                 evtKeyRelease(&e, e.key.keysym.mod);
                 break;
             case SDL_MOUSEMOTION:
@@ -454,4 +491,10 @@ void SDLEngine::enableTexture2D() {
 void SDLEngine::disableTexture2D() {
     disable(GL_TEXTURE_2D);
 }
+
+#ifdef SDLENGINE_CONSOLE
+Console& SDLEngine::getConsole() {
+	return(m_console);
+}
+#endif
 }

@@ -10,10 +10,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include "sdle/arabia-8.glf.h"
-#include "sdle/arial-8.glf.h"
-#include "sdle/arial-10.glf.h"
-
 namespace sdle {
 /* Note from Sergio:
  * I can't find any documentation on the GLF format nor remember where I got it from.
@@ -28,10 +24,9 @@ namespace sdle {
  * The data (2 bytes per pixel, resulting in a buffer size of (texture_width * texture_height * 2) long.
  */
 
-GLFFont Font_Arabia8(glf_arabia8, glf_arabia8_size);
-GLFFont Font_Arial8(glf_arial8, glf_arial8_size);
-GLFFont Font_Arial10(glf_arial10, glf_arial10_size);
-
+GLFFont* Font_Arabia8;
+GLFFont* Font_Arial8;
+GLFFont* Font_Arial10;
 
 GLFFont::GLFFont() : Font() {
 	m_font.Char = NULL;
@@ -63,6 +58,7 @@ bool GLFFont::load(const std::string & fn) {
 	ret = load(file);
 
 	file.close();
+	m_valid = true;
 	return(ret);
 }
 
