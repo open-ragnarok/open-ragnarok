@@ -30,6 +30,14 @@ namespace ronet {
 		UDP
 	} connection_protocol;
 
+#if defined(WIN32) || defined(_MSC_VER)
+	class RONET_DLLAPI InitWinsock {
+	public:
+		InitWinsock();
+		~InitWinsock();
+	};
+#endif
+
 	/**
 	 * Generic Connection class, implementing basic instructions
 	 * 
@@ -61,6 +69,7 @@ namespace ronet {
 		/** Data left to send */
 		ronet::ucBuffer bufOutput;
 	};
+
 }
 
 #endif /* __RONET_CONNECTION_H */

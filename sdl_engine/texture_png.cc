@@ -48,6 +48,7 @@ void userReadData(png_structp pngPtr, png_bytep data, png_size_t length) {
 }
 
 Texture loadPngTexture(const char* buf, unsigned int buflen) {
+	// Thanks to: http://www.piko3d.com/?page_id=68
 	std::stringstream source;
 	source.write(buf, buflen);
 
