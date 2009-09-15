@@ -65,10 +65,20 @@ public:
 	 * Opens a given filename and read 'charcount' glyphs starting inposition 'startchar'
 	 * @param fn the file to load from
 	 * @param size the font size
-	 * @param startchar the character to start loading from (default: space ' ')
+	 * @param startchar the character to start loading from (default: space ' ', 0x20)
 	 * @param charcount number of chars to read from the font file
 	 */
 	bool open(const char* fn, unsigned int size, unsigned int startchar = 32, unsigned int charcount = 96);
+
+	/**
+	 * Opens a given font from memory and read 'charcount' glyphs starting inposition 'startchar'
+	 * @param buffer the char buffer to load from
+	 * @param bufsize the size of the buffer to use
+	 * @param size the font size
+	 * @param startchar the character to start loading from (default: space ' ', 0x20)
+	 * @param charcount number of chars to read from the font file
+	 */
+	bool open(const char* buffer, unsigned int bufsize, unsigned int size, unsigned int startchar = 32, unsigned int charcount = 96);
 
 	/** Erases the font */
 	void release();

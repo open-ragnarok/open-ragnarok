@@ -81,7 +81,9 @@ int main(int argc, char* argv[]) {
 
 	e.setNearClip(1.0f);
 	e.setFarClip(20.0f);
+#ifdef SDLENGINE_CONSOLE
 	e.getConsole().setFont(&f);
+#endif
 	float r = 0.0f;
 	while (!keys[SDLK_ESCAPE]) {
 		e.LookAt(8, 4, 0);
