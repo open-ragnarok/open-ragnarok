@@ -343,6 +343,15 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 		}
 		i++;
 	}
+	
+	//TODO: Improve this?
+	char newz[5] = "new_";
+	char number;
+	if(memcmp(map,newz,4) == 0){
+		number = (map[6]) - 0x30;
+		memset(&map,0x00,32);
+		sprintf(map,"new_zone0%d",number);
+	}
 
 	LoadMap(map);
 	// TODO: Set desktop to the ingame desktop
