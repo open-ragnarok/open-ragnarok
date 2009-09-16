@@ -23,12 +23,39 @@
 class ROEngine : public sdle::SDLEngine {
 protected:
 	TextureManager m_texturemanager;
+	/** Cache of GL Objects */
 	GLObjectCache m_gl_objects;
+	/** Cache of RO Objects
+	 * Primitive objects from GRF file
+	 */
 	ROObjectCache m_ro_objects;
+	/**
+	 * Manager to load files from disk/memory
+	 */
 	FileManager m_filemanager;
+
+	/**
+	 * Object to calculate what's visible to optimize drawing time
+	 */
 	Frustum m_frustum;
+	
+	/**
+	 * The graphic user interface
+	 */
 	GUI::Gui m_gui;
+
+	/** Indicates if we're in a process of rotation or not */
+	bool m_rotating;
+
+	/**
+	 * The cursor
+	 */
 	FullAct cursor;
+
+	/**
+	 * The Object representing us.
+	 */
+	CharObj me;
 
 	/** Indicates the current cursor sprite in use */
 	int m_cursorSprite;
@@ -94,6 +121,15 @@ public:
 
 	/** Retrieve mouse Y position */
 	int getMouseY();
+
+	/** Function called right before drawing the map */
+	virtual void beforeDrawMap();
+
+	/** Function called right after drawing the map */
+	virtual void afterDrawMap();
+
+	/** Draws the map (if any) */
+	void DrawMap();
 };
 
 #ifdef _MSC_VER

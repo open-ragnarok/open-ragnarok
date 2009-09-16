@@ -2,6 +2,7 @@
 #include "stdafx.h"
 
 #include "roengine/ro_engine.h"
+#include "sdle/sdl_engine.h"
 
 void ROEngine::HandleKeyboard() {}
 
@@ -74,7 +75,8 @@ ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 	m_quit = false;
 	m_cursorSprite = 0;
 	m_map = NULL;
-	cam.getEye().set(200, 200, 200);
+	cam.getEye().set(200, 200, -200);
+	m_rotating = false;
 }
 
 ROEngine::~ROEngine() {
@@ -102,6 +104,67 @@ void ROEngine::AfterInit() {
 	m_gui.Init(getWidth(), getHeight());
 }
 
+void ROEngine::beforeDrawMap() {}
+
+void ROEngine::afterDrawMap() {}
+
+void ROEngine::DrawMap() {
+	if (m_map == NULL)
+		return;
+
+	beforeDrawMap();
+
+	Vector3f camera_look;
+
+	float wx, wy, wz;
+	int mapx, mapy;
+	cam.Look();
+	m_frustum.Calculate();
+	m_map->DrawRSW(mousex, mousey);
+	wx = m_map->getWorldX();
+	wy = m_map->getWorldY();
+	wz = m_map->getWorldZ();
+
+	mapx = (int)(wx/10);
+	mapy = (int)(wy/10);
+	m_texturemanager["openro\\selected.png"].Activate();
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	m_map->DrawSelection(mapx, mapy);
+	glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+
+	printf("World: %.2f, %.2f, %.2f", wx, wy, wz);
+	printf("\tMap: %d, %d", mapx, mapy);
+
+	glPushMatrix();
+	m_map->getWorldPosition(mapx, mapy, &wx, &wy, &wz);
+	glPopMatrix();
+
+	printf("\tW: %.2f, %.2f, %.2f", wx, wy, wz);
+	printf("\r");
+	camera_look = cam.getEye() - cam.getDest();
+	m_gl_objects.draw(m_frustum, tickDelay, camera_look);
+
+
+	// Positions the camera so we're right above ourselves.
+	glPushMatrix();
+	m_map->getWorldPosition(me.map_x, me.map_y, &wx, &wy, &wz);
+	glPopMatrix();
+	cam.TranslateDestTo(Vector3f(wx, wy, wz));
+
+	if (me.m_actgl.valid()) {
+		glEnable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
+		me.Draw(m_map, 50);
+		glDisable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	afterDrawMap();
+}
+
+
 void ROEngine::Run() {
 	long curtick;
 	m_quit = false;
@@ -122,30 +185,7 @@ void ROEngine::Run() {
 		HandleKeyboard();
 
 		BeforeDraw();
-
-		if (m_map != NULL) {
-			float wx, wy, wz;
-			int mapx, mapy;
-			cam.Look();
-			m_frustum.Calculate();
-			m_map->DrawRSW(mousex, mousey);
-			wx = m_map->getWorldX();
-			wy = m_map->getWorldY();
-			wz = m_map->getWorldZ();
-
-			mapx = (int)(wx/10);
-			mapy = (int)(wy/10);
-			m_texturemanager["openro\\selected.png"].Activate();
-			glEnable(GL_TEXTURE_2D);
-			glEnable(GL_BLEND);
-			m_map->DrawSelection(mapx, mapy);
-			glDisable(GL_BLEND);
-			glDisable(GL_TEXTURE_2D);
-
-			printf("World position: %.2f, %.2f, %.2f\tMap position: %d, %d\t\r", wx, wy, wz, mapx, mapy);
-			camera_look = cam.getEye() - cam.getDest();
-			m_gl_objects.draw(m_frustum, tickDelay, camera_look);
-		}
+		DrawMap();
 
 		m_gui.Draw(tickDelay);
 
@@ -177,10 +217,38 @@ bool ROEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) {
 }
 
 bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
-	return(m_gui.InjectMouseClick(x, y, buttons));
+	bool ret = m_gui.InjectMouseClick(x, y, buttons);
+	if (ret == false) {
+		if (buttons == 3) {
+			m_rotating = true;
+			return(true);
+		}
+		else {
+			if (m_map != NULL) {
+				float wx, wy;
+				int mapx, mapy;
+				wx = m_map->getWorldX();
+				wy = m_map->getWorldY();
+
+				mapx = (int)(wx/10);
+				mapy = (int)(wy/10);
+
+				me.map_x = mapx;
+				me.map_y = mapy;
+			}
+		}
+	}
+
+	return(ret);
 }
 
 bool ROEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) {
+	if (buttons == 3) {
+		if (m_rotating) {
+			m_rotating = false;
+			return(true);
+		}
+	}
 	return(m_gui.InjectMouseRelease(x, y, buttons));
 }
 
@@ -188,6 +256,11 @@ bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int
 	//Save the mouse pos to draw the spr cursor
 	mousex = x;
 	mousey = y;
+	if (m_rotating) {
+		cam.Rotate((float)dx / 10);
+		printf("Rotating... %d\n", dx);
+		return(true);
+	}
 	return(m_gui.InjectMouseMove(x, y, dx, dy));
 }
 
@@ -210,7 +283,6 @@ void ROEngine::ProcessMouse(int xless, int yless){
 void ROEngine::setMap(RswObject* map) {
 	m_map = map;
 }
-
 
 TextureManager& ROEngine::getTextureManager() { return(m_texturemanager); }
 GLObjectCache& ROEngine::getGLObjects() { return(m_gl_objects); }

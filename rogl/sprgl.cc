@@ -27,10 +27,13 @@ SprGL::SprGL(const SprGL& s) {
 	}
 }
 
-
 SprGL::~SprGL() {
 	if (m_info != NULL)
 		delete[] m_info;
+}
+
+unsigned int SprGL::getFrameCount() const {
+	return(m_framecount);
 }
 
 void SprGL::release() {
@@ -153,7 +156,7 @@ bool SprGL::open(const RO::SPR* spr) {
 					image[4 * (px + py * imageWidth) + 3] = 0;
 				}
 				else {
-					image[4 * (px + py * imageWidth) + 3] = 255;
+					image[4 * (px + py * imageWidth) + 3] = (unsigned char)0xff;
 				}
 			}
 		}
@@ -186,6 +189,10 @@ bool SprGL::open(const RO::SPR* spr) {
 
 
 	return(true);
+}
+
+void SprGL::Draw() const {
+	Draw(0);
 }
 
 void SprGL::Draw(unsigned int idx) const {

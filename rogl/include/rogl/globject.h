@@ -10,7 +10,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-namespace ROGL {
+namespace rogl {
 
 class ROGL_DLLAPI GLObject {
 public:

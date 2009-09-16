@@ -3,6 +3,10 @@
 
 #include "vector.h"
 
+/**
+ * A simple camera with many functionalities.
+ * Provides an way to setup and move around the world.
+ */
 class Camera {
 protected:
 	Vector3f eye;
@@ -16,6 +20,12 @@ public:
 	void TranslateX(const float&);
 	void TranslateY(const float&);
 	void TranslateZ(const float&);
+
+	/**
+	 * Translates the Destination vector to a given point (absolute. not relative), taking the eye vector with it.
+	 */
+	void TranslateDestTo(const Vector3f&);
+
 	void setEye(const Vector3f&);
 	void setDest(const Vector3f&);
 

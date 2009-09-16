@@ -1,9 +1,10 @@
 /* $Id$ */
 #include "stdafx.h"
-
 #include "openro.h"
-
 #include "sdle/ft_font.h"
+#include "rogl/actgl.h"
+
+rogl::ActGL* act_test = NULL;
 
 OpenRO::OpenRO() : ROEngine() {
 	ReadIni("data.ini");
@@ -44,24 +45,16 @@ void OpenRO::ServiceSelect(unsigned int serviceid) {
 	if (serviceid < (m_serverlist->getServerCount()-1))
 		return;
 
-	//Disable the service select window
-	dskService->setEnabled(false);
+	dskService->setEnabled(false); //Disable the service select window
+	m_network.getLogin().Close();	//Close the socket to the login server
 
-	//Close the socket to the login server
-	m_network.getLogin().Close();
-
-	//Convert the IP to string (stored in long)
 	struct in_addr addr;
-	addr.s_addr = (long)m_serverlist->getInfo(serviceid).ip;
+	addr.s_addr = (long)m_serverlist->getInfo(serviceid).ip;	//Convert the IP to string (stored in long)
 
-	//Debug info
-	fprintf(stdout,"%s:%d\n",inet_ntoa(addr),m_serverlist->getInfo(serviceid).port);
+	fprintf(stdout,"%s:%d\n",inet_ntoa(addr),m_serverlist->getInfo(serviceid).port);	//Debug info
 
-	//Connect to the charserver
-	m_network.getChar().Connect(inet_ntoa(addr), m_serverlist->getInfo(serviceid).port);
-
-	//Login to the charserver
-	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());
+	m_network.getChar().Connect(inet_ntoa(addr), m_serverlist->getInfo(serviceid).port);	//Connect to the charserver
+	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());	//Login to the charserver
 }
 
 void OpenRO::CharSelect(unsigned int slot){
@@ -93,6 +86,18 @@ void OpenRO::AfterDraw() {
 	m_network.Process();
 
 	ronet::Packet* pkt = m_network.popPacket();
+
+
+	/*
+	// ============ DEBUG  ============================================================
+	if (act_test != NULL) {
+		Mode2DStart();
+		glTranslatef(250, 250, 0);
+		act_test->Draw(100);
+		Mode2DEnd();
+	}
+	// ============ DEBUG  ============================================================
+	*/
 
 #define HANDLEPKT(pktid, delp) case ronet::pkt ##pktid ##ID : delpkt = delp; hndl ##pktid ((ronet::pkt ##pktid *)pkt); break
 
@@ -155,6 +160,54 @@ void OpenRO::LoadMap(const char* map) {
 	setMap(obj);
 }
 
+void LoadAct(OpenRO& ro, const char* name) {
+	std::string act_n;
+	std::string spr_n;
+
+	act_n = name;
+	act_n += ".act";
+	spr_n = name;
+	spr_n += ".spr";
+
+	rogl::ActGL* actgl;
+	rogl::SprGL sprgl;
+
+	ROObjectCache& objects = ro.getROObjects();
+	GLObjectCache& globjects = ro.getGLObjects();
+	TextureManager& tm = ro.getTextureManager();
+	FileManager& fm = ro.getFileManager();
+
+	// Reads the ACT object
+	if (!objects.ReadACT(act_n, fm)) {
+		fprintf(stderr, "Error loading act file %s.\n", act_n.c_str());
+		return;
+	}
+
+	// Reads the SPR object
+	if (!objects.ReadSPR(spr_n, fm)) {
+		fprintf(stderr, "Error loading spr file %s.\n", spr_n.c_str());
+		return;
+	}
+
+	// Converts the SPR object into a texture (SprGL)
+	if (!sprgl.open((RO::SPR*)objects[spr_n])) {
+		fprintf(stderr, "Error converting spr to texture.\n");
+		return;
+	}
+	// Registers the SprGL Texture
+	tm.Register(spr_n, sprgl.getTexture());
+
+	// Creates an ActGL and registers it
+	actgl = new rogl::ActGL();
+	actgl->setSpr(sprgl);
+	actgl->setAct((RO::ACT*)objects[act_n]);
+	//globjects.add(act_n, actgl);
+
+	act_test = actgl;
+
+	return;
+}
+
 void OpenRO::BeforeRun() {
 	ParseClientInfo();
 
@@ -178,10 +231,19 @@ void OpenRO::BeforeRun() {
 	dskService = new DesktopService(this);
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
+
 #if 1
 	m_gui.setDesktop(dskLogin);
 #else
-	debug_LoadMap(*this, "new_zone01");
+	char buf[256];
+	sprintf(buf, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::sex[0], RO::EUC::classname[RO::J_MAGE], RO::EUC::sex[0]);
+	LoadAct(*this, buf);
+
+	me.m_actgl = *act_test;
+	me.map_x = 57;
+	me.map_y = 47;
+
+	LoadMap("new_zone01");
 #endif
 
 	FullAct ycursor;
@@ -189,7 +251,6 @@ void OpenRO::BeforeRun() {
 	sprintf(xcursor,"sprite\\cursors");
 	ycursor.Load(xcursor, getROObjects(), getFileManager(), getTextureManager());
 	setCursor(ycursor);
-
 }
 
 //Add new packets here
@@ -344,16 +405,19 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 		i++;
 	}
 	
-	//TODO: Improve this?
-	char newz[5] = "new_";
-	char number;
-	if(memcmp(map,newz,4) == 0){
-		number = (map[6]) - 0x30;
-		memset(&map,0x00,32);
-		sprintf(map,"new_zone0%d",number);
+	LoadMap(map);
+
+	if (m_map == NULL) {
+		char newz[5] = "new_";
+		char number;
+		if(memcmp(map,newz,4) == 0){
+			number = (map[6]) - 0x30;
+			memset(&map,0x00,32);
+			sprintf(map,"new_zone0%d",number);
+		}
+		LoadMap(map);
 	}
 
-	LoadMap(map);
 	// TODO: Set desktop to the ingame desktop
 	m_gui.setDesktop(NULL);
 }
@@ -367,6 +431,9 @@ void OpenRO::hndlMapLoginSuccess(ronet::pktMapLoginSuccess* pkt) {
 	short pos_y = pkt->getPosY();
 	short pos_dir = pkt->getPosDir();
 	unsigned int server_tick = pkt->getServerTick();
+
+	me.map_x = pos_x;
+	me.map_y = pos_y;
 
 	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n\n\n",pos_x,pos_y,pos_dir,server_tick);
 }

@@ -15,6 +15,7 @@
  */
 class RswObject : public GLObject {
 protected:
+	static float m_tilesize;
 	const RO::RSW* rsw;
 	const RO::GND* gnd;
 	TextureCache textures;
@@ -44,6 +45,26 @@ public:
 	void DrawRSW(int screen_x, int screen_y);
 	void DrawSelection(int mapx, int mapy) const;
 	virtual bool isInFrustum(const Frustum&) const;
+
+	/**
+	 * Retrieves the GL position (rx, ry, rz) of the given map coordinates
+	 * @param mapx map X coordinate
+	 * @param mapy map Y coordinate
+	 * @param rx float world X coordinate
+	 * @param ry float world Z coordinate
+	 * @param ry float world Z coordinate
+	 */
+	void getWorldPosition(int mapx, int mapy, float *rx, float *ry, float *rz);
+
+	/**
+	 * Retrieves the RSW file used to draw this map
+	 */
+	const RO::RSW* getRSW() const;
+
+	/**
+	 * Retrieves the GND file used to draw this map
+	 */
+	const RO::GND* getGND() const;
 
 	float getWorldX() const;
 	float getWorldY() const;

@@ -95,14 +95,7 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 
 	if (cross) {
 		glColor3f(1, 0, 0);
-		glDisable(GL_TEXTURE_2D);
-		glBegin(GL_LINES);
-		glVertex3f(x - CROSS_SIZE, y,0);
-		glVertex3f(x + CROSS_SIZE, y,0);
-		glVertex3f(x, y - CROSS_SIZE,0);
-		glVertex3f(x, y + CROSS_SIZE,0);
-		glEnd();
-		glEnable(GL_TEXTURE_2D);
+		DrawActCross(x, y, CROSS_SIZE);
 		glColor3f(1, 1, 1);
 	}
 

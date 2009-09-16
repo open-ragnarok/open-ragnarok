@@ -165,8 +165,6 @@ public:
 	virtual bool evtMouseRelease(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 
-	// Some primitives
-	static void cube(const float& side = 1.0f);
 	int Screenshot(char *filename);
 
 	// Helpers
@@ -179,6 +177,9 @@ public:
 #ifdef SDLENGINE_CONSOLE
 	Console& getConsole();
 #endif
+
+	// Some primitives
+	static void cube(const float& side = 1.0f);
 };
 
 }

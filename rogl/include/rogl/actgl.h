@@ -3,6 +3,7 @@
 #define __ACTGL_H
 
 #include "rogl/globject.h"
+#include "rogl/sprgl.h"
 
 #include "ro/types/act.h"
 #include "ro/types/spr.h"
@@ -10,43 +11,62 @@
 
 #include <string>
 
-namespace ROGL {
+namespace rogl {
 
-class ActData;
-
+/**
+ * Holds the ACT/SPR data pair and draws it accordingly
+ */
 class ROGL_DLLAPI ActGL : public GLObject {
 protected:
-	ActGL* ext;
-	const ActData* act;
-public:
-	ActGL(const ActData*);
-	ActGL(const std::string& name);
-	virtual ~ActGL();
-};
-
-class ROGL_DLLAPI ActData {
-protected:
 	RO::ACT *act;
-	RO::SPR *spr;
-//	RO::PAL *pal;
+	SprGL spr;
 
-	std::string m_name;
+	const ActGL* ext;
+
+	/**
+	 * Draws a cross indicating the spot that the spr should be
+	 */
+	void ActGL::Cross(float size = 5.0f);
+
+	unsigned int m_action;
+	/**
+	 * Accumulated delay. Used for calculating next frame.
+	 */
+	unsigned long m_delay;
+
+	/**
+	 * Current frame being drawn.
+	 */
+	unsigned int m_frame;
 public:
-	ActData();
-	ActData(const ActData&);
-	virtual ~ActData();
+	ActGL();
+	ActGL(const ActGL&);
+	virtual ~ActGL();
 
-	ActData& operator = (const ActData&);
+	/**
+	 * Copy operator
+	 */
+	ActGL& operator = (const ActGL&);
+
+	void setExt(const ActGL*);
+	const ActGL* getExt();
+
+	void setAct(RO::ACT*);
+	RO::ACT* getAct();
+
+	void setSpr(const SprGL&);
+	SprGL& getSpr();
+
+	bool valid() const;
+
+	/**
+	 * Draws this object in the current position
+	 * 
+	 * @param delay milliseconds passed since last Draw() was called (to calculate animations)
+	 */
+	void Draw(unsigned long delay);
 
 	void Draw() const;
-
-	bool readAct(std::istream&);
-	bool readSpr(std::istream&);
-
-	bool read(const std::string& name, RO::GRF&);
-
-	void setName(const std::string&);
-	const std::string& getName() const;
 };
 
 }

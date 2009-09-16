@@ -3,33 +3,87 @@
 
 #include "rogl/actgl.h"
 
-ROGL::ActData::ActData() {
-	spr = NULL;
+namespace rogl {
+
+ActGL::ActGL() {
 	act = NULL;
-	m_name = "noname";
+	ext = NULL;
+	m_action = 0;
+	m_delay = 0;
+	m_frame = 0;
 }
 
-ROGL::ActData::~ActData() {
-	if (spr != NULL)
-		delete spr;
-	if (act != NULL)
-		delete act;
-}
-
-void ROGL::ActData::Draw() const {
-}
-
-ROGL::ActData::ActData(const ROGL::ActData& _act) {
+ActGL::ActGL(const ActGL& _act) {
 	*this = _act;
 }
 
-ROGL::ActData& ROGL::ActData::operator = (const ROGL::ActData& _act) {
+ActGL::~ActGL() {
+}
+
+bool ActGL::valid() const {
+	return(act != NULL);
+}
+
+
+void ActGL::Draw() const {
+}
+
+
+void ActGL::Draw(unsigned long delay) {
+	m_delay += delay;
+	while (m_delay > 200) {
+		m_delay -= 200;
+		m_frame += 1;
+		if (m_frame >= spr.getFrameCount())
+			m_frame = 0;
+	}
+
+	spr.Draw(m_frame);
+	Cross(10);
+}
+
+ActGL& ActGL::operator = (const ActGL& _act) {
 	this->act = _act.act;
 	this->spr = _act.spr;
-	this->m_name =  _act.m_name;
+	this->ext = _act.ext;
 	return(*this);
 }
 
-ROGL::ActGL::ActGL(const ActData*) {}
-ROGL::ActGL::ActGL(const std::string& name) {}
-ROGL::ActGL::~ActGL() {}
+void ActGL::setExt(const ActGL* e) {
+	ext = e;
+}
+
+void ActGL::setAct(RO::ACT* a) {
+	act = a;
+}
+
+void ActGL::setSpr(const SprGL& s) {
+	spr = s;
+}
+
+const ActGL* ActGL::getExt() {
+	return(ext);
+}
+
+RO::ACT* ActGL::getAct() {
+	return(act);
+}
+
+SprGL& ActGL::getSpr() {
+	return(spr);
+}
+
+
+void ActGL::Cross(float size) {
+	glDisable(GL_TEXTURE_2D);
+	glBegin(GL_LINES);
+	glVertex3f(- size, 0,0);
+	glVertex3f(+ size, 0,0);
+	glVertex3f(0, - size,0);
+	glVertex3f(0, + size,0);
+	glEnd();
+	glEnable(GL_TEXTURE_2D);
+}
+
+
+}

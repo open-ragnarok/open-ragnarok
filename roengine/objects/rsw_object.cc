@@ -7,6 +7,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+float RswObject::m_tilesize = 10.0f;
+
 RswObject::RswObject(const RO::RSW* rsw, ROObjectCache& cache) : GLObject() {
 	this->rsw = rsw;
 	std::string gnd_fn = rsw->gnd_file;
@@ -14,6 +16,29 @@ RswObject::RswObject(const RO::RSW* rsw, ROObjectCache& cache) : GLObject() {
 }
 
 RswObject::~RswObject() {
+}
+
+const RO::RSW* RswObject::getRSW() const { return(rsw); }
+const RO::GND* RswObject::getGND() const { return(gnd); }
+
+void RswObject::getWorldPosition(int mapx, int mapy, float *rx, float *ry, float *rz) {
+	float sizex = 0, sizey = 0;
+
+	if (mapx < 0 || mapx >= (int)gnd->getWidth())
+		return;
+
+	if (mapy < 0 || mapy >= (int)gnd->getHeight())
+		return;
+
+	
+	sizex = m_tilesize * gnd->getWidth();
+	sizey = m_tilesize * gnd->getHeight();
+
+	const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
+
+	*rx = m_tilesize * mapx + m_tilesize / 2 - sizex / 2;
+	*rz = m_tilesize * mapy + m_tilesize / 2 - sizey / 2;
+	*ry = -(cube.height[0] + cube.height[1] + cube.height[2] + cube.height[3]) / 4;
 }
 
 bool RswObject::loadTextures(TextureManager& tm, FileManager& fm) {
@@ -35,12 +60,11 @@ bool RswObject::loadTextures(TextureManager& tm, FileManager& fm) {
 }
 
 void RswObject::DrawGND() {
-	float tile_size = 10.0f;
 	float sizex = 0, sizey = 0;
 	unsigned int i, j;
 	
-	sizex = tile_size * gnd->getWidth();
-	sizey = tile_size * gnd->getHeight();
+	sizex = m_tilesize * gnd->getWidth();
+	sizey = m_tilesize * gnd->getHeight();
 
 	float rot[16];
 	rot[0] = 1.0;
@@ -99,16 +123,16 @@ void RswObject::DrawGND() {
 					tex.Activate();
 					glBegin(GL_QUADS);
 					glTexCoord2f(tile.texture_start[0],		1 - tile.texture_end[0]);
-					glVertex3f(tile_size * i,		tile_size * j,		 cube.height[0]);
+					glVertex3f(m_tilesize * i,		m_tilesize * j,		 cube.height[0]);
 
 					glTexCoord2f(tile.texture_start[1],		1 - tile.texture_end[1]);
-					glVertex3f(tile_size * (i + 1),	tile_size * j,		 cube.height[1]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * j,		 cube.height[1]);
 
 					glTexCoord2f(tile.texture_start[3],		1 - tile.texture_end[3]);
-					glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube.height[3]);
 
 					glTexCoord2f(tile.texture_start[2],		1 - tile.texture_end[2]);
-					glVertex3f(tile_size * i,		tile_size * (j + 1), cube.height[2]);
+					glVertex3f(m_tilesize * i,		m_tilesize * (j + 1), cube.height[2]);
 					glEnd();
 				}
 			}
@@ -123,16 +147,16 @@ void RswObject::DrawGND() {
 					tex.Activate();
 					glBegin(GL_QUADS);
 					glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
-					glVertex3f(tile_size * i,		tile_size * (j + 1), cube.height[2]);
+					glVertex3f(m_tilesize * i,		m_tilesize * (j + 1), cube.height[2]);
 
 					glTexCoord2f(tile.texture_start[1],	tile.texture_end[1]);
-					glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube.height[3]);
 
 					glTexCoord2f(tile.texture_start[3],	tile.texture_end[3]);
-					glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube2.height[1]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube2.height[1]);
 
 					glTexCoord2f(tile.texture_start[2],	tile.texture_end[2]);
-					glVertex3f(tile_size * i,		tile_size * (j + 1), cube2.height[0]);
+					glVertex3f(m_tilesize * i,		m_tilesize * (j + 1), cube2.height[0]);
 					glEnd();
 				}
 			}
@@ -146,16 +170,16 @@ void RswObject::DrawGND() {
 					tex.Activate();
 					glBegin(GL_QUADS);
 					glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
-					glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube.height[3]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube.height[3]);
 
 					glTexCoord2f(tile.texture_start[1],	tile.texture_end[1]);
-					glVertex3f(tile_size * (i + 1),	tile_size * j, cube.height[1]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * j, cube.height[1]);
 
 					glTexCoord2f(tile.texture_start[3],	tile.texture_end[3]);
-					glVertex3f(tile_size * (i + 1),	tile_size * j, cube2.height[0]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * j, cube2.height[0]);
 
 					glTexCoord2f(tile.texture_start[2],	tile.texture_end[2]);
-					glVertex3f(tile_size * (i + 1),	tile_size * (j + 1), cube2.height[2]);
+					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube2.height[2]);
 					glEnd();
 				}
 			}
@@ -166,20 +190,19 @@ void RswObject::DrawGND() {
 }
 
 void RswObject::DrawSelection(int mapx, int mapy) const {
-#define ZOFFSET -0.1f
+#define ZOFFSET -0.002f
 
-	float tile_size = 10.0f;
 	float sizex = 0, sizey = 0;
 
-	if (mapx < 0 || mapx >= gnd->getWidth())
+	if (mapx < 0 || mapx >= (int)gnd->getWidth())
 		return;
 
-	if (mapy < 0 || mapy >= gnd->getHeight())
+	if (mapy < 0 || mapy >= (int)gnd->getHeight())
 		return;
 
 	
-	sizex = tile_size * gnd->getWidth();
-	sizey = tile_size * gnd->getHeight();
+	sizex = m_tilesize * gnd->getWidth();
+	sizey = m_tilesize * gnd->getHeight();
 
 	float rot[16];
 	rot[0] = 1.0;
@@ -203,16 +226,19 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 	rot[15] = 1.0;
 
 	//Rotate 90 degrees about the z axis
+	glPushMatrix();
 	glMultMatrixf(rot);
 
 	const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,	0.0f); glVertex3f(tile_size * mapx,			tile_size * mapy,		cube.height[0] + ZOFFSET);
-	glTexCoord2f(1.0f,	0.0f); glVertex3f(tile_size * (mapx + 1),	tile_size * mapy,		cube.height[1] + ZOFFSET);
-	glTexCoord2f(1.0f,	1.0f); glVertex3f(tile_size * (mapx + 1),	tile_size * (mapy + 1),	cube.height[3] + ZOFFSET);
-	glTexCoord2f(0.0f,	1.0f); glVertex3f(tile_size * mapx,			tile_size * (mapy + 1), cube.height[2] + ZOFFSET);
+	glTexCoord2f(0.0f,	0.0f); glVertex3f(m_tilesize * mapx,		m_tilesize * mapy,			cube.height[0] + ZOFFSET);
+	glTexCoord2f(1.0f,	0.0f); glVertex3f(m_tilesize * (mapx + 1),	m_tilesize * mapy,			cube.height[1] + ZOFFSET);
+	glTexCoord2f(1.0f,	1.0f); glVertex3f(m_tilesize * (mapx + 1),	m_tilesize * (mapy + 1),	cube.height[3] + ZOFFSET);
+	glTexCoord2f(0.0f,	1.0f); glVertex3f(m_tilesize * mapx,		m_tilesize * (mapy + 1),	cube.height[2] + ZOFFSET);
 	glEnd();
+
+	glPopMatrix();
 }
 
 

@@ -14,6 +14,12 @@ void Camera::Rotate(float f) {
 	eye.rotateY(f, dest);
 }
 
+void Camera::TranslateDestTo(const Vector3f& v) {
+	Vector3f offset = v - dest;
+	eye += offset;
+	dest += offset;
+}
+
 void Camera::Translate(const Vector3f& v) {
 	eye += v;
 	dest += v;
