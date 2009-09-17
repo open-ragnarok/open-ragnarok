@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(DisplayStat, false);
 			HANDLEPKT(UpdateStatus, false);
 			HANDLEPKT(ServerList, false);
 			HANDLEPKT(CharList, true);
@@ -196,11 +197,20 @@ void OpenRO::BeforeRun() {
 
 //Add new packets here
 
+void OpenRO::hndlDisplayStat(ronet::pktDisplayStat* pkt) {
+	unsigned int type = pkt->getType();
+	unsigned int base = pkt->getBase();
+	unsigned int bonus = pkt->getBonus();
+
+	printf("%s: %d + %d\n",RO::dnames[type],base,bonus);
+
+}
+
 void OpenRO::hndlUpdateStatus(ronet::pktUpdateStatus* pkt) {
 	unsigned short type = pkt->getType();
 	unsigned int value = pkt->getValue();
 
-	printf("Update status \"%d\" with value \"%d\"\n", type, value);
+	printf("Update status \"%s\", with value %d!\n",RO::dnames[type],value);
 	
 }
 

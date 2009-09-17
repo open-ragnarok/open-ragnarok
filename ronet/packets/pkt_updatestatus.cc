@@ -20,11 +20,6 @@ bool ronet::pktUpdateStatus::Decode(ucBuffer& buf) {
 	buf >> type;
 	buf >> value;
 
-	//if (buf.dataSize() != len_mes)
-	//	return(false);
-
-	//buf.read((unsigned char*)text,len_mes-4);
-
 	return(true);
 }
 

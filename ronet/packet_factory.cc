@@ -14,6 +14,7 @@
 // List of packets that we know how to decode
 
 //Add new packets here
+HANDLER(DisplayStat);
 HANDLER(UpdateStatus)
 HANDLER(ServerList)
 HANDLER(CharList)
@@ -29,6 +30,7 @@ HANDLER(SkillList)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
+	CALLER(DisplayStat);
 	CALLER(UpdateStatus);
 	CALLER(ServerList);
 	CALLER(CharList);

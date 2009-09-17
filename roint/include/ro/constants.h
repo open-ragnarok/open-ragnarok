@@ -2475,6 +2475,7 @@ namespace RO {
 		ROINT_DLLAPI extern char crusader_mounted[];
 		ROINT_DLLAPI extern char knight_mounted[];
 	}
+	ROINT_DLLAPI extern char *dnames[];
 }
 
 #endif /* __CONSTANTS_H */

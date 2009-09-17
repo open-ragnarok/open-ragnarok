@@ -411,6 +411,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_displaystat.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_keepalive.cc"
 					>
 				</File>
@@ -558,6 +562,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_charselect.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_displaystat.h"
 					>
 				</File>
 				<File
