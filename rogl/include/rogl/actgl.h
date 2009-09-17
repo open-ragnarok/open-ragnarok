@@ -21,12 +21,13 @@ protected:
 	RO::ACT *act;
 	SprGL spr;
 
-	const ActGL* ext;
+	/** External entity */
+	ActGL* ext;
 
 	/**
 	 * Draws a cross indicating the spot that the spr should be
 	 */
-	void ActGL::Cross(float size = 5.0f);
+	void Cross(float size = 5.0f);
 
 	unsigned int m_action;
 	/**
@@ -38,6 +39,7 @@ protected:
 	 * Current frame being drawn.
 	 */
 	unsigned int m_frame;
+
 public:
 	ActGL();
 	ActGL(const ActGL&);
@@ -48,8 +50,8 @@ public:
 	 */
 	ActGL& operator = (const ActGL&);
 
-	void setExt(const ActGL*);
-	const ActGL* getExt();
+	void setExt(ActGL*);
+	ActGL* getExt();
 
 	void setAct(RO::ACT*);
 	RO::ACT* getAct();
@@ -57,6 +59,7 @@ public:
 	void setSpr(const SprGL&);
 	SprGL& getSpr();
 
+	/** Check if this act is valid */
 	bool valid() const;
 
 	/**

@@ -284,7 +284,10 @@ void Gui::ProcessEvents() {
 		m_desktop->HandleEvent(PopEvent());
 }
 
-void Gui::Dialog(const std::string& title, const std::string& text, TextureManager& tm, FileManager& fm, int buttons) {
+void Gui::Dialog(const std::string& title, const std::string& text, CacheManager& cache, int buttons) {
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
+
 	GUI::Dialog* dialog;
 	dialog = new GUI::Dialog(title, text, tm, fm);
 	m_inactiveDesktop = m_desktop;

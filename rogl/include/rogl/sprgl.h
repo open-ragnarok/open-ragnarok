@@ -34,7 +34,7 @@ public:
 	bool open(const RO::SPR*);
 
 	void Draw() const;
-	void Draw(unsigned int idx) const;
+	void Draw(unsigned int idx, bool xmirror = false) const;
 	void Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const;
 
 	// Deletes all info

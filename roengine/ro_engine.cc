@@ -153,7 +153,7 @@ void ROEngine::DrawMap() {
 	glPopMatrix();
 	cam.TranslateDestTo(Vector3f(wx, wy, wz));
 
-	if (me.m_actgl.valid()) {
+	if (me.valid()) {
 		glEnable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
 		me.Draw(m_map, 50);
@@ -258,7 +258,7 @@ bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int
 	mousey = y;
 	if (m_rotating) {
 		cam.Rotate((float)dx / 10);
-		printf("Rotating... %d\n", dx);
+		//printf("Rotating... %d\n", dx);
 		return(true);
 	}
 	return(m_gui.InjectMouseMove(x, y, dx, dy));
@@ -284,10 +284,6 @@ void ROEngine::setMap(RswObject* map) {
 	m_map = map;
 }
 
-TextureManager& ROEngine::getTextureManager() { return(m_texturemanager); }
-GLObjectCache& ROEngine::getGLObjects() { return(m_gl_objects); }
-ROObjectCache& ROEngine::getROObjects() { return(m_ro_objects); }
-FileManager& ROEngine::getFileManager() { return(m_filemanager); }
 Frustum& ROEngine::getFrustum() { return(m_frustum); }
 FullAct& ROEngine::getCursor(){return cursor;}
 void ROEngine::setCursor(FullAct& cur){cursor = cur;}

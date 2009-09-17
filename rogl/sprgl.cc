@@ -195,7 +195,7 @@ void SprGL::Draw() const {
 	Draw(0);
 }
 
-void SprGL::Draw(unsigned int idx) const {
+void SprGL::Draw(unsigned int idx, bool xmirror) const {
 	if (idx >= m_framecount)
 		return;
 
@@ -203,10 +203,19 @@ void SprGL::Draw(unsigned int idx) const {
 
 	m_texture.Activate();
 	glBegin(GL_QUADS);
-	glTexCoord2f(m_info[idx].su, m_info[idx].ev);	glVertex3f(sx, 0.0f, 0.0f);
-	glTexCoord2f(m_info[idx].su, m_info[idx].sv);	glVertex3f(sx, (float)m_info[idx].h, 0.0f);
-	glTexCoord2f(m_info[idx].eu, m_info[idx].sv);	glVertex3f(sx + (float)m_info[idx].w, (float)m_info[idx].h, 0.0f);
-	glTexCoord2f(m_info[idx].eu, m_info[idx].ev);	glVertex3f(sx + (float)m_info[idx].w, 0.0f, 0.0f);
+	// TODO: Optimize this
+	if (!xmirror) {
+		glTexCoord2f(m_info[idx].su, m_info[idx].ev);	glVertex3f(sx, 0.0f, 0.0f);
+		glTexCoord2f(m_info[idx].su, m_info[idx].sv);	glVertex3f(sx, (float)m_info[idx].h, 0.0f);
+		glTexCoord2f(m_info[idx].eu, m_info[idx].sv);	glVertex3f(sx + (float)m_info[idx].w, (float)m_info[idx].h, 0.0f);
+		glTexCoord2f(m_info[idx].eu, m_info[idx].ev);	glVertex3f(sx + (float)m_info[idx].w, 0.0f, 0.0f);
+	}
+	else {
+		glTexCoord2f(m_info[idx].eu, m_info[idx].ev);	glVertex3f(sx, 0.0f, 0.0f);
+		glTexCoord2f(m_info[idx].eu, m_info[idx].sv);	glVertex3f(sx, (float)m_info[idx].h, 0.0f);
+		glTexCoord2f(m_info[idx].su, m_info[idx].sv);	glVertex3f(sx + (float)m_info[idx].w, (float)m_info[idx].h, 0.0f);
+		glTexCoord2f(m_info[idx].su, m_info[idx].ev);	glVertex3f(sx + (float)m_info[idx].w, 0.0f, 0.0f);
+	}
 	glEnd();
 }
 

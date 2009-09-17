@@ -72,7 +72,7 @@ void OpenRO::HandleKeyboard() {
 	if (keys[SDLK_ESCAPE])
 		m_quit = true;
 	if (keys[SDLK_F10]) {
-		m_gui.Dialog("Testing", "You've pressed F10", m_texturemanager, m_filemanager);
+		m_gui.Dialog("Testing", "You've pressed F10", *this);
 		keys[SDLK_F10] = false;
 	}
 }
@@ -86,18 +86,6 @@ void OpenRO::AfterDraw() {
 	m_network.Process();
 
 	ronet::Packet* pkt = m_network.popPacket();
-
-
-	/*
-	// ============ DEBUG  ============================================================
-	if (act_test != NULL) {
-		Mode2DStart();
-		glTranslatef(250, 250, 0);
-		act_test->Draw(100);
-		Mode2DEnd();
-	}
-	// ============ DEBUG  ============================================================
-	*/
 
 #define HANDLEPKT(pktid, delp) case ronet::pkt ##pktid ##ID : delpkt = delp; hndl ##pktid ((ronet::pkt ##pktid *)pkt); break
 
@@ -160,54 +148,6 @@ void OpenRO::LoadMap(const char* map) {
 	setMap(obj);
 }
 
-void LoadAct(OpenRO& ro, const char* name) {
-	std::string act_n;
-	std::string spr_n;
-
-	act_n = name;
-	act_n += ".act";
-	spr_n = name;
-	spr_n += ".spr";
-
-	rogl::ActGL* actgl;
-	rogl::SprGL sprgl;
-
-	ROObjectCache& objects = ro.getROObjects();
-	GLObjectCache& globjects = ro.getGLObjects();
-	TextureManager& tm = ro.getTextureManager();
-	FileManager& fm = ro.getFileManager();
-
-	// Reads the ACT object
-	if (!objects.ReadACT(act_n, fm)) {
-		fprintf(stderr, "Error loading act file %s.\n", act_n.c_str());
-		return;
-	}
-
-	// Reads the SPR object
-	if (!objects.ReadSPR(spr_n, fm)) {
-		fprintf(stderr, "Error loading spr file %s.\n", spr_n.c_str());
-		return;
-	}
-
-	// Converts the SPR object into a texture (SprGL)
-	if (!sprgl.open((RO::SPR*)objects[spr_n])) {
-		fprintf(stderr, "Error converting spr to texture.\n");
-		return;
-	}
-	// Registers the SprGL Texture
-	tm.Register(spr_n, sprgl.getTexture());
-
-	// Creates an ActGL and registers it
-	actgl = new rogl::ActGL();
-	actgl->setSpr(sprgl);
-	actgl->setAct((RO::ACT*)objects[act_n]);
-	//globjects.add(act_n, actgl);
-
-	act_test = actgl;
-
-	return;
-}
-
 void OpenRO::BeforeRun() {
 	ParseClientInfo();
 
@@ -235,14 +175,7 @@ void OpenRO::BeforeRun() {
 #if 1
 	m_gui.setDesktop(dskLogin);
 #else
-	char buf[256];
-	sprintf(buf, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::sex[0], RO::EUC::classname[RO::J_MAGE], RO::EUC::sex[0]);
-	LoadAct(*this, buf);
-
-	me.m_actgl = *act_test;
-	me.map_x = 57;
-	me.map_y = 47;
-
+	me.open(*this, RO::J_ALCHEMIST, RO::S_FEMALE);
 	LoadMap("new_zone01");
 #endif
 

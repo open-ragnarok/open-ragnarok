@@ -530,6 +530,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\cache_manager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\camera.cc"
 				>
 			</File>
@@ -617,6 +621,10 @@
 			>
 			<File
 				RelativePath="..\include\roengine\base_cache.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\roengine\cache_manager.h"
 				>
 			</File>
 			<File

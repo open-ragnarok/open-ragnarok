@@ -38,8 +38,30 @@ void ActGL::Draw(unsigned long delay) {
 			m_frame = 0;
 	}
 
-	spr.Draw(m_frame);
+	glPushMatrix();
+
+	// Cylindrical Billboard
+	// Credits: http://www.lighthouse3d.com/opengl/billboarding/index.php3?billCheat1
+	float modelview[16];
+	int i,j;
+	glGetFloatv(GL_MODELVIEW_MATRIX , modelview);
+	for (i = 0; i < 3; i += 2)
+		for (j = 0; j < 3; j++)
+			if (i == j)
+				modelview[i * 4 + j] = 1.0f;
+			else
+				modelview[i * 4 + j] = 0.0f;
+	glLoadMatrixf(modelview);
+	// End billboard
+
+	spr.Draw(m_frame, true);
+	if (ext != NULL) {
+		ext->Draw(delay);
+	}
+	glColor3f(1,0,0);
 	Cross(10);
+	glColor3f(1,1,1);
+	glPopMatrix();
 }
 
 ActGL& ActGL::operator = (const ActGL& _act) {
@@ -49,7 +71,7 @@ ActGL& ActGL::operator = (const ActGL& _act) {
 	return(*this);
 }
 
-void ActGL::setExt(const ActGL* e) {
+void ActGL::setExt(ActGL* e) {
 	ext = e;
 }
 
@@ -61,7 +83,7 @@ void ActGL::setSpr(const SprGL& s) {
 	spr = s;
 }
 
-const ActGL* ActGL::getExt() {
+ActGL* ActGL::getExt() {
 	return(ext);
 }
 

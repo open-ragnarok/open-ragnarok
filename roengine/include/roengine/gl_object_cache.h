@@ -5,10 +5,6 @@
 #include "base_cache.h"
 #include "gl_object.h"
 
-#include "roengine/objects/cube_object.h"
-#include "roengine/objects/rsm_object.h"
-#include "roengine/objects/rsw_object.h"
-#include "roengine/objects/charobj.h"
 #include "roengine/frustum.h"
 #include "roengine/vector.h"
 

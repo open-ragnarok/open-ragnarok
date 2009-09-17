@@ -10,6 +10,13 @@
 #include "frustum.h"
 #include "camera.h"
 
+#include "cache_manager.h"
+
+#include "roengine/objects/cube_object.h"
+#include "roengine/objects/rsm_object.h"
+#include "roengine/objects/rsw_object.h"
+#include "roengine/objects/charobj.h"
+
 #include "ro/ro.h"
 #include "rogl/rogl.h"
 #ifdef _MSC_VER
@@ -20,20 +27,8 @@
 #include "gui/gui.h"
 #include "roengine/full_act.h"
 
-class ROEngine : public sdle::SDLEngine {
+class ROEngine : public sdle::SDLEngine, public CacheManager {
 protected:
-	TextureManager m_texturemanager;
-	/** Cache of GL Objects */
-	GLObjectCache m_gl_objects;
-	/** Cache of RO Objects
-	 * Primitive objects from GRF file
-	 */
-	ROObjectCache m_ro_objects;
-	/**
-	 * Manager to load files from disk/memory
-	 */
-	FileManager m_filemanager;
-
 	/**
 	 * Object to calculate what's visible to optimize drawing time
 	 */
@@ -102,10 +97,6 @@ public:
 	virtual bool evtMouseRelease(const int& x, const int& y, const int& buttons);
 	virtual bool evtMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 
-	TextureManager& getTextureManager();
-	GLObjectCache& getGLObjects();
-	ROObjectCache& getROObjects();
-	FileManager& getFileManager();
 	Frustum& getFrustum();
 	FullAct& getCursor();
 	void setCursor(FullAct& cur);

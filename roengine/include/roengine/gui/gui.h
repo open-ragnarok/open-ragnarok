@@ -18,6 +18,8 @@
 #include "../vector.h"
 #include "event.h"
 
+#include "../cache_manager.h"
+
 #include <string>
 #include <vector>
 
@@ -195,7 +197,7 @@ public:
 	 */
 	const Element* operator[] (const std::string& obj) const;
 
-	void Dialog(const std::string& title, const std::string& text, TextureManager&, FileManager&, int buttons = BTN_OK | BTN_CANCEL);
+	void Dialog(const std::string& title, const std::string& text, CacheManager& cache, int buttons = BTN_OK | BTN_CANCEL);
 
 	void setDefaultFont(const sdle::Font*);
 };
