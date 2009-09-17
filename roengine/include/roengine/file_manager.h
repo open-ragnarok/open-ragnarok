@@ -23,6 +23,7 @@ public:
 class GRFFileLoader : public FileLoader {
 protected:
 	RO::GRF m_grf;
+
 public:
 	virtual bool fileExists(const std::string& name) const;
 	virtual FileData getFile(const std::string& name);
@@ -46,6 +47,8 @@ class ZIPFileLoader : public FileLoader {
 class FileManager : public BaseCache<FileLoader> {
 protected:
 	std::vector<std::string> LoadOrder;
+
+	std::map<std::string, std::string> nametable;
 public:
 	FileManager();
 	FileManager(const std::string& ini);
@@ -59,6 +62,8 @@ public:
 
 	bool fileExists(const std::string& name) const;
 	FileData getFile(const std::string& name);
+
+	void addName(const std::string&, const std::string&);
 };
 
 #endif

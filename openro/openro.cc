@@ -175,8 +175,9 @@ void OpenRO::BeforeRun() {
 #if 1
 	m_gui.setDesktop(dskLogin);
 #else
-	me.open(*this, RO::J_ALCHEMIST, RO::S_FEMALE);
-	LoadMap("new_zone01");
+	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
+	//LoadMap("new_zone01");
+	LoadMap("new_1-1");
 #endif
 
 	FullAct ycursor;
@@ -339,17 +340,6 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 	}
 	
 	LoadMap(map);
-
-	if (m_map == NULL) {
-		char newz[5] = "new_";
-		char number;
-		if(memcmp(map,newz,4) == 0){
-			number = (map[6]) - 0x30;
-			memset(&map,0x00,32);
-			sprintf(map,"new_zone0%d",number);
-		}
-		LoadMap(map);
-	}
 
 	// TODO: Set desktop to the ingame desktop
 	m_gui.setDesktop(NULL);

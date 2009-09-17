@@ -66,6 +66,52 @@ void ROEngine::ReadIni(const std::string& name) {
 	}
 
 	ini.close();
+
+	// Now that we have our source files loaded, we can start reading the tables...
+	
+	// resnametable.txt
+	if (m_filemanager.fileExists("resnametable.txt")) {
+		FileData data = m_filemanager.getFile("resnametable.txt");
+		char line[512];
+		char a[256], b[256];
+		int linepos;
+		int pos = 0;
+		char c;
+		while(pos < data.blobSize()) {
+			memset(line, 0, 512);
+			memset(a, 0, 256);
+			memset(b, 0, 256);
+			linepos = 0;
+			// Read the line
+			c = data[pos++];
+			while (pos < data.blobSize()) {
+				if (c == 13 || c == 0 || c == 10) {
+					if (linepos == 0) {
+						c = data[pos++];
+						continue;
+					}
+					break;
+				}
+				line[linepos++] = c;
+				c = data[pos++];
+			}
+			// Process the line
+			linepos = 0;
+			while (line[linepos] != '#' && line[linepos] != 0)
+				linepos++;
+			if (linepos >= strlen(line)) {
+				// Comments and stuff
+				continue;
+			}
+			strncpy(a, line, linepos);
+			strcpy(b, line + linepos + 1);
+			b[strlen(b) - 1] = 0;
+			//printf("%s => %s\n", a, b);
+			if (strcmp(a,b) != 0) {
+				m_filemanager.addName(a, b);
+			}
+		}
+	}
 }
 
 ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {

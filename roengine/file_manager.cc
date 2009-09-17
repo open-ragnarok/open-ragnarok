@@ -166,7 +166,18 @@ bool FileManager::OpenFS(const std::string& location) {
 	return(true);
 }
 
-bool FileManager::fileExists(const std::string& name) const {
+bool FileManager::fileExists(const std::string& n) const {
+	std::string name;
+	std::map<std::string, std::string>::const_iterator mapitr;
+
+	mapitr = nametable.find(n);
+	if (mapitr != nametable.end()) {
+		name = mapitr->second;
+	}
+	else {
+		name = n;
+	}
+
 	std::vector<std::string>::const_iterator itr;
 	itr = LoadOrder.begin();
 	const FileLoader *fl;
@@ -179,7 +190,18 @@ bool FileManager::fileExists(const std::string& name) const {
 	return(false);
 }
 
-FileData FileManager::getFile(const std::string& name) {
+FileData FileManager::getFile(const std::string& n) {
+	std::string name;
+	std::map<std::string, std::string>::const_iterator mapitr;
+
+	mapitr = nametable.find(n);
+	if (mapitr != nametable.end()) {
+		name = mapitr->second;
+	}
+	else {
+		name = n;
+	}
+
 	std::vector<std::string>::const_iterator itr;
 	FileData ret;
 	itr = LoadOrder.begin();
@@ -194,4 +216,8 @@ FileData FileManager::getFile(const std::string& name) {
 	}
 
 	return(ret);
+}
+
+void FileManager::addName(const std::string& a, const std::string& b) {
+	nametable[a] = b;
 }
