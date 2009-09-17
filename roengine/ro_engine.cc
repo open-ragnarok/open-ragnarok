@@ -203,8 +203,8 @@ void ROEngine::DrawMap() {
 		glEnable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
 		me.Draw(m_map, 50);
-		glDisable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
 	}
 
 	afterDrawMap();
@@ -265,11 +265,11 @@ bool ROEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) {
 bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 	bool ret = m_gui.InjectMouseClick(x, y, buttons);
 	if (ret == false) {
-		if (buttons == 3) {
+		if (buttons == 3) { // SDL_BUTTON_RIGHT
 			m_rotating = true;
 			return(true);
 		}
-		else {
+		else if (buttons == 1) { // SDL_BUTTON_LEFT
 			if (m_map != NULL) {
 				float wx, wy;
 				int mapx, mapy;
@@ -283,13 +283,19 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 				me.map_y = mapy;
 			}
 		}
+		else if (buttons == 5) { // SDL_BUTTON_WHEELDOWN
+			cam.ZoomOut(8.0f);
+		}
+		else if (buttons == 4) { // SDL_BUTTON_WHEELUP
+			cam.ZoomIn(8.0f);
+		}
 	}
 
 	return(ret);
 }
 
 bool ROEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) {
-	if (buttons == 3) {
+	if (buttons & SDL_BUTTON_RIGHT) {
 		if (m_rotating) {
 			m_rotating = false;
 			return(true);

@@ -53,6 +53,23 @@ void Camera::setDest(const Vector3f& v) {
 	dest = v;
 }
 
+void Camera::ZoomIn(float f) {
+	Vector3f dir = dest - eye;
+	dir /= dir.size();
+	dir *= f;
+
+	eye += dir;
+}
+
+void Camera::ZoomOut(float f) {
+	Vector3f dir = dest - eye;
+	dir /= dir.size();
+	dir *= f;
+
+	eye -= dir;
+}
+
+
 Vector3f& Camera::getEye() { return(eye); }
 Vector3f& Camera::getDest() { return(dest); }
 const Vector3f& Camera::getEye() const { return(eye); }

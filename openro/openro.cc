@@ -144,6 +144,10 @@ void OpenRO::LoadMap(const char* map) {
 
 	RswObject* obj = new RswObject(rsw, getROObjects());
 	obj->loadTextures(getTextureManager(), getFileManager());
+
+	printf("Map info:\n");
+	printf("\tRequested map: %s\n", map);
+	printf("\tMap size: %d, %d\n", obj->getGND()->getWidth(),  obj->getGND()->getHeight());
 	
 	setMap(obj);
 }
@@ -176,6 +180,8 @@ void OpenRO::BeforeRun() {
 	m_gui.setDesktop(dskLogin);
 #else
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
+	me.map_x = 50;
+	me.map_y = 50;
 	//LoadMap("new_zone01");
 	LoadMap("new_1-1");
 #endif

@@ -11,6 +11,7 @@ class Camera {
 protected:
 	Vector3f eye;
 	Vector3f dest;
+
 public:
 	Camera();
 	~Camera();
@@ -34,7 +35,11 @@ public:
 	const Vector3f& getEye() const;
 	const Vector3f& getDest() const;
 
+	void ZoomIn(float);
+	void ZoomOut(float);
+
 	void Look() const;
 };
 
 #endif /* __CAMERA_H */
+
