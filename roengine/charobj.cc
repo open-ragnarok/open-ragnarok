@@ -3,7 +3,7 @@
 #include "roengine/objects/charobj.h"
 
 CharObj::CharObj() : GLObject() {
-	mapx = mapy = 0;
+	map_x = map_y = 0;
 }
 
 CharObj::~CharObj() {
