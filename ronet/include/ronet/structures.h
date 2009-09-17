@@ -44,4 +44,15 @@ struct CharInformation {
 	unsigned short rename;
 };
 
+struct SkillInformation {
+	int id;
+	int target_type;
+	int unknown;
+	unsigned short level;
+	int sp;
+	int range;
+	char name[24];
+	char up;
+};
+
 #endif /* __OPENRO_RO_STRUCTURES_H */

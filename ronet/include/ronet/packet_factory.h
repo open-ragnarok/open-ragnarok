@@ -31,6 +31,7 @@ namespace ronet {
 		};
 
 		//Add new packets here
+		bool Handle_UpdateStatus(ucBuffer&);
 		bool Handle_ServerList(ucBuffer&);
 		bool Handle_CharCreateError(ucBuffer&);
 		bool Handle_CharList(ucBuffer&);

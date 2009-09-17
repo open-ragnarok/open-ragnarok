@@ -19,5 +19,6 @@
 #include "pkt_maploginsuccess.h"
 #include "pkt_ownspeech.h"			//[kR105]
 #include "pkt_skilllist.h"			//[kR105]
+#include "pkt_updatestatus.h"		//[kR105]
 
 #endif /* __RONET_PACKETS_PACKETS_H */

@@ -43,6 +43,7 @@ namespace ronet {
 		pktOwnSpeechID = 0x008e, // R 008e <len>.w <str>.?B
 		pktMapAcctSendID = 0x0283, // (6 bytes) R 0283 <account id>.int
 		pktSkillListID = 0x010f, // R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+		pktUpdateStatusID = 0x00b0, // R 00b0 <type>.w <val>.l
 
 		// == "WTF!?"s == //
 		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

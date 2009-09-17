@@ -446,6 +446,10 @@
 					RelativePath="..\packets\pkt_skilllist.cc"
 					>
 				</File>
+				<File
+					RelativePath="..\packets\pkt_updatestatus.cc"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -590,6 +594,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_skilllist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_updatestatus.h"
 					>
 				</File>
 			</Filter>

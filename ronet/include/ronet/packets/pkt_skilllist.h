@@ -8,6 +8,7 @@ namespace ronet {
 	class RONET_DLLAPI pktSkillList : public Packet {
 	protected:
 		unsigned short len_list;
+		SkillInformation *p_skills;
 	public:
 		pktSkillList();
 		virtual bool Decode(ucBuffer&);
