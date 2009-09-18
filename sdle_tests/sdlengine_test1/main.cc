@@ -8,14 +8,17 @@
 #	pragma comment(lib, "zlib.dll.lib")
 #	pragma comment(lib, "libpng.dll.lib")
 #	pragma comment(lib, "sdlengine.dll.lib")
+#	pragma comment(lib, "jpeg.dll.lib")
 #else
 #	pragma comment(lib, "zlib.lib")
 #	pragma comment(lib, "libpng.lib")
 #	pragma comment(lib, "sdlengine.lib")
+#	pragma comment(lib, "jpeg.lib")
 #endif
 
 #include "sdle/sdl_engine.h"
 #include "sdle/texture_png.h"
+#include "sdle/texture_jpeg.h"
 #include "sdle/ft_font.h"
 
 void cube(const float& side) {
@@ -65,7 +68,8 @@ int main(int argc, char* argv[]) {
 
 	// Load a texture
 	sdle::Texture t;
-	t = sdle::loadPngTexture("a-1.png");
+	//t = sdle::loadPngTexture("a-1.png");
+	t = sdle::loadJPEGTexture("water000.jpg");
 	if (!t.Valid()) {
 		printf("Texture not valid!\n");
 		return(1);

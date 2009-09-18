@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\jpeg-7\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -104,7 +104,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\jpeg-7\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -166,7 +166,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\jpeg-7\&quot;"
 				PreprocessorDefinitions="WIN32;DEBUG;SDLENGINE_DLL"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -233,7 +233,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\jpeg-7\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;SDLENGINE_DLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -397,6 +397,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\texture_jpeg.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\texture_png.cc"
 				>
 			</File>
@@ -488,6 +492,10 @@
 			</File>
 			<File
 				RelativePath="..\include\sdle\texture_bmp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\texture_jpeg.h"
 				>
 			</File>
 			<File
