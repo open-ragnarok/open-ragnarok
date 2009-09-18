@@ -31,6 +31,8 @@ namespace ronet {
 		};
 
 		//Add new packets here
+		bool Handle_AttackRange(ucBuffer&);
+		bool Handle_GuildMessage(ucBuffer&);
 		bool Handle_DisplayStat(ucBuffer&);
 		bool Handle_UpdateStatus(ucBuffer&);
 		bool Handle_ServerList(ucBuffer&);

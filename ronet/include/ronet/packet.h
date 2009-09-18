@@ -45,6 +45,8 @@ namespace ronet {
 		pktSkillListID = 0x010f, // R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 		pktUpdateStatusID = 0x00b0, // R 00b0 <type>.w <val>.l
 		pktDisplayStatID = 0x0141, // R 0141 <type>.l <base>.l <bonus>.l
+		pktGuildMessageID = 0x017f, // R 017f <len>.w <message>.?B
+		pktAttackRangeID = 0x013a, // R 013a <val>.w
 
 		// == "WTF!?"s == //
 		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

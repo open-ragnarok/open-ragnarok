@@ -379,6 +379,10 @@
 				Name="Packets"
 				>
 				<File
+					RelativePath="..\packets\pkt_attackrange.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_authfailed.cc"
 					>
 				</File>
@@ -412,6 +416,10 @@
 				</File>
 				<File
 					RelativePath="..\packets\pkt_displaystat.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_guildmessage.cc"
 					>
 				</File>
 				<File
@@ -533,6 +541,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_attackrange.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_authfailed.h"
 					>
 				</File>
@@ -566,6 +578,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_displaystat.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_guildmessage.h"
 					>
 				</File>
 				<File

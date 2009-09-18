@@ -100,6 +100,8 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(AttackRange, false);
+			HANDLEPKT(GuildMessage, false);
 			HANDLEPKT(DisplayStat, false);
 			HANDLEPKT(UpdateStatus, false);
 			HANDLEPKT(ServerList, false);
@@ -196,6 +198,15 @@ void OpenRO::BeforeRun() {
 }
 
 //Add new packets here
+
+void OpenRO::hndlAttackRange (ronet::pktAttackRange* pkt) {
+	printf("Received attack range: %d \n",pkt->getRange());
+
+}
+
+void OpenRO::hndlGuildMessage (ronet::pktGuildMessage* pkt) {
+	printf("Guild Message: %s \n",pkt->getText());
+}
 
 void OpenRO::hndlDisplayStat(ronet::pktDisplayStat* pkt) {
 	unsigned int type = pkt->getType();

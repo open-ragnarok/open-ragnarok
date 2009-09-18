@@ -21,5 +21,7 @@
 #include "pkt_skilllist.h"			//[kR105]
 #include "pkt_updatestatus.h"		//[kR105]
 #include "pkt_displaystat.h"		//[kR105]
+#include "pkt_guildmessage.h"		//[kR105]
+#include "pkt_attackrange.h"		//[kR105]
 
 #endif /* __RONET_PACKETS_PACKETS_H */

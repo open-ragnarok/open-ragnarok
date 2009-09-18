@@ -35,6 +35,8 @@ protected:
 	ronet::pktServerList* m_serverlist;
 
 	//Add new packets here
+	void hndlAttackRange(ronet::pktAttackRange*);
+	void hndlGuildMessage(ronet::pktGuildMessage*);
 	void hndlDisplayStat(ronet::pktDisplayStat*);
 	void hndlUpdateStatus(ronet::pktUpdateStatus*);
 	void hndlServerList(ronet::pktServerList*);
