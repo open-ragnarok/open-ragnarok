@@ -3,6 +3,7 @@
 
 #include "roengine/objects/rsw_object.h"
 #include "sdle/sdl_engine.h"
+#include "sdle/texture_jpeg.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -71,6 +72,13 @@ bool RswObject::loadTextures(CacheManager& cache) {
 			fprintf(stderr, "Warning: Texture not found: %s\n", texname);
 		}
 		textures.add(tex);
+	}
+
+	// Load water
+	char waterfn[128];
+	for (i = 0; i <= 31; i++) {
+		sprintf(waterfn, "texture\\%s\\water%d%02d.jpg", RO::EUC::water, rsw->water.type, i);
+		tm.RegisterJPEG(fm, waterfn);
 	}
 
 	return(true);

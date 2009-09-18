@@ -148,7 +148,7 @@ void OpenRO::BeforeRun() {
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
 
-#if 1
+#if 0
 	m_gui.setDesktop(dskLogin);
 #else
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);

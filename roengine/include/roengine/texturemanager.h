@@ -23,6 +23,7 @@ public:
 
 	sdle::Texture Register(FileManager&, const std::string& name);
 	sdle::Texture RegisterPNG(FileManager&, const std::string& name);
+	sdle::Texture RegisterJPEG(FileManager&, const std::string& name);
 	sdle::Texture Register(const std::string& name, const sdle::Image& img);
 	sdle::Texture Register(const std::string& name, const sdle::Texture& t);
 	// TODO: Urgently redo this. Look at rogl info at image_spr.h

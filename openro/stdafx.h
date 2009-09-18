@@ -15,6 +15,7 @@
 #	include <SDL.h>
 #	pragma comment(lib, "SDLmain.lib")
 #	pragma comment(lib, "sdlengine.lib")
+#	pragma comment(lib, "jpeg.lib")
 #else
 #	include <SDL/SDL.h>
 #endif

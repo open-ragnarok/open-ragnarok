@@ -6,6 +6,7 @@
 #include "sdle/image.h"
 #include "sdle/image_bmp.h"
 #include "sdle/texture_png.h"
+#include "sdle/texture_jpeg.h"
 
 
 #include <GL/gl.h>
@@ -22,6 +23,23 @@ TextureManager::~TextureManager() {
 
 void TextureManager::Clear() {
 	textures.clear();
+}
+
+sdle::Texture TextureManager::RegisterJPEG(FileManager& fm, const std::string& name) {
+	if (IsRegistered(name))
+		return(textures[name]);
+
+	sdle::Texture t;
+	FileData d = fm.getFile(name);
+	if (d.blobSize() == 0) {
+		return(t);
+	}
+
+	t = sdle::loadJPEGTexture((unsigned char*)d.getBuffer(), d.blobSize());
+	if (t.Valid())
+		Register(name, t);
+	
+	return(t);
 }
 
 sdle::Texture TextureManager::RegisterPNG(FileManager& fm, const std::string& name) {
