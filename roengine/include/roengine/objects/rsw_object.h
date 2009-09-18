@@ -28,6 +28,8 @@ protected:
 	float world_y;
 	float world_z;
 
+	static void getRot(float sizex, float sizey, float rot[16]);
+
 public:
 	RswObject(const RO::RSW*, ROObjectCache&);
 	virtual ~RswObject();

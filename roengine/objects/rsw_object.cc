@@ -43,11 +43,15 @@ void RswObject::getWorldPosition(int mapx, int mapy, float *rx, float *ry, float
 	sizex = tile * gat->getWidth();
 	sizey = tile * gat->getHeight();
 
+	int mx, my;
+	mx = mapx;
+	my = gat->getHeight() - mapy;
+
 	//const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
 	const RO::GAT::strBlock& block = gat->getBlock(mapx, mapy);
 
-	*rx = tile * mapx + m_tilesize / 2 - sizex / 2;
-	*rz = tile * mapy + m_tilesize / 2 - sizey / 2;
+	*rx = tile * mx + tile / 2 - sizex / 2;
+	*rz = tile * my + tile / 2 - sizey / 2;
 	*ry = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
 }
 
@@ -110,14 +114,9 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 	return(obj);
 }
 
-void RswObject::DrawGND() {
-	float sizex = 0, sizey = 0;
-	unsigned int i, j;
-	
-	sizex = m_tilesize * gnd->getWidth();
-	sizey = m_tilesize * gnd->getHeight();
+void RswObject::getRot(float sizex, float sizey, float rot[16]) {
+	//Rotate -90 degrees about the z axis
 
-	float rot[16];
 	rot[0] = 1.0;
 	rot[1] = 0.0;
 	rot[2] = 0.0;
@@ -125,7 +124,7 @@ void RswObject::DrawGND() {
 
 	rot[4] = 0.0;
 	rot[5] = 0.0;
-	rot[6] = 1.0;
+	rot[6] = -1.0;
 	rot[7] = 0.0;
 
 	rot[8] = 0.0;
@@ -135,10 +134,21 @@ void RswObject::DrawGND() {
 
 	rot[12] = -sizex/2;
 	rot[13] = 0;
-	rot[14] = -sizey/2;
+	rot[14] = sizey/2;
 	rot[15] = 1.0;
+}
 
-	//Rotate 90 degrees about the z axis
+
+void RswObject::DrawGND() {
+	float sizex = 0, sizey = 0;
+	unsigned int i, j;
+	
+	sizex = m_tilesize * gnd->getWidth();
+	sizey = m_tilesize * gnd->getHeight();
+
+	float rot[16];
+	getRot(sizex, sizey, rot);
+
 	glMultMatrixf(rot);
 
 	// Center the map
@@ -241,7 +251,7 @@ void RswObject::DrawGND() {
 }
 
 void RswObject::DrawSelection(int mapx, int mapy) const {
-#define ZOFFSET -0.002f
+#define ZOFFSET -0.1f
 
 	float sizex = 0, sizey = 0;
 	float tile = m_tilesize / 2;
@@ -257,25 +267,7 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 	sizey = tile * gat->getHeight();
 
 	float rot[16];
-	rot[0] = 1.0;
-	rot[1] = 0.0;
-	rot[2] = 0.0;
-	rot[3] = 0.0;
-
-	rot[4] = 0.0;
-	rot[5] = 0.0;
-	rot[6] = 1.0;
-	rot[7] = 0.0;
-
-	rot[8] = 0.0;
-	rot[9] = -1.0;
-	rot[10] = 0.0;
-	rot[11] = 0.0;
-
-	rot[12] = -sizex/2;
-	rot[13] = 0;
-	rot[14] = -sizey/2;
-	rot[15] = 1.0;
+	getRot(sizex, sizey, rot);
 
 	//Rotate 90 degrees about the z axis
 	glPushMatrix();
@@ -302,9 +294,8 @@ void RswObject::DrawRSW(int screen_x, int screen_y) {
 	sdle::Vertex v;
 	sdle::SDLEngine::getSingleton()->unProject(screen_x, screen_y, &v);
 
-	// Our X and Y coordinates are inverted. Let's handle it right here.
-	world_x = v.y;
-	world_y = v.x;
+	world_x = v.x;
+	world_y = v.y;
 	world_z = v.z;
 
 	glPopMatrix();
