@@ -33,7 +33,7 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager
 	}
 	G_Text.Len		= MaxLen;
 	G_Text.x        = pos_x;
-	G_Text.y        = pos_y;
+	G_Text.y        = pos_y + 5;	// By Naxan
 	G_Text.z        = 0;
 	G_Text.EffectWidth = w;
 	G_Text.FColor   = SDL_BLACK;

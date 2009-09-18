@@ -171,8 +171,8 @@ void ROEngine::DrawMap() {
 	wy = m_map->getWorldY();
 	wz = m_map->getWorldZ();
 
-	mapx = (int)(wx/10);
-	mapy = (int)(wy/10);
+	mapx = m_map->getMouseMapX();
+	mapy = m_map->getMouseMapY();
 	m_texturemanager["openro\\selected.png"].Activate();
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -271,13 +271,9 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 		}
 		else if (buttons == 1) { // SDL_BUTTON_LEFT
 			if (m_map != NULL) {
-				float wx, wy;
 				int mapx, mapy;
-				wx = m_map->getWorldX();
-				wy = m_map->getWorldY();
-
-				mapx = (int)(wx/10);
-				mapy = (int)(wy/10);
+				mapx = m_map->getMouseMapX();
+				mapy = m_map->getMouseMapY();
 
 				me.map_x = mapx;
 				me.map_y = mapy;

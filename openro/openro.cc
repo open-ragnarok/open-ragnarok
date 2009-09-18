@@ -124,38 +124,6 @@ void OpenRO::AfterDraw() {
 	}
 }
 
-void OpenRO::LoadMap(const char* map) {
-	RO::RSW* rsw;
-
-	// TODO: Delete active map (if any)
-
-	std::string rsw_fn(map);
-	rsw_fn += ".rsw";
-	// Load the rsw object
-	if (!getROObjects().ReadRSW(rsw_fn.c_str(), getFileManager())) {
-		fprintf(stderr, "Error loading RSW file %s\n", rsw_fn.c_str());
-		return;
-	}
-	rsw = (RO::RSW*)getROObjects().get(rsw_fn);
-	if (!getROObjects().ReadGND(rsw->gnd_file, getFileManager())) {
-		fprintf(stderr, "Error loading GND file %s\n", rsw->gnd_file);
-		return;
-	}
-	if (!getROObjects().ReadGAT(rsw->gat_file, getFileManager())) {
-		fprintf(stderr, "Error loading GAT file %s\n", rsw->gat_file);
-		return;
-	}
-
-	RswObject* obj = new RswObject(rsw, getROObjects());
-	obj->loadTextures(getTextureManager(), getFileManager());
-
-	printf("Map info:\n");
-	printf("\tRequested map: %s\n", map);
-	printf("\tMap size: %d, %d\n", obj->getGND()->getWidth(),  obj->getGND()->getHeight());
-	
-	setMap(obj);
-}
-
 void OpenRO::BeforeRun() {
 	ParseClientInfo();
 
@@ -184,10 +152,10 @@ void OpenRO::BeforeRun() {
 	m_gui.setDesktop(dskLogin);
 #else
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
-	me.map_x = 50;
-	me.map_y = 50;
+	me.map_x = 53;
+	me.map_y = 111;
 	//LoadMap("new_zone01");
-	LoadMap("new_1-1");
+	m_map = RswObject::open(*this, "new_1-1");
 #endif
 
 	FullAct ycursor;
@@ -375,7 +343,7 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 		i++;
 	}
 	
-	LoadMap(map);
+	m_map = RswObject::open(*this, map);
 
 	// TODO: Set desktop to the ingame desktop
 	m_gui.setDesktop(NULL);

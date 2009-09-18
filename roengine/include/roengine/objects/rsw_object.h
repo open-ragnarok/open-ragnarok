@@ -4,10 +4,9 @@
 
 #include "../gl_object.h"
 #include "ro/types/rsw.h"
+#include "ro/types/gat.h"
 #include "ro/types/gnd.h"
-#include "../texturemanager.h"
-#include "../file_manager.h"
-#include "../ro_object_cache.h"
+#include "../cache_manager.h"
 #include "../texturecache.h"
 
 /**
@@ -18,6 +17,7 @@ protected:
 	static float m_tilesize;
 	const RO::RSW* rsw;
 	const RO::GND* gnd;
+	const RO::GAT* gat;
 	TextureCache textures;
 
 	void DrawGND();
@@ -35,7 +35,7 @@ public:
 	/**
 	 * Loads all textures needed by the map
 	 */
-	bool loadTextures(TextureManager&, FileManager&);
+	bool loadTextures(CacheManager&);
 
 	virtual void Draw();
 
@@ -65,6 +65,13 @@ public:
 	 * Retrieves the GND file used to draw this map
 	 */
 	const RO::GND* getGND() const;
+
+	bool valid() const;
+
+	static RswObject* open(CacheManager&, const char* map);
+
+	int getMouseMapX() const;
+	int getMouseMapY() const;
 
 	float getWorldX() const;
 	float getWorldY() const;

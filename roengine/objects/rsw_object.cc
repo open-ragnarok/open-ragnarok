@@ -12,39 +12,52 @@ float RswObject::m_tilesize = 10.0f;
 RswObject::RswObject(const RO::RSW* rsw, ROObjectCache& cache) : GLObject() {
 	this->rsw = rsw;
 	std::string gnd_fn = rsw->gnd_file;
+	std::string gat_fn = rsw->gat_file;
 	this->gnd = (RO::GND*)cache[gnd_fn];
+	this->gat = (RO::GAT*)cache[gat_fn];
 }
 
 RswObject::~RswObject() {
 }
 
-const RO::RSW* RswObject::getRSW() const { return(rsw); }
-const RO::GND* RswObject::getGND() const { return(gnd); }
+const RO::RSW* RswObject::getRSW() const {
+	return(rsw);
+}
+
+const RO::GND* RswObject::getGND() const {
+	return(gnd);
+}
 
 void RswObject::getWorldPosition(int mapx, int mapy, float *rx, float *ry, float *rz) {
 	float sizex = 0, sizey = 0;
 
-	if (mapx < 0 || mapx >= (int)gnd->getWidth())
+	float tile = m_tilesize / 2;
+
+	if (mapx < 0 || mapx >= (int)gat->getWidth())
 		return;
 
-	if (mapy < 0 || mapy >= (int)gnd->getHeight())
+	if (mapy < 0 || mapy >= (int)gat->getHeight())
 		return;
 
 	
-	sizex = m_tilesize * gnd->getWidth();
-	sizey = m_tilesize * gnd->getHeight();
+	sizex = tile * gat->getWidth();
+	sizey = tile * gat->getHeight();
 
-	const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
+	//const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
+	const RO::GAT::strBlock& block = gat->getBlock(mapx, mapy);
 
-	*rx = m_tilesize * mapx + m_tilesize / 2 - sizex / 2;
-	*rz = m_tilesize * mapy + m_tilesize / 2 - sizey / 2;
-	*ry = -(cube.height[0] + cube.height[1] + cube.height[2] + cube.height[3]) / 4;
+	*rx = tile * mapx + m_tilesize / 2 - sizex / 2;
+	*rz = tile * mapy + m_tilesize / 2 - sizey / 2;
+	*ry = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
 }
 
-bool RswObject::loadTextures(TextureManager& tm, FileManager& fm) {
+bool RswObject::loadTextures(CacheManager& cache) {
 	unsigned int i;
 	sdle::Texture tex;
 	std::string texname;
+
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
 
 	for (i = 0; i < gnd->getTextureCount(); i++) {
 		texname = "texture\\";
@@ -57,6 +70,44 @@ bool RswObject::loadTextures(TextureManager& tm, FileManager& fm) {
 	}
 
 	return(true);
+}
+
+RswObject* RswObject::open(CacheManager& cache, const char* map) {
+	RO::RSW* rsw;
+
+	// TODO: Delete active map (if any)
+
+	std::string rsw_fn(map);
+	
+	rsw_fn += ".rsw";
+	// Load the rsw object
+	if (!cache.getROObjects().ReadRSW(rsw_fn.c_str(), cache.getFileManager())) {
+		fprintf(stderr, "Error loading RSW file %s\n", rsw_fn.c_str());
+		return(NULL);
+	}
+	rsw = (RO::RSW*)cache.getROObjects().get(rsw_fn);
+
+	if (!cache.getROObjects().ReadGND(rsw->gnd_file, cache.getFileManager())) {
+		fprintf(stderr, "Error loading GND file %s\n", rsw->gnd_file);
+		return(NULL);
+	}
+
+	if (!cache.getROObjects().ReadGAT(rsw->gat_file, cache.getFileManager())) {
+		fprintf(stderr, "Error loading GAT file %s\n", rsw->gat_file);
+		return(NULL);
+	}
+
+	RswObject* obj = new RswObject(rsw, cache.getROObjects());
+	obj->loadTextures(cache);
+
+	/*
+	printf("Map info:\n");
+	printf("\tRequested map: %s\n", map);
+	printf("\tGND Map size: %d, %d\n", obj->gnd->getWidth(), obj->gnd->getHeight());
+	printf("\tGAT Map size: %d, %d\n", obj->gat->getWidth(), obj->gat->getHeight());
+	*/
+	
+	return(obj);
 }
 
 void RswObject::DrawGND() {
@@ -193,16 +244,17 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 #define ZOFFSET -0.002f
 
 	float sizex = 0, sizey = 0;
+	float tile = m_tilesize / 2;
 
-	if (mapx < 0 || mapx >= (int)gnd->getWidth())
+	if (mapx < 0 || mapx >= (int)gat->getWidth())
 		return;
 
-	if (mapy < 0 || mapy >= (int)gnd->getHeight())
+	if (mapy < 0 || mapy >= (int)gat->getHeight())
 		return;
 
 	
-	sizex = m_tilesize * gnd->getWidth();
-	sizey = m_tilesize * gnd->getHeight();
+	sizex = tile * gat->getWidth();
+	sizey = tile * gat->getHeight();
 
 	float rot[16];
 	rot[0] = 1.0;
@@ -229,13 +281,14 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 	glPushMatrix();
 	glMultMatrixf(rot);
 
-	const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
+	//const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
+	const RO::GAT::strBlock& block = gat->getBlock(mapx, mapy);
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,	0.0f); glVertex3f(m_tilesize * mapx,		m_tilesize * mapy,			cube.height[0] + ZOFFSET);
-	glTexCoord2f(1.0f,	0.0f); glVertex3f(m_tilesize * (mapx + 1),	m_tilesize * mapy,			cube.height[1] + ZOFFSET);
-	glTexCoord2f(1.0f,	1.0f); glVertex3f(m_tilesize * (mapx + 1),	m_tilesize * (mapy + 1),	cube.height[3] + ZOFFSET);
-	glTexCoord2f(0.0f,	1.0f); glVertex3f(m_tilesize * mapx,		m_tilesize * (mapy + 1),	cube.height[2] + ZOFFSET);
+	glTexCoord2f(0.0f,	0.0f); glVertex3f(tile * mapx,			tile * mapy,		block.height[0] + ZOFFSET);
+	glTexCoord2f(1.0f,	0.0f); glVertex3f(tile * (mapx + 1),	tile * mapy,		block.height[1] + ZOFFSET);
+	glTexCoord2f(1.0f,	1.0f); glVertex3f(tile * (mapx + 1),	tile * (mapy + 1),	block.height[3] + ZOFFSET);
+	glTexCoord2f(0.0f,	1.0f); glVertex3f(tile * mapx,			tile * (mapy + 1),	block.height[2] + ZOFFSET);
 	glEnd();
 
 	glPopMatrix();
@@ -248,8 +301,10 @@ void RswObject::DrawRSW(int screen_x, int screen_y) {
 	Draw();
 	sdle::Vertex v;
 	sdle::SDLEngine::getSingleton()->unProject(screen_x, screen_y, &v);
-	world_x = v.x;
-	world_y = v.y;
+
+	// Our X and Y coordinates are inverted. Let's handle it right here.
+	world_x = v.y;
+	world_y = v.x;
 	world_z = v.z;
 
 	glPopMatrix();
@@ -269,6 +324,14 @@ void RswObject::Draw() {
 
 bool RswObject::isInFrustum(const Frustum&) const {
 	return(true);
+}
+
+int RswObject::getMouseMapX() const {
+	return((int)world_x / 5);
+}
+
+int RswObject::getMouseMapY() const {
+	return((int)world_y / 5);
 }
 
 float RswObject::getWorldX() const { return(world_x); }

@@ -6,6 +6,9 @@
 #include "sdle/texture.h"
 #include "vector.h"
 
+/**
+ * Basic drawable object of ROEngine
+ */
 class GLObject {
 protected:
 	Vector3f pos;
