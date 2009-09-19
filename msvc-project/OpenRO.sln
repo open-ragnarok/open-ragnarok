@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdl_engine", "..\sdl_engine\msvc\sdl_engine.vcproj", "{285D3072-BFB0-4F3A-9DB4-98126F028CA9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0008960E-E0DD-41A6-8265-00B31DDB4C21} = {0008960E-E0DD-41A6-8265-00B31DDB4C21}
+		{E61592E1-28F4-4AFC-9EE1-9BE833A061C1} = {E61592E1-28F4-4AFC-9EE1-9BE833A061C1}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng\projects\msvc\libpng.vcproj", "{0008960E-E0DD-41A6-8265-00B31DDB4C21}"

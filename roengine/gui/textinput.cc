@@ -8,8 +8,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#pragma comment(lib, "SDL_ttf.lib")
-
 unsigned int GUI::TextInput::cursor_delay = 500;
 
 GUI::TextInput::~TextInput() {

@@ -32,7 +32,7 @@ GLFFont::GLFFont() : Font() {
 	m_font.Char = NULL;
 	fontmult = 6.0f;
 
-	printf("[DEBUG] Creating GLF Font...\n");
+	//printf("[DEBUG] Creating GLF Font...\n");
 }
 
 GLFFont::GLFFont(const unsigned char* data, unsigned int size) : Font() {
@@ -42,11 +42,11 @@ GLFFont::GLFFont(const unsigned char* data, unsigned int size) : Font() {
 	std::stringstream ss;
 	ss.write((const char*)data, size);
 	load(ss);
-	printf("[DEBUG] Creating GLF Font...\n");
+	//printf("[DEBUG] Creating GLF Font...\n");
 }
 
 GLFFont::~GLFFont() {
-	printf("[DEBUG] Destroying GLF Font...\n");
+	//printf("[DEBUG] Destroying GLF Font...\n");
 	release();
 }
 

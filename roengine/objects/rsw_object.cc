@@ -16,9 +16,19 @@ RswObject::RswObject(const RO::RSW* rsw, ROObjectCache& cache) : GLObject() {
 	std::string gat_fn = rsw->gat_file;
 	this->gnd = (RO::GND*)cache[gnd_fn];
 	this->gat = (RO::GAT*)cache[gat_fn];
+
+	m_watergl = 0;
+	gnd_gl = 0;
+
+	m_waterframe = 0;
+	m_waterdelay = 0;
 }
 
 RswObject::~RswObject() {
+	if (glIsList(m_watergl))
+		glDeleteLists(m_watergl, 1);
+	if (glIsList(gnd_gl))
+		glDeleteLists(gnd_gl, 1);
 }
 
 const RO::RSW* RswObject::getRSW() const {
@@ -78,7 +88,8 @@ bool RswObject::loadTextures(CacheManager& cache) {
 	char waterfn[128];
 	for (i = 0; i <= 31; i++) {
 		sprintf(waterfn, "texture\\%s\\water%d%02d.jpg", RO::EUC::water, rsw->water.type, i);
-		tm.RegisterJPEG(fm, waterfn);
+		tex = tm.RegisterJPEG(fm, waterfn);
+		water_tex.add(tex);
 	}
 
 	return(true);
@@ -146,7 +157,6 @@ void RswObject::getRot(float sizex, float sizey, float rot[16]) {
 	rot[15] = 1.0;
 }
 
-
 void RswObject::DrawGND() {
 	float sizex = 0, sizey = 0;
 	unsigned int i, j;
@@ -158,22 +168,6 @@ void RswObject::DrawGND() {
 	getRot(sizex, sizey, rot);
 
 	glMultMatrixf(rot);
-
-	// Center the map
-	//glTranslatef(-sizex/2, -sizey/2, 0);
-
-	/*
-	GLfloat Mat[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, &Mat[0]);
-
-	printf("[%.2f %.2f]\n", sizex/2,sizey/2);
-	printf("[\n");
-	printf("[%.2f %.2f %.2f %.2f]\n", Mat[0], Mat[1], Mat[2], Mat[3]);
-	printf("[%.2f %.2f %.2f %.2f]\n", Mat[4], Mat[5], Mat[6], Mat[7]);
-	printf("[%.2f %.2f %.2f %.2f]\n", Mat[8], Mat[9], Mat[10], Mat[11]);
-	printf("[%.2f %.2f %.2f %.2f]\n", Mat[12], Mat[13], Mat[14], Mat[15]);
-	printf("]\n");
-	*/
 
 	sdle::Texture tex;
 
@@ -258,6 +252,44 @@ void RswObject::DrawGND() {
 	glDisable(GL_TEXTURE_2D);
 }
 
+void RswObject::DrawWater(unsigned int delay) {
+#define WATER_MULTIPLIER 4
+	m_waterdelay += delay;
+	int cycle = rsw->water.texture_cycling * 100;
+	while (m_waterdelay > cycle) {
+		m_waterdelay -= cycle;
+		m_waterframe++;
+		if (m_waterframe > 31) {
+			m_waterframe = 0;
+		}
+	}
+	water_tex[m_waterframe].Activate();
+
+	if (glIsList(m_watergl)) {
+		glCallList(m_watergl);
+		return;
+	}
+
+	m_watergl = glGenLists(1);
+	glNewList(m_watergl, GL_COMPILE_AND_EXECUTE);
+
+	float waterh = rsw->water.height;
+
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_QUADS);
+	for (unsigned int i = 0; i < gnd->getWidth() / WATER_MULTIPLIER; i++) {
+		for (unsigned int j = 0; j < gnd->getHeight() / WATER_MULTIPLIER; j++) {
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			WATER_MULTIPLIER * m_tilesize * j,		 waterh);
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	WATER_MULTIPLIER * m_tilesize * j,		 waterh);
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	WATER_MULTIPLIER * m_tilesize * (j + 1), waterh);
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			WATER_MULTIPLIER * m_tilesize * (j + 1), waterh);
+		}
+	}
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glEndList();
+}
+
 void RswObject::DrawSelection(int mapx, int mapy) const {
 #define ZOFFSET -0.1f
 
@@ -295,7 +327,7 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 }
 
 
-void RswObject::DrawRSW(int screen_x, int screen_y) {
+void RswObject::DrawRSW(int screen_x, int screen_y, unsigned int delay) {
 	glPushMatrix();
 
 	Draw();
@@ -305,6 +337,8 @@ void RswObject::DrawRSW(int screen_x, int screen_y) {
 	world_x = v.x;
 	world_y = v.y;
 	world_z = v.z;
+
+	DrawWater(delay);
 
 	glPopMatrix();
 }

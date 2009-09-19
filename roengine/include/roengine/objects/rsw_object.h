@@ -14,15 +14,35 @@
  */
 class RswObject : public GLObject {
 protected:
+	/** The size of the tile (default: 10.0f) */
 	static float m_tilesize;
+
 	const RO::RSW* rsw;
 	const RO::GND* gnd;
 	const RO::GAT* gat;
+
+	/** Textures used by the ground */
 	TextureCache textures;
 
+	/** Water textures */
+	TextureCache water_tex;
+
+	/** Draws the Ground */
 	void DrawGND();
 
+	/** Draws the water */
+	void DrawWater(unsigned int delay);
+
 	unsigned int gnd_gl;
+
+	/** The GLList used to draw the water */
+	unsigned int m_watergl;
+
+	/** The current water frame to draw */
+	unsigned int m_waterframe;
+
+	/** The ticks passed since last frame changed */
+	unsigned int m_waterdelay;
 
 	float world_x;
 	float world_y;
@@ -44,7 +64,7 @@ public:
 	/**
 	 * Draws the map, and scans the map for the 3D position of the mouse given the screen pointer position
 	 */
-	void DrawRSW(int screen_x, int screen_y);
+	void DrawRSW(int screen_x, int screen_y, unsigned int delay);
 	void DrawSelection(int mapx, int mapy) const;
 	virtual bool isInFrustum(const Frustum&) const;
 
@@ -70,6 +90,13 @@ public:
 
 	bool valid() const;
 
+	/**
+	 * Reads a file from the cache and returns a new RswObject pointer to it.
+	 *
+	 * @param cache CacheManager to read stuff from
+	 * @param map the map name to load (without extension)
+	 * @return a New RswObject pointer on success or NULL on failure
+	 */
 	static RswObject* open(CacheManager&, const char* map);
 
 	int getMouseMapX() const;

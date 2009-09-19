@@ -166,7 +166,7 @@ void ROEngine::DrawMap() {
 	int mapx, mapy;
 	cam.Look();
 	m_frustum.Calculate();
-	m_map->DrawRSW(mousex, mousey);
+	m_map->DrawRSW(mousex, mousey, tickDelay);
 	wx = m_map->getWorldX();
 	wy = m_map->getWorldY();
 	wz = m_map->getWorldZ();

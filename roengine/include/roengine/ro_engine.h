@@ -68,6 +68,8 @@ protected:
 	virtual void AfterInit();
 
 	long lastTick;
+
+	/** How many ticks have passed since last frame */
 	long tickDelay;
 
 	Camera cam;
