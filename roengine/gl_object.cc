@@ -61,9 +61,10 @@ void GLObject::BeforeDraw() {
 	}
 }
 
-void GLObject::Render(long tickdelay, const Vector3f& CameraLook) {
+void GLObject::Render(long tickdelay, const Frustum* f, const Vector3f& CameraLook) {
 	m_tickdelay = tickdelay;
 	cameraDir = CameraLook;
+	m_frustum = f;
 	BeforeDraw();
 	Draw();
 	AfterDraw();
@@ -117,8 +118,8 @@ void GLObject::setFrustumCheck(bool b) {
 	m_frustum_check = b;
 }
 
-bool GLObject::isInFrustum(const Frustum& f) const {
+bool GLObject::isInFrustum(const Frustum* f) const {
 	if (!m_frustum_check)
 		return(true);
-	return(f.PointVisible(pos[0], pos[1], pos[2]));
+	return(f->PointVisible(pos[0], pos[1], pos[2]));
 }

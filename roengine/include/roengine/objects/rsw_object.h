@@ -8,6 +8,7 @@
 #include "ro/types/gnd.h"
 #include "../cache_manager.h"
 #include "../texturecache.h"
+#include "rsm_object.h"
 
 /**
  * Stores the data of the map and draws it as requested.
@@ -31,7 +32,10 @@ protected:
 	void DrawGND();
 
 	/** Draws the water */
-	void DrawWater(unsigned int delay);
+	void DrawWater();
+
+	/** Draws the objects of the map */
+	void DrawObjects();
 
 	unsigned int gnd_gl;
 
@@ -48,10 +52,14 @@ protected:
 	float world_y;
 	float world_z;
 
+	int mouse_x, mouse_y;
+
 	static void getRot(float sizex, float sizey, float rot[16]);
 
+	CacheManager& m_cache;
+
 public:
-	RswObject(const RO::RSW*, ROObjectCache&);
+	RswObject(const RO::RSW*, CacheManager&);
 	virtual ~RswObject();
 
 	/**
@@ -61,10 +69,8 @@ public:
 
 	virtual void Draw();
 
-	/**
-	 * Draws the map, and scans the map for the 3D position of the mouse given the screen pointer position
-	 */
-	void DrawRSW(int screen_x, int screen_y, unsigned int delay);
+	void setMouse(int screen_x, int screen_y);
+
 	void DrawSelection(int mapx, int mapy) const;
 	virtual bool isInFrustum(const Frustum&) const;
 

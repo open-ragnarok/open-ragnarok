@@ -29,10 +29,13 @@ RsmObject::~RsmObject() {
 	textures.clear();
 }
 
-bool RsmObject::loadTextures(TextureManager& tm, FileManager& fm) {
+bool RsmObject::loadTextures(CacheManager& cm) {
 	unsigned int i;
 	sdle::Texture tex;
 	std::string texname;
+
+	TextureManager& tm = cm.getTextureManager();
+	FileManager& fm = cm.getFileManager();
 
 	for (i = 0; i < rsm->getTextureCount(); i++) {
 		texname = "texture\\";
@@ -56,7 +59,7 @@ void RsmObject::DrawBoundingBox(const RO::RSM::BoundingBox& box) {
 		{ box.min.c.x, box.min.c.y, box.max.c.z }  // 7
 	};
 
-	unsigned short lines[12][2] = {
+	static unsigned short lines[12][2] = {
 		{ 0, 1 },
 		{ 1, 2 },
 		{ 2, 3 },

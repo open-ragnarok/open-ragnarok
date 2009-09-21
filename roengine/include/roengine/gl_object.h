@@ -24,13 +24,17 @@ protected:
 	long m_tickdelay;
 	bool m_frustum_check;
 	Vector3f cameraDir;
+	const Frustum* m_frustum;
 
 public:
 	GLObject();
 	virtual ~GLObject();
 
 	virtual void Draw() = 0;
-	void Render(long tickdelay = 0, const Vector3f& CameraLook = Vector3f::UNIT_Z);
+	/** Draws the object
+	 * @param tickdelay how many ticks have passed since the last render was called
+	 */
+	void Render(long tickdelay, const Frustum*, const Vector3f& CameraLook = Vector3f::UNIT_Z);
 	void setPos(const float&, const float&, const float&);
 	void setScale(const float&, const float&, const float&);
 	void setRot(const float&, const float&, const float&);
@@ -48,7 +52,7 @@ public:
 	void setVisible(bool = true);
 	void setFrustumCheck(bool = true);
 	bool isVisible() const;
-	virtual bool isInFrustum(const Frustum&) const;
+	virtual bool isInFrustum(const Frustum*) const;
 };
 
 #endif /* __GL_OBJECT_H */

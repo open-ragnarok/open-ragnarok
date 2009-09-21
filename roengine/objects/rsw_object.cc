@@ -10,7 +10,10 @@
 
 float RswObject::m_tilesize = 10.0f;
 
-RswObject::RswObject(const RO::RSW* rsw, ROObjectCache& cache) : GLObject() {
+RswObject::RswObject(const RO::RSW* rsw, CacheManager& c) : GLObject(), m_cache(c) {
+
+	ROObjectCache& cache = m_cache.getROObjects();
+
 	this->rsw = rsw;
 	std::string gnd_fn = rsw->gnd_file;
 	std::string gat_fn = rsw->gat_file;
@@ -120,15 +123,33 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 		return(NULL);
 	}
 
-	RswObject* obj = new RswObject(rsw, cache.getROObjects());
+	RswObject* obj = new RswObject(rsw, cache);
 	obj->loadTextures(cache);
 
-	/*
-	printf("Map info:\n");
-	printf("\tRequested map: %s\n", map);
-	printf("\tGND Map size: %d, %d\n", obj->gnd->getWidth(), obj->gnd->getHeight());
-	printf("\tGAT Map size: %d, %d\n", obj->gat->getWidth(), obj->gat->getHeight());
-	*/
+	// Load objects
+	RO::RSM* rsm;
+	RO::RSW::Model* rswobj;
+	RsmObject* rsmobject;
+	char fn[128];
+	unsigned int i;
+	for (i = 0; i < rsw->getObjectCount(); i++) {
+		if (!rsw->getObject(i)->isType(RO::RSW::OT_Model))
+			continue;
+
+		rswobj = (RO::RSW::Model*)rsw->getObject(i);
+		sprintf(fn, "model\\%s", rswobj->data->filename);
+		if (!cache.getROObjects().exists(fn)) {
+			if (!cache.getROObjects().ReadRSM(fn, cache.getFileManager())) {
+				fprintf(stderr, "Error loading RSM file %s.\n", fn);
+				continue;
+			}
+		}
+		rsm = (RO::RSM*)cache.getROObjects()[fn];
+		rsmobject = new RsmObject(rsm, rswobj);
+		rsmobject->loadTextures(cache);
+
+		cache.getGLObjects().add(rswobj->getName(), rsmobject);
+	}
 	
 	return(obj);
 }
@@ -252,9 +273,9 @@ void RswObject::DrawGND() {
 	glDisable(GL_TEXTURE_2D);
 }
 
-void RswObject::DrawWater(unsigned int delay) {
+void RswObject::DrawWater() {
 #define WATER_MULTIPLIER 4
-	m_waterdelay += delay;
+	m_waterdelay += m_tickdelay;
 	int cycle = rsw->water.texture_cycling * 100;
 	while (m_waterdelay > cycle) {
 		m_waterdelay -= cycle;
@@ -327,23 +348,29 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 }
 
 
-void RswObject::DrawRSW(int screen_x, int screen_y, unsigned int delay) {
-	glPushMatrix();
+void RswObject::setMouse(int screen_x, int screen_y) {
+	mouse_x = screen_x;
+	mouse_y = screen_y;
+}
 
-	Draw();
-	sdle::Vertex v;
-	sdle::SDLEngine::getSingleton()->unProject(screen_x, screen_y, &v);
+void RswObject::DrawObjects() {
+	unsigned int i = 0;
+	RO::RSW::Model* rswobj;
+	GLObjectCache& cache = m_cache.getGLObjects();
+	for (i = 0; i < rsw->getObjectCount(); i++) {
+		if (!rsw->getObject(i)->isType(RO::RSW::OT_Model))
+			continue;
 
-	world_x = v.x;
-	world_y = v.y;
-	world_z = v.z;
+		rswobj = (RO::RSW::Model*)rsw->getObject(i);
 
-	DrawWater(delay);
-
-	glPopMatrix();
+		if (cache.exists(rswobj->data->m_name)) {
+			cache[rswobj->data->m_name]->Render(m_tickdelay, m_frustum);
+		}
+	}
 }
 
 void RswObject::Draw() {
+	glPushMatrix();
 	if (glIsList(gnd_gl)) {
 		glCallList(gnd_gl);
 	}
@@ -353,6 +380,21 @@ void RswObject::Draw() {
 		DrawGND();
 		glEndList();
 	}
+
+	DrawWater();
+
+	sdle::Vertex v;
+	sdle::SDLEngine::getSingleton()->unProject(mouse_x, mouse_y, &v);
+
+	world_x = v.x;
+	world_y = v.y;
+	world_z = v.z;
+	glPopMatrix();
+
+	glPushMatrix();
+	glScalef(1, 1, -1);
+	DrawObjects();
+	glPopMatrix();
 }
 
 bool RswObject::isInFrustum(const Frustum&) const {

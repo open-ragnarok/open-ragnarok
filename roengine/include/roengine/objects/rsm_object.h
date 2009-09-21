@@ -3,9 +3,7 @@
 #define __RSM_OBJECT_H
 
 #include "../gl_object.h"
-#include "../texturemanager.h"
-#include "../file_manager.h"
-#include "../base_cache.h"
+#include "../cache_manager.h"
 
 #include "ro/types/rsm.h"
 #include "ro/types/rsw.h"
@@ -34,7 +32,7 @@ public:
 	RsmObject(const RO::RSM*, const RO::RSW::Model* mdl = NULL);
 	virtual ~RsmObject();
 
-	bool loadTextures(TextureManager&, FileManager&);
+	bool loadTextures(CacheManager&);
 	virtual bool isInFrustum(const Frustum&) const;
 	sdle::Texture getTexture(unsigned int i);
 

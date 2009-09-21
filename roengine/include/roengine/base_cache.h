@@ -24,6 +24,10 @@ public:
 		clear();
 	}
 
+	unsigned int size() const {
+		return(objects.size());
+	}
+
 	/**
 	 * Clears all stored values deleting one by one
 	 */

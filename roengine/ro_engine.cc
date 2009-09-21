@@ -74,8 +74,8 @@ void ROEngine::ReadIni(const std::string& name) {
 		FileData data = m_filemanager.getFile("resnametable.txt");
 		char line[512];
 		char a[256], b[256];
-		int linepos;
-		int pos = 0;
+		unsigned int linepos;
+		unsigned int pos = 0;
 		char c;
 		while(pos < data.blobSize()) {
 			memset(line, 0, 512);
@@ -166,7 +166,8 @@ void ROEngine::DrawMap() {
 	int mapx, mapy;
 	cam.Look();
 	m_frustum.Calculate();
-	m_map->DrawRSW(mousex, mousey, tickDelay);
+	m_map->setMouse(mousex, mousey);
+	m_map->Render(tickDelay, &m_frustum);
 	wx = m_map->getWorldX();
 	wy = m_map->getWorldY();
 	wz = m_map->getWorldZ();
@@ -190,7 +191,7 @@ void ROEngine::DrawMap() {
 	printf("\tW: %.2f, %.2f, %.2f", wx, wy, wz);
 	printf("\r");
 	camera_look = cam.getEye() - cam.getDest();
-	m_gl_objects.draw(m_frustum, tickDelay, camera_look);
+	//m_gl_objects.draw(m_frustum, tickDelay, camera_look);
 
 
 	// Positions the camera so we're right above ourselves.
