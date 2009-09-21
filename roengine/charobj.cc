@@ -4,31 +4,40 @@
 
 CharObj::CharObj() : GLObject() {
 	map_x = map_y = 0;
+	m_act = 0;
+	m_frame = 0;
 }
 
 CharObj::~CharObj() {
 }
 
-void CharObj::Draw(RswObject* map, unsigned long ticks) {
+void CharObj::setMap(RswObject* map) {
+	m_map = map;
+}
+
+
+void CharObj::Draw() {
+	if (m_map == NULL)
+		return;
+
 	if (!m_bodyact.valid())
 		return;
 	float wx, wy, wz;
 	glPushMatrix();
 	// Retrieves the world position based on map position
-	map->getWorldPosition(map_x, map_y, &wx, &wy, &wz);
+	m_map->getWorldPosition(map_x, map_y, &wx, &wy, &wz);
 	glPopMatrix();
 
 	glPushMatrix();
+	glEnable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_bodyact.Draw(ticks); // Draw
+	m_bodyact.Draw(m_tickdelay); // Draw
 	if (m_headact.valid())
-		m_headact.Draw(ticks);
+		m_headact.Draw(m_tickdelay);
+	glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
-}
-
-void CharObj::Draw() {
-	if (m_bodyact.valid())
-		m_bodyact.Draw();
 }
 
 bool CharObj::valid() const {

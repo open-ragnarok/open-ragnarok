@@ -201,11 +201,8 @@ void ROEngine::DrawMap() {
 	cam.TranslateDestTo(Vector3f(wx, wy, wz));
 
 	if (me.valid()) {
-		glEnable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
-		me.Draw(m_map, 50);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_BLEND);
+		me.setMap(m_map);
+		me.Render(50, &m_frustum);
 	}
 
 	afterDrawMap();

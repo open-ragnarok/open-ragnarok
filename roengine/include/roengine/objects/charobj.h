@@ -15,16 +15,25 @@ protected:
 	RO::CSex m_sex;
 	unsigned short m_hair;
 
+	RswObject* m_map;
+
+	/** Current action to draw */
+	unsigned short m_act;
+
+	/** Current frame in the action */
+	unsigned short m_frame;
+
 public:
 	int map_x, map_y;
 
 	CharObj();
 	virtual ~CharObj();
 
-	void Draw(RswObject* map, unsigned long ticks);
 	virtual void Draw();
 
 	bool valid() const;
+
+	void setMap(RswObject*);
 
 	bool open(CacheManager& cache, RO::CJob job, RO::CSex sex = RO::S_MALE);
 };

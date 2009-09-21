@@ -43,6 +43,11 @@ public:
 	unsigned int getFrameCount() const;
 
 	SprGL& operator = (const SprGL&);
+	/**
+	 * Returns information on how to draw a frame
+	 * @param frame the frame index to get the parameters from
+	 */
+	const sprInfo& getFrameInfo(unsigned int frame) const;
 	sdle::Texture& getTexture();
 	const sdle::Texture& getTexture() const;
 };

@@ -52,6 +52,10 @@ const sdle::Texture& SprGL::getTexture() const {
 	return(m_texture);
 }
 
+const sprInfo& SprGL::getFrameInfo(unsigned int frame) const {
+	return(m_info[frame]);
+}
+
 SprGL& SprGL::operator = (const SprGL& s) {
 	release();
 

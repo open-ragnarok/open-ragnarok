@@ -59,7 +59,7 @@ void RswObject::getWorldPosition(int mapx, int mapy, float *rx, float *ry, float
 
 	int mx, my;
 	mx = mapx;
-	my = gat->getHeight() - mapy;
+	my = gat->getHeight() - mapy - 1;
 
 	//const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
 	const RO::GAT::strBlock& block = gat->getBlock(mapx, mapy);
