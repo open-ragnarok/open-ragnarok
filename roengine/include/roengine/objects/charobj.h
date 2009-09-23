@@ -23,9 +23,16 @@ protected:
 	/** Current frame in the action */
 	unsigned short m_frame;
 
-public:
-	int map_x, map_y;
+	/** Current map position */
+	float map_x, map_y;
 
+	/** Current destination */
+	float dest_x, dest_y;
+
+	/** The speed */
+	float speed;
+
+public:
 	CharObj();
 	virtual ~CharObj();
 
@@ -36,6 +43,23 @@ public:
 	void setMap(RswObject*);
 
 	bool open(CacheManager& cache, RO::CJob job, RO::CSex sex = RO::S_MALE);
+
+	float getPositionX() const;
+	float getPositionY() const;
+	float getDestinationX() const;
+	float getDestinationY() const;
+
+	/**
+	 * Setup the current position.
+	 * It teleports the char to the given point
+	 */
+	void setPos(float x, float y);
+
+	/**
+	 * Sets the current destination.
+	 * The character will move to the position with the given speed.
+	 */
+	void setDest(float x, float y);
 };
 
 #endif /* __ROENGINE_CHAROBJ_H */

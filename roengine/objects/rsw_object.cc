@@ -42,7 +42,7 @@ const RO::GND* RswObject::getGND() const {
 	return(gnd);
 }
 
-void RswObject::getWorldPosition(int mapx, int mapy, float *rx, float *ry, float *rz) {
+void RswObject::getWorldPosition(float mapx, float mapy, float *rx, float *ry, float *rz) {
 	float sizex = 0, sizey = 0;
 
 	float tile = m_tilesize / 2;
@@ -57,16 +57,72 @@ void RswObject::getWorldPosition(int mapx, int mapy, float *rx, float *ry, float
 	sizex = tile * gat->getWidth();
 	sizey = tile * gat->getHeight();
 
-	int mx, my;
-	mx = mapx;
-	my = gat->getHeight() - mapy - 1;
+	int coordx = (int)mapx;
+	int coordy = (int)mapy;
 
-	//const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
-	const RO::GAT::strBlock& block = gat->getBlock(mapx, mapy);
 
-	*rx = tile * mx + tile / 2 - sizex / 2;
-	*rz = tile * my + tile / 2 - sizey / 2;
-	*ry = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+	int mx, my;		// The integer part of the map position
+	float dx, dy;	// The decimal part of the map position
+	dx = mapx;
+	dy = (float)gat->getHeight() - mapy - 1;
+
+	mx = (int)dx;
+	my = (int)dy;
+
+	dx -= mx;
+	dy -= my;
+
+	if (dx < 0.005f && dy < 0.005f) {
+		const RO::GAT::strBlock& block = gat->getBlock(coordx, coordy);
+		*rx = tile * mx + tile / 2 - sizex / 2;
+		*rz = tile * my + tile / 2 - sizey / 2;
+		*ry = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+	}
+	else {
+		float positions[4][3]; // Coordinates (0, 0), (1, 0), (1, 1), (0, 1)
+
+		{
+			const RO::GAT::strBlock& block = gat->getBlock(coordx, coordy);
+			positions[0][0] = tile * mx + tile / 2 - sizex / 2;
+			positions[0][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[0][2] = tile * my + tile / 2 - sizey / 2;
+		}
+		{
+			const RO::GAT::strBlock& block = gat->getBlock(coordx+1, coordy);
+			positions[1][0] = tile * (mx + 1) + tile / 2 - sizex / 2;
+			positions[1][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[1][2] = tile * my + tile / 2 - sizey / 2;
+		}
+		{
+			const RO::GAT::strBlock& block = gat->getBlock(coordx+1, coordy+1);
+			positions[2][0] = tile * (mx + 1) + tile / 2 - sizex / 2;
+			positions[2][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[2][2] = tile * (my + 1) + tile / 2 - sizey / 2;
+		}
+		{
+			const RO::GAT::strBlock& block = gat->getBlock(coordx, coordy+1);
+			positions[3][0] = tile * mx + tile / 2 - sizex / 2;
+			positions[3][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[3][2] = tile * (my + 1) + tile / 2 - sizey / 2;
+		}
+		if (dx < 0.005f) {
+			// Moving only along the "y"
+			*rx = positions[0][0];
+			*ry = positions[0][1] * (1 - dy) + positions[3][1] * dy;
+			*rz = positions[0][2] * (1 - dy) + positions[3][2] * dy;
+		}
+		else if (dy < 0.005f) {
+			// Moving only along the "x"
+			*rx = positions[0][0] * (1 - dx) + positions[1][0] * dx;
+			*ry = positions[0][1] * (1 - dx) + positions[1][1] * dx;
+			*rz = positions[0][2];
+		}
+		else {
+			*rx = positions[0][0] * (1 - dx) + positions[1][0] * dx;
+			*rz = positions[0][2] * (1 - dy) + positions[3][2] * dy;
+			*ry = positions[0][1]; // TODO: Figure out how to calculate this one
+		}
+	}
 }
 
 bool RswObject::loadTextures(CacheManager& cache) {
@@ -354,8 +410,6 @@ void RswObject::setMouse(int screen_x, int screen_y) {
 void RswObject::DrawObjects() {
 	unsigned int i = 0;
 	float sizex, sizey;
-	float rot[16];
-
 	RO::RSW::Model* rswobj;
 	GLObjectCache& cache = m_cache.getGLObjects();
 

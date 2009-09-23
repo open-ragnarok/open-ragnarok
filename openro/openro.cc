@@ -148,13 +148,11 @@ void OpenRO::BeforeRun() {
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
 
-#if 0
+#if 1
 	m_gui.setDesktop(dskLogin);
 #else
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
-	me.map_x = 53;
-	me.map_y = 111;
-	//LoadMap("new_zone01");
+	me.setPos(53, 111);
 	m_map = RswObject::open(*this, "new_1-1");
 #endif
 
@@ -359,8 +357,7 @@ void OpenRO::hndlMapLoginSuccess(ronet::pktMapLoginSuccess* pkt) {
 	short pos_dir = pkt->getPosDir();
 	unsigned int server_tick = pkt->getServerTick();
 
-	me.map_x = pos_x;
-	me.map_y = pos_y;
+	me.setPos(pos_x, pos_y);
 
 	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n\n\n",pos_x,pos_y,pos_dir,server_tick);
 }

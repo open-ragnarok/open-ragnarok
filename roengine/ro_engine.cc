@@ -196,7 +196,7 @@ void ROEngine::DrawMap() {
 
 	// Positions the camera so we're right above ourselves.
 	glPushMatrix();
-	m_map->getWorldPosition(me.map_x, me.map_y, &wx, &wy, &wz);
+	m_map->getWorldPosition(me.getPositionX(), me.getPositionY(), &wx, &wy, &wz);
 	glPopMatrix();
 	cam.TranslateDestTo(Vector3f(wx, wy, wz));
 
@@ -273,8 +273,7 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 				mapx = m_map->getMouseMapX();
 				mapy = m_map->getMouseMapY();
 
-				me.map_x = mapx;
-				me.map_y = mapy;
+				me.setDest(mapx, mapy);
 			}
 		}
 		else if (buttons == 5) { // SDL_BUTTON_WHEELDOWN

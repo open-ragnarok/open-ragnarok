@@ -75,14 +75,17 @@ public:
 	virtual bool isInFrustum(const Frustum&) const;
 
 	/**
-	 * Retrieves the GL position (rx, ry, rz) of the given map coordinates
+	 * Retrieves the GL position (rx, ry, rz) of the given map coordinates.
+	 *
+	 * If the given positions are not integer, it will return a medium of the adjacent positions.
+	 *
 	 * @param mapx map X coordinate
 	 * @param mapy map Y coordinate
 	 * @param rx float world X coordinate
 	 * @param ry float world Z coordinate
 	 * @param ry float world Z coordinate
 	 */
-	void getWorldPosition(int mapx, int mapy, float *rx, float *ry, float *rz);
+	void getWorldPosition(float mapx, float mapy, float *rx, float *ry, float *rz);
 
 	/**
 	 * Retrieves the RSW file used to draw this map

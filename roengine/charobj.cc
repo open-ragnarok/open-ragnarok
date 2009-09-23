@@ -4,8 +4,10 @@
 
 CharObj::CharObj() : GLObject() {
 	map_x = map_y = 0;
+	dest_x = dest_y = 0;
 	m_act = 0;
 	m_frame = 0;
+	speed = 0.2f;
 }
 
 CharObj::~CharObj() {
@@ -22,6 +24,28 @@ void CharObj::Draw() {
 
 	if (!m_bodyact.valid())
 		return;
+
+	// Move...
+	if (dest_x != map_x || dest_y != map_y) {
+		float dx = dest_x - map_x;
+		float dy = dest_y - map_y;
+		float size = sqrt(dx * dx + dy * dy);
+
+		if (size < speed) {
+			map_x = dest_x;
+			map_y = dest_y;
+		}
+		else {
+			dx /= size;
+			dy /= size;
+
+			dx *= speed;
+			dy *= speed;
+			map_x += dx;
+			map_y += dy;
+		}
+	}
+
 	float wx, wy, wz;
 	glPushMatrix();
 	// Retrieves the world position based on map position
@@ -40,8 +64,37 @@ void CharObj::Draw() {
 	glPopMatrix();
 }
 
+float CharObj::getPositionX() const {
+	return(map_x);
+}
+
+float CharObj::getPositionY() const {
+	return(map_y);
+}
+
+float CharObj::getDestinationX() const {
+	return(dest_x);
+}
+
+float CharObj::getDestinationY() const {
+	return(dest_y);
+}
+
+
 bool CharObj::valid() const {
 	return(m_bodyact.valid());
+}
+
+void CharObj::setPos(float x, float y) {
+	map_x = x;
+	map_y = y;
+	dest_x = x;
+	dest_y = y;
+}
+
+void CharObj::setDest(float x, float y) {
+	dest_x = x;
+	dest_y = y;
 }
 
 bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
