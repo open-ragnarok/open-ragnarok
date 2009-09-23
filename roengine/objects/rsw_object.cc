@@ -163,13 +163,13 @@ void RswObject::getRot(float sizex, float sizey, float rot[16]) {
 	rot[3] = 0.0;
 
 	rot[4] = 0.0;
-	rot[5] = 0.0;
-	rot[6] = -1.0;
+	rot[5] = 1.0;
+	rot[6] = 0.0;
 	rot[7] = 0.0;
 
 	rot[8] = 0.0;
-	rot[9] = -1.0;
-	rot[10] = 0.0;
+	rot[9] = 0.0;
+	rot[10] = -1.0;
 	rot[11] = 0.0;
 
 	rot[12] = -sizex/2;
@@ -205,18 +205,17 @@ void RswObject::DrawGND() {
 				tex = textures[tile.texture_index];
 				if (tex.Valid()) {
 					tex.Activate();
+					float texcoords[4][2] = {
+						{ tile.texture_start[0], 1.0f - tile.texture_end[0]},
+						{ tile.texture_start[1], 1.0f - tile.texture_end[1]},
+						{ tile.texture_start[3], 1.0f - tile.texture_end[3]},
+						{ tile.texture_start[2], 1.0f - tile.texture_end[2]}
+					};
 					glBegin(GL_QUADS);
-					glTexCoord2f(tile.texture_start[0],		1 - tile.texture_end[0]);
-					glVertex3f(m_tilesize * i,		m_tilesize * j,		 cube.height[0]);
-
-					glTexCoord2f(tile.texture_start[1],		1 - tile.texture_end[1]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * j,		 cube.height[1]);
-
-					glTexCoord2f(tile.texture_start[3],		1 - tile.texture_end[3]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube.height[3]);
-
-					glTexCoord2f(tile.texture_start[2],		1 - tile.texture_end[2]);
-					glVertex3f(m_tilesize * i,		m_tilesize * (j + 1), cube.height[2]);
+					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cube.height[0], m_tilesize * j);
+					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cube.height[1], m_tilesize * j);
+					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cube.height[3], m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cube.height[2], m_tilesize * (j + 1));
 					glEnd();
 				}
 			}
@@ -229,18 +228,17 @@ void RswObject::DrawGND() {
 				tex = textures[tile.texture_index];
 				if (tex.Valid()) {
 					tex.Activate();
+					float texcoords[4][2] = {
+						{ tile.texture_start[0], tile.texture_end[0]},
+						{ tile.texture_start[1], tile.texture_end[1]},
+						{ tile.texture_start[3], tile.texture_end[3]},
+						{ tile.texture_start[2], tile.texture_end[2]}
+					};
 					glBegin(GL_QUADS);
-					glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
-					glVertex3f(m_tilesize * i,		m_tilesize * (j + 1), cube.height[2]);
-
-					glTexCoord2f(tile.texture_start[1],	tile.texture_end[1]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube.height[3]);
-
-					glTexCoord2f(tile.texture_start[3],	tile.texture_end[3]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube2.height[1]);
-
-					glTexCoord2f(tile.texture_start[2],	tile.texture_end[2]);
-					glVertex3f(m_tilesize * i,		m_tilesize * (j + 1), cube2.height[0]);
+					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cube.height[2],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cube.height[3],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cube2.height[1],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cube2.height[0],	m_tilesize * (j + 1));
 					glEnd();
 				}
 			}
@@ -252,18 +250,18 @@ void RswObject::DrawGND() {
 				tex = textures[tile.texture_index];
 				if (tex.Valid()) {
 					tex.Activate();
+					float texcoords[4][2] = {
+						{ tile.texture_start[0], tile.texture_end[0]},
+						{ tile.texture_start[1], tile.texture_end[1]},
+						{ tile.texture_start[3], tile.texture_end[3]},
+						{ tile.texture_start[2], tile.texture_end[2]}
+					};
+
 					glBegin(GL_QUADS);
-					glTexCoord2f(tile.texture_start[0],	tile.texture_end[0]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube.height[3]);
-
-					glTexCoord2f(tile.texture_start[1],	tile.texture_end[1]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * j, cube.height[1]);
-
-					glTexCoord2f(tile.texture_start[3],	tile.texture_end[3]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * j, cube2.height[0]);
-
-					glTexCoord2f(tile.texture_start[2],	tile.texture_end[2]);
-					glVertex3f(m_tilesize * (i + 1),	m_tilesize * (j + 1), cube2.height[2]);
+					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * (i + 1),	cube.height[3],		m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	cube.height[1],		m_tilesize * j);
+					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	cube2.height[0],	m_tilesize * j);
+					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * (i + 1),	cube2.height[2],	m_tilesize * (j + 1));
 					glEnd();
 				}
 			}
@@ -294,16 +292,16 @@ void RswObject::DrawWater() {
 	m_watergl = glGenLists(1);
 	glNewList(m_watergl, GL_COMPILE_AND_EXECUTE);
 
-	float waterh = rsw->water.height;
+	float waterh = (float)rsw->water.height;
 
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	for (unsigned int i = 0; i < gnd->getWidth() / WATER_MULTIPLIER; i++) {
 		for (unsigned int j = 0; j < gnd->getHeight() / WATER_MULTIPLIER; j++) {
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			WATER_MULTIPLIER * m_tilesize * j,		 waterh);
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	WATER_MULTIPLIER * m_tilesize * j,		 waterh);
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	WATER_MULTIPLIER * m_tilesize * (j + 1), waterh);
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			WATER_MULTIPLIER * m_tilesize * (j + 1), waterh);
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			-waterh, WATER_MULTIPLIER * m_tilesize * j);
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	-waterh, WATER_MULTIPLIER * m_tilesize * j);
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	-waterh, WATER_MULTIPLIER * m_tilesize * (j + 1));
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			-waterh, WATER_MULTIPLIER * m_tilesize * (j + 1));
 		}
 	}
 	glEnd();
@@ -312,7 +310,7 @@ void RswObject::DrawWater() {
 }
 
 void RswObject::DrawSelection(int mapx, int mapy) const {
-#define ZOFFSET -0.1f
+#define HOFFSET +0.1f
 
 	float sizex = 0, sizey = 0;
 	float tile = m_tilesize / 2;
@@ -338,10 +336,10 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 	const RO::GAT::strBlock& block = gat->getBlock(mapx, mapy);
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,	0.0f); glVertex3f(tile * mapx,			tile * mapy,		block.height[0] + ZOFFSET);
-	glTexCoord2f(1.0f,	0.0f); glVertex3f(tile * (mapx + 1),	tile * mapy,		block.height[1] + ZOFFSET);
-	glTexCoord2f(1.0f,	1.0f); glVertex3f(tile * (mapx + 1),	tile * (mapy + 1),	block.height[3] + ZOFFSET);
-	glTexCoord2f(0.0f,	1.0f); glVertex3f(tile * mapx,			tile * (mapy + 1),	block.height[2] + ZOFFSET);
+	glTexCoord2f(0.0f,	0.0f); glVertex3f(tile * mapx,			-block.height[0] + HOFFSET, tile * mapy);
+	glTexCoord2f(1.0f,	0.0f); glVertex3f(tile * (mapx + 1),	-block.height[1] + HOFFSET, tile * mapy);
+	glTexCoord2f(1.0f,	1.0f); glVertex3f(tile * (mapx + 1),	-block.height[3] + HOFFSET, tile * (mapy + 1));
+	glTexCoord2f(0.0f,	1.0f); glVertex3f(tile * mapx,			-block.height[2] + HOFFSET, tile * (mapy + 1));
 	glEnd();
 
 	glPopMatrix();
@@ -355,8 +353,18 @@ void RswObject::setMouse(int screen_x, int screen_y) {
 
 void RswObject::DrawObjects() {
 	unsigned int i = 0;
+	float sizex, sizey;
+	float rot[16];
+
 	RO::RSW::Model* rswobj;
 	GLObjectCache& cache = m_cache.getGLObjects();
+
+	sizex = m_tilesize * gnd->getWidth();
+	sizey = m_tilesize * gnd->getHeight();
+
+	glPushMatrix();
+	glTranslatef(sizex / 2, 0, sizey / 2);
+
 	for (i = 0; i < rsw->getObjectCount(); i++) {
 		if (!rsw->getObject(i)->isType(RO::RSW::OT_Model))
 			continue;
@@ -367,6 +375,8 @@ void RswObject::DrawObjects() {
 			cache[rswobj->data->m_name]->Render(m_tickdelay, m_frustum);
 		}
 	}
+
+	glPopMatrix();
 }
 
 void RswObject::Draw() {
@@ -382,6 +392,7 @@ void RswObject::Draw() {
 	}
 
 	DrawWater();
+	DrawObjects();
 
 	sdle::Vertex v;
 	sdle::SDLEngine::getSingleton()->unProject(mouse_x, mouse_y, &v);
@@ -389,11 +400,6 @@ void RswObject::Draw() {
 	world_x = v.x;
 	world_y = v.y;
 	world_z = v.z;
-	glPopMatrix();
-
-	glPushMatrix();
-	glScalef(1, 1, -1);
-	DrawObjects();
 	glPopMatrix();
 }
 
@@ -406,7 +412,7 @@ int RswObject::getMouseMapX() const {
 }
 
 int RswObject::getMouseMapY() const {
-	return((int)world_y / 5);
+	return((int)world_z / 5);
 }
 
 float RswObject::getWorldX() const { return(world_x); }
