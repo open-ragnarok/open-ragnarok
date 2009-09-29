@@ -78,7 +78,7 @@ namespace ronet {
 		/** Retrieves the connection to the map server */
 		TcpConnection& getMap();
 
-		bool GameLogin(const std::string& name, const std::string& pass);
+		bool GameLogin(const std::string& name, const std::string& pass, unsigned int version);
 		bool CharLogin(unsigned int acctid, unsigned int sid1, unsigned int sid2, unsigned char sex);
 		bool CreateChar(const std::string& charname, const CharAttributes& attr, unsigned short slot, unsigned short color, unsigned short style);
 		void KeepAliveChar(unsigned int acc_id);

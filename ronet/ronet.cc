@@ -96,13 +96,13 @@ TcpConnection& RONet::getMap() {
 	return(m_map);
 }
 
-bool RONet::GameLogin(const std::string& name, const std::string& pass) {
+bool RONet::GameLogin(const std::string& name, const std::string& pass, unsigned int version) {
 	if (!m_login.isConnected()) {
 		std::cerr << "[RONet::GameLogin() Error] Not connected to login server" << std::endl;
 		return(false);
 	}
 
-	ronet::pktLogin login(name, pass);
+	ronet::pktLogin login(name, pass, version);
 	login >> m_login.bufOutput;
 	return(true);
 }

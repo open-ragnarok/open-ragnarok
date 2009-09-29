@@ -34,10 +34,10 @@ void OpenRO::CharSelectScreen() {
 	m_gui.setDesktop(dskChar);
 }
 
-void OpenRO::ProcessLogin(const std::string& user, const std::string& pass) {
+void OpenRO::ProcessLogin(const std::string& user, const std::string& pass, unsigned int version) {
 	dskLogin->setEnabled(false);
 	m_network.getLogin().Connect(OpenRO::ConnectionIP, OpenRO::ConnectionPort);
-	m_network.GameLogin(user, pass);
+	m_network.GameLogin(user, pass, version);
 }
 
 void OpenRO::ServiceSelect(unsigned int serviceid) {
@@ -415,6 +415,11 @@ void OpenRO::ParseClientInfo(const std::string& name){
 				const char *port = sclient_child_port->GetText();
 				OpenRO::ConnectionPort = atoi(port);
 			}
+			TiXmlElement* sclient_child_version = sclient_child->FirstChildElement("version");
+			if(sclient_child_version){
+				const char *version = sclient_child_version->GetText();
+				OpenRO::ClientVersion = atoi(version);
+			}
 
 		}
 	}
@@ -458,6 +463,7 @@ unsigned char OpenRO::GetAccountSex(){
 		return 0;
 	}
 }
+unsigned int OpenRO::GetClientVersion(){return ClientVersion;}
 
 void OpenRO::clickMap(int x, int y) {
 	m_network.MoveCharacter(x, y);

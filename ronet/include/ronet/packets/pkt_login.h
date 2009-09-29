@@ -44,7 +44,7 @@ namespace ronet {
 		virtual bool PrepareData();
 	public:
 		pktLogin();
-		pktLogin(const std::string& user, const std::string& pass);
+		pktLogin(const std::string& user, const std::string& pass, unsigned int version);
 	};
 }
 

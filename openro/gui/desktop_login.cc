@@ -17,7 +17,7 @@ bool DesktopLogin::handleBtnOk(GUI::Event& e) {
 	user = tiUser->getText();
 	pass = tiPass->getText();
 
-	m_ro->ProcessLogin(user, pass);
+	m_ro->ProcessLogin(user, pass, m_ro->GetClientVersion());
 	return(true);
 }
 

@@ -64,6 +64,9 @@ protected:
 	/** Port to connect */
 	unsigned int ConnectionPort;
 
+	/** Client Version taken from (s)clientinfo.xml */
+	unsigned int ClientVersion;
+
 	/** Parses the client information on the given xml file */
 	void ParseClientInfo(const std::string& name = "sclientinfo.xml");
 
@@ -73,7 +76,7 @@ public:
 
 	void LoginScreen();
 	void CharSelectScreen();
-	void ProcessLogin(const std::string&, const std::string&);
+	void ProcessLogin(const std::string&, const std::string&, unsigned int version);
 	void ServiceSelect(unsigned int serviceid);
 	void CharSelect(unsigned int slot);
 	void CreateCharWindow(int slot);
@@ -93,6 +96,7 @@ public:
 
 	unsigned int GetAccountID();
 	unsigned char GetAccountSex();
+	unsigned int GetClientVersion();
 
 	/** Event received from ROEngine */
 	virtual void clickMap(int x, int y);
