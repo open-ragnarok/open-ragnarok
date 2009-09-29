@@ -11,13 +11,22 @@
 #include <map>
 
 namespace ronet {
+	/**
+	 * The maker of all (incoming) packets.
+	 * Transforms received data input into packet classes for easy handling
+	 */
 	class RONET_DLLAPI PacketFactory {
 	private:
+		/** Packets in the queue */
 		PacketVector packets;
 	protected:
 
+		/** Handler function definition */
 		typedef bool (PacketFactory::*Handler)(ucBuffer& p);
 
+		/**
+		 * 
+		 */
 		class RONET_DLLAPI Dispatcher {
 		private:
 			std::map<unsigned short, Handler> m_calls;

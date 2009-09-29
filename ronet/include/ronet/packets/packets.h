@@ -1,3 +1,4 @@
+/* $Id$ */
 #ifndef __RONET_PACKETS_PACKETS_H
 #define __RONET_PACKETS_PACKETS_H
 
@@ -23,5 +24,8 @@
 #include "pkt_displaystat.h"		//[kR105]
 #include "pkt_guildmessage.h"		//[kR105]
 #include "pkt_attackrange.h"		//[kR105]
+#include "pkt_mapmove.h"
+#include "pkt_guildinforequest.h"
+#include "pkt_maploaded.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

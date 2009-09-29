@@ -5,10 +5,12 @@
 
 ronet::Packet::Packet() : DynamicBlob<unsigned char>() {
 	id = 0;
+	setSize(2);
 }
 
 ronet::Packet::Packet(unsigned short pktid) : DynamicBlob<unsigned char>() {
 	id = pktid;
+	setSize(2);
 }
 
 ronet::Packet::~Packet() {
@@ -20,10 +22,12 @@ void ronet::Packet::setSize(const unsigned long& size) {
 }
 
 bool ronet::Packet::PrepareData() {
-	return(false);
+	return(true);
 }
 
 ronet::Packet& ronet::Packet::operator >> (ronet::ucBuffer& b) {
+	memcpy(buffer, (unsigned char*)&id, sizeof(short));
+
 	if (!PrepareData())
 		return(*this);
 

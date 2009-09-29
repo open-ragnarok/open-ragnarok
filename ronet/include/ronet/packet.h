@@ -22,7 +22,11 @@ namespace ronet {
 		pktKeepAliveID = 0x0187,
 
 		// To MAP
-		pktMapLoginID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
+		//pktMapLoginID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
+		pktMapLoginID = 0x0072, // (19 bytes) S 0072 <account id>.int <char id>.int <session id1>.int <client tick>.unsigned int <gender>.byte
+		pktMapMoveID = 0x0085, // 5 bytes S 0085 <x>.10bits <y>.10bits <0>.4bits
+		pktGuildInfoRequestID = 0x014d, // 2 bytes
+		pktMapLoadedID = 0x007d, // 2 bytes
 
 		// == INBOUND == //
 		// From LOGIN
@@ -33,7 +37,7 @@ namespace ronet {
 		// From CHAR
 		pktCharListID = 0x006b,
 		pktCharSelectionFailID = 0x006c, // S 006c <unk>.short
-		pktCharPositionID = 0x0071, // (30 bytes) S 0071 <position>.int <mapname>.16B <ip>.int <port>.short
+		pktCharPositionID = 0x0071, // (30 bytes) S 0071 <charid>.int <mapname>.16B <ip>.int <port>.short
 		pktCharCreatedID = 0x006d, // Also named "NewCharInfo" (108 or 110 bytes)
 		pktCharCreateErrorID = 0x006e, // (3 bytes)
 		pktCharRenameID = 0x028d,

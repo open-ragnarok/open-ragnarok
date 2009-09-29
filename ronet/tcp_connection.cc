@@ -126,47 +126,15 @@ bool ronet::TcpConnection::SendData() {
 		return (0);
 	}
 	if (datawritten != 0) {
+#if defined(DEBUG) || defined(_DEBUG)
+		std::cout << "[DEBUG] sent "<< datawritten <<" bytes of data" << std::endl;
+		hexdump((const unsigned char*)bufOutput.getBuffer(), datawritten);
+#endif
+
 		bufOutput.ignore(datawritten);
 	}
 
 	return(true);
-}
-
-void hexdump(const unsigned char* buf, unsigned int buflen) {
-	unsigned int pos = 0;
-	unsigned int tbufpos = 0;
-	char tbuf[32];
-	char c;
-
-	tbuf[0] = 0;
-
-	for (pos = 0; pos < buflen; pos++) {
-		if (pos % 16 == 0) {
-			tbuf[tbufpos] = 0;
-			if (pos > 0) {
-				printf("| %s\n", tbuf);
-			}
-			printf("%04x | ", pos);
-			tbufpos = 0;
-		}
-		else if (pos % 8 == 0) {
-			tbuf[tbufpos++] = ' ';
-			printf(" ");
-		}
-		printf("%02x ", buf[pos]);
-		c = buf[pos];
-		if (c < ' ' || c > 'z')
-			c = '.';
-
-		tbuf[tbufpos++] = c;
-	}
-	int rest = 16 - (pos % 16);
-	if (rest >= 8)
-		printf(" ");
-	for (int i = 0; i < rest; i++)
-		printf("   ");
-	tbuf[tbufpos] = 0;
-	printf("| %s\n", tbuf);
 }
 
 bool ronet::TcpConnection::RecvData() {
@@ -195,7 +163,7 @@ bool ronet::TcpConnection::RecvData() {
 	(errno != EAGAIN)
 #endif
 	{
-		printf("WSAGetLastError() != WSAEWOULDBLOCK\n");
+		std::cerr << "WSAGetLastError() != WSAEWOULDBLOCK" << std::endl;
 		return false;
 	}
 	

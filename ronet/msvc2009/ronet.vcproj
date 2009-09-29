@@ -419,6 +419,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_guildinforequest.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_guildmessage.cc"
 					>
 				</File>
@@ -439,11 +443,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_maploaded.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_maplogin.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\packets\pkt_maploginsuccess.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_mapmove.cc"
 					>
 				</File>
 				<File
@@ -581,6 +593,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_guildinforequest.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_guildmessage.h"
 					>
 				</File>
@@ -601,11 +617,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_maploaded.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_maplogin.h"
 					>
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_maploginsuccess.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_mapmove.h"
 					>
 				</File>
 				<File
