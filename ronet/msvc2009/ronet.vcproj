@@ -459,6 +459,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_mapmoveok.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_ownspeech.cc"
 					>
 				</File>
@@ -630,6 +634,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_mapmove.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_mapmoveok.h"
 					>
 				</File>
 				<File

@@ -14,9 +14,9 @@
 // List of packets that we know how to decode
 
 //Add new packets here
-HANDLER(AttackRange);
-HANDLER(GuildMessage);
-HANDLER(DisplayStat);
+HANDLER(AttackRange)
+HANDLER(GuildMessage)
+HANDLER(DisplayStat)
 HANDLER(UpdateStatus)
 HANDLER(ServerList)
 HANDLER(CharList)
@@ -29,6 +29,7 @@ HANDLER(MapAcctSend)
 HANDLER(MapLoginSuccess)
 HANDLER(OwnSpeech)
 HANDLER(SkillList)
+HANDLER(MapMoveOk)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -47,6 +48,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(MapLoginSuccess);
 	CALLER(OwnSpeech);
 	CALLER(SkillList);
+	CALLER(MapMoveOk);
 	//m_dispatcher.Register(0x0069, &ronet::PacketFactory::Handle_ServerList);
 }
 
@@ -57,20 +59,6 @@ ronet::PacketFactory::~PacketFactory() {
 		p = pop();
 	}
 }
-
-/*
-bool ronet::PacketFactory::Handle_ServerList(ronet::ucBuffer& b) {
-	pktServerList *p;
-	p = new pktServerList();
-	if (!p->Decode(b)) {
-		delete(p);
-		return(false);
-	}
-
-	push(p);
-	return(true);
-}
-*/
 
 void ronet::PacketFactory::push(ronet::Packet* p) {
 	packets.push_back(p);

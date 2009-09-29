@@ -13,6 +13,11 @@ class OpenRO;
 
 #include <string>
 
+/** Handler declaration */
+#define HNDL_DECL(x) void hndl ##x (ronet::pkt ##x *)
+/** Handler implementation (function) */
+#define HNKD_IMPL(x) void OpenRO::hndl ##x (ronet::pkt ##x * pkt)
+
 class OpenRO : public ROEngine {
 protected:
 	/** Current client state */
@@ -35,20 +40,21 @@ protected:
 	ronet::pktServerList* m_serverlist;
 
 	//Add new packets here
-	void hndlAttackRange(ronet::pktAttackRange*);
-	void hndlGuildMessage(ronet::pktGuildMessage*);
-	void hndlDisplayStat(ronet::pktDisplayStat*);
-	void hndlUpdateStatus(ronet::pktUpdateStatus*);
-	void hndlServerList(ronet::pktServerList*);
-	void hndlCharList(ronet::pktCharList*);
-	void hndlLoginError(ronet::pktLoginError*);
-	void hndlAuthFailed(ronet::pktAuthFailed*);
-	void hndlCharCreated(ronet::pktCharCreated*);
-	void hndlCharPosition(ronet::pktCharPosition*);
-	void hndlMapAcctSend(ronet::pktMapAcctSend*);
-	void hndlMapLoginSuccess(ronet::pktMapLoginSuccess*); 
-	void hndlOwnSpeech(ronet::pktOwnSpeech*);
-	void hndlSkillList(ronet::pktSkillList*);
+	HNDL_DECL(AttackRange);
+	HNDL_DECL(GuildMessage);
+	HNDL_DECL(DisplayStat);
+	HNDL_DECL(UpdateStatus);
+	HNDL_DECL(ServerList);
+	HNDL_DECL(CharList);
+	HNDL_DECL(LoginError);
+	HNDL_DECL(AuthFailed);
+	HNDL_DECL(CharCreated);
+	HNDL_DECL(CharPosition);
+	HNDL_DECL(MapAcctSend);
+	HNDL_DECL(MapLoginSuccess);
+	HNDL_DECL(OwnSpeech);
+	HNDL_DECL(SkillList);
+	HNDL_DECL(MapMoveOk);
 
 	int m_charslot;
 

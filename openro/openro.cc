@@ -114,6 +114,7 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(MapLoginSuccess, false);
 			HANDLEPKT(OwnSpeech, false);
 			HANDLEPKT(SkillList, false);
+			HANDLEPKT(MapMoveOk, true);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
@@ -148,13 +149,7 @@ void OpenRO::BeforeRun() {
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
 
-#if 1
 	m_gui.setDesktop(dskLogin);
-#else
-	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
-	me.setPos(53, 111);
-	m_map = RswObject::open(*this, "new_1-1");
-#endif
 
 	FullAct ycursor;
 	char xcursor[256];
@@ -163,25 +158,32 @@ void OpenRO::BeforeRun() {
 	setCursor(ycursor);
 }
 
-//Add new packets here
+/* ========================================================================== *
+ * Add new packets here                                                       *
+ * ========================================================================== */
 
-void OpenRO::hndlAttackRange (ronet::pktAttackRange* pkt) {
-	printf("Received attack range: %d \n",pkt->getRange());
+HNKD_IMPL(MapMoveOk) {
+	int x, y;
 
+	pkt->getDest(&x, &y);
+	me.setDest(x, y);
 }
 
-void OpenRO::hndlGuildMessage (ronet::pktGuildMessage* pkt) {
+HNKD_IMPL(AttackRange) {
+	printf("Received attack range: %d \n",pkt->getRange());
+}
+
+HNKD_IMPL(GuildMessage) {
 	printf("Guild Message: %s \n",pkt->getText());
 	m_network.MapLoaded();
 }
 
-void OpenRO::hndlDisplayStat(ronet::pktDisplayStat* pkt) {
+HNKD_IMPL(DisplayStat) {
 	unsigned int type = pkt->getType();
 	unsigned int base = pkt->getBase();
 	unsigned int bonus = pkt->getBonus();
 
 	printf("%s: %d + %d\n",RO::dnames[type],base,bonus);
-
 }
 
 void OpenRO::hndlUpdateStatus(ronet::pktUpdateStatus* pkt) {
@@ -459,6 +461,6 @@ unsigned char OpenRO::GetAccountSex(){
 
 void OpenRO::clickMap(int x, int y) {
 	m_network.MoveCharacter(x, y);
-	me.setDest(x, y);
+	//me.setDest(x, y);
 }
 

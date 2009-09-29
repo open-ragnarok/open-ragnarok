@@ -169,5 +169,4 @@ bool RONet::MapLoaded() {
 	return(true);
 }
 
-
 }

@@ -27,5 +27,6 @@
 #include "pkt_mapmove.h"
 #include "pkt_guildinforequest.h"
 #include "pkt_maploaded.h"
+#include "pkt_mapmoveok.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

@@ -51,6 +51,7 @@ namespace ronet {
 		pktDisplayStatID = 0x0141, // R 0141 <type>.l <base>.l <bonus>.l
 		pktGuildMessageID = 0x017f, // R 017f <len>.w <message>.?B
 		pktAttackRangeID = 0x013a, // R 013a <val>.w
+		pktMapMoveOkID = 0x0087, // (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
 
 		// == "WTF!?"s == //
 		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

@@ -55,6 +55,7 @@ namespace ronet {
 		bool Handle_MapLoginSuccess(ucBuffer&);
 		bool Handle_OwnSpeech(ucBuffer&);
 		bool Handle_SkillList(ucBuffer&);
+		bool Handle_MapMoveOk(ucBuffer&);
 
 		void push(Packet*);
 
