@@ -120,7 +120,46 @@ void RswObject::getWorldPosition(float mapx, float mapy, float *rx, float *ry, f
 		else {
 			*rx = positions[0][0] * (1 - dx) + positions[1][0] * dx;
 			*rz = positions[0][2] * (1 - dy) + positions[3][2] * dy;
-			*ry = positions[0][1]; // TODO: Figure out how to calculate this one
+			/*                     2   3
+			 *                     +---+
+			 * upper triangle -->> |  /|
+			 *                     | / |
+			 *                     |/  | <<-- lower triangle
+			 *                     +---+
+			 *                     1   0
+			 */
+
+			int idx[4] = { 1, 0, 3, 2 };
+			if (dx < (1 - dy)) {
+				// Lower triangle
+				// The height on (0, y)
+				float hy = positions[idx[0]][1] + dy * (positions[idx[1]][1] - positions[idx[0]][1]);
+				// The height on the diagonal in the coordinate y (1-y, y)
+				float hp = positions[idx[3]][1] + dy * (positions[idx[1]][1] - positions[idx[3]][1]);
+				// Proportion constant
+				float maxx = 1 - dy;
+				// The height
+				float h = hy + (dx / maxx) * (hp - hy);
+
+				*ry = h;
+			}
+			else {
+				// Upper triangle
+				// The height on (0, y)
+				float hy = positions[idx[3]][1] + dy * (positions[idx[2]][1] - positions[idx[3]][1]);
+				// The height on the diagonal in the coordinate y (1-y, y)
+				float hp = positions[idx[3]][1] + dy * (positions[idx[1]][1] - positions[idx[3]][1]);
+				// Proportion constant
+				float minx = 1 - dy;
+
+				float k = dx - minx;
+				float j = k / dy;
+
+				// The height
+				float h = hy + j * (hp - hy);
+
+				*ry = h;
+			}
 		}
 	}
 }

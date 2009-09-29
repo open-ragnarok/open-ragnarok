@@ -35,7 +35,7 @@ public:
 		_itr itr;
 		itr = objects.begin();
 		while(itr != objects.end()) {
-			std::cout << "Deleting object " << itr->first << std::endl;
+			//std::cout << "Deleting object " << itr->first << std::endl;
 
 			T* obj = itr->second;
 			objects.erase(itr);

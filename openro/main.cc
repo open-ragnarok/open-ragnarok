@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "openro.h"
 
+#include <stdio.h>
+
 #ifdef _MSC_VER
 #	include <SDL_main.h>
 #else
@@ -10,12 +12,20 @@
 
 #include "ronet/connection.h"
 
+#define OUTFN "output.txt"
+
 int main(int argc, char* argv[]) {
 #if defined(WIN32) || defined(_MSC_VER)
 	ronet::InitWinsock winsock;
 #endif
 
+	printf("Redirecting output to %s...\n", OUTFN);
+	freopen(OUTFN, "w", stdout);
+
 	OpenRO engine;
 	engine.Run();
+
+	fclose(stdout);
+
 	return(0);
 }

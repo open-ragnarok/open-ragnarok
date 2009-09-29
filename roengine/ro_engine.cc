@@ -181,15 +181,15 @@ void ROEngine::DrawMap() {
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 
-	printf("World: %.2f, %.2f, %.2f", wx, wy, wz);
-	printf("\tMap: %d, %d", mapx, mapy);
+	//printf("World: %.2f, %.2f, %.2f", wx, wy, wz);
+	//printf("\tMap: %d, %d", mapx, mapy);
 
 	glPushMatrix();
 	m_map->getWorldPosition(mapx, mapy, &wx, &wy, &wz);
 	glPopMatrix();
 
-	printf("\tW: %.2f, %.2f, %.2f", wx, wy, wz);
-	printf("\r");
+	//printf("\tW: %.2f, %.2f, %.2f", wx, wy, wz);
+	//printf("\r");
 	camera_look = cam.getEye() - cam.getDest();
 	//m_gl_objects.draw(m_frustum, tickDelay, camera_look);
 
@@ -273,7 +273,8 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 				mapx = m_map->getMouseMapX();
 				mapy = m_map->getMouseMapY();
 
-				me.setDest(mapx, mapy);
+				clickMap(mapx, mapy);
+				//me.setDest(mapx, mapy);
 			}
 		}
 		else if (buttons == 5) { // SDL_BUTTON_WHEELDOWN
@@ -334,3 +335,9 @@ FullAct& ROEngine::getCursor(){return cursor;}
 void ROEngine::setCursor(FullAct& cur){cursor = cur;}
 int ROEngine::getMouseX(){return mousex;}
 int ROEngine::getMouseY(){return mousey;}
+
+// Placeholders
+void ROEngine::clickMap(int x, int y) {}
+void ROEngine::clickMob(int x, int y) {}
+void ROEngine::clickItem(int x, int y) {}
+void ROEngine::clickPortal(int x, int y) {}

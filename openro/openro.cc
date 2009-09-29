@@ -172,6 +172,7 @@ void OpenRO::hndlAttackRange (ronet::pktAttackRange* pkt) {
 
 void OpenRO::hndlGuildMessage (ronet::pktGuildMessage* pkt) {
 	printf("Guild Message: %s \n",pkt->getText());
+	m_network.MapLoaded();
 }
 
 void OpenRO::hndlDisplayStat(ronet::pktDisplayStat* pkt) {
@@ -320,6 +321,7 @@ void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
 	printf("Character Position: %s\n",pkt->getMapname());
 	printf("Character ID: %d\n",pkt->getCharID());
 
+
 	//Close the socket to the char server
 	m_network.getChar().Close();
 
@@ -357,9 +359,10 @@ void OpenRO::hndlMapLoginSuccess(ronet::pktMapLoginSuccess* pkt) {
 	short pos_dir = pkt->getPosDir();
 	unsigned int server_tick = pkt->getServerTick();
 
+	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
 	me.setPos(pos_x, pos_y);
 
-	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n\n\n",pos_x,pos_y,pos_dir,server_tick);
+	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n",pos_x,pos_y,pos_dir,server_tick);
 }
 
 void OpenRO::hndlOwnSpeech(ronet::pktOwnSpeech* pkt) {
@@ -449,7 +452,13 @@ unsigned char OpenRO::GetAccountSex(){
 	else if (m_serverlist->getSex() == female )
 		return 1;
 	else{
-		printf("Error getting account sex! Defaulting to male.\n");
+		fprintf(stderr, "Error getting account sex! Defaulting to male.\n");
 		return 0;
 	}
 }
+
+void OpenRO::clickMap(int x, int y) {
+	m_network.MoveCharacter(x, y);
+	me.setDest(x, y);
+}
+

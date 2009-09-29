@@ -91,6 +91,12 @@ public:
 
 	void ReadIni(const std::string& name = "data.ini");
 
+	/** Event raised when the user left-clicks a map and there is nothing (mob, items, portals, etc) on the clicked place */
+	virtual void clickMap(int x, int y);
+	virtual void clickMob(int x, int y);
+	virtual void clickItem(int x, int y);
+	virtual void clickPortal(int x, int y);
+
 	virtual void evtQuit();
 
 	virtual bool evtKeyPress(SDL_Event *sdlEvent, const int& mod = 0);

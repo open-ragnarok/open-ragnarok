@@ -87,6 +87,18 @@ public:
 
 	unsigned int GetAccountID();
 	unsigned char GetAccountSex();
+
+	/** Event received from ROEngine */
+	virtual void clickMap(int x, int y);
+
+	/** Event received from ROEngine */
+	//virtual void clickMob(int x, int y);
+
+	/** Event received from ROEngine */
+	//virtual void clickItem(int x, int y);
+
+	/** Event received from ROEngine */
+	//virtual void clickPortal(int x, int y);
 };
 
 #endif /* __OPENRO_H */
