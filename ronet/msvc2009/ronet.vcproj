@@ -522,10 +522,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
 				RelativePath="..\include\ronet\ronet.h"
 				>
 			</File>
