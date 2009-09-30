@@ -146,7 +146,7 @@ bool ronet::PacketFactory::Dispatcher::Call(unsigned short method, ucBuffer& buf
 	std::map<unsigned short, Handler>::iterator itr;
 	itr = m_calls.find(method);
 	if (itr == m_calls.end()) {
-		fprintf(stderr, "Undefined call to method %04x\n", method);
+		_log(RONET__ERROR, "Undefined call to method %04x", method);
 		buf.clear();
 		return(false);
 	}

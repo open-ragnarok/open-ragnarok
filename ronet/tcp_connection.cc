@@ -26,14 +26,6 @@
 
 #include "ronet/tcp_connection.h"
 
-#ifdef WIN32
-#	define sprintErr(x) sprintf(x, "TCPConnection::RecvData(): Error: %d", WSAGetLastError())
-#	define fprintErr(x) fprintf(x, "TCPConnection::RecvData(): Error: %d", WSAGetLastError())
-#else
-#	define sprintErr(x) sprintf(x, "TCPConnection::RecvData(): Error: %s", strerror(errno))
-#	define fprintErr(x) fprintf(x, "TCPConnection::RecvData(): Error: %s", strerror(errno))
-#endif
-
 #ifndef MSG_DONTWAIT // This is for windows.
 #	define MSG_DONTWAIT 0
 #endif
@@ -127,7 +119,7 @@ bool ronet::TcpConnection::Process() {
 
 bool ronet::TcpConnection::SendData() {
 	if (m_socket == -1) {
-		std::cerr << "Trying to write data on a not connected socket!" << std::endl;
+		_log(RONET__ERROR, "Trying to write data on a not connected socket!");
 		return(false);
 	}
 
@@ -145,14 +137,12 @@ bool ronet::TcpConnection::SendData() {
 #endif	
 
 	if (datawritten < 0) {
-		std::cerr << "Error writing data to socket" << std::endl;
+		_log(RONET__ERROR, "Writing data to socket");
 		return (0);
 	}
 	if (datawritten != 0) {
-#if defined(DEBUG) || defined(_DEBUG)
-		std::cout << "[DEBUG] sent "<< datawritten <<" bytes of data" << std::endl;
-		hexdump((const unsigned char*)bufOutput.getBuffer(), datawritten);
-#endif
+		_log(RONET__TRACE, "send %d bytes of data", datawritten);
+		_hexlog(RONET__TRACE, (const unsigned char*)bufOutput.getBuffer(), datawritten);
 
 		bufOutput.ignore(datawritten);
 	}
@@ -162,7 +152,7 @@ bool ronet::TcpConnection::SendData() {
 
 bool ronet::TcpConnection::RecvData() {
 	if (m_socket == -1) {
-		std::cerr << "Trying to read data on a not connected socket!" << std::endl;
+		_log(RONET__ERROR, "Trying to read data on a not connected socket!");
 		return(false);
 	}
 	int bufsize;
@@ -170,10 +160,9 @@ bool ronet::TcpConnection::RecvData() {
 
 	bufsize = recv(m_socket, (char*)recbuf, RECBUFSIZE, MSG_DONTWAIT);
 	if (bufsize > 0) {
-#if defined(DEBUG) || defined(_DEBUG)
-		std::cout << "[DEBUG] received "<< bufsize <<" bytes of data" << std::endl;
-		hexdump(recbuf, bufsize);
-#endif
+		_log(RONET__TRACE, "received %d bytes of data", bufsize);
+		_hexlog(RONET__TRACE, recbuf, bufsize);
+
 		bufInput.write(recbuf, bufsize);
 	}
 	else if (bufsize == 0) {
@@ -186,7 +175,7 @@ bool ronet::TcpConnection::RecvData() {
 	(errno != EAGAIN)
 #endif
 	{
-		std::cerr << "WSAGetLastError() != WSAEWOULDBLOCK" << std::endl;
+		_log(RONET__ERROR, "WSAGetLastError() != WSAEWOULDBLOCK");
 		return false;
 	}
 	
@@ -209,114 +198,3 @@ bool ronet::TcpConnection::Close() {
 	m_socket = -1;
 	return(true);
 }
-
-/*
-
-bool ronet::TcpConnection::Process() {
-	char errbuf[1024];
-	switch(m_state.get()) {
-		case Ready:
-			// we shouldn't be looping anything
-			m_loop = false;
-			break;
-		case Connecting:
-			// TODO: TCPConnection::Process() -- Connecting
-			break;		
-		case Connected:
-			if (!RecvData(errbuf)) {
-				_log(NET__ERROR, "RecvData(): %s", errbuf);
-				recvbuf.clear();
-				sendbuf.clear();
-				Disconnect();
-			}
-			break;
-		case Disconnecting:
-		case Closing:
-			if (sendbuf.size() == 0) {
-				m_state = Disconnected;
-#ifdef WIN32
-				closesocket(m_socket);
-#else
-				close(m_socket);
-#endif
-			}
-			break;
-		case Disconnected:
-			m_loop = false;
-			break;
-		case Error:
-			// Socket error
-			// TODO: TCPConnection::Process() -- Error
-			fprintf(stderr, "[TODO] TCPConnection::Process() -- Error");
-			m_loop = false;
-			return(false);
-			break;
-		default:
-			// This should never happen
-			break;
-	}
-	
-	if (m_state != Disconnected) {
-		unsigned int datasize;
-		if ((datasize = SendBufData())) {
-			printf("[DEBUG] Sent %u bytes of data\n", datasize);
-		}
-	}
-	if (recvbufm.trylock()) {
-		if (recvbuf.size() > 0)
-			ProcessReceivedData();
-		recvbufm.unlock();
-	}
-
-	return(true);
-}
-
-bool ronet::TcpConnection::RecvData(char* errbuf) {
-#define RECBUFSIZE (1024*5)
-	if (errbuf)
-		errbuf[0] = 0;
-
-	if (!IsConnected()) {
-		if (errbuf)
-			sprintf(errbuf, "Trying to read data on a not connected socket!");
-		printf("[DEBUG] Trying to read data on a not connected socket!\n");
-		return(false);
-	}
-	int bufsize;
-	unsigned char recbuf[RECBUFSIZE];
-
-#ifndef MSG_DONTWAIT // This is for windows.
-#	define MSG_DONTWAIT 0
-#endif
-
-	bufsize = recv(m_socket, (char*)recbuf, RECBUFSIZE, MSG_DONTWAIT);
-	if (bufsize > 0) {
-		printf("[DEBUG] received %d bytes of data\n", bufsize);
-		_log(NET__TRACE, "<<");
-		_hexlog(NET__TRACE, recbuf, bufsize);
-		recvbufm.lock();
-		recvbuf.write(recbuf, bufsize);
-		recvbufm.unlock();
-	}
-	else if (bufsize == 0) {
-		if (errbuf)
-			sprintf(errbuf, "TCPConnection::RecvData(): Connection closed");
-
-		return(false);  
-	}
-#ifdef WIN32
-	else if (WSAGetLastError() != WSAEWOULDBLOCK) {
-#else
-	else if (errno != EAGAIN) {
-#endif
-		printf("WSAGetLastError() != WSAEWOULDBLOCK\n");
-		if (errbuf)
-			sprintErr(errbuf);
-
-		return false;
-	}
-	
-	return (true);
-}
-
-*/

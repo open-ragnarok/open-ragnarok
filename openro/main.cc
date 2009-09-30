@@ -16,7 +16,16 @@
 //#define REDIRECT_OUTPUT
 
 int main(int argc, char* argv[]) {
+#ifdef USE_LOGSYS
+	LogSys::GetSingleton()->addHandler(OPENRO__DEBUG, "Debug");
+	LogSys::GetSingleton()->addHandler(OPENRO__TRACE, "OpenRO");
+	LogSys::GetSingleton()->addHandler(OPENRO__ERROR, "Error");
+#endif
+
+	ronet::ConfigureLog();
+
 #if defined(WIN32) || defined(_MSC_VER)
+	_log(OPENRO__DEBUG, "Initializing Winsock...");
 	ronet::InitWinsock winsock;
 #endif
 

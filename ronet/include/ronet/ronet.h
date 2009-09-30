@@ -36,6 +36,9 @@
 
 namespace ronet {
 
+	/** Configures log output when using LogSys */
+	void ConfigureLog();
+
 	/**
 	 * Dumps an hex buffer to the standard output stream
 	 * @param buf the memory array to dump

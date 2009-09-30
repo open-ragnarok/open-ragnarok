@@ -98,7 +98,7 @@ TcpConnection& RONet::getMap() {
 
 bool RONet::GameLogin(const std::string& name, const std::string& pass, unsigned int version) {
 	if (!m_login.isConnected()) {
-		std::cerr << "[RONet::GameLogin() Error] Not connected to login server" << std::endl;
+		_log(RONET__ERROR, "GameLogin() Error: Not connected to login server");
 		return(false);
 	}
 
@@ -109,7 +109,7 @@ bool RONet::GameLogin(const std::string& name, const std::string& pass, unsigned
 
 bool RONet::CharLogin(unsigned int acctid, unsigned int sid1, unsigned int sid2, unsigned char sex) {
 	if (!m_char.isConnected()) {
-		std::cerr << "[RONet::CharLogin() Error] Not connected to char server" << std::endl;
+		_log(RONET__ERROR, "CharLogin() Error: Not connected to char server");
 		return(false);
 	}
 
@@ -120,7 +120,7 @@ bool RONet::CharLogin(unsigned int acctid, unsigned int sid1, unsigned int sid2,
 
 bool RONet::CreateChar(const std::string& charname, const CharAttributes& attr, unsigned short slot, unsigned short color, unsigned short style) {
 	if (!m_char.isConnected()) {
-		std::cerr << "[RONet::CharLogin() Error] Not connected to char server" << std::endl;
+		_log(RONET__ERROR, "[RONet::CharLogin() Error] Not connected to char server");
 		return(false);
 	}
 
@@ -131,7 +131,7 @@ bool RONet::CreateChar(const std::string& charname, const CharAttributes& attr, 
 
 void RONet::KeepAliveChar(unsigned int acc_id) {
 	if (!m_char.isConnected()) {
-		std::cerr << "[RONet::KeepAliveChar() Error] Not connected to char server" << std::endl;
+		_log(RONET__ERROR, "[RONet::KeepAliveChar() Error] Not connected to char server");
 		return;
 	}
 
@@ -142,7 +142,7 @@ void RONet::KeepAliveChar(unsigned int acc_id) {
 
 void RONet::CharSelect(unsigned int slot) {
 	if (!m_char.isConnected()) {
-		std::cerr << "[RONet::CharSelect() Error] Not connected to char server" << std::endl;
+		_log(RONET__ERROR, "[RONet::CharSelect() Error] Not connected to char server");
 		return;
 	}
 
@@ -153,7 +153,7 @@ void RONet::CharSelect(unsigned int slot) {
 
 bool RONet::MapLogin(int acctid, int sid1, int sid2, unsigned int tick, int sex) {
 	if (!m_map.isConnected()) {
-		std::cerr << "[RONet::MapLogin() Error] Not connected to map server" << std::endl;
+		_log(RONET__ERROR, "[RONet::MapLogin() Error] Not connected to map server");
 		return(false);
 	}
 

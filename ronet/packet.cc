@@ -61,13 +61,11 @@ ronet::Packet& ronet::Packet::operator >> (ronet::ucBuffer& b) {
 
 void ronet::Packet::Dump() {
 	if (!PrepareData()) {
-		std::cerr << "Packet::Dump(): Error preparing data" << std::endl;
+		_log(RONET__ERROR, "Packet::Dump(): Error preparing data");
 		return;
 	}
 
-	unsigned int i;
-	for (i = 0; i < dataSize; i++)
-		printf("%02x", buffer[i]);
+	_hexlog(RONET__TRACE, buffer, dataSize);
 }
 
 bool ronet::Packet::Decode(ucBuffer&) {
@@ -85,7 +83,7 @@ bool ronet::Packet::CheckID(const ucBuffer& buf) const {
 	unsigned short buf_id;
 	buf.peek((unsigned char*)&buf_id, 2);
 	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
+		_log(RONET__ERROR, "Wrong packet id. Received: 0x%04x. Expected: 0x%04x.", id, buf_id);
 		return(false);
 	}
 

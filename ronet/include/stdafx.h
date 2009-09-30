@@ -31,6 +31,8 @@
 
 #define RONET_INTERNAL
 
+#define USE_LOGSYS
+
 #include "ronet/packet_vector.h"
 
 #include "ronet/ronet_import.h"
@@ -54,5 +56,13 @@
 #endif
 
 #pragma comment(lib, "wsock32.lib")
+
+#include "log.h"
+
+#ifdef USE_LOGSYS
+#	include "logsys/logsys.h"
+#	pragma comment(lib, "logsys.lib")
+#endif
+
 
 #endif /* __STDAFX_H */

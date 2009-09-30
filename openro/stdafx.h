@@ -4,6 +4,8 @@
 #pragma warning(disable: 4251)
 #endif
 
+#define USE_LOGSYS
+
 #include "ro/ro.h"
 #include "rogl/rogl.h"
 #include "ronet/ronet.h"
@@ -20,3 +22,9 @@
 #	include <SDL/SDL.h>
 #endif
 
+#ifdef USE_LOGSYS
+#	include "logsys/logsys.h"
+#	pragma comment(lib, "logsys.lib")
+#endif
+
+#include "log.h"

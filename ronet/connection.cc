@@ -30,6 +30,7 @@
 namespace ronet {
 
 InitWinsock::InitWinsock() {
+	_log(RONET__DEBUG, "Winsock initialized");
 	WORD version = MAKEWORD (1,1);
 	WSADATA wsadata;
 	WSAStartup (version, &wsadata);
