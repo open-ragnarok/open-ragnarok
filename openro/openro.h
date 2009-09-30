@@ -35,6 +35,7 @@ protected:
 	DesktopService* dskService;
 	DesktopCreate* dskCreate;
 	DesktopChar* dskChar;
+	DesktopIngame* dskIngame;
 
 	// Useful Packets
 	ronet::pktServerList* m_serverlist;

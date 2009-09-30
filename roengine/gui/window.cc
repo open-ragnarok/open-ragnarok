@@ -63,7 +63,6 @@ bool GUI::Window::HandleMouseRelease(int x, int y, int button) {
 }
 
 bool GUI::Window::HandleMouseDown(int x, int y, int button) {
-
 	if (!m_enabled)
 		return(false);
 
@@ -71,12 +70,11 @@ bool GUI::Window::HandleMouseDown(int x, int y, int button) {
 	std::vector<Element*>::iterator itr = m_children.begin();
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 
-	if( this == gui.getDesktop() )
-	{
+	if (this == gui.getDesktop()) {
 		if(itr != m_children.end()) {
 			Element* e = *itr;
 
-			if ( button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
+			if (button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
 				std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
 				IsMouseDowning = true;
 				e->setStransparent(true);
@@ -92,6 +90,10 @@ bool GUI::Window::HandleMouseDown(int x, int y, int button) {
 		}
 		itr++;
 	}
+	// If this window is a desktop window, clicks on the desktop should not be considered "handled".
+	if (this == gui.getDesktop())
+		return(false);
+
 	return(true);
 }
 

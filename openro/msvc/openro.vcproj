@@ -257,6 +257,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\desktop_ingame.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\desktop_login.cc"
 				>
 			</File>
@@ -280,6 +284,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\desktop_ingame.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\desktop_login.h"
 					>
 				</File>
@@ -293,6 +301,14 @@
 				</File>
 				<File
 					RelativePath="..\gui\ro_desktop.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Layouts"
+				>
+				<File
+					RelativePath="..\..\data\ui\ingame.xml"
 					>
 				</File>
 			</Filter>

@@ -4,6 +4,17 @@
 #include "roengine/ro_engine.h"
 #include "sdle/sdl_engine.h"
 
+#include<sys/stat.h>
+
+int file_exists (char* fileName) {
+	struct stat buf;
+	int i = stat ( fileName, &buf );
+	if (i == 0) {
+		return 1;
+	}
+	return 0;
+}
+
 void ROEngine::HandleKeyboard() {}
 
 void ROEngine::ReadIni(const std::string& name) {
@@ -253,6 +264,18 @@ void ROEngine::Run() {
 }
 
 bool ROEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) {
+	if (sdlEvent->key.keysym.sym == SDLK_PRINT) {
+		unsigned int i = 1;
+		char fn[128];
+		sprintf(fn, "screenshot-%d.bmp", i);
+		while (file_exists(fn)) {
+			i++;
+			sprintf(fn, "screenshot-%d.bmp", i);
+		}
+		this->Screenshot(fn);
+		printf("Screenshot saved to file '%s'.", fn);
+		return(true);
+	}
 	return(m_gui.InjectKeyPress(sdlEvent, mod));
 }
 

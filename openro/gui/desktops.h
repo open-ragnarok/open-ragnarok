@@ -7,5 +7,6 @@
 #include "desktop_service.h"
 #include "desktop_char.h"
 #include "desktop_create.h"
+#include "desktop_ingame.h"
 
 #endif /* __DESKTOPS_H */

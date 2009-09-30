@@ -51,6 +51,8 @@ void SDLEngine::init() {
 
     near_clip = 20.0f;
     far_clip = 1000.0f;
+
+	m_screenshot = false;
 }
 
 bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const bool& fullscreen, const unsigned int& bpp) {
@@ -233,6 +235,8 @@ void SDLEngine::Sync(unsigned long delay) {
 	m_console.Draw();
 #endif
     SDL_GL_SwapBuffers();
+	if (m_screenshot)
+		SaveScreen();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 	if (delay > 0)
@@ -401,14 +405,22 @@ unsigned int SDLEngine::getHeight() const {
 
 
 int SDLEngine::Screenshot(char *filename) {
+	strcpy(screenshot_fn, filename);
+	m_screenshot = true;
+	return(0);
+}
+
+void SDLEngine::SaveScreen() {
+	m_screenshot = false;
+
     SDL_Surface *screen = SDL_GetVideoSurface();
     SDL_Surface *temp;
     unsigned char *pixels;
     int i;
 
     if (!(screen->flags & SDL_OPENGL)) {
-        SDL_SaveBMP(screen, filename);
-        return 0;
+        SDL_SaveBMP(screen, screenshot_fn);
+        return;
     }
 
     temp = SDL_CreateRGBSurface(SDL_SWSURFACE, screen->w, screen->h, 24,
@@ -419,12 +431,12 @@ int SDLEngine::Screenshot(char *filename) {
 #endif
             );
     if (temp == NULL)
-        return -1;
+        return;
 
     pixels = (unsigned char*)malloc(3 * screen->w * screen->h);
     if (pixels == NULL) {
         SDL_FreeSurface(temp);
-        return -1;
+        return;
     }
 
     glReadPixels(0, 0, screen->w, screen->h, GL_RGB, GL_UNSIGNED_BYTE, pixels);
@@ -433,9 +445,9 @@ int SDLEngine::Screenshot(char *filename) {
         memcpy(((char *) temp->pixels) + temp->pitch * i, pixels + 3 * screen->w * (screen->h - i - 1), screen->w * 3);
     free(pixels);
 
-    SDL_SaveBMP(temp, filename);
+    SDL_SaveBMP(temp, screenshot_fn);
     SDL_FreeSurface(temp);
-    return 0;
+    return;
 }
 
 /* THE PRIMITIVES */

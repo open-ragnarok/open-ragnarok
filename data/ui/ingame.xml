@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<desktop name="ingame_ui">
+  <!-- $Id$ -->
+  <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0">
+    <button name="login_window/btnStatus" x="201" y="17" texture="basic_interface\btn_status_off.bmp" />
+    <button name="login_window/btnOption" x="231" y="17" texture="basic_interface\btn_option_off.bmp" />
+    <button name="login_window/btnItems" x="201" y="37" texture="basic_interface\btn_items_off.bmp" />
+    <button name="login_window/btnEquip" x="231" y="37" texture="basic_interface\btn_equip_off.bmp" />
+    <button name="login_window/btnSkill" x="201" y="57" texture="basic_interface\btn_skill_off.bmp" />
+    <button name="login_window/btnMap" x="231" y="57" texture="basic_interface\btn_map_off.bmp" />
+    <button name="login_window/btnChat" x="201" y="77" texture="basic_interface\btn_comm_off.bmp" />
+    <button name="login_window/btnFriend" x="231" y="77" texture="basic_interface\btn_friend_off.bmp" />
+  </window>
+</desktop>

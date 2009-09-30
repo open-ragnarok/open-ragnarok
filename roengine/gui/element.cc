@@ -6,28 +6,30 @@
 
 #include <GL/gl.h>
 
-GUI::Element::Cache GUI::Element::m_elements;
+namespace GUI {
 
-bool GUI::isInside(const GUI::Element* e, int x, int y) {
+Element::Cache Element::m_elements;
+
+bool isInside(const GUI::Element* e, int x, int y) {
 	if ((x >= e->getX()) && (y >= e->getY()) && (x <= (e->getX() + e->getW())) && (y <= (e->getY() + e->getH())))
 		return(true);
 	return(false);
 }
 
-bool GUI::isInsideMoveArea(const GUI::Element* e, int x, int y) {
+bool isInsideMoveArea(const GUI::Element* e, int x, int y) {
 	if ((x >= e->getX()) && (y >= e->getY()) && (x <= (e->getX() + e->getMW())) && (y <= (e->getY() + e->getMH())))
 		return(true);
 	return(false);
 }
 
-bool GUI::Element::Cache::add(GUI::Element* e) {
+bool Element::Cache::add(GUI::Element* e) {
 	if (e->getName() == "")
 		e->setName(GUI::Element::createName());
 
 	return(BaseCache<Element>::add(e->getName(), e));
 }
 
-std::string GUI::Element::createName() {
+std::string Element::createName() {
 	std::string base_name = "NoName";
 	int i = 0;
 	char buf[256];
@@ -41,12 +43,12 @@ std::string GUI::Element::createName() {
 	return(buf);
 }
 
-GUI::Element::Element() {
+Element::Element() {
 	m_parent = NULL;
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
-	opacity = 1;
+	m_opacity = 1.0f;
 	m_visible = true;
 	m_fullscreen = false;
 	m_MouseIn = false;
@@ -59,12 +61,12 @@ GUI::Element::Element() {
 	m_elements.add(this);
 }
 
-GUI::Element::Element(Element* parent) {
+Element::Element(Element* parent) {
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
-	opacity = 1;
+	m_opacity = 1.0f;
 	m_visible = true;
 	m_fullscreen = false;
 	m_enabled = true;
@@ -79,12 +81,12 @@ GUI::Element::Element(Element* parent) {
 	m_elements.add(this);
 }
 
-GUI::Element::Element(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
+Element::Element(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
-	opacity = 1;
+	m_opacity = 1.0f;
 	m_visible = true;
 	m_fullscreen = false;
 	m_MouseIn = false;
@@ -100,12 +102,12 @@ GUI::Element::Element(Element* parent, const TiXmlElement* node, TextureManager&
 		ParseFromXml(node, tm, fm);
 }
 
-GUI::Element::Element(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) {
+Element::Element(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) {
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
 	m_stransparent = false;
-	opacity = 1;
+	m_opacity = 1.0f;
 	m_visible = true;
 	m_fullscreen = false;
 	m_enabled = true;
@@ -126,11 +128,11 @@ GUI::Element::Element(Element* parent, const std::string& background, TextureMan
 	}
 }
 
-GUI::Element::Cache& GUI::Element::getCache() {
+Element::Cache& Element::getCache() {
 	return(m_elements);
 }
 
-GUI::Element::~Element() {
+Element::~Element() {
 	std::vector<Element*>::iterator itr = m_children.begin();
 	m_elements.remove(this->name, false);
 	while(itr != m_children.end()) {
@@ -149,7 +151,7 @@ GUI::Element::~Element() {
 	// m_elements.remove(this->name, false);
 }
 
-bool GUI::Element::setName(const std::string& n) {
+bool Element::setName(const std::string& n) {
 	if (name == n)
 		return(true);
 
@@ -166,14 +168,14 @@ bool GUI::Element::setName(const std::string& n) {
 	return(true);
 }
 
-const std::string& GUI::Element::getName() {
+const std::string& Element::getName() {
 	return(name);
 }
 
-void GUI::Element::beforeDraw(unsigned int delay) {}
-void GUI::Element::afterDraw(unsigned int delay) {}
+void Element::beforeDraw(unsigned int delay) {}
+void Element::afterDraw(unsigned int delay) {}
 
-void GUI::Element::Draw(unsigned int delay) {
+void Element::Draw(unsigned int delay) {
 	if (!m_visible)
 		return;
 
@@ -194,9 +196,7 @@ void GUI::Element::Draw(unsigned int delay) {
 	glPopMatrix();
 }
 
-void GUI::Element::Window(float x, float y, const sdle::Texture& tp) {
-	tp.Activate();
-
+void Element::Window(float x, float y, const sdle::Texture& tp) {
 	float w, h;
 	float u, v;
 
@@ -215,6 +215,7 @@ void GUI::Element::Window(float x, float y, const sdle::Texture& tp) {
 	}
 
 	if (tp.Valid()) {
+		tp.Activate();
 		u = tp.getMaxU();
 		v = tp.getMaxV();
 	}
@@ -223,25 +224,28 @@ void GUI::Element::Window(float x, float y, const sdle::Texture& tp) {
 		v = 0;
 	}
 
-	glEnable(GL_BLEND);
+	bool blend = (glIsEnabled(GL_BLEND) == 1);
+
+	if (!blend)
+		glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	if(m_stransparent){
-		if(opacity > 0.5){
-			opacity-=0.006;
-			glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
+		if(m_opacity > 0.5){
+			m_opacity -= 0.006f;
+			glColor4f(1.0f, 1.0f, 1.0f, m_opacity);
 		}
 		else {
-			glColor4f(1.0f,1.0f,1.0f,0.5f);
+			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 		}
 	}
 	else {
-		if(opacity < 1) {
-			opacity+=0.006;
-			glColor4f(1.0f,1.0f,1.0f,GLfloat(opacity));
+		if(m_opacity < 1) {
+			m_opacity += 0.006f;
+			glColor4f(1.0f, 1.0f, 1.0f, m_opacity);
 		}
 		else {
-			glColor4f(1.0f,1.0f,1.0f,1.0f);
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
 	glBegin(GL_QUADS);
@@ -251,10 +255,11 @@ void GUI::Element::Window(float x, float y, const sdle::Texture& tp) {
 	glTexCoord2f(u, v);			glVertex3f(x+w, y,   0);
 	glEnd();
 
-	glDisable(GL_BLEND);
+	if (!blend)
+		glDisable(GL_BLEND);
 }
 
-void GUI::Element::add(Element* e) {
+void Element::add(Element* e) {
 	if (e == NULL)
 		return;
 	m_children.push_back(e);
@@ -274,7 +279,7 @@ void GUI::Element::add(Element* e) {
 	}
 }
 
-void GUI::Element::del(const Element* e) {
+void Element::del(const Element* e) {
 	if (e == NULL)
 		return;
 	std::vector<Element*>::iterator itr = m_children.begin();
@@ -287,17 +292,17 @@ void GUI::Element::del(const Element* e) {
 	}
 }
 
-void GUI::Element::setPos(const int& x, const int& y) {
+void Element::setPos(const int& x, const int& y) {
 	pos_x = x;
 	pos_y = y;
 }
 
-void GUI::Element::setSize(const int& w, const int& h) {
+void Element::setSize(const int& w, const int& h) {
 	this->w = w;
 	this->h = h;
 }
 
-bool GUI::Element::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
+bool Element::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
 	std::string attrname = attr->Name();
 
 	if (attrname == "x") {
@@ -400,7 +405,7 @@ bool GUI::Element::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, 
 	return(false);
 }
 
-void GUI::Element::ParseFromXml(const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
+void Element::ParseFromXml(const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
 	const TiXmlAttribute* attr = node->FirstAttribute();
 	std::string attrname;
 
@@ -420,15 +425,15 @@ void GUI::Element::ParseFromXml(const TiXmlElement* node, TextureManager& tm, Fi
 		CenterY();
 }
 
-int GUI::Element::getX() const {
+int Element::getX() const {
 	return(pos_x);
 }
 
-int GUI::Element::getY() const {
+int Element::getY() const {
 	return(pos_y);
 }
 
-int GUI::Element::getW() const {
+int Element::getW() const {
 	if (!m_fullscreen) {
 		if (w != 0)
 			return(w);
@@ -440,7 +445,7 @@ int GUI::Element::getW() const {
 	return(Gui::getSingleton().getWidth());
 }
 
-int GUI::Element::getH() const {
+int Element::getH() const {
 	if (!m_fullscreen) {
 		if (h != 0)
 			return(h);
@@ -452,15 +457,15 @@ int GUI::Element::getH() const {
 	return(Gui::getSingleton().getHeight());
 }
 
-int GUI::Element::getMW() const {
+int Element::getMW() const {
 	return(mw);
 }
 
-int GUI::Element::getMH() const {
+int Element::getMH() const {
 	return(mh);
 }
 
-void GUI::Element::CenterX() {
+void Element::CenterX() {
 	int pw;
 	if (m_parent == NULL)
 		pw = Gui::getSingleton().getWidth();
@@ -470,7 +475,7 @@ void GUI::Element::CenterX() {
 	pos_x = (pw - getW()) / 2;
 }
 
-void GUI::Element::CenterY() {
+void Element::CenterY() {
 	int ph;
 	if (m_parent == NULL)
 		ph = Gui::getSingleton().getHeight();
@@ -480,7 +485,7 @@ void GUI::Element::CenterY() {
 	pos_y = (ph - getH()) / 2;
 }
 
-GUI::Element* GUI::Element::loadXml(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
+Element* Element::loadXml(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
 	std::string nodetype = node->Value();
 	GUI::Element* ret = NULL;
 
@@ -520,60 +525,61 @@ GUI::Element* GUI::Element::loadXml(Element* parent, const TiXmlElement* node, T
 }
 
 
-void GUI::Element::setTexture(const sdle::Texture& tp) {
+void Element::setTexture(const sdle::Texture& tp) {
 	texture = tp;
 }
 
-void GUI::Element::setFullscreen(bool fs) {
+void Element::setFullscreen(bool fs) {
 	m_fullscreen = fs;
 }
 
-void GUI::Element::setVisible(bool b) {
+void Element::setVisible(bool b) {
 	m_visible = b;
 }
 
-void GUI::Element::setTransparent(bool b) {
+void Element::setTransparent(bool b) {
 	m_transparent = b;
 }
 
-void GUI::Element::setStransparent(bool b) {
-
-	if(m_active_child != NULL)
-	{
-	m_stransparent = b;
-	std::vector<Element*>::iterator itr = m_children.begin();
-	while (itr != m_children.end()) {
-		Element* e = *itr;
-		e->setStransparent(b);
-		itr++;
+void Element::setStransparent(bool b) {
+	if(m_active_child != NULL)	{
+		m_stransparent = b;
+		std::vector<Element*>::iterator itr = m_children.begin();
+		while (itr != m_children.end()) {
+			Element* e = *itr;
+			e->setStransparent(b);
+			itr++;
+		}
 	}
-	}else{m_stransparent = b;}
+	else{
+		m_stransparent = b;
+	}
 }
 
-void GUI::Element::setEnabled(bool b) {
+void Element::setEnabled(bool b) {
 	m_enabled = b;
 }
 
 
-bool GUI::Element::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
+bool Element::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	if (m_parent == NULL)
 		return(false);
 	return(m_parent->HandleKeyDown(sdlEvent, mod));
 }
 
-bool GUI::Element::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
+bool Element::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
 	if (m_parent == NULL)
 		return(false);
 	return(m_parent->HandleKeyUp(sdlEvent, mod));
 }
 
-bool GUI::Element::HandleMouseMove(int x, int y) {
+bool Element::HandleMouseMove(int x, int y) {
 	if (m_parent == NULL)
 		return(false);
 	return(m_parent->HandleMouseMove(x + pos_x, y + pos_y));
 }
 
-bool GUI::Element::HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
+bool Element::HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
 	/*if (m_parent == NULL)
 		return(false);
 	return(m_parent->HandleMouseMove(x, y, dx ,dy));*/
@@ -592,7 +598,7 @@ bool GUI::Element::HandleMouseMove(const int& x, const int& y, const int& dx, co
 	return(true);
 }
 
-bool GUI::Element::HandleMouseDown(int x, int y, int button) {
+bool Element::HandleMouseDown(int x, int y, int button) {
 	if (!m_enabled)
 		return(false);
 	std::cout << name << "::MouseDown (" << x << ", " << y << ")" << std::endl;
@@ -611,7 +617,7 @@ bool GUI::Element::HandleMouseDown(int x, int y, int button) {
 	return(false);
 }
 
-bool GUI::Element::HandleMouseRelease(int x, int y, int button) {
+bool Element::HandleMouseRelease(int x, int y, int button) {
 	std::cout << name << "::MouseUp (" << x << ", " << y << ")" << std::endl;
 
 	std::vector<Element*>::iterator itr = m_children.begin();
@@ -625,66 +631,65 @@ bool GUI::Element::HandleMouseRelease(int x, int y, int button) {
 	return(false);
 }
 
-void GUI::Element::onGetFocus()
-{
+void Element::onGetFocus() {
 	std::cout << name << "::GetFocus" << std::endl;
 
 	Element* e = this;
 	return(e->onGetFocus());
 }
 
-void GUI::Element::onLoseFocus()
-{
+void Element::onLoseFocus() {
 	std::cout << name << "::LoseFocus" << std::endl;
 
 	Element* e = this;
 	return(e->onLoseFocus());
 }
 
-void GUI::Element::setActive() {
+void Element::setActive() {
 	if (m_parent != NULL) {
 		m_parent->m_active_child = this;
 		m_parent->setActive();
 	}
 }
 
-void GUI::Element::setActiveChild(Element* e) {
+void Element::setActiveChild(Element* e) {
 	m_active_child = e;
 }
 
-GUI::Element* GUI::Element::getActiveChild() {
+Element* Element::getActiveChild() {
 	return(m_active_child);
 }
 
-const GUI::Element* GUI::Element::getActiveChild() const {
+const Element* Element::getActiveChild() const {
 	return(m_active_child);
 }
 
-GUI::Element* GUI::Element::getElement(const std::string& name) {
+Element* Element::getElement(const std::string& name) {
 	return(m_elements.get(name));
 }
 
-bool GUI::Element::isFocusable() const {
+bool Element::isFocusable() const {
 	return(m_focusable);
 }
 
-bool GUI::Element::isVisible() const {
+bool Element::isVisible() const {
 	return(m_visible);
 }
 
-bool GUI::Element::isTransparent() const {
+bool Element::isTransparent() const {
 	return(m_transparent);
 }
 
-bool GUI::Element::isStransparent() const {
+bool Element::isStransparent() const {
 	return(m_stransparent);
 }
 
-bool GUI::Element::isEnabled() const {
+bool Element::isEnabled() const {
 	return(m_enabled);
 }
 
-void GUI::Element::SetMouseInFlag(bool flag)
-{
+void Element::SetMouseInFlag(bool flag) {
 	m_MouseIn = flag;
+}
+
 }

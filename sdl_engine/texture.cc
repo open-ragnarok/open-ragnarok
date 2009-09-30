@@ -143,7 +143,7 @@ bool Texture::Valid() const {
 
 bool Texture::Activate() const {
 	if (!Valid()) {
-		fprintf(stderr, "Error activating invalid texture\n");
+		fprintf(stderr, "[ERROR] Trying to activate an invalid texture\n");
 		return(false);
 	}
 

@@ -77,7 +77,14 @@ protected:
 		bool add(Element*);
 	};
 
+	/**
+	 * Cache contained all elements created.
+	 */
 	static GUI::Element::Cache m_elements;
+
+	/**
+	 * Generates an unique element name when no name is given.
+	 */
 	static std::string createName();
 
 	/** Pointer to the parent element (if any) */
@@ -110,7 +117,7 @@ protected:
 	void Window(float x, float y, const sdle::Texture& tp);
 public:
 	Element();
-	double opacity;
+	float m_opacity;
 	/**
 	 * Creates an empty element with a parent
 	 * @param parent the Parent element
@@ -191,8 +198,10 @@ public:
 	Element* getActiveChild();
 	const Element* getActiveChild() const;
 
+	/* Static stuff */
 	static Element* loadXml(Element* parent, const TiXmlElement* node, TextureManager&, FileManager&);
 
+	/** Reteieves an element based on its name */
 	static Element* getElement(const std::string&);
 	static GUI::Element::Cache& getCache();
 };

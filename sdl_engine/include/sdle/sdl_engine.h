@@ -94,6 +94,11 @@ protected:
 	/** Called after initialization. Useful when creating subclasses. */
 	virtual void AfterInit();
 
+
+	char screenshot_fn[256];
+	bool m_screenshot;
+	void SaveScreen();
+
 public:
 	SDLEngine();
 	SDLEngine(const char* caption);

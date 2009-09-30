@@ -148,6 +148,7 @@ void OpenRO::BeforeRun() {
 	dskService = new DesktopService(this);
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
+	dskIngame = new DesktopIngame(this);
 
 	m_gui.setDesktop(dskLogin);
 
@@ -156,223 +157,6 @@ void OpenRO::BeforeRun() {
 	sprintf(xcursor,"sprite\\cursors");
 	ycursor.Load(xcursor, getROObjects(), getFileManager(), getTextureManager());
 	setCursor(ycursor);
-}
-
-/* ========================================================================== *
- * Add new packets here                                                       *
- * ========================================================================== */
-
-HNKD_IMPL(MapMoveOk) {
-	int x, y;
-
-	pkt->getDest(&x, &y);
-	me.setDest(x, y);
-}
-
-HNKD_IMPL(AttackRange) {
-	printf("Received attack range: %d \n",pkt->getRange());
-}
-
-HNKD_IMPL(GuildMessage) {
-	printf("Guild Message: %s \n",pkt->getText());
-	m_network.MapLoaded();
-}
-
-HNKD_IMPL(DisplayStat) {
-	unsigned int type = pkt->getType();
-	unsigned int base = pkt->getBase();
-	unsigned int bonus = pkt->getBonus();
-
-	printf("%s: %d + %d\n",RO::dnames[type],base,bonus);
-}
-
-void OpenRO::hndlUpdateStatus(ronet::pktUpdateStatus* pkt) {
-	unsigned short type = pkt->getType();
-	unsigned int value = pkt->getValue();
-
-	printf("Update status \"%s\", with value %d!\n",RO::dnames[type],value);
-	
-}
-
-void OpenRO::hndlServerList(ronet::pktServerList* pkt) {
-	m_serverlist = pkt;
-	m_gui.setDesktop(dskService);
-	dskService->setEnabled(true);
-	char buf[128];
-
-	dskService->clear();
-	for (unsigned int i = 0; i < pkt->getServerCount(); i++) {
-		sprintf(buf, "%s (%d)", pkt->getInfo(i).name, pkt->getInfo(i).users);
-		dskService->add(buf);
-	}
-}
-
-void OpenRO::hndlCharList(ronet::pktCharList* pkt) {
-	int count = pkt->getCount();
-	printf("Received a list of %d chars\n", count);
-	m_gui.setDesktop(dskChar);
-	dskChar->setEnabled(true);
-	
-	for(int x=0;x<count;x++){
-		dskChar->addChar(pkt->getChar(x));
-	}
-}
-
-//[kR105]
-void OpenRO::hndlLoginError(ronet::pktLoginError* pkt) {
-	short errorId = pkt->getErrorId();
-	char errorDesc[256];
-
-	//Error description taken from OpenKore & eAthena
-	switch(errorId){
-		case 0:
-			sprintf(errorDesc,"Account name doesn't exist");
-			break;
-		case 1:
-			sprintf(errorDesc,"Password Error");
-			break;
-		case 3:
-			sprintf(errorDesc,"Rejected from Server");
-			break;
-		case 4:
-			sprintf(errorDesc,"Your account has been blocked");
-			break;
-		case 5:
-			sprintf(errorDesc,"Your Game's EXE file is not the latest version");
-			break;
-		case 6:
-			sprintf(errorDesc,"The server is temporarily blocking your connection");
-			break;
-		default:
-			sprintf(errorDesc,"Unknown error");
-			break;
-	}
-	printf("Login error: %s (Error number %d)\n", errorDesc, errorId);
-
-	//We don't need the connection anymore.
-	m_network.getLogin().Close();
-}
-
-//[kR105]
-void OpenRO::hndlAuthFailed(ronet::pktAuthFailed* pkt) {
-	short errorId = pkt->getErrorId();
-	char errorDesc[256];
-
-	//Error description taken from OpenKore & eAthena
-	switch(errorId){
-		case 0:
-			sprintf(errorDesc,"Server shutting down.");
-			break;
-		case 1:
-			sprintf(errorDesc,"Server connection closed.");
-			break;
-		case 2:
-			sprintf(errorDesc,"Someone has already logged in with this ID.");
-			break;
-		case 3:
-			sprintf(errorDesc,"You've been disconnected due to a time gap between you and the server.");
-			break;
-		case 4:
-			sprintf(errorDesc,"Server is jammed due to over population. Please try again shortly.");
-			break;
-		case 5:
-			sprintf(errorDesc,"You are underaged and cannot join this server.");
-			break;
-		case 8:
-			sprintf(errorDesc,"Server still recognizes your last log-in. Please try again after a few minutes.");
-			break;
-		case 9:
-			sprintf(errorDesc,"IP capacity of this Internet Cafe is full. Would you like to pay the personal base?");
-			break;
-		case 10:
-			sprintf(errorDesc,"You are out of available time paid for. Game will be shut down automatically.");
-			break;
-		case 15:
-			sprintf(errorDesc,"You have been forced to disconnect by the Game Master Team.");
-			break;
-		default:
-			sprintf(errorDesc,"Unknown error");
-			break;
-	}
-	printf("Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
-
-	//We don't need the connection anymore.
-	CloseSockets();
-
-	LoginScreen();
-}
-
-void OpenRO::hndlCharCreated(ronet::pktCharCreated* pkt) {
-	unsigned short cid = pkt->getID();
-	printf("Received the new character created with ID %d\n", cid);
-	
-	CharInformation newchar = pkt->getChar();
-	dskChar->addChar(newchar);
-}
-
-void OpenRO::hndlCharPosition(ronet::pktCharPosition* pkt) {
-	//Convert the IP to string (stored in long)
-	struct in_addr addr;
-	addr.s_addr = pkt->getIp();
-	
-	char IP[256];
-	sprintf(IP,"%s",inet_ntoa(addr));
-
-	printf("MapServer IP: %s\n",IP);
-	printf("MapServer Port: %d\n",pkt->getPort());
-	printf("Character Position: %s\n",pkt->getMapname());
-	printf("Character ID: %d\n",pkt->getCharID());
-
-
-	//Close the socket to the char server
-	m_network.getChar().Close();
-
-	//Connect to the mapserver
-	m_network.getMap().Connect(IP, pkt->getPort());
-
-	//Login to the mapserver
-	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
-
-	char map[32];
-	strcpy(map, pkt->getMapname());
-
-	int i = 0;
-	while (map[i] != 0) {
-		if (map[i] == '.') {
-			map[i] = 0;
-			break;
-		}
-		i++;
-	}
-	
-	m_map = RswObject::open(*this, map);
-
-	// TODO: Set desktop to the ingame desktop
-	m_gui.setDesktop(NULL);
-}
-
-void OpenRO::hndlMapAcctSend(ronet::pktMapAcctSend* pkt) {
-	printf("Received accountID from mapserver: %d\n", pkt->getAccountId());
-}
-
-void OpenRO::hndlMapLoginSuccess(ronet::pktMapLoginSuccess* pkt) {
-	short pos_x = pkt->getPosX(); 
-	short pos_y = pkt->getPosY();
-	short pos_dir = pkt->getPosDir();
-	unsigned int server_tick = pkt->getServerTick();
-
-	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
-	me.setPos(pos_x, pos_y);
-
-	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n",pos_x,pos_y,pos_dir,server_tick);
-}
-
-void OpenRO::hndlOwnSpeech(ronet::pktOwnSpeech* pkt) {
-	printf("OwnSpeech: %s \n",pkt->getText());
-}
-
-void OpenRO::hndlSkillList(ronet::pktSkillList* pkt) {
-	printf("Received skill list.\n");
 }
 
 void OpenRO::CreateCharWindow(int slot) {
@@ -470,3 +254,220 @@ void OpenRO::clickMap(int x, int y) {
 	//me.setDest(x, y);
 }
 
+
+/* ========================================================================== *
+ * Add new packets here                                                       *
+ * ========================================================================== */
+
+HNKD_IMPL(MapMoveOk) {
+	int x, y;
+
+	pkt->getDest(&x, &y);
+	me.setDest((float)x, (float)y);
+}
+
+HNKD_IMPL(AttackRange) {
+	printf("Received attack range: %d \n",pkt->getRange());
+}
+
+HNKD_IMPL(GuildMessage) {
+	printf("Guild Message: %s \n",pkt->getText());
+	m_network.MapLoaded();
+}
+
+HNKD_IMPL(DisplayStat) {
+	unsigned int type = pkt->getType();
+	unsigned int base = pkt->getBase();
+	unsigned int bonus = pkt->getBonus();
+
+	printf("%s: %d + %d\n",RO::dnames[type],base,bonus);
+}
+
+HNKD_IMPL(UpdateStatus) {
+	unsigned short type = pkt->getType();
+	unsigned int value = pkt->getValue();
+
+	printf("Update status \"%s\", with value %d!\n",RO::dnames[type],value);
+	
+}
+
+HNKD_IMPL(ServerList) {
+	m_serverlist = pkt;
+	m_gui.setDesktop(dskService);
+	dskService->setEnabled(true);
+	char buf[128];
+
+	dskService->clear();
+	for (unsigned int i = 0; i < pkt->getServerCount(); i++) {
+		sprintf(buf, "%s (%d)", pkt->getInfo(i).name, pkt->getInfo(i).users);
+		dskService->add(buf);
+	}
+}
+
+HNKD_IMPL(CharList) {
+	int count = pkt->getCount();
+	printf("Received a list of %d chars\n", count);
+	m_gui.setDesktop(dskChar);
+	dskChar->setEnabled(true);
+	
+	for(int x=0;x<count;x++){
+		dskChar->addChar(pkt->getChar(x));
+	}
+}
+
+//[kR105]
+HNKD_IMPL(LoginError) {
+	short errorId = pkt->getErrorId();
+	char errorDesc[256];
+
+	//Error description taken from OpenKore & eAthena
+	switch(errorId){
+		case 0:
+			sprintf(errorDesc,"Account name doesn't exist");
+			break;
+		case 1:
+			sprintf(errorDesc,"Password Error");
+			break;
+		case 3:
+			sprintf(errorDesc,"Rejected from Server");
+			break;
+		case 4:
+			sprintf(errorDesc,"Your account has been blocked");
+			break;
+		case 5:
+			sprintf(errorDesc,"Your Game's EXE file is not the latest version");
+			break;
+		case 6:
+			sprintf(errorDesc,"The server is temporarily blocking your connection");
+			break;
+		default:
+			sprintf(errorDesc,"Unknown error");
+			break;
+	}
+	printf("Login error: %s (Error number %d)\n", errorDesc, errorId);
+
+	//We don't need the connection anymore.
+	m_network.getLogin().Close();
+}
+
+//[kR105]
+HNKD_IMPL(AuthFailed) {
+	short errorId = pkt->getErrorId();
+	char errorDesc[256];
+
+	//Error description taken from OpenKore & eAthena
+	switch(errorId){
+		case 0:
+			sprintf(errorDesc,"Server shutting down.");
+			break;
+		case 1:
+			sprintf(errorDesc,"Server connection closed.");
+			break;
+		case 2:
+			sprintf(errorDesc,"Someone has already logged in with this ID.");
+			break;
+		case 3:
+			sprintf(errorDesc,"You've been disconnected due to a time gap between you and the server.");
+			break;
+		case 4:
+			sprintf(errorDesc,"Server is jammed due to over population. Please try again shortly.");
+			break;
+		case 5:
+			sprintf(errorDesc,"You are underaged and cannot join this server.");
+			break;
+		case 8:
+			sprintf(errorDesc,"Server still recognizes your last log-in. Please try again after a few minutes.");
+			break;
+		case 9:
+			sprintf(errorDesc,"IP capacity of this Internet Cafe is full. Would you like to pay the personal base?");
+			break;
+		case 10:
+			sprintf(errorDesc,"You are out of available time paid for. Game will be shut down automatically.");
+			break;
+		case 15:
+			sprintf(errorDesc,"You have been forced to disconnect by the Game Master Team.");
+			break;
+		default:
+			sprintf(errorDesc,"Unknown error");
+			break;
+	}
+	printf("Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
+
+	//We don't need the connection anymore.
+	CloseSockets();
+
+	LoginScreen();
+}
+
+HNKD_IMPL(CharCreated) {
+	unsigned short cid = pkt->getID();
+	printf("Received the new character created with ID %d\n", cid);
+	
+	CharInformation newchar = pkt->getChar();
+	dskChar->addChar(newchar);
+}
+
+HNKD_IMPL(CharPosition) {
+	//Convert the IP to string (stored in long)
+	struct in_addr addr;
+	addr.s_addr = pkt->getIp();
+	
+	char IP[256];
+	sprintf(IP,"%s",inet_ntoa(addr));
+
+	printf("MapServer IP: %s\n",IP);
+	printf("MapServer Port: %d\n",pkt->getPort());
+	printf("Character Position: %s\n",pkt->getMapname());
+	printf("Character ID: %d\n",pkt->getCharID());
+
+
+	//Close the socket to the char server
+	m_network.getChar().Close();
+
+	//Connect to the mapserver
+	m_network.getMap().Connect(IP, pkt->getPort());
+
+	//Login to the mapserver
+	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
+
+	char map[32];
+	strcpy(map, pkt->getMapname());
+
+	int i = 0;
+	while (map[i] != 0) {
+		if (map[i] == '.') {
+			map[i] = 0;
+			break;
+		}
+		i++;
+	}
+	
+	m_map = RswObject::open(*this, map);
+
+	// TODO: Set desktop to the ingame desktop
+	m_gui.setDesktop(dskIngame);
+}
+
+HNKD_IMPL(MapAcctSend) {
+	printf("Received accountID from mapserver: %d\n", pkt->getAccountId());
+}
+
+HNKD_IMPL(MapLoginSuccess) {
+	short pos_x = pkt->getPosX(); 
+	short pos_y = pkt->getPosY();
+	short pos_dir = pkt->getPosDir();
+	unsigned int server_tick = pkt->getServerTick();
+
+	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
+	me.setPos(pos_x, pos_y);
+
+	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n",pos_x,pos_y,pos_dir,server_tick);
+}
+
+HNKD_IMPL(OwnSpeech) {
+	printf("OwnSpeech: %s \n",pkt->getText());
+}
+
+HNKD_IMPL(SkillList) {
+	printf("Received skill list.\n");
+}
