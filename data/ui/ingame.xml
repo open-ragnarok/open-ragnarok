@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<desktop name="ingame_ui">
+<desktop name="ingame_ui" transparent="true">
   <!-- $Id$ -->
   <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0">
     <button name="login_window/btnStatus" x="201" y="17" texture="basic_interface\btn_status_off.bmp" />
