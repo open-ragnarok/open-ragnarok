@@ -28,41 +28,16 @@
 
 namespace ronet {
 
-void hexdump(const unsigned char* buf, unsigned int buflen) {
-	unsigned int pos = 0;
-	unsigned int tbufpos = 0;
-	char tbuf[32];
-	char c;
+RONet::RONet() {
+	m_packetver = 22;
+}
 
-	tbuf[0] = 0;
+unsigned int RONet::getPacketVer() const {
+	return(m_packetver);
+}
 
-	for (pos = 0; pos < buflen; pos++) {
-		if (pos % 16 == 0) {
-			tbuf[tbufpos] = 0;
-			if (pos > 0) {
-				printf("| %s\n", tbuf);
-			}
-			printf("%04x | ", pos);
-			tbufpos = 0;
-		}
-		else if (pos % 8 == 0) {
-			tbuf[tbufpos++] = ' ';
-			printf(" ");
-		}
-		printf("%02x ", buf[pos]);
-		c = buf[pos];
-		if (c < ' ' || c > 'z')
-			c = '.';
-
-		tbuf[tbufpos++] = c;
-	}
-	int rest = 16 - (pos % 16);
-	if (rest >= 8)
-		printf(" ");
-	for (int i = 0; i < rest; i++)
-		printf("   ");
-	tbuf[tbufpos] = 0;
-	printf("| %s\n", tbuf);
+void RONet::setPacketVer(unsigned int v) {
+	m_packetver = v;
 }
 
 Packet* RONet::popPacket() {
@@ -101,6 +76,9 @@ bool RONet::GameLogin(const std::string& name, const std::string& pass, unsigned
 		_log(RONET__ERROR, "GameLogin() Error: Not connected to login server");
 		return(false);
 	}
+
+	// Set internal packet version for future reference.
+	m_packetver = version;
 
 	ronet::pktLogin login(name, pass, version);
 	login >> m_login.bufOutput;
@@ -157,8 +135,20 @@ bool RONet::MapLogin(int acctid, int sid1, int sid2, unsigned int tick, int sex)
 		return(false);
 	}
 
-	ronet::pktMapLogin pkt(acctid, sid1, sid2, tick, sex);
-	pkt >> m_map.bufOutput;
+	switch (m_packetver) {
+		case 23:
+			{
+			ronet::pktMapLogin23 pkt(acctid, sid1, sid2, tick, sex);
+			pkt >> m_map.bufOutput;
+			break;
+			}
+		default:
+			{
+			ronet::pktMapLogin pkt(acctid, sid1, sid2, tick, sex);
+			pkt >> m_map.bufOutput;
+			break;
+			}
+	}
 	return(true);
 }
 
@@ -194,12 +184,24 @@ bool RONet::MapLoaded() {
 
 void RONet::KeepAliveMap(unsigned int acc_id) {
 	if (!m_map.isConnected()) {
-		_log(RONET__ERROR, "[RONet::KeepAliveMap() Error] Not connected to map server");
+		_log(RONET__ERROR, "KeepAliveMap() Error: Not connected to map server");
 		return;
 	}
 
-	ronet::pktKeepAliveMap pkt(50, acc_id);
-	pkt >> m_map.bufOutput;
+	switch (m_packetver) {
+		case 23:
+			{
+			ronet::pktKeepAliveMap23 pkt(50, acc_id);
+			pkt >> m_map.bufOutput;
+			}
+			break;
+		default:
+			{
+			ronet::pktKeepAliveMap pkt(0); // ticks?
+			pkt >> m_map.bufOutput;
+			}
+	}
+
 	return;
 }
 

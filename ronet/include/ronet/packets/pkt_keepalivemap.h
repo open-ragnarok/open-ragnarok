@@ -28,16 +28,27 @@
 #include "ronet/packet.h"
 
 namespace ronet {
-	class RONET_DLLAPI pktKeepAliveMap : public Packet {
-	protected:
-		unsigned short unk_value;
-		unsigned int account_id;
 
-		virtual bool PrepareData();
-	public:
-		pktKeepAliveMap(unsigned short unk = 0, unsigned int acct = 0);
-	};
+class RONET_DLLAPI pktKeepAliveMap : public Packet {
+protected:
+	unsigned int ticks;
+
+	virtual bool PrepareData();
+public:
+	pktKeepAliveMap(unsigned int ticks = 0);
+};
+
+
+class RONET_DLLAPI pktKeepAliveMap23 : public Packet {
+protected:
+	unsigned short unk_value;
+	unsigned int account_id;
+
+	virtual bool PrepareData();
+public:
+	pktKeepAliveMap23(unsigned short unk = 0, unsigned int acct = 0);
+};
+
 }
 
 #endif /* __RONET_PACKET_KEEPALIVEMAP_H */
-

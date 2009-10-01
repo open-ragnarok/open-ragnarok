@@ -26,11 +26,13 @@
 
 #include "ronet/packets/pkt_maplogin.h"
 
-ronet::pktMapLogin::pktMapLogin() :
+namespace ronet {
+
+pktMapLogin::pktMapLogin() :
 	Packet(pktMapLoginID) {
 }
 
-ronet::pktMapLogin::pktMapLogin(int id1, int id2,
+pktMapLogin::pktMapLogin(int id1, int id2,
 		int id3, unsigned int tick, char s) :
 	Packet(pktMapLoginID) {
 	account_id = id1;
@@ -41,7 +43,16 @@ ronet::pktMapLogin::pktMapLogin(int id1, int id2,
 	setSize(19);
 }
 
-bool ronet::pktMapLogin::PrepareData() {
+pktMapLogin23::pktMapLogin23() : pktMapLogin() {
+	id = pktMapLogin23ID;
+}
+
+pktMapLogin23::pktMapLogin23(int id1, int id2, int id3, unsigned int tick, char s) : pktMapLogin(id1, id2, id3, tick, s) {
+	id = pktMapLogin23ID;
+}
+
+
+bool pktMapLogin::PrepareData() {
 	unsigned char* ptr = buffer;
 
 	memcpy(ptr, (unsigned char*)&id, sizeof(short));
@@ -63,7 +74,7 @@ bool ronet::pktMapLogin::PrepareData() {
 	return(true);
 }
 
-bool ronet::pktMapLogin::Decode(ucBuffer& buf) {
+bool pktMapLogin::Decode(ucBuffer& buf) {
 	unsigned short buf_id;
 	buf.peek((unsigned char*) &buf_id, 2);
 	if (buf_id != id) {
@@ -85,22 +96,24 @@ bool ronet::pktMapLogin::Decode(ucBuffer& buf) {
 	return (true);
 }
 
-void ronet::pktMapLogin::setGender(char gender) {
+void pktMapLogin::setGender(char gender) {
 	this->gender = gender;
 }
 
-void ronet::pktMapLogin::setSession_id1(int session_id1) {
+void pktMapLogin::setSession_id1(int session_id1) {
 	this->account_id = session_id1;
 }
 
-void ronet::pktMapLogin::setSession_id2(int session_id2) {
+void pktMapLogin::setSession_id2(int session_id2) {
 	this->char_id = session_id2;
 }
 
-void ronet::pktMapLogin::setSession_id3(int session_id3) {
+void pktMapLogin::setSession_id3(int session_id3) {
 	this->login_id1 = session_id3;
 }
 
-void ronet::pktMapLogin::setTick(unsigned int tick) {
+void pktMapLogin::setTick(unsigned int tick) {
 	this->client_tick = tick;
+}
+
 }

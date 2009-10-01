@@ -31,57 +31,59 @@
 #include "structures.h"
 
 namespace ronet {
-	typedef enum PacketIDs{
-		// == OUTBOUND == //
-		// To LOGIN
-		pktLoginID = 0x0064,
+typedef enum PacketIDs{
+	// == OUTBOUND == //
+	// To LOGIN
+	pktLoginID = 0x0064,
 
-		// To CHAR
-		pktCharLoginID = 0x0065, //  17 bytes
-		pktCharSelectID = 0x0066, // 3 bytes -- S 0066 <character number>.B
-		pktCharCreateID = 0x0067, // 37 bytes -- S 0067 <name>.24B <str>.B <agi>.B <vit>.B <int>.B <dex>.B <luk>.B <slot>.B <hair color>.W <hair style>.W
-		pktCharDeleteID = 0x0068, // 46 bytes
-		pktCharDelete2ID = 0x01fb, // 56 bytes
-		pktKeepAliveID = 0x0187,
+	// To CHAR
+	pktCharLoginID = 0x0065, //  17 bytes
+	pktCharSelectID = 0x0066, // 3 bytes -- S 0066 <character number>.B
+	pktCharCreateID = 0x0067, // 37 bytes -- S 0067 <name>.24B <str>.B <agi>.B <vit>.B <int>.B <dex>.B <luk>.B <slot>.B <hair color>.W <hair style>.W
+	pktCharDeleteID = 0x0068, // 46 bytes
+	pktCharDelete2ID = 0x01fb, // 56 bytes
+	pktKeepAliveID = 0x0187,
 
-		// To MAP
-		pktMapLoginID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
-		//0x0436 is packetver 23 ;)
-		//pktMapLoginID = 0x0072, // (19 bytes) S 0072 <account id>.int <char id>.int <session id1>.int <client tick>.unsigned int <gender>.byte
-		pktMapMoveID = 0x0085, // 5 bytes S 0085 <x>.10bits <y>.10bits <0>.4bits
-		pktGuildInfoRequestID = 0x014d, // 2 bytes
-		pktMapLoadedID = 0x007d, // 2 bytes
-		pktKeepAliveMapID = 0x0089,
+	// To MAP
+	pktMapLoginID = 0x0072, // (19 bytes) S 0072 <account id>.int <char id>.int <session id1>.int <client tick>.unsigned int <gender>.byte
+	pktMapMoveID = 0x0085, // 5 bytes S 0085 <x>.10bits <y>.10bits <0>.4bits
+	pktGuildInfoRequestID = 0x014d, // 2 bytes
+	pktMapLoadedID = 0x007d, // 2 bytes
+	pktKeepAliveMapID = 0x007e, // (6 bytes) S 0x007e <ticks>.uint
 
-		// == INBOUND == //
-		// From LOGIN
-		pktServerListID = 0x0069,
-		pktLoginErrorID = 0x006a, // (23 bytes) S 006A <type>.short 0x00 * 20
-		pktAuthFailedID = 0x0081, // (3 bytes) S 0081 <type>.short
+	// Packetver 23
+	pktMapLogin23ID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
+	pktKeepAliveMap23ID = 0x0089,
 
-		// From CHAR
-		pktCharListID = 0x006b,
-		pktCharSelectionFailID = 0x006c, // S 006c <unk>.short
-		pktCharPositionID = 0x0071, // (30 bytes) S 0071 <charid>.int <mapname>.16B <ip>.int <port>.short
-		pktCharCreatedID = 0x006d, // Also named "NewCharInfo" (108 or 110 bytes)
-		pktCharCreateErrorID = 0x006e, // (3 bytes)
-		pktCharRenameID = 0x028d,
+	// == INBOUND == //
+	// From LOGIN
+	pktServerListID = 0x0069,
+	pktLoginErrorID = 0x006a, // (23 bytes) S 006A <type>.short 0x00 * 20
+	pktAuthFailedID = 0x0081, // (3 bytes) S 0081 <type>.short
 
-		// From MAP
-		pktMapLoginSuccessID = 0x0073, // R 0073 <server tick>.uint <coordidate>.3B ?.2B
-		pktOwnSpeechID = 0x008e, // R 008e <len>.w <str>.?B
-		pktMapAcctSendID = 0x0283, // (6 bytes) R 0283 <account id>.int
-		pktSkillListID = 0x010f, // R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
-		pktUpdateStatusID = 0x00b0, // R 00b0 <type>.w <val>.l
-		pktDisplayStatID = 0x0141, // R 0141 <type>.l <base>.l <bonus>.l
-		pktGuildMessageID = 0x017f, // R 017f <len>.w <message>.?B
-		pktAttackRangeID = 0x013a, // R 013a <val>.w
-		pktMapMoveOkID = 0x0087, // (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
-		pktServerTickID = 0x007f, // R 007f <server tick>.l
+	// From CHAR
+	pktCharListID = 0x006b,
+	pktCharSelectionFailID = 0x006c, // S 006c <unk>.short
+	pktCharPositionID = 0x0071, // (30 bytes) S 0071 <charid>.int <mapname>.16B <ip>.int <port>.short
+	pktCharCreatedID = 0x006d, // Also named "NewCharInfo" (108 or 110 bytes)
+	pktCharCreateErrorID = 0x006e, // (3 bytes)
+	pktCharRenameID = 0x028d,
 
-		// == "WTF!?"s == //
-		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0
-	} pktIds;
+	// From MAP
+	pktMapLoginSuccessID = 0x0073, // R 0073 <server tick>.uint <coordidate>.3B ?.2B
+	pktOwnSpeechID = 0x008e, // R 008e <len>.w <str>.?B
+	pktMapAcctSendID = 0x0283, // (6 bytes) R 0283 <account id>.int
+	pktSkillListID = 0x010f, // R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+	pktUpdateStatusID = 0x00b0, // R 00b0 <type>.w <val>.l
+	pktDisplayStatID = 0x0141, // R 0141 <type>.l <base>.l <bonus>.l
+	pktGuildMessageID = 0x017f, // R 017f <len>.w <message>.?B
+	pktAttackRangeID = 0x013a, // R 013a <val>.w
+	pktMapMoveOkID = 0x0087, // (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
+	pktServerTickID = 0x007f, // R 007f <server tick>.l
+
+	// == "WTF!?"s == //
+	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0
+} pktIds;
 
 template<class T>
 class DynamicBlob {

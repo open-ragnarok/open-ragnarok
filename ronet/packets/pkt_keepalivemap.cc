@@ -26,18 +26,37 @@
 
 #include "ronet/packets/pkt_keepalivemap.h"
 
-ronet::pktKeepAliveMap::pktKeepAliveMap(unsigned short unk, unsigned int acct) : Packet(pktKeepAliveMapID) {
+namespace ronet {
+
+pktKeepAliveMap::pktKeepAliveMap(unsigned int ticks) : Packet(pktKeepAliveMapID) {
+	this->ticks = ticks;
+	setSize(6);
+}
+
+bool pktKeepAliveMap::PrepareData() {
+	unsigned char* ptr = buffer;
+	ptr += sizeof(short); // id automagic handled by Packet class.
+
+	memcpy(ptr, (unsigned char*)&ticks, sizeof(int));
+
+	return(true);
+}
+
+pktKeepAliveMap23::pktKeepAliveMap23(unsigned short unk, unsigned int acct) : Packet(pktKeepAliveMap23ID) {
 	unk_value = unk;
 	account_id = acct;
 	setSize(8);
 }
 
-bool ronet::pktKeepAliveMap::PrepareData() {
+bool pktKeepAliveMap23::PrepareData() {
 	unsigned char* ptr = buffer;
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
-	ptr += sizeof(short);
+	ptr += sizeof(short); // id automagic handled by Packet class.
+
 	memcpy(ptr, (unsigned char*)&unk_value, sizeof(short));
 	ptr += sizeof(short);
 	memcpy(ptr, (unsigned char*)&account_id, sizeof(int));
+
 	return(true);
+}
+
 }

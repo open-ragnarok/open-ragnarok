@@ -229,7 +229,7 @@ void OpenRO::KeepAliveChar(){
 
 	//Send the KeepAlive packet
 	m_network.KeepAliveChar(m_serverlist->getAccountId());
-	printf("CharServer KeepAlive sent.\n");
+	_log(OPENRO__DEBUG, "CharServer KeepAlive sent.");
 }
 
 void OpenRO::KeepAliveMap(){
@@ -239,7 +239,7 @@ void OpenRO::KeepAliveMap(){
 
 	//Send the KeepAlive packet
 	m_network.KeepAliveMap(SDL_GetTicks());
-	printf("MapServer KeepAlive sent.\n");
+	_log(OPENRO__DEBUG, "MapServer KeepAlive sent.");
 }
 
 unsigned int OpenRO::GetAccountID(){return m_serverlist->getAccountId();}
@@ -254,7 +254,7 @@ unsigned char OpenRO::GetAccountSex(){
 	else if (m_serverlist->getSex() == female )
 		return 1;
 	else{
-		fprintf(stderr, "Error getting account sex! Defaulting to male.\n");
+		_log(OPENRO__ERROR, "Error getting account sex! Defaulting to male.");
 		return 0;
 	}
 }
@@ -271,7 +271,7 @@ void OpenRO::clickMap(int x, int y) {
  * ========================================================================== */
 
 HNKD_IMPL(ServerTick) {
-	printf("Received server tick: %d\n",pkt->getServerTick());
+	printf("Received server tick: %d\n", pkt->getServerTick());
 }
 
 HNKD_IMPL(MapMoveOk) {
@@ -282,11 +282,11 @@ HNKD_IMPL(MapMoveOk) {
 }
 
 HNKD_IMPL(AttackRange) {
-	printf("Received attack range: %d \n",pkt->getRange());
+	_log(OPENRO__TRACE, "Received attack range: %d", pkt->getRange());
 }
 
 HNKD_IMPL(GuildMessage) {
-	printf("Guild Message: %s \n",pkt->getText());
+	_log(OPENRO__TRACE, "Guild Message: %s", pkt->getText());
 	m_network.MapLoaded();
 }
 
@@ -295,15 +295,14 @@ HNKD_IMPL(DisplayStat) {
 	unsigned int base = pkt->getBase();
 	unsigned int bonus = pkt->getBonus();
 
-	printf("%s: %d + %d\n",RO::dnames[type],base,bonus);
+	_log(OPENRO__TRACE, "Stat %s: %d + %d", RO::dnames[type], base, bonus);
 }
 
 HNKD_IMPL(UpdateStatus) {
 	unsigned short type = pkt->getType();
 	unsigned int value = pkt->getValue();
 
-	printf("Update status \"%s\", with value %d!\n",RO::dnames[type],value);
-	
+	_log(OPENRO__TRACE, "Update status \"%s\", with value %d!", RO::dnames[type], value);
 }
 
 HNKD_IMPL(ServerList) {
@@ -321,7 +320,7 @@ HNKD_IMPL(ServerList) {
 
 HNKD_IMPL(CharList) {
 	int count = pkt->getCount();
-	printf("Received a list of %d chars\n", count);
+	_log(OPENRO__TRACE, "Received a list of %d chars", count);
 	m_gui.setDesktop(dskChar);
 	dskChar->setEnabled(true);
 	
@@ -359,7 +358,7 @@ HNKD_IMPL(LoginError) {
 			sprintf(errorDesc,"Unknown error");
 			break;
 	}
-	printf("Login error: %s (Error number %d)\n", errorDesc, errorId);
+	_log(OPENRO__ERROR, "Login error: %s (Error number %d)", errorDesc, errorId);
 
 	//We don't need the connection anymore.
 	m_network.getLogin().Close();
@@ -406,17 +405,16 @@ HNKD_IMPL(AuthFailed) {
 			sprintf(errorDesc,"Unknown error");
 			break;
 	}
-	printf("Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
+	_log(OPENRO__ERROR, "Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
 
 	//We don't need the connection anymore.
 	CloseSockets();
-
 	LoginScreen();
 }
 
 HNKD_IMPL(CharCreated) {
 	unsigned short cid = pkt->getID();
-	printf("Received the new character created with ID %d\n", cid);
+	_log(OPENRO__TRACE, "Received the new character created with ID %d\n", cid);
 	
 	CharInformation newchar = pkt->getChar();
 	dskChar->addChar(newchar);
@@ -430,10 +428,10 @@ HNKD_IMPL(CharPosition) {
 	char IP[256];
 	sprintf(IP,"%s",inet_ntoa(addr));
 
-	printf("MapServer IP: %s\n",IP);
-	printf("MapServer Port: %d\n",pkt->getPort());
-	printf("Character Position: %s\n",pkt->getMapname());
-	printf("Character ID: %d\n",pkt->getCharID());
+	_log(OPENRO__TRACE, "MapServer IP: %s",IP);
+	_log(OPENRO__TRACE, "MapServer Port: %d",pkt->getPort());
+	_log(OPENRO__TRACE, "Character Position: %s",pkt->getMapname());
+	_log(OPENRO__TRACE, "Character ID: %d",pkt->getCharID());
 
 
 	//Close the socket to the char server
@@ -453,7 +451,7 @@ HNKD_IMPL(CharPosition) {
 }
 
 HNKD_IMPL(MapAcctSend) {
-	printf("Received accountID from mapserver: %d\n", pkt->getAccountId());
+	_log(OPENRO__TRACE, "Received accountID from mapserver: %d", pkt->getAccountId());
 }
 
 HNKD_IMPL(MapLoginSuccess) {
@@ -462,7 +460,7 @@ HNKD_IMPL(MapLoginSuccess) {
 	short pos_dir = pkt->getPosDir();
 	unsigned int server_tick = pkt->getServerTick();
 
-	printf("Login successful to the MapServer!\n");
+	_log(OPENRO__DEBUG, "Login successful to the MapServer!");
 
 	int i = 0;
 	while (FirstMap[i] != 0) {
@@ -480,13 +478,13 @@ HNKD_IMPL(MapLoginSuccess) {
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
 	me.setPos(pos_x, pos_y);
 
-	printf("pos_x = %d \npos_y = %d\npos_dir = %d\nserver_tick = %d\n",pos_x,pos_y,pos_dir,server_tick);
+	_log(OPENRO__TRACE, "\tpos_x = %d\n\tpos_y = %d\n\tpos_dir = %d\n\tserver_tick = %d", pos_x, pos_y, pos_dir, server_tick);
 }
 
 HNKD_IMPL(OwnSpeech) {
-	printf("OwnSpeech: %s \n",pkt->getText());
+	_log(OPENRO__TRACE, "OwnSpeech: %s",pkt->getText());
 }
 
 HNKD_IMPL(SkillList) {
-	printf("Received skill list.\n");
+	_log(OPENRO__TRACE, "Received skill list.");
 }

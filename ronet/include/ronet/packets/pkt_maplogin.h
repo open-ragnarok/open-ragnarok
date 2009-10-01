@@ -31,7 +31,7 @@ namespace ronet {
 /**
  * Packet describing the player position, map and ip/port where the character is located at.
  */
-class RONET_DLLAPI pktMapLogin: public Packet {
+class RONET_DLLAPI pktMapLogin : public Packet {
 protected:
 	virtual bool PrepareData();
 	int account_id;
@@ -54,6 +54,13 @@ public:
 	void setTick(unsigned int client_tick);
 
 };
+
+class RONET_DLLAPI pktMapLogin23 : public pktMapLogin {
+public:
+	pktMapLogin23();
+	pktMapLogin23(int, int, int, unsigned int, char);
+};
+
 }
 
 #endif /* __RONET_PACKET_MAPLOGIN_H */
