@@ -196,9 +196,9 @@ Texture loadJPEGTexture(const unsigned char* buf, unsigned long buflen) {
 						G = 1.164 * (Y - 16) - 0.813 * (Cr - 128) - 0.391 * (Cb - 128);
 						B = 1.164 * (Y - 16) + 2.018 * (Cb - 128);
 						*/
-						R = Y;
-						G = Cb;
-						B = Cr;
+						R = (int)Y;
+						G = (int)Cb;
+						B = (int)Cr;
 
 						if (R < 0) R = 0;
 						if (R > 255) R = 255;
@@ -319,9 +319,9 @@ Texture loadJPEGTexture(const char* fn) {
 						Cb = line[i * 3 + 1];
 						Cr = line[i * 3 + 2];
 
-						R = Y;
-						G = Cb;
-						B = Cr;
+						R = (int)Y;
+						G = (int)Cb;
+						B = (int)Cr;
 
 						if (R < 0) R = 0;
 						if (R > 255) R = 255;

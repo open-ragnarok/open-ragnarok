@@ -375,7 +375,7 @@ void RswObject::DrawGND() {
 void RswObject::DrawWater() {
 #define WATER_MULTIPLIER 4
 	m_waterdelay += m_tickdelay;
-	int cycle = rsw->water.texture_cycling * 100;
+	unsigned int cycle = rsw->water.texture_cycling * 100;
 	while (m_waterdelay > cycle) {
 		m_waterdelay -= cycle;
 		m_waterframe++;

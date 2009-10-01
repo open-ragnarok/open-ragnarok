@@ -17,12 +17,17 @@
 
 int main(int argc, char* argv[]) {
 #ifdef USE_LOGSYS
-	LogSys::GetSingleton()->addHandler(OPENRO__DEBUG, "Debug");
-	LogSys::GetSingleton()->addHandler(OPENRO__TRACE, "OpenRO");
-	LogSys::GetSingleton()->addHandler(OPENRO__ERROR, "Error");
-#endif
+	// Checkout logsys.h for more info.
+	struct LogSysInfo openro_logsys[] = {
+		{ OPENRO__DEBUG, "Debug", true, NULL },
+		{ OPENRO__TRACE, "OpenRO", true, NULL },
+		{ OPENRO__ERROR, "Error", true, stderr}
+	};
+
+	LogSys::GetSingleton()->registerInfo(openro_logsys, 3);
 
 	ronet::ConfigureLog();
+#endif
 
 #if defined(WIN32) || defined(_MSC_VER)
 	_log(OPENRO__DEBUG, "Initializing Winsock...");

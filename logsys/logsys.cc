@@ -40,19 +40,30 @@ LogSys& LogSys::log(const char* data) {
 	return(*this);
 }
 
-LogSys& LogSys::addHandler(int identifier, const std::string& prefix) {
+LogSys& LogSys::addHandler(t_logid identifier, const std::string& prefix, bool active) {
 	m_prefixes[identifier] = prefix;
+	m_active[identifier] = active;
 
 	return(*this);
 }
 
-LogSys& LogSys::setOutput(int identifier, FILE* out) {
+LogSys& LogSys::setOutput(t_logid identifier, FILE* out) {
 	m_outputs[identifier] = out;
 
 	return(*this);
 }
 
-LogSys& LogSys::log(int identifier, const char* fmt, ...) {
+LogSys& LogSys::setActive(t_logid identifier, bool active) {
+	m_active[identifier] = active;
+
+	return(*this);
+}
+
+
+LogSys& LogSys::log(t_logid identifier, const char* fmt, ...) {
+	if (!m_active[identifier])
+		return(*this);
+
 	va_list args;
 	va_start(args, fmt);
 	int size = vsnprintf(NULL, 0, fmt, args);
@@ -80,7 +91,21 @@ LogSys& LogSys::log(int identifier, const char* fmt, ...) {
 	return(*this);
 }
 
-LogSys& LogSys::hexlog(int identifier, const unsigned char* buf, unsigned int buflen) {
+LogSys& LogSys::registerInfo(struct LogSysInfo* info, unsigned int size) {
+	for (unsigned int i = 0; i < size; i++) {
+		addHandler(info[i].id, info[i].prefix, info[i].active);
+		if (info[i].output != NULL)
+			setOutput(info[i].id, info[i].output);
+	}
+
+	return(*this);
+}
+
+
+LogSys& LogSys::hexlog(t_logid identifier, const unsigned char* buf, unsigned int buflen) {
+	if (!m_active[identifier])
+		return(*this);
+
 	FILE* out = stdout;
 	if (m_outputs.find(identifier) != m_outputs.end())
 		out = m_outputs[identifier];

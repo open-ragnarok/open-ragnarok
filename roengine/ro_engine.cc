@@ -196,7 +196,7 @@ void ROEngine::DrawMap() {
 	//printf("\tMap: %d, %d", mapx, mapy);
 
 	glPushMatrix();
-	m_map->getWorldPosition(mapx, mapy, &wx, &wy, &wz);
+	m_map->getWorldPosition((float)mapx, (float)mapy, &wx, &wy, &wz);
 	glPopMatrix();
 
 	//printf("\tW: %.2f, %.2f, %.2f", wx, wy, wz);

@@ -65,7 +65,7 @@ void ActGL::Draw(unsigned long delay) {
 		// WTH!?
 		sprcount = p.numspr;
 	}
-	for (unsigned int i = 0; i < sprcount; i++) {
+	for (int i = 0; i < sprcount; i++) {
 		RO::ACT::Spr& s = p[i];
 		if (s.sprNo < 0 || s.w <= 0) {
 			continue;
