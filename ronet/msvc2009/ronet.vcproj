@@ -435,6 +435,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_keepalivemap.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_login.cc"
 					>
 				</File>
@@ -472,6 +476,10 @@
 				</File>
 				<File
 					RelativePath="..\packets\pkt_serverlist.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_servertick.cc"
 					>
 				</File>
 				<File
@@ -613,6 +621,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_keepalivemap.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_login.h"
 					>
 				</File>
@@ -650,6 +662,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_serverlist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_servertick.h"
 					>
 				</File>
 				<File

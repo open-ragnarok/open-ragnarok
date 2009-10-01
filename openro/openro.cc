@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(ServerTick, false);
 			HANDLEPKT(AttackRange, false);
 			HANDLEPKT(GuildMessage, false);
 			HANDLEPKT(DisplayStat, false);
@@ -231,6 +232,16 @@ void OpenRO::KeepAliveChar(){
 	printf("CharServer KeepAlive sent.\n");
 }
 
+void OpenRO::KeepAliveMap(){
+	//If the socket to mapserver is closed
+	if(!m_network.getMap().isConnected())
+		return;
+
+	//Send the KeepAlive packet
+	m_network.KeepAliveMap(SDL_GetTicks());
+	printf("MapServer KeepAlive sent.\n");
+}
+
 unsigned int OpenRO::GetAccountID(){return m_serverlist->getAccountId();}
 unsigned char OpenRO::GetAccountSex(){
 	unsigned char male = 0x01; //m
@@ -258,6 +269,10 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+
+HNKD_IMPL(ServerTick) {
+	printf("Received server tick: %d\n",pkt->getServerTick());
+}
 
 HNKD_IMPL(MapMoveOk) {
 	int x, y;
@@ -424,28 +439,17 @@ HNKD_IMPL(CharPosition) {
 	//Close the socket to the char server
 	m_network.getChar().Close();
 
+	//Clear buffer
+	m_network.getMap().bufOutput.clear();
+
 	//Connect to the mapserver
 	m_network.getMap().Connect(IP, pkt->getPort());
 
 	//Login to the mapserver
 	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
 
-	char map[32];
-	strcpy(map, pkt->getMapname());
-
-	int i = 0;
-	while (map[i] != 0) {
-		if (map[i] == '.') {
-			map[i] = 0;
-			break;
-		}
-		i++;
-	}
-	
-	m_map = RswObject::open(*this, map);
-
-	// TODO: Set desktop to the ingame desktop
-	m_gui.setDesktop(dskIngame);
+	//Save the map sent by the charserver
+	strcpy(FirstMap, pkt->getMapname());
 }
 
 HNKD_IMPL(MapAcctSend) {
@@ -457,6 +461,21 @@ HNKD_IMPL(MapLoginSuccess) {
 	short pos_y = pkt->getPosY();
 	short pos_dir = pkt->getPosDir();
 	unsigned int server_tick = pkt->getServerTick();
+
+	printf("Login successful to the MapServer!\n");
+
+	int i = 0;
+	while (FirstMap[i] != 0) {
+		if (FirstMap[i] == '.') {
+			FirstMap[i] = 0;
+			break;
+		}
+		i++;
+	}
+	
+	m_map = RswObject::open(*this, FirstMap);
+
+	m_gui.setDesktop(dskIngame);
 
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
 	me.setPos(pos_x, pos_y);

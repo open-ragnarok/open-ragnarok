@@ -63,6 +63,7 @@ namespace ronet {
 		};
 
 		//Add new packets here
+		bool Handle_ServerTick(ucBuffer&);
 		bool Handle_AttackRange(ucBuffer&);
 		bool Handle_GuildMessage(ucBuffer&);
 		bool Handle_DisplayStat(ucBuffer&);

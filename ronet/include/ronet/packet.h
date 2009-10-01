@@ -45,11 +45,13 @@ namespace ronet {
 		pktKeepAliveID = 0x0187,
 
 		// To MAP
-		//pktMapLoginID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
-		pktMapLoginID = 0x0072, // (19 bytes) S 0072 <account id>.int <char id>.int <session id1>.int <client tick>.unsigned int <gender>.byte
+		pktMapLoginID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
+		//0x0436 is packetver 23 ;)
+		//pktMapLoginID = 0x0072, // (19 bytes) S 0072 <account id>.int <char id>.int <session id1>.int <client tick>.unsigned int <gender>.byte
 		pktMapMoveID = 0x0085, // 5 bytes S 0085 <x>.10bits <y>.10bits <0>.4bits
 		pktGuildInfoRequestID = 0x014d, // 2 bytes
 		pktMapLoadedID = 0x007d, // 2 bytes
+		pktKeepAliveMapID = 0x0089,
 
 		// == INBOUND == //
 		// From LOGIN
@@ -75,6 +77,7 @@ namespace ronet {
 		pktGuildMessageID = 0x017f, // R 017f <len>.w <message>.?B
 		pktAttackRangeID = 0x013a, // R 013a <val>.w
 		pktMapMoveOkID = 0x0087, // (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
+		pktServerTickID = 0x007f, // R 007f <server tick>.l
 
 		// == "WTF!?"s == //
 		pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

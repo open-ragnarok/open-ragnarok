@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: pkt_servertick.cc 147 2009-09-30 12:13:45Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -22,36 +22,30 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKETS_PACKETS_H
-#define __RONET_PACKETS_PACKETS_H
+#include "stdafx.h"
 
-//Add new packets here
-#include "pkt_charcreate.h"
-#include "pkt_charcreated.h"
-#include "pkt_charcreateerror.h"
-#include "pkt_charlist.h"
-#include "pkt_charlogin.h"
-#include "pkt_keepalive.h"
-#include "pkt_login.h"
-#include "pkt_serverlist.h"
-#include "pkt_loginerror.h"			//[kR105]
-#include "pkt_authfailed.h"			//[kR105]
-#include "pkt_charselect.h"			//[kR105]
-#include "pkt_charposition.h"
-#include "pkt_maplogin.h"
-#include "pkt_mapacctsend.h"		//[kR105] 
-#include "pkt_maploginsuccess.h"
-#include "pkt_ownspeech.h"			//[kR105]
-#include "pkt_skilllist.h"			//[kR105]
-#include "pkt_updatestatus.h"		//[kR105]
-#include "pkt_displaystat.h"		//[kR105]
-#include "pkt_guildmessage.h"		//[kR105]
-#include "pkt_attackrange.h"		//[kR105]
-#include "pkt_mapmove.h"
-#include "pkt_guildinforequest.h"
-#include "pkt_maploaded.h"
-#include "pkt_mapmoveok.h"
-#include "pkt_keepalivemap.h"		//[kR105]
-#include "pkt_servertick.h"			//[kR105]
+#include "ronet/packets/pkt_servertick.h"
 
-#endif /* __RONET_PACKETS_PACKETS_H */
+ronet::pktServerTick::pktServerTick() : Packet(pktServerTickID) {
+}
+
+bool ronet::pktServerTick::Decode(ucBuffer& buf) {
+	// Sanity check
+	unsigned short buf_id;
+	buf.peek((unsigned char*)&buf_id, 2);
+	if (buf_id != id) {
+		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
+		return(false);
+	}
+	if (buf.dataSize() < 6)
+		return(false);
+
+	buf.ignore(2);
+	buf >> server_tick;
+
+	return(true);
+}
+
+unsigned int ronet::pktServerTick::getServerTick() const {
+	return server_tick;
+}

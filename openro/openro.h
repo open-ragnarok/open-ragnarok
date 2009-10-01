@@ -41,6 +41,7 @@ protected:
 	ronet::pktServerList* m_serverlist;
 
 	//Add new packets here
+	HNDL_DECL(ServerTick);
 	HNDL_DECL(AttackRange);
 	HNDL_DECL(GuildMessage);
 	HNDL_DECL(DisplayStat);
@@ -71,6 +72,9 @@ protected:
 	/** Parses the client information on the given xml file */
 	void ParseClientInfo(const std::string& name = "sclientinfo.xml");
 
+	/** Store the first map to load sent by the charserver **/
+	char FirstMap[256];
+
 public:
 	OpenRO();
 	virtual ~OpenRO();
@@ -94,6 +98,8 @@ public:
 	void CloseSockets();
 
 	void KeepAliveChar();
+
+	void KeepAliveMap();
 
 	unsigned int GetAccountID();
 	unsigned char GetAccountSex();

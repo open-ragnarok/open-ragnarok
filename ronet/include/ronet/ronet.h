@@ -101,6 +101,8 @@ namespace ronet {
 		 * @return true on success. False if no success (like: not connected to map server)
 		 */
 		bool MoveCharacter(int x, int y);
+
+		void KeepAliveMap(unsigned int acc_id);
 	};
 }
 

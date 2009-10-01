@@ -11,6 +11,9 @@ protected:
 	int hp, max_hp;
 	int sp, max_sp;
 
+	unsigned int elapsed;
+	unsigned int ptick;
+
 public:
 	DesktopIngame(OpenRO*);
 

@@ -12,7 +12,7 @@ protected:
 	unsigned int m_action;
 	unsigned int m_act;
 	unsigned int m_dir;
-	int elapsed;
+	unsigned int elapsed;
 	unsigned int ptick;
 
 	GUI::Label* lblStr;

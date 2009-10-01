@@ -9,6 +9,15 @@ DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 }
 
 void DesktopIngame::afterDraw(unsigned int delay) {
+
+	elapsed += delay;
+	ptick += delay;
+
+	//Keep Alive packet to CharServer
+	if(ptick >= 12000){
+		m_ro->KeepAliveMap();
+		ptick = 0;
+	}
 }
 
 void DesktopIngame::SetHP(int hp, int max_hp) {

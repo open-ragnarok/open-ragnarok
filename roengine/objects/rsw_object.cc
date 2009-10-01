@@ -196,6 +196,9 @@ bool RswObject::loadTextures(CacheManager& cache) {
 RswObject* RswObject::open(CacheManager& cache, const char* map) {
 	RO::RSW* rsw;
 
+	// TODO: Show loading screen
+	printf("Loading map %s\n",map);
+
 	// TODO: Delete active map (if any)
 
 	std::string rsw_fn(map);
@@ -245,6 +248,9 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 
 		cache.getGLObjects().add(rswobj->getName(), rsmobject);
 	}
+
+	// TODO: Hide loading screen
+	printf("Map %s loaded\n",map);
 	
 	return(obj);
 }

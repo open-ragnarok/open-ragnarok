@@ -192,4 +192,15 @@ bool RONet::MapLoaded() {
 	return(true);
 }
 
+void RONet::KeepAliveMap(unsigned int acc_id) {
+	if (!m_map.isConnected()) {
+		_log(RONET__ERROR, "[RONet::KeepAliveMap() Error] Not connected to map server");
+		return;
+	}
+
+	ronet::pktKeepAliveMap pkt(50, acc_id);
+	pkt >> m_map.bufOutput;
+	return;
+}
+
 }
