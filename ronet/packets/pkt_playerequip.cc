@@ -56,7 +56,7 @@ unsigned int pktPlayerEquip::getPlayer() const {
 	return(player);
 }
 
-unsigned int pktPlayerEquip::getType() const {
+unsigned char pktPlayerEquip::getType() const {
 	return(type);
 }
 

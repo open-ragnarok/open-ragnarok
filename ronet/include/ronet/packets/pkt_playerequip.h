@@ -31,14 +31,14 @@ namespace ronet {
 	class RONET_DLLAPI pktPlayerEquip : public Packet {
 	protected:
 		unsigned int player;
-		unsigned int type;
+		unsigned char type;
 		unsigned short id1, id2;
 	public:
 		pktPlayerEquip();
 		virtual bool Decode(ucBuffer&);
 
 		unsigned int getPlayer() const;
-		unsigned int getType() const;
+		unsigned char getType() const;
 		unsigned short getID1() const;
 		unsigned short getID2() const;
 	};
