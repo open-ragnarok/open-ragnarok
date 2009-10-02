@@ -475,6 +475,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_playerequip.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_serverlist.cc"
 					>
 				</File>
@@ -658,6 +662,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_ownspeech.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_playerequip.h"
 					>
 				</File>
 				<File

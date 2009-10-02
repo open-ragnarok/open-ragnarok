@@ -54,6 +54,7 @@ HANDLER(MapLoginSuccess)
 HANDLER(OwnSpeech)
 HANDLER(SkillList)
 HANDLER(MapMoveOk)
+HANDLER(PlayerEquip)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -74,7 +75,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(OwnSpeech);
 	CALLER(SkillList);
 	CALLER(MapMoveOk);
-	//m_dispatcher.Register(0x0069, &ronet::PacketFactory::Handle_ServerList);
+	CALLER(PlayerEquip);
 }
 
 ronet::PacketFactory::~PacketFactory() {

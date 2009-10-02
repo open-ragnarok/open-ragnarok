@@ -62,24 +62,27 @@ namespace ronet {
 			bool Call(unsigned short, ucBuffer&);
 		};
 
+#define DECL(x) bool Handle_ ##x (ucBuffer&)
+
 		//Add new packets here
-		bool Handle_ServerTick(ucBuffer&);
-		bool Handle_AttackRange(ucBuffer&);
-		bool Handle_GuildMessage(ucBuffer&);
-		bool Handle_DisplayStat(ucBuffer&);
-		bool Handle_UpdateStatus(ucBuffer&);
-		bool Handle_ServerList(ucBuffer&);
-		bool Handle_CharCreateError(ucBuffer&);
-		bool Handle_CharList(ucBuffer&);
-		bool Handle_LoginError(ucBuffer&);
-		bool Handle_AuthFailed(ucBuffer&);
-		bool Handle_CharCreated(ucBuffer&);
-		bool Handle_CharPosition(ucBuffer&);
-		bool Handle_MapAcctSend(ucBuffer&);
-		bool Handle_MapLoginSuccess(ucBuffer&);
-		bool Handle_OwnSpeech(ucBuffer&);
-		bool Handle_SkillList(ucBuffer&);
-		bool Handle_MapMoveOk(ucBuffer&);
+		DECL(ServerTick);
+		DECL(AttackRange);
+		DECL(GuildMessage);
+		DECL(DisplayStat);
+		DECL(UpdateStatus);
+		DECL(ServerList);
+		DECL(CharCreateError);
+		DECL(CharList);
+		DECL(LoginError);
+		DECL(AuthFailed);
+		DECL(CharCreated);
+		DECL(CharPosition);
+		DECL(MapAcctSend);
+		DECL(MapLoginSuccess);
+		DECL(OwnSpeech);
+		DECL(SkillList);
+		DECL(MapMoveOk);
+		DECL(PlayerEquip);
 
 		void push(Packet*);
 
