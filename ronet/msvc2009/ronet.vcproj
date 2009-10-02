@@ -431,6 +431,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_hotkeylist.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_inventoryitems.cc"
 					>
 				</File>
@@ -626,6 +630,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_guildmessage.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_hotkeylist.h"
 					>
 				</File>
 				<File

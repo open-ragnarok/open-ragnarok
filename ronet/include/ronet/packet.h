@@ -83,6 +83,7 @@ typedef enum PacketIDs{
 	pktPlayerEquipID = 0x01d7, // (11 bytes) R 01d7 <id>.int <type>.B <id1>.short <id2>.short
 	pktInventoryItemsID = 0x00a4, // R 00a4 <size>.short array of (<index>.short <id>.short <type>.B <identified>.B <type_equip>.short <equipped>.short <broken>.B <upgrade>.B <cards>.8B)
 	pktStatInfoID = 0x00b0, // R 00b0 <type>.short <value>.int
+	pktHotkeyListID = 0x02b9, // R 02b9 array of 27(struct HotkeyInfo)
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

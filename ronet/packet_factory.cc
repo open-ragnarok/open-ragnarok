@@ -57,6 +57,8 @@ HANDLER(MapMoveOk)
 HANDLER(PlayerEquip)
 HANDLER(InventoryItems)
 HANDLER(StatInfo)
+HANDLER(HotkeyList)
+
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -80,6 +82,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(PlayerEquip);
 	CALLER(InventoryItems);
 	CALLER(StatInfo);
+	CALLER(HotkeyList);
 }
 
 ronet::PacketFactory::~PacketFactory() {

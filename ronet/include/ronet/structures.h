@@ -46,6 +46,12 @@ struct InventoryItem {
 	char cards[12]; // Packet 0295 uses 12 bytes. All others uses 8.
 };
 
+struct HotkeyInfo {
+	char type;
+	int id;
+	short lvl;
+};
+
 struct CharInformation {
 	unsigned int id;
 	unsigned int base_xp;
