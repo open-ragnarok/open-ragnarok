@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(GmBroad, false);
 			HANDLEPKT(ServerTick, false);
 			HANDLEPKT(AttackRange, false);
 			HANDLEPKT(GuildMessage, false);
@@ -269,6 +270,10 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+
+HNKD_IMPL(GmBroad) {
+	printf("Received GM Broadcast: %s\n",pkt->getText());
+}
 
 HNKD_IMPL(ServerTick) {
 	printf("Received server tick: %d\n", pkt->getServerTick());

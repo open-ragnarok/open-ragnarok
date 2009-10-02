@@ -65,6 +65,7 @@ namespace ronet {
 #define DECL(x) bool Handle_ ##x (ucBuffer&)
 
 		//Add new packets here
+		DECL(GmBroad);
 		DECL(ServerTick);
 		DECL(AttackRange);
 		DECL(GuildMessage);
@@ -85,7 +86,7 @@ namespace ronet {
 		DECL(PlayerEquip);
 		DECL(InventoryItems);
 		DECL(StatInfo);
-		DECL(StatInfo2);
+		//DECL(StatInfo2);
 		DECL(HotkeyList);
 		DECL(ZenyExp);
 		DECL(StatsInfo);		

@@ -423,6 +423,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_gmbroad.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_guildinforequest.cc"
 					>
 				</File>
@@ -634,6 +638,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_displaystat.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_gmbroad.h"
 					>
 				</File>
 				<File
