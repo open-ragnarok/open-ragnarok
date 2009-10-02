@@ -22,39 +22,40 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKETS_PACKETS_H
-#define __RONET_PACKETS_PACKETS_H
+#include "stdafx.h"
 
-//Add new packets here
-#include "pkt_charcreate.h"
-#include "pkt_charcreated.h"
-#include "pkt_charcreateerror.h"
-#include "pkt_charlist.h"
-#include "pkt_charlogin.h"
-#include "pkt_keepalive.h"
-#include "pkt_login.h"
-#include "pkt_serverlist.h"
-#include "pkt_loginerror.h"			//[kR105]
-#include "pkt_authfailed.h"			//[kR105]
-#include "pkt_charselect.h"			//[kR105]
-#include "pkt_charposition.h"
-#include "pkt_maplogin.h"
-#include "pkt_mapacctsend.h"		//[kR105] 
-#include "pkt_maploginsuccess.h"
-#include "pkt_ownspeech.h"			//[kR105]
-#include "pkt_skilllist.h"			//[kR105]
-#include "pkt_updatestatus.h"		//[kR105]
-#include "pkt_displaystat.h"		//[kR105]
-#include "pkt_guildmessage.h"		//[kR105]
-#include "pkt_attackrange.h"		//[kR105]
-#include "pkt_mapmove.h"
-#include "pkt_guildinforequest.h"
-#include "pkt_maploaded.h"
-#include "pkt_mapmoveok.h"
-#include "pkt_keepalivemap.h"		//[kR105]
-#include "pkt_servertick.h"			//[kR105]
-#include "pkt_playerequip.h"
-#include "pkt_inventoryitems.h"
-#include "pkt_statinfo.h"
+#include "ronet/packets/pkt_statinfo.h"
 
-#endif /* __RONET_PACKETS_PACKETS_H */
+
+namespace ronet {
+
+pktStatInfo::pktStatInfo() : Packet(pktStatInfoID) {
+}
+
+bool pktStatInfo::Decode(ucBuffer& buf) {
+	// Sanity check
+	unsigned short buf_id;
+	buf.peek((unsigned char*)&buf_id, 2);
+	if (buf_id != id) {
+		_log(RONET__ERROR, "Wrong packet id! Received: %04x, Expected: %04x", buf_id, id);
+		return(false);
+	}
+
+	buf.ignore(2);
+
+	//Get data
+	buf >> type;
+	buf >> value;
+
+	return(true);
+}
+
+unsigned short pktStatInfo::getType() const {
+	return(type);
+}
+
+unsigned int pktStatInfo::getValue() const {
+	return(value);
+}
+
+}

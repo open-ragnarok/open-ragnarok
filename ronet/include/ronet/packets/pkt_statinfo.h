@@ -22,39 +22,24 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKETS_PACKETS_H
-#define __RONET_PACKETS_PACKETS_H
+#ifndef __RONET_PACKET_STATINFO_H
+#define __RONET_PACKET_STATINFO_H
 
-//Add new packets here
-#include "pkt_charcreate.h"
-#include "pkt_charcreated.h"
-#include "pkt_charcreateerror.h"
-#include "pkt_charlist.h"
-#include "pkt_charlogin.h"
-#include "pkt_keepalive.h"
-#include "pkt_login.h"
-#include "pkt_serverlist.h"
-#include "pkt_loginerror.h"			//[kR105]
-#include "pkt_authfailed.h"			//[kR105]
-#include "pkt_charselect.h"			//[kR105]
-#include "pkt_charposition.h"
-#include "pkt_maplogin.h"
-#include "pkt_mapacctsend.h"		//[kR105] 
-#include "pkt_maploginsuccess.h"
-#include "pkt_ownspeech.h"			//[kR105]
-#include "pkt_skilllist.h"			//[kR105]
-#include "pkt_updatestatus.h"		//[kR105]
-#include "pkt_displaystat.h"		//[kR105]
-#include "pkt_guildmessage.h"		//[kR105]
-#include "pkt_attackrange.h"		//[kR105]
-#include "pkt_mapmove.h"
-#include "pkt_guildinforequest.h"
-#include "pkt_maploaded.h"
-#include "pkt_mapmoveok.h"
-#include "pkt_keepalivemap.h"		//[kR105]
-#include "pkt_servertick.h"			//[kR105]
-#include "pkt_playerequip.h"
-#include "pkt_inventoryitems.h"
-#include "pkt_statinfo.h"
+#include "ronet/packet.h"
 
-#endif /* __RONET_PACKETS_PACKETS_H */
+namespace ronet {
+	class RONET_DLLAPI pktStatInfo : public Packet {
+	protected:
+		unsigned short type;
+		unsigned int value;
+	public:
+		pktStatInfo();
+		virtual bool Decode(ucBuffer&);
+
+		unsigned short getType() const;
+		unsigned int getValue() const;
+	};
+}
+
+#endif /* __RONET_PACKET_PLAYEREQUIP_H */
+

@@ -84,6 +84,7 @@ namespace ronet {
 		DECL(MapMoveOk);
 		DECL(PlayerEquip);
 		DECL(InventoryItems);
+		DECL(StatInfo);
 
 		void push(Packet*);
 

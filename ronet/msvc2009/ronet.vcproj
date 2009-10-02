@@ -495,6 +495,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_statinfo.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_updatestatus.cc"
 					>
 				</File>
@@ -686,6 +690,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_skilllist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_statinfo.h"
 					>
 				</File>
 				<File
