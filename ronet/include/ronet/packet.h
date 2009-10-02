@@ -81,6 +81,7 @@ typedef enum PacketIDs{
 	pktMapMoveOkID = 0x0087, // (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
 	pktServerTickID = 0x007f, // R 007f <server tick>.l
 	pktPlayerEquipID = 0x01d7, // (11 bytes) R 01d7 <id>.int <type>.B <id1>.short <id2>.short
+	pktInventoryItemsID = 0x00a4, // R 00a4 <size>.short array of (<index>.short <id>.short <type>.B <identified>.B <type_equip>.short <equipped>.short <broken>.B <upgrade>.B <cards>.8B)
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

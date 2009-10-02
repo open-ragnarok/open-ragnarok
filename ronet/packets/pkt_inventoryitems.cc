@@ -22,38 +22,66 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKETS_PACKETS_H
-#define __RONET_PACKETS_PACKETS_H
+#include "stdafx.h"
 
-//Add new packets here
-#include "pkt_charcreate.h"
-#include "pkt_charcreated.h"
-#include "pkt_charcreateerror.h"
-#include "pkt_charlist.h"
-#include "pkt_charlogin.h"
-#include "pkt_keepalive.h"
-#include "pkt_login.h"
-#include "pkt_serverlist.h"
-#include "pkt_loginerror.h"			//[kR105]
-#include "pkt_authfailed.h"			//[kR105]
-#include "pkt_charselect.h"			//[kR105]
-#include "pkt_charposition.h"
-#include "pkt_maplogin.h"
-#include "pkt_mapacctsend.h"		//[kR105] 
-#include "pkt_maploginsuccess.h"
-#include "pkt_ownspeech.h"			//[kR105]
-#include "pkt_skilllist.h"			//[kR105]
-#include "pkt_updatestatus.h"		//[kR105]
-#include "pkt_displaystat.h"		//[kR105]
-#include "pkt_guildmessage.h"		//[kR105]
-#include "pkt_attackrange.h"		//[kR105]
-#include "pkt_mapmove.h"
-#include "pkt_guildinforequest.h"
-#include "pkt_maploaded.h"
-#include "pkt_mapmoveok.h"
-#include "pkt_keepalivemap.h"		//[kR105]
-#include "pkt_servertick.h"			//[kR105]
-#include "pkt_playerequip.h"
-#include "pkt_inventoryitems.h"
+#include "ronet/packets/pkt_inventoryitems.h"
 
-#endif /* __RONET_PACKETS_PACKETS_H */
+
+namespace ronet {
+
+pktInventoryItems::pktInventoryItems() : Packet(pktInventoryItemsID) {
+	items = NULL;
+	item_count = 0;
+}
+
+pktInventoryItems::~pktInventoryItems() {
+	if (items != NULL)
+		delete[] items;
+}
+
+short pktInventoryItems::getItemCount() const {
+	return(item_count);
+}
+InventoryItem* pktInventoryItems::getItem(short idx) {
+	if (idx < 0 || idx >= item_count)
+		return(NULL);
+
+	return(&items[idx]);
+}
+
+bool pktInventoryItems::Decode(ucBuffer& buf) {
+	// Sanity check
+	unsigned short buf_id;
+	buf.peek((unsigned char*)&buf_id, 2);
+	if (buf_id != id) {
+		_log(RONET__ERROR, "Wrong packet id! Received: %04x, Expected: %04x", buf_id, id);
+		return(false);
+	}
+
+	buf.ignore(2);
+
+	short pktsize;
+	buf >> pktsize;
+	pktsize -= 4;
+
+	item_count = pktsize / 20; // Each item uses 20 bytes
+
+	items = new struct InventoryItem[item_count];
+
+	for (short x = 0; x < item_count; x++) {
+		buf >> items[x].index;
+		buf >> items[x].id;
+		buf >> items[x].type;
+		buf >> items[x].identified;
+		buf >> items[x].type_equip;
+		buf >> items[x].equipped;
+		buf >> items[x].broken;
+		buf >> items[x].upgrade;
+		buf.read((unsigned char*)items[x].cards, 8);
+	}
+
+	return(true);
+}
+
+
+}

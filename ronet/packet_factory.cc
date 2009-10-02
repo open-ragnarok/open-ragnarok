@@ -55,6 +55,7 @@ HANDLER(OwnSpeech)
 HANDLER(SkillList)
 HANDLER(MapMoveOk)
 HANDLER(PlayerEquip)
+HANDLER(InventoryItems)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -76,6 +77,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(SkillList);
 	CALLER(MapMoveOk);
 	CALLER(PlayerEquip);
+	CALLER(InventoryItems);
 }
 
 ronet::PacketFactory::~PacketFactory() {

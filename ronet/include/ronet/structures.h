@@ -34,6 +34,18 @@ struct CharAttributes {
 	unsigned char Luk;
 };
 
+struct InventoryItem {
+	short index;
+	short id;
+	char type;
+	char identified;
+	short type_equip;
+	short equipped;
+	char broken;
+	char upgrade;
+	char cards[12]; // Packet 0295 uses 12 bytes. All others uses 8.
+};
+
 struct CharInformation {
 	unsigned int id;
 	unsigned int base_xp;
