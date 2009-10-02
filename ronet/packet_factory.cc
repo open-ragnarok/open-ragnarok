@@ -58,7 +58,7 @@ HANDLER(PlayerEquip)
 HANDLER(InventoryItems)
 HANDLER(StatInfo)
 HANDLER(HotkeyList)
-
+HANDLER(ZenyExp)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -83,6 +83,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(InventoryItems);
 	CALLER(StatInfo);
 	CALLER(HotkeyList);
+	CALLER(ZenyExp);
 }
 
 ronet::PacketFactory::~PacketFactory() {

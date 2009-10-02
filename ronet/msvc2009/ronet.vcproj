@@ -506,6 +506,10 @@
 					RelativePath="..\packets\pkt_updatestatus.cc"
 					>
 				</File>
+				<File
+					RelativePath="..\packets\pkt_zenyexp.cc"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -706,6 +710,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_updatestatus.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_zenyexp.h"
 					>
 				</File>
 			</Filter>
