@@ -85,8 +85,10 @@ namespace ronet {
 		DECL(PlayerEquip);
 		DECL(InventoryItems);
 		DECL(StatInfo);
+		DECL(StatInfo2);
 		DECL(HotkeyList);
 		DECL(ZenyExp);
+		DECL(StatsInfo);		
 
 		void push(Packet*);
 

@@ -70,21 +70,23 @@ typedef enum PacketIDs{
 	pktCharRenameID = 0x028d,
 
 	// From MAP
-	pktMapLoginSuccessID = 0x0073, // R 0073 <server tick>.uint <coordidate>.3B ?.2B
-	pktOwnSpeechID = 0x008e, // R 008e <len>.w <str>.?B
-	pktMapAcctSendID = 0x0283, // (6 bytes) R 0283 <account id>.int
-	pktSkillListID = 0x010f, // R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
-	pktUpdateStatusID = 0x00b0, // R 00b0 <type>.w <val>.l
-	pktDisplayStatID = 0x0141, // R 0141 <type>.l <base>.l <bonus>.l
-	pktGuildMessageID = 0x017f, // R 017f <len>.w <message>.?B
-	pktAttackRangeID = 0x013a, // R 013a <val>.w
-	pktMapMoveOkID = 0x0087, // (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
-	pktServerTickID = 0x007f, // R 007f <server tick>.l
-	pktPlayerEquipID = 0x01d7, // (11 bytes) R 01d7 <id>.int <type>.B <id1>.short <id2>.short
-	pktInventoryItemsID = 0x00a4, // R 00a4 <size>.short array of (<index>.short <id>.short <type>.B <identified>.B <type_equip>.short <equipped>.short <broken>.B <upgrade>.B <cards>.8B)
-	pktStatInfoID = 0x00b0, // R 00b0 <type>.short <value>.int
-	pktZenyExpID = 0x00b1, // R 00b1 <type>.short <value>.int
-	pktHotkeyListID = 0x02b9, // R 02b9 array of 27(struct HotkeyInfo)
+	pktMapLoginSuccessID = 0x0073,	// R 0073 <server tick>.uint <coordidate>.3B ?.2B
+	pktOwnSpeechID = 0x008e,		// R 008e <len>.w <str>.?B
+	pktMapAcctSendID = 0x0283,		// (6 bytes) R 0283 <account id>.int
+	pktSkillListID = 0x010f,		// R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
+	pktUpdateStatusID = 0x00b0,		// R 00b0 <type>.w <val>.l
+	pktDisplayStatID = 0x0141,		// R 0141 <type>.l <base>.l <bonus>.l
+	pktGuildMessageID = 0x017f,		// R 017f <len>.w <message>.?B
+	pktAttackRangeID = 0x013a,		// R 013a <val>.w
+	pktMapMoveOkID = 0x0087,		// (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
+	pktServerTickID = 0x007f,		// R 007f <server tick>.l
+	pktPlayerEquipID = 0x01d7,		// (11 bytes) R 01d7 <id>.int <type>.B <id1>.short <id2>.short
+	pktInventoryItemsID = 0x00a4,	// R 00a4 <size>.short array of (<index>.short <id>.short <type>.B <identified>.B <type_equip>.short <equipped>.short <broken>.B <upgrade>.B <cards>.8B)
+	pktStatInfoID = 0x00b0,			// R 00b0 <type>.short <value>.int
+	pktStatInfo2ID = 0x0141,		// (14 bytes) R 0141 <type>.short 0x0000 <val>.short 0x0000 <val2>.short 0x0000
+	pktZenyExpID = 0x00b1,			// R 00b1 <type>.short <value>.int
+	pktHotkeyListID = 0x02b9,		// R 02b9 array of 27(struct HotkeyInfo)
+	pktStatsInfoID = 0x00bd,		// (44 bytes)
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0
