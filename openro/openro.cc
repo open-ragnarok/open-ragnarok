@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(HpUpdateParty, false);
 			HANDLEPKT(OtherSpeech, false);
 			HANDLEPKT(PlayerEquip, false);
 			HANDLEPKT(CharLeaveScreen, false);
@@ -273,6 +274,10 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+HNKD_IMPL(HpUpdateParty) {
+	printf("The current HP of player %d is %d/%d\n",pkt->getCharId(), pkt->getHp(), pkt->getMaxHp());
+}
+
 HNKD_IMPL(OtherSpeech) {
 	printf("Player %d talk: %s\n",pkt->getIdMes(), pkt->getText());
 }

@@ -443,6 +443,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_hpupdateparty.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_inventoryitems.cc"
 					>
 				</File>
@@ -666,6 +670,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_hotkeylist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_hpupdateparty.h"
 					>
 				</File>
 				<File

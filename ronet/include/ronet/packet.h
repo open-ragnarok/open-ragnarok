@@ -90,6 +90,7 @@ typedef enum PacketIDs{
 	pktGmBroadID = 0x009a,			// R 009a <len>.w <message>.?B
 	pktCharLeaveScreenID = 0x0080,	// R 0080 <ID>.l <type>.B
 	pktOtherSpeechID = 0x008d,		// R 008d <len>.w <ID>.l <str>.?B
+	pktHpUpdatePartyID = 0x0106,	// R 0106 <ID>,l <HP>.w <MaxHP>.w
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0
