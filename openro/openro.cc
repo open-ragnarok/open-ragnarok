@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(OtherSpeech, false);
 			HANDLEPKT(PlayerEquip, false);
 			HANDLEPKT(CharLeaveScreen, false);
 			HANDLEPKT(GmBroad, false);
@@ -272,6 +273,10 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+HNKD_IMPL(OtherSpeech) {
+	printf("Player %d talk: %s\n",pkt->getIdMes(), pkt->getText());
+}
+
 HNKD_IMPL(PlayerEquip) {
 	printf("Player %d put %d in %d (left hand %d)\n", pkt->getPlayer(), pkt->getID1(), pkt->getType(), pkt->getID2());
 }

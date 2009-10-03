@@ -1,4 +1,4 @@
-/* $Id: pkt_charleavescreen.cc 149 2009-09-30 18:57:25Z sergio $ */
+/* $Id: pkt_ownspeech.cc 147 2009-09-30 12:13:45Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -24,40 +24,37 @@
 */
 #include "stdafx.h"
 
-#include "ronet/packets/pkt_charleavescreen.h"
+#include "ronet/packets/pkt_otherspeech.h"
 
-namespace ronet {
-
-pktCharLeaveScreen::pktCharLeaveScreen() : Packet(pktCharLeaveScreenID) {
-	char_id = 0;
-	char_type = 0;
+ronet::pktOtherSpeech::pktOtherSpeech() : Packet(pktOtherSpeechID) {
 }
 
-bool pktCharLeaveScreen::Decode(ucBuffer& buf) {
+bool ronet::pktOtherSpeech::Decode(ucBuffer& buf) {
+	// Sanity check
 	unsigned short buf_id;
 	buf.peek((unsigned char*)&buf_id, 2);
 	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! Expected %04x, received %04x.\n", id, buf_id);
+		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
 		return(false);
 	}
 
+	buf.ignore(2);
+	buf >> len_mes;
+	buf >> id_mes;
+
 	//TODO: Review this (kR105)
-	//if (buf.dataSize() < 12)
+	//if (buf.dataSize() != len_mes)
 	//	return(false);
 
-	buf.ignore(2); // id
-	buf >> char_id;
-	buf >> char_type;
+	buf.read((unsigned char*)text,len_mes-8);
 
 	return(true);
 }
 
-unsigned int pktCharLeaveScreen::getChar() const {
-	return(char_id);
+char *ronet::pktOtherSpeech::getText(){
+	return (char *)text;
 }
 
-unsigned char pktCharLeaveScreen::getType() const {
-	return(char_type);
-}
-
+unsigned int ronet::pktOtherSpeech::getIdMes() const {
+	return id_mes;
 }

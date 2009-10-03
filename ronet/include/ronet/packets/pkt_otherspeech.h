@@ -1,4 +1,4 @@
-/* $Id: pkt_charleavescreen.cc 149 2009-09-30 18:57:25Z sergio $ */
+/* $Id: pkt_otherspeech.h 147 2009-09-30 12:13:45Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -22,42 +22,24 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_OTHERSPEECH_H
+#define __RONET_PACKET_OTHERSPEECH_H
 
-#include "ronet/packets/pkt_charleavescreen.h"
+#include "ronet/packet.h"
 
 namespace ronet {
-
-pktCharLeaveScreen::pktCharLeaveScreen() : Packet(pktCharLeaveScreenID) {
-	char_id = 0;
-	char_type = 0;
+	class RONET_DLLAPI pktOtherSpeech : public Packet {
+	protected:
+		unsigned short len_mes;
+		unsigned int id_mes;
+		char text[256];
+	public:
+		pktOtherSpeech();
+		virtual bool Decode(ucBuffer&);
+		char *getText();
+		unsigned int getIdMes() const;
+	};
 }
 
-bool pktCharLeaveScreen::Decode(ucBuffer& buf) {
-	unsigned short buf_id;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! Expected %04x, received %04x.\n", id, buf_id);
-		return(false);
-	}
+#endif /* __RONET_PACKET_OTHERSPEECH_H */
 
-	//TODO: Review this (kR105)
-	//if (buf.dataSize() < 12)
-	//	return(false);
-
-	buf.ignore(2); // id
-	buf >> char_id;
-	buf >> char_type;
-
-	return(true);
-}
-
-unsigned int pktCharLeaveScreen::getChar() const {
-	return(char_id);
-}
-
-unsigned char pktCharLeaveScreen::getType() const {
-	return(char_type);
-}
-
-}

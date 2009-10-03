@@ -62,5 +62,6 @@
 #include "pkt_statsinfo.h"
 #include "pkt_gmbroad.h"			//[kR105]
 #include "pkt_charleavescreen.h"	//[kR105]
+#include "pkt_otherspeech.h"		//[kR105]
 
 #endif /* __RONET_PACKETS_PACKETS_H */
