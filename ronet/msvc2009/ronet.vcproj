@@ -403,6 +403,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_charleavescreen.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_charlist.cc"
 					>
 				</File>
@@ -618,6 +622,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_charcreateerror.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_charleavescreen.h"
 					>
 				</File>
 				<File

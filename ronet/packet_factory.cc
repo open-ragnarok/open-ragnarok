@@ -37,6 +37,7 @@
 // List of packets that we know how to decode
 
 //Add new packets here
+HANDLER(CharLeaveScreen)
 HANDLER(GmBroad)
 HANDLER(ServerTick)
 HANDLER(AttackRange)
@@ -65,6 +66,7 @@ HANDLER(StatsInfo)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
+	CALLER(CharLeaveScreen);
 	CALLER(GmBroad);
 	CALLER(ServerTick);
 	CALLER(AttackRange);

@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(CharLeaveScreen, false);
 			HANDLEPKT(GmBroad, false);
 			HANDLEPKT(ServerTick, false);
 			HANDLEPKT(AttackRange, false);
@@ -270,6 +271,10 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+
+HNKD_IMPL(CharLeaveScreen) {
+	printf("Char %d leave the screen with code %d.\n",pkt->getChar(),pkt->getType());
+}
 
 HNKD_IMPL(GmBroad) {
 	printf("Received GM Broadcast: %s\n",pkt->getText());

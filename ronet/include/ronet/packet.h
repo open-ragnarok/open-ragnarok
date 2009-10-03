@@ -88,6 +88,7 @@ typedef enum PacketIDs{
 	pktHotkeyListID = 0x02b9,		// R 02b9 array of 27(struct HotkeyInfo)
 	pktStatsInfoID = 0x00bd,		// (44 bytes) R 00bd <status point>.w <STR>.B <STRupP>.B <AGI>.B <AGIupP>.B <VIT>.B <VITupP>.B <INT>.B <INTupP>.B <DEX>.B <DEXupP>.B <LUK>.B <LUKupP>.B <ATK>.w <ATKbonus>.w <MATKmax>.w <MATKmin>.w <DEF>.w <DEFbonus>.w <MDEF>.w <MDEFbonus>.w <HIT>.w <FLEE>.w <FLEEbonus>.w <critical>.w <karma?>.w <manner?>.w
 	pktGmBroadID = 0x009a,			// R 009a <len>.w <message>.?B
+	pktCharLeaveScreenID = 0x0080,	// R 0080 <ID>.l <type>.B
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

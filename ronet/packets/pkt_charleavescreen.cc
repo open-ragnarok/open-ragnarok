@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: pkt_charleavescreen.cc 149 2009-09-30 18:57:25Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -22,45 +22,42 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKETS_PACKETS_H
-#define __RONET_PACKETS_PACKETS_H
+#include "stdafx.h"
 
-//Add new packets here
-#include "pkt_charcreate.h"
-#include "pkt_charcreated.h"
-#include "pkt_charcreateerror.h"
-#include "pkt_charlist.h"
-#include "pkt_charlogin.h"
-#include "pkt_keepalive.h"
-#include "pkt_login.h"
-#include "pkt_serverlist.h"
-#include "pkt_loginerror.h"			//[kR105]
-#include "pkt_authfailed.h"			//[kR105]
-#include "pkt_charselect.h"			//[kR105]
-#include "pkt_charposition.h"
-#include "pkt_maplogin.h"
-#include "pkt_mapacctsend.h"		//[kR105] 
-#include "pkt_maploginsuccess.h"
-#include "pkt_ownspeech.h"			//[kR105]
-#include "pkt_skilllist.h"			//[kR105]
-#include "pkt_updatestatus.h"		//[kR105]
-#include "pkt_displaystat.h"		//[kR105]
-#include "pkt_guildmessage.h"		//[kR105]
-#include "pkt_attackrange.h"		//[kR105]
-#include "pkt_mapmove.h"
-#include "pkt_guildinforequest.h"
-#include "pkt_maploaded.h"
-#include "pkt_mapmoveok.h"
-#include "pkt_keepalivemap.h"		//[kR105]
-#include "pkt_servertick.h"			//[kR105]
-#include "pkt_playerequip.h"
-#include "pkt_inventoryitems.h"
-#include "pkt_statinfo.h"
-//#include "pkt_statinfo2.h"
-#include "pkt_hotkeylist.h"
-#include "pkt_zenyexp.h"
-#include "pkt_statsinfo.h"
-#include "pkt_gmbroad.h"			//[kR105]
-#include "pkt_charleavescreen.h"	//[kR105]
+#include "ronet/packets/pkt_maploaded.h"
 
-#endif /* __RONET_PACKETS_PACKETS_H */
+namespace ronet {
+
+pktCharLeaveScreen::pktCharLeaveScreen() : Packet(pktCharLeaveScreenID) {
+	char_id = 0;
+	char_type = 0;
+}
+
+bool pktCharLeaveScreen::Decode(ucBuffer& buf) {
+	unsigned short buf_id;
+	buf.peek((unsigned char*)&buf_id, 2);
+	if (buf_id != id) {
+		fprintf(stderr, "Wrong packet id! Expected %04x, received %04x.\n", id, buf_id);
+		return(false);
+	}
+
+	// Packet size is 12...
+	if (buf.dataSize() < 12)
+		return(false);
+
+	buf.ignore(2); // id
+	buf >> char_id;
+	buf >> char_type;
+
+	return(true);
+}
+
+unsigned int pktCharLeaveScreen::getChar() const {
+	return(char_id);
+}
+
+unsigned char pktCharLeaveScreen::getType() const {
+	return(char_type);
+}
+
+}

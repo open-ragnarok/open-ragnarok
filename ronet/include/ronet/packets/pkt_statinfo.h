@@ -41,5 +41,5 @@ namespace ronet {
 	};
 }
 
-#endif /* __RONET_PACKET_PLAYEREQUIP_H */
+#endif /* __RONET_PACKET_STATINFO_H */
 
