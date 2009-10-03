@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(InventoryItems, false);
 			HANDLEPKT(HpUpdateParty, false);
 			HANDLEPKT(OtherSpeech, false);
 			HANDLEPKT(PlayerEquip, false);
@@ -274,6 +275,10 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+HNKD_IMPL(InventoryItems) {
+	printf("Received %d items in inventory\n",pkt->getItemCount());
+}
+
 HNKD_IMPL(HpUpdateParty) {
 	printf("The current HP of player %d is %d/%d\n",pkt->getCharId(), pkt->getHp(), pkt->getMaxHp());
 }

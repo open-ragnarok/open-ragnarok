@@ -41,6 +41,7 @@ protected:
 	ronet::pktServerList* m_serverlist;
 
 	//Add new packets here
+	HNDL_DECL(InventoryItems);
 	HNDL_DECL(HpUpdateParty);
 	HNDL_DECL(OtherSpeech);
 	HNDL_DECL(PlayerEquip);
