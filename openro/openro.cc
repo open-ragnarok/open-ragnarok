@@ -100,6 +100,7 @@ void OpenRO::AfterDraw() {
 				break;
 			*/
 			//Add new packets here
+			HANDLEPKT(PlayerEquip, false);
 			HANDLEPKT(CharLeaveScreen, false);
 			HANDLEPKT(GmBroad, false);
 			HANDLEPKT(ServerTick, false);
@@ -271,6 +272,9 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+HNKD_IMPL(PlayerEquip) {
+	printf("Player %d put %d in %d (left hand %d)\n", pkt->getPlayer(), pkt->getID1(), pkt->getType(), pkt->getID2());
+}
 
 HNKD_IMPL(CharLeaveScreen) {
 	printf("Char %d leave the screen with code %d.\n",pkt->getChar(),pkt->getType());

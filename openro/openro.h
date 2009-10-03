@@ -41,6 +41,7 @@ protected:
 	ronet::pktServerList* m_serverlist;
 
 	//Add new packets here
+	HNDL_DECL(PlayerEquip);
 	HNDL_DECL(CharLeaveScreen);
 	HNDL_DECL(GmBroad);
 	HNDL_DECL(ServerTick);
