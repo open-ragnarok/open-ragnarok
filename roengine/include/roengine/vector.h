@@ -88,8 +88,8 @@ public:
 	}
 
 	Vector3<T>& rotateY(const T& angle, const Vector3<T>& v) {
-		T s = sin(angle);
-		T c = cos(angle);
+		T s = sin(-angle);
+		T c = cos(-angle);
 
 		sub(v);
 		
