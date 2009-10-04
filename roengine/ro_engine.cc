@@ -345,7 +345,7 @@ void ROEngine::ProcessMouse(int xless, int yless){
 	}
 
 	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
-	DrawFullAct(getCursor(), (float)(getMouseX() - xless), (float)(getMouseY() - yless), 0, m_cursorSprite, false, NULL, false, false);
+	DrawFullAct(getCursor(), (float)(getMouseX() - xless), (float)(getMouseY() - yless), 0, m_cursorSprite, false, NULL, true, false);
 }
 
 /** Sets the current map */

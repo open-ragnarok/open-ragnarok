@@ -315,7 +315,7 @@ void SprGL::Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& 
 	r.dim.w = w;
 	r.dim.h = h;
 
-	Draw(idx, r);
+	Draw(idx, r, false, v_mirror);
 }
 
 

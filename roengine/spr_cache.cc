@@ -17,7 +17,7 @@ bool SprCache::Load(const std::string& fn, ROObjectCache& objs, FileManager& fm)
 	}
 
 	rogl::SprGL* spr = new rogl::SprGL();
-	if (!spr->open((RO::SPR*)objects[fn])) {
+	if (!spr->open((RO::SPR*)objs[fn])) {
 		delete(spr);
 		return(false);
 	}
