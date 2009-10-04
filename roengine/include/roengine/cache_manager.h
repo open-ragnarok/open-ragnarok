@@ -5,6 +5,7 @@
 #include "gl_object_cache.h"
 #include "texturemanager.h"
 #include "file_manager.h"
+#include "spr_cache.h"
 
 /**
  * Responsible for managing all cache objects of ROEngine
@@ -27,6 +28,11 @@ protected:
 	 */
 	FileManager m_filemanager;
 
+	/**
+	 * Cache of SprGL objects
+	 */
+	SprCache m_sprgl_objects;
+
 public:
 	CacheManager();
 	virtual ~CacheManager();
@@ -38,6 +44,8 @@ public:
 	ROObjectCache& getROObjects();
 
 	FileManager& getFileManager();
+
+	SprCache& getSprGLObjects();
 };
 
 #endif /* __ROENGINE_CACHE_MANAGER_H */

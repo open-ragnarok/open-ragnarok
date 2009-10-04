@@ -87,8 +87,9 @@ public:
 	float getMaxU() const;
 	float getMaxV() const;
 
-	Texture& operator =(const Texture&);
-	Texture& operator =(Root*);
+	Texture& operator = (const Texture&);
+	Texture& operator = (Root*);
+	bool operator == (const Texture&) const;
 
 	bool Activate() const;
 	bool Valid() const;

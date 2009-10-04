@@ -13,3 +13,5 @@ GLObjectCache& CacheManager::getGLObjects() { return(m_gl_objects); }
 ROObjectCache& CacheManager::getROObjects() { return(m_ro_objects); }
 
 FileManager& CacheManager::getFileManager() { return(m_filemanager); }
+
+SprCache& CacheManager::getSprGLObjects() { return(m_sprgl_objects); }

@@ -2,6 +2,7 @@
 #define __ROGL_SPR_TEXTURE_H
 
 #include "sdle/texture.h"
+#include "sdle/structures.h"
 #include "ro/types/spr.h"
 #include "ro/types/act.h"
 #include "globject.h"
@@ -35,6 +36,8 @@ public:
 
 	void Draw() const;
 	void Draw(unsigned int idx, bool xmirror = false) const;
+	void Draw(unsigned int idx, float width, float height, bool xmirror = false, bool ymirror = false) const;
+	void Draw(unsigned int idx, struct Rect rect, bool xmirror = false, bool ymirror = false) const;
 	void Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const;
 
 	// Deletes all info
@@ -43,6 +46,7 @@ public:
 	unsigned int getFrameCount() const;
 
 	SprGL& operator = (const SprGL&);
+	bool operator == (const SprGL&) const;
 	/**
 	 * Returns information on how to draw a frame
 	 * @param frame the frame index to get the parameters from

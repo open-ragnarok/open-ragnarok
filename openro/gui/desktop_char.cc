@@ -69,8 +69,8 @@ void DesktopChar::addChar(const CharInformation& info) {
 	printf("Loading %s (%d) body in slot %d: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, i, novice_body);
 	printf("Loading %s (%d) head in slot %d: %s\n", RO::EUC::classname_en[m_chars[i].Class], m_chars[i].Class, i, novice_head);
 
-	bodies[i].Load(novice_body, ro_objects, fm, tm);
-	heads[i].Load(novice_head, ro_objects, fm, tm);
+	bodies[i].Load(novice_body, *m_ro);
+	heads[i].Load(novice_head, *m_ro);
 }
 
 void DesktopChar::delChar(unsigned int pos) {

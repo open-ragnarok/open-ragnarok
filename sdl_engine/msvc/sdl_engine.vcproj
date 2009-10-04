@@ -487,6 +487,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\sdle\structures.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\sdle\texture.h"
 				>
 			</File>

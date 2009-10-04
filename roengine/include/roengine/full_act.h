@@ -1,7 +1,7 @@
 #ifndef __ROENGINE_FULLACT_H
 #define __ROENGINE_FULLACT_H
 
-#include "texturemanager.h"
+#include "cache_manager.h"
 #include "ro/types/act.h"
 #include "ro/types/spr.h"
 #include "rogl/sprgl.h"
@@ -18,7 +18,7 @@ public:
 
 	FullAct& operator = (const FullAct&);
 
-	bool Load(const std::string& act, ROObjectCache& m_ro_objects, FileManager& m_filemanager, TextureManager& m_texturemanager);
+	bool Load(const std::string& act, CacheManager& cache);
 	void Clear();
 
 	const RO::ACT* getAct() const;

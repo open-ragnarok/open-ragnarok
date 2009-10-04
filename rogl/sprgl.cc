@@ -75,6 +75,9 @@ SprGL& SprGL::operator = (const SprGL& s) {
 	return(*this);
 }
 
+bool SprGL::operator == (const SprGL& s) const {
+	return(m_texture == s.m_texture);
+}
 
 bool SprGL::open(const RO::SPR* spr) {
 	unsigned int imageWidth = 256;
@@ -199,28 +202,69 @@ void SprGL::Draw() const {
 	Draw(0);
 }
 
+void SprGL::Draw(unsigned int idx, struct Rect rect, bool xmirror, bool ymirror) const {
+	if (idx >= m_framecount)
+		return;
+
+	float width = rect.dim.w;
+	float height = rect.dim.h;
+	float sx = - width / 2 + rect.pos.x; // Start X Position
+	float sy = rect.pos.y; // Start Y Position
+
+	float u[2];
+	float v[2];
+
+	if (!xmirror) {
+		u[0] = m_info[idx].su;
+		u[1] = m_info[idx].eu;
+	}
+	else {
+		u[1] = m_info[idx].su;
+		u[0] = m_info[idx].eu;
+	}
+
+	if (!ymirror) {
+		v[0] = m_info[idx].sv;
+		v[1] = m_info[idx].ev;
+	}
+	else {
+		v[1] = m_info[idx].sv;
+		v[0] = m_info[idx].ev;
+	}
+
+
+	m_texture.Activate();
+	glBegin(GL_QUADS);
+	glTexCoord2f(u[0], v[1]);	glVertex3f(sx, sy, 0.0f);
+	glTexCoord2f(u[0], v[0]);	glVertex3f(sx, sy + height, 0.0f);
+	glTexCoord2f(u[1], v[0]);	glVertex3f(sx + width, sy + height, 0.0f);
+	glTexCoord2f(u[1], v[1]);	glVertex3f(sx + width, sy, 0.0f);
+	glEnd();
+}
+
+void SprGL::Draw(unsigned int idx, float width, float height, bool xmirror, bool ymirror) const {
+	struct Rect r;
+	r.pos.x = 0;
+	r.pos.y = 0;
+
+	r.dim.w = width;
+	r.dim.h = height;
+
+	Draw(idx, r, xmirror, ymirror);
+}
+
 void SprGL::Draw(unsigned int idx, bool xmirror) const {
 	if (idx >= m_framecount)
 		return;
 
-	float sx = -((float)m_info[idx].w) / 2;
+	struct Rect r;
+	r.pos.x = 0;
+	r.pos.y = 0;
 
-	m_texture.Activate();
-	glBegin(GL_QUADS);
-	// TODO: Optimize this
-	if (!xmirror) {
-		glTexCoord2f(m_info[idx].su, m_info[idx].ev);	glVertex3f(sx, 0.0f, 0.0f);
-		glTexCoord2f(m_info[idx].su, m_info[idx].sv);	glVertex3f(sx, (float)m_info[idx].h, 0.0f);
-		glTexCoord2f(m_info[idx].eu, m_info[idx].sv);	glVertex3f(sx + (float)m_info[idx].w, (float)m_info[idx].h, 0.0f);
-		glTexCoord2f(m_info[idx].eu, m_info[idx].ev);	glVertex3f(sx + (float)m_info[idx].w, 0.0f, 0.0f);
-	}
-	else {
-		glTexCoord2f(m_info[idx].eu, m_info[idx].ev);	glVertex3f(sx, 0.0f, 0.0f);
-		glTexCoord2f(m_info[idx].eu, m_info[idx].sv);	glVertex3f(sx, (float)m_info[idx].h, 0.0f);
-		glTexCoord2f(m_info[idx].su, m_info[idx].sv);	glVertex3f(sx + (float)m_info[idx].w, (float)m_info[idx].h, 0.0f);
-		glTexCoord2f(m_info[idx].su, m_info[idx].ev);	glVertex3f(sx + (float)m_info[idx].w, 0.0f, 0.0f);
-	}
-	glEnd();
+	r.dim.w = (float)m_info[idx].w;
+	r.dim.h = (float)m_info[idx].h;
+
+	Draw(idx, r, xmirror);
 }
 
 void SprGL::Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const {
@@ -265,16 +309,13 @@ void SprGL::Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& 
 		y -= cpat.ext_y;
 	}
 
+	struct Rect r;
+	r.pos.x = x;
+	r.pos.y = y - h/2;
+	r.dim.w = w;
+	r.dim.h = h;
 
-	m_texture.Activate();
-
-	glBegin(GL_QUADS);
-	glTexCoord2f(u[0], v[0]); glVertex3f(x - w/2, y - h/2, 0);
-	glTexCoord2f(u[0], v[1]); glVertex3f(x - w/2, y + h/2, 0);
-	glTexCoord2f(u[1], v[1]); glVertex3f(x + w/2, y + h/2, 0);
-	glTexCoord2f(u[1], v[0]); glVertex3f(x + w/2, y - h/2, 0);
-	glEnd();
-
+	Draw(idx, r);
 }
 
 

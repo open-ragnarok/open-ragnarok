@@ -86,13 +86,13 @@ void DesktopCreate::readObjects() {
 	printf("Novice body: %s\n", novice_body);
 	printf("Novice head: %s\n", novice_head);
 
-	obj.Load(novice_body, ro_objects, fm, tm);
+	obj.Load(novice_body, *m_ro);
 	obj.setPos(94, 180, 0);
 
-	if (!head.Load(novice_head, ro_objects, fm, tm)) {
+	if (!head.Load(novice_head, *m_ro)) {
 		m_headnum = 2;
 		sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[accsex], m_headnum,RO::EUC::sex[accsex]);
-		head.Load(novice_head, ro_objects, fm, tm);
+		head.Load(novice_head, *m_ro);
 	}
 }
 

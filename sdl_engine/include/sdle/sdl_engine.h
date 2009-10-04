@@ -11,6 +11,7 @@
 #include "sdle_settings.h"
 #include "sdle_string.h"
 #include "vertex.h"
+#include "structures.h"
 
 #include <string>
 

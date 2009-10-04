@@ -31,7 +31,11 @@ FullAct::FullAct(const RO::ACT* a, const rogl::SprGL& spr) {
 	m_spr = spr;
 }
 
-bool FullAct::Load(const std::string& name, ROObjectCache& objects, FileManager& fm, TextureManager& tm) {
+bool FullAct::Load(const std::string& name, CacheManager& cache) {
+	ROObjectCache& objects = cache.getROObjects();
+	FileManager& fm = cache.getFileManager();
+	TextureManager& tm = cache.getTextureManager();
+
 	std::string act_n;
 	std::string spr_n;
 
@@ -42,16 +46,13 @@ bool FullAct::Load(const std::string& name, ROObjectCache& objects, FileManager&
 		return(false);
 	}
 
-	if (!objects.ReadSPR(spr_n, fm)) {
-		return(false);
+	if (!cache.getSprGLObjects().exists(spr_n)) {
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm))
+			return(false);
 	}
 
+	m_spr = *cache.getSprGLObjects().get(spr_n);
 	m_act = (RO::ACT*)objects[act_n];
-	if (!m_spr.open((RO::SPR*)objects[spr_n])) {
-		return(false);
-	}
-
-	tm.Register(spr_n, m_spr.getTexture());
 
 	return(true);
 }

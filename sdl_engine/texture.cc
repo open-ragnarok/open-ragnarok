@@ -44,7 +44,7 @@ Texture::~Texture() {
 	}
 }
 
-Texture& Texture::operator =(const Texture& t) {
+Texture& Texture::operator = (const Texture& t) {
 	if (m_root != NULL) {
 		m_root->DelRef();
 		if (m_root->RefCount() == 0) {
@@ -60,7 +60,7 @@ Texture& Texture::operator =(const Texture& t) {
 	return (*this);
 }
 
-Texture& Texture::operator =(Root* root) {
+Texture& Texture::operator = (Root* root) {
 	if (m_root != NULL) {
 		m_root->DelRef();
 		if (m_root->RefCount() == 0) {
@@ -74,6 +74,17 @@ Texture& Texture::operator =(Root* root) {
 		m_root->AddRef();
 	}
 	return (*this);
+}
+
+bool Texture::operator == (const Texture& t) const {
+	if(m_root == NULL) {
+		if (t.m_root == NULL)
+			return(true);
+		else
+			return(false);
+	}
+
+	return(m_root->ID() == t.m_root->ID());
 }
 
 float Texture::getMaxU() const {

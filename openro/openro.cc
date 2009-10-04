@@ -162,7 +162,7 @@ void OpenRO::BeforeRun() {
 	FullAct ycursor;
 	char xcursor[256];
 	sprintf(xcursor,"sprite\\cursors");
-	ycursor.Load(xcursor, getROObjects(), getFileManager(), getTextureManager());
+	ycursor.Load(xcursor, *this);
 	setCursor(ycursor);
 }
 
