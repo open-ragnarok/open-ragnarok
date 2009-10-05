@@ -13,6 +13,8 @@ protected:
 
 	unsigned int elapsed;
 	unsigned int ptick;
+	unsigned int ffps;
+	unsigned int fps;
 
 public:
 	DesktopIngame(OpenRO*);

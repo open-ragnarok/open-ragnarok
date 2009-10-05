@@ -447,7 +447,7 @@ void RO::RSM::Mesh::calcBoundingBox(const RO::RSM::Mesh::Transf& t) {
 	box.max.v[0] = box.max.v[1] = box.max.v[2] = -999999.0;
 	box.min.v[0] = box.min.v[1] = box.min.v[2] = 999999.0;
 
-	float transf[12];
+	float transf[15];
 	transf[0] = t.mat33[0];
 	transf[1] = t.mat33[1];
 	transf[2] = t.mat33[2];

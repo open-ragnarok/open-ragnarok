@@ -104,10 +104,6 @@ void RsmObject::CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) c
 
 	t = (time - mesh.frames[current].time) / (float)(mesh.frames[next].time - mesh.frames[current].time);
 
-	//for (i = 0; i < 4; i++) {
-	//	q[i] = frames[current].orientation[i] * (1-t) + t * frames[next].orientation[i];
-	//}
-
 	x = mesh.frames[current].rot[0] * (1-t) + t * mesh.frames[next].rot[0];
 	y = mesh.frames[current].rot[1] * (1-t) + t * mesh.frames[next].rot[1];
 	z = mesh.frames[current].rot[2] * (1-t) + t * mesh.frames[next].rot[2];
@@ -146,32 +142,6 @@ void RsmObject::CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) c
 	Ori[13] = 0;  
 	Ori[14] = 0;  
 	Ori[15] = 1.0f;
-
-	/*
-	//GLfloat two_x = q[0] * 2.0;
-	//GLfloat two_y = q[1] * 2.0;
-	//GLfloat two_z = q[2] * 2.0;
-
-	Ori[0] = 1.0 - q[1] * 2.0; * q[1] - q[2] * 2.0 * q[2];
-	Ori[1] = q[0] * 2.0 * q[1];
-	Ori[2] = two_z * q[0];
-	Ori[3] = 0.0;
-
-	Ori[4] = two_x * q[1];
-	Ori[5] = 1.0 - two_x * q[0] - two_z * q[2];
-	Ori[6] = two_y * q[2];
-	Ori[7] = 0.0;
-
-	Ori[8] = two_z * q[0];
-	Ori[9] = two_y * q[2];
-	Ori[10] = 1.0 - two_x * q[0] - two_y * q[1];
-	Ori[11] = 0.0;
-
-	Ori[12] = 0.0;
-	Ori[13] = 0.0;
-	Ori[14] = 0.0;
-	Ori[15] = 1.0;
-	*/
 
 	//printf("time: %d\tcurframe: %d\tcframetime: %d\tnframetime: %d\r", time, current, mesh.frames[current].time, mesh.frames[next].time);
 
@@ -253,6 +223,7 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 	glPushMatrix();
 
 	if (mesh.is_main && mesh.is_only) {
+		//Primera diferencia
 		glTranslatef(-box.range.v[0], -box.range.v[1], -box.range.v[2]);
 	}
 	else {
