@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "roengine/objects/charobj.h"
+#include "ro/common.h"
 
 CharObj::CharObj() : Actor() {
 	map_x = map_y = 0;
@@ -23,9 +24,14 @@ void CharObj::Draw() {
 
 	// Move...
 	if (dest_x != map_x || dest_y != map_y) {
+		if (m_act == 0) {
+			m_act = 1;
+		}
 		float dx = dest_x - map_x;
 		float dy = dest_y - map_y;
 		float size = sqrt(dx * dx + dy * dy);
+
+		m_dir = RO::dir2Cdir(dx, dy);
 
 		if (size < speed) {
 			map_x = dest_x;
@@ -41,6 +47,11 @@ void CharObj::Draw() {
 			map_y += dy;
 		}
 	}
+	else {
+		if (m_act == 1) {
+			m_act = 0;
+		}
+	}
 
 	float wx, wy, wz;
 	glPushMatrix();
@@ -48,7 +59,12 @@ void CharObj::Draw() {
 	m_map->getWorldPosition(map_x, map_y, &wx, &wy, &wz);
 	glPopMatrix();
 
+	m_bodyact.setAction(m_act);
+	m_headact.setAction(m_act);
+
 	int dir = 7 - cameraDir + m_dir;
+	if (dir >= 8)
+		dir -= 8;
 
 	glPushMatrix();
 	glEnable(GL_BLEND);
