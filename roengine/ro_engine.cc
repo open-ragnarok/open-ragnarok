@@ -17,6 +17,18 @@ int file_exists (char* fileName) {
 
 void ROEngine::HandleKeyboard() {}
 
+void ROEngine::clearActors() {
+	std::map<unsigned int, Actor*>::iterator itr;
+
+	itr = m_actors.begin();
+	while (itr != m_actors.end()) {
+		delete(itr->second);
+		itr++;
+	}
+
+	m_actors.clear();
+}
+
 void ROEngine::ReadIni(const std::string& name) {
 	std::ifstream ini;
 	std::string cmd, file;
@@ -215,6 +227,13 @@ void ROEngine::DrawMap() {
 	if (me.valid()) {
 		me.setMap(m_map);
 		me.Render(50, &m_frustum, m_cameradir);
+	}
+
+	std::map<unsigned int, Actor*>::iterator itr;
+	itr = m_actors.begin();
+	while (itr != m_actors.end()) {
+		itr->second->Render(50, &m_frustum, m_cameradir);
+		itr++;
 	}
 
 	afterDrawMap();

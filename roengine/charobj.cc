@@ -2,7 +2,7 @@
 
 #include "roengine/objects/charobj.h"
 
-CharObj::CharObj() : GLObject() {
+CharObj::CharObj() : Actor() {
 	map_x = map_y = 0;
 	dest_x = dest_y = 0;
 	m_act = 0;
@@ -12,10 +12,6 @@ CharObj::CharObj() : GLObject() {
 }
 
 CharObj::~CharObj() {
-}
-
-void CharObj::setMap(RswObject* map) {
-	m_map = map;
 }
 
 void CharObj::Draw() {
@@ -66,37 +62,8 @@ void CharObj::Draw() {
 	glPopMatrix();
 }
 
-float CharObj::getPositionX() const {
-	return(map_x);
-}
-
-float CharObj::getPositionY() const {
-	return(map_y);
-}
-
-float CharObj::getDestinationX() const {
-	return(dest_x);
-}
-
-float CharObj::getDestinationY() const {
-	return(dest_y);
-}
-
-
 bool CharObj::valid() const {
 	return(m_bodyact.valid());
-}
-
-void CharObj::setPos(float x, float y) {
-	map_x = x;
-	map_y = y;
-	dest_x = x;
-	dest_y = y;
-}
-
-void CharObj::setDest(float x, float y) {
-	dest_x = x;
-	dest_y = y;
 }
 
 bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
@@ -133,19 +100,14 @@ bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
 	}
 
 	// Reads the SPR object
-	if (!objects.ReadSPR(spr_n, fm)) {
-		fprintf(stderr, "Error loading spr file %s.\n", spr_n.c_str());
-		return(false);
+	if (!cache.getSprGLObjects().exists(spr_n)) {
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm)) {
+			fprintf(stderr, "Error opening SPR file");
+			return(false);
+		}
 	}
 
-	// Converts the SPR object into a texture (SprGL)
-	if (!sprgl.open((RO::SPR*)objects[spr_n])) {
-		fprintf(stderr, "Error converting spr to texture.\n");
-		return(false);
-	}
-
-	// Registers the SprGL Texture
-	tm.Register(spr_n, sprgl.getTexture());
+	sprgl = *cache.getSprGLObjects().get(spr_n);
 
 	// Creates an ActGL and registers it
 	m_bodyact.setSpr(sprgl);
@@ -167,19 +129,12 @@ bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
 	}
 
 	// Reads the SPR object
-	if (!objects.ReadSPR(spr_n, fm)) {
-		fprintf(stderr, "Error loading spr file %s.\n", spr_n.c_str());
-		return(false);
+	if (!cache.getSprGLObjects().exists(spr_n)) {
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm)) {
+			fprintf(stderr, "Error opening SPR file");
+			return(false);
+		}
 	}
-
-	// Converts the SPR object into a texture (SprGL)
-	if (!sprgl.open((RO::SPR*)objects[spr_n])) {
-		fprintf(stderr, "Error converting spr to texture.\n");
-		return(false);
-	}
-
-	// Registers the SprGL Texture
-	tm.Register(spr_n, sprgl.getTexture());
 
 	// Creates an ActGL and registers it
 	m_headact.setSpr(sprgl);

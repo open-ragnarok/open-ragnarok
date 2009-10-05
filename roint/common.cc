@@ -26,7 +26,43 @@
 
 #include "ro/common.h"
 
-RO::CDir RO::nextDirection(const CDir& dir) {
+#include <math.h>
+
+namespace RO {
+
+CDir dir2Cdir(float x, float y) {
+	float size = sqrt(x*x + y*y);
+
+	x /= size;
+	y /= size;
+
+	float dot = y * -1;
+	float angle = acos(dot) * 180 / 3.1415f;
+
+	if (x < 0)
+		angle = 360 - angle;
+
+	if (angle <= 22.5)
+		return(RO::DIR_N);
+	else if (angle <= 67.5)
+		return(RO::DIR_NE);
+	else if (angle <= 112.5)
+		return(RO::DIR_E);
+	else if (angle <= 157.5)
+		return(RO::DIR_SE);
+	else if (angle <= 202.5)
+		return(RO::DIR_S);
+	else if (angle <= 247.5)
+		return(RO::DIR_SW);
+	else if (angle <= 292.5)
+		return(RO::DIR_W);
+	else if (angle <= 337.5)
+		return(RO::DIR_NW);
+
+	return(RO::DIR_N);
+}
+
+CDir nextDirection(CDir dir) {
 	switch (dir) {
 		case DIR_S:
 			return(DIR_SW);
@@ -48,7 +84,7 @@ RO::CDir RO::nextDirection(const CDir& dir) {
 	return(DIR_S);
 }
 
-RO::CDir RO::prevDirection(const CDir& dir) {
+CDir prevDirection(CDir dir) {
 	switch (dir) {
 		case DIR_S:
 			return(DIR_SE);
@@ -68,4 +104,6 @@ RO::CDir RO::prevDirection(const CDir& dir) {
 			return(DIR_E);
 	}
 	return(DIR_S);
+}
+
 }

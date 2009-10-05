@@ -86,6 +86,16 @@ protected:
 	 */
 	RswObject* m_map;
 
+	/**
+	 * All the actors that the user can currently see
+	 */
+	std::map<unsigned int, Actor*> m_actors;
+
+	/**
+	 * Clears all the actors (useful when changing maps)
+	 */
+	void clearActors();
+
 public:
 	ROEngine(const std::string& name = "");
 	~ROEngine();

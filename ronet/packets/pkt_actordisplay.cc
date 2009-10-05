@@ -39,12 +39,26 @@ bool pktActorDisplay::Decode(ucBuffer& buf) {
 	if (buf.dataSize() < 55)
 		return(false);
 
+	//_hexlog(RONET__DEBUG, buf.getBuffer(), 55);
+
 	buf.ignore(2); // Packet ID
 
 
-	unsigned int c;
+	unsigned int c = 0;
 	unsigned char *coord = (unsigned char*)&c;
-	coord++;
+
+	buf >> unk;
+	/* Padding, according to eAthena code:
+#if PACKETVER >= 20071106
+	if (type) {
+		// shift payload 1 byte to the right for mob packets
+		WBUFB(buf,2) = 0; // padding?
+		offset++;
+		buf = WBUFP(buffer,offset);
+	}
+#endif
+	 My headache is gone!
+	 */
 
 	buf >> id;
 	buf >> walk_speed;
@@ -67,19 +81,37 @@ bool pktActorDisplay::Decode(ucBuffer& buf) {
 	buf >> opt3;
 	buf >> karma;
 	buf >> sex;
-	buf.read(coord, 3);
+
+	buf >> coord[2];
+	buf >> coord[1];
+	buf >> coord[0];
+
 	buf >> unknown1;
 	buf >> unknown2;
 	buf >> act;
 	buf >> lv;
-	buf >> unk;
 
-	coord_x = (c >> 14) & 0x03ff;
-	coord_y = (c >>  4) & 0x03ff;
+	//XYdecode(coord);
 
-	_log(RONET__DEBUG, "There is someone at %d, %d (id: %08x)!", coord_x, coord_y, id);
+	dir = c & 0x0f;
+	c >>= 4;
+	coord_y = c & 0x03FF;
+	c >>= 10;
+	coord_x = c & 0x03FF;
+
+	//_log(RONET__DEBUG, "There is someone at %d, %d (id: %08x)!", coord_x, coord_y, id);
+	//_log(RONET__DEBUG, "Type: %d", type);
 
 	return(true);
 }
+
+//by kR105
+void pktActorDisplay::XYdecode(unsigned char buf[3]){
+	//Decode the encoded X, Y and DIR sent by the server.
+	dir = buf[2] & 0x0F;
+	coord_x = (((buf[1] & 0x3F) << 4) | (buf[2] >> 4));
+	coord_y = ((buf[0] << 2) | (buf[1] >> 6));
+}
+
 
 }

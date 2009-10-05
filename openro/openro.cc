@@ -122,6 +122,7 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(OwnSpeech, false);
 			HANDLEPKT(SkillList, false);
 			HANDLEPKT(MapMoveOk, true);
+			HANDLEPKT(ActorDisplay, true);
 			default:
 				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
 		}
@@ -275,51 +276,76 @@ void OpenRO::clickMap(int x, int y) {
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
-HNKD_IMPL(InventoryItems) {
-	printf("Received %d items in inventory\n",pkt->getItemCount());
+HNDL_IMPL(InventoryItems) {
+	_log(OPENRO__DEBUG, "Received %d items in inventory",pkt->getItemCount());
 }
 
-HNKD_IMPL(HpUpdateParty) {
-	printf("The current HP of player %d is %d/%d\n",pkt->getCharId(), pkt->getHp(), pkt->getMaxHp());
+HNDL_IMPL(ActorDisplay) {
+	CharObj *obj;
+	if (m_actors.find(pkt->id) != m_actors.end()) {
+		obj = (CharObj*)m_actors[pkt->id];
+	}
+	else {
+		obj = new CharObj();
+	}
+
+	obj->setMap(m_map);
+	obj->open(*this, RO::J_NOVICE, RO::S_FEMALE);
+	obj->setPos((float)pkt->coord_x, (float)pkt->coord_y);
+
+	m_actors[pkt->id] = obj;
 }
 
-HNKD_IMPL(OtherSpeech) {
-	printf("Player %d talk: %s\n",pkt->getIdMes(), pkt->getText());
+HNDL_IMPL(CharLeaveScreen) {
+	unsigned int id = pkt->getChar();
+	Actor* actor;
+
+	std::map<unsigned int, Actor*>::iterator itr = m_actors.find(id);
+
+	if (itr != m_actors.end()) {
+		actor = itr->second;
+		m_actors.erase(itr);
+		delete(actor);
+	}
 }
 
-HNKD_IMPL(PlayerEquip) {
-	printf("Player %d put %d in %d (left hand %d)\n", pkt->getPlayer(), pkt->getID1(), pkt->getType(), pkt->getID2());
+HNDL_IMPL(HpUpdateParty) {
+	_log(OPENRO__DEBUG, "The current HP of player %d is %d/%d",pkt->getCharId(), pkt->getHp(), pkt->getMaxHp());
 }
 
-HNKD_IMPL(CharLeaveScreen) {
-	printf("Char %d leave the screen with code %d.\n",pkt->getChar(),pkt->getType());
+HNDL_IMPL(OtherSpeech) {
+	_log(OPENRO__DEBUG, "Player %d talk: %s\n",pkt->getIdMes(), pkt->getText());
 }
 
-HNKD_IMPL(GmBroad) {
-	printf("Received GM Broadcast: %s\n",pkt->getText());
+HNDL_IMPL(PlayerEquip) {
+	_log(OPENRO__DEBUG, "Player %d put %d in %d (left hand %d)\n", pkt->getPlayer(), pkt->getID1(), pkt->getType(), pkt->getID2());
 }
 
-HNKD_IMPL(ServerTick) {
-	printf("Received server tick: %d\n", pkt->getServerTick());
+HNDL_IMPL(GmBroad) {
+	_log(OPENRO__DEBUG, "Received GM Broadcast: %s\n",pkt->getText());
 }
 
-HNKD_IMPL(MapMoveOk) {
+HNDL_IMPL(ServerTick) {
+	_log(OPENRO__DEBUG, "Received server tick: %d\n", pkt->getServerTick());
+}
+
+HNDL_IMPL(MapMoveOk) {
 	int x, y;
 
 	pkt->getDest(&x, &y);
 	me.setDest((float)x, (float)y);
 }
 
-HNKD_IMPL(AttackRange) {
+HNDL_IMPL(AttackRange) {
 	_log(OPENRO__TRACE, "Received attack range: %d", pkt->getRange());
 }
 
-HNKD_IMPL(GuildMessage) {
+HNDL_IMPL(GuildMessage) {
 	_log(OPENRO__TRACE, "Guild Message: %s", pkt->getText());
 	m_network.MapLoaded();
 }
 
-HNKD_IMPL(DisplayStat) {
+HNDL_IMPL(DisplayStat) {
 	unsigned int type = pkt->getType();
 	unsigned int base = pkt->getBase();
 	unsigned int bonus = pkt->getBonus();
@@ -327,14 +353,14 @@ HNKD_IMPL(DisplayStat) {
 	_log(OPENRO__TRACE, "Stat %s: %d + %d", RO::dnames[type], base, bonus);
 }
 
-HNKD_IMPL(UpdateStatus) {
+HNDL_IMPL(UpdateStatus) {
 	unsigned short type = pkt->getType();
 	unsigned int value = pkt->getValue();
 
 	_log(OPENRO__TRACE, "Update status \"%s\", with value %d!", RO::dnames[type], value);
 }
 
-HNKD_IMPL(ServerList) {
+HNDL_IMPL(ServerList) {
 	m_serverlist = pkt;
 	m_gui.setDesktop(dskService);
 	dskService->setEnabled(true);
@@ -347,7 +373,7 @@ HNKD_IMPL(ServerList) {
 	}
 }
 
-HNKD_IMPL(CharList) {
+HNDL_IMPL(CharList) {
 	int count = pkt->getCount();
 	_log(OPENRO__TRACE, "Received a list of %d chars", count);
 	m_gui.setDesktop(dskChar);
@@ -359,7 +385,7 @@ HNKD_IMPL(CharList) {
 }
 
 //[kR105]
-HNKD_IMPL(LoginError) {
+HNDL_IMPL(LoginError) {
 	short errorId = pkt->getErrorId();
 	char errorDesc[256];
 
@@ -387,14 +413,14 @@ HNKD_IMPL(LoginError) {
 			sprintf(errorDesc,"Unknown error");
 			break;
 	}
-	_log(OPENRO__ERROR, "Login error: %s (Error number %d)", errorDesc, errorId);
+	_log(OPENRO__DEBUG, "Login error: %s (Error number %d)", errorDesc, errorId);
 
 	//We don't need the connection anymore.
 	m_network.getLogin().Close();
 }
 
 //[kR105]
-HNKD_IMPL(AuthFailed) {
+HNDL_IMPL(AuthFailed) {
 	short errorId = pkt->getErrorId();
 	char errorDesc[256];
 
@@ -434,14 +460,14 @@ HNKD_IMPL(AuthFailed) {
 			sprintf(errorDesc,"Unknown error");
 			break;
 	}
-	_log(OPENRO__ERROR, "Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
+	_log(OPENRO__DEBUG, "Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
 
 	//We don't need the connection anymore.
 	CloseSockets();
 	LoginScreen();
 }
 
-HNKD_IMPL(CharCreated) {
+HNDL_IMPL(CharCreated) {
 	unsigned short cid = pkt->getID();
 	_log(OPENRO__TRACE, "Received the new character created with ID %d\n", cid);
 	
@@ -449,7 +475,7 @@ HNKD_IMPL(CharCreated) {
 	dskChar->addChar(newchar);
 }
 
-HNKD_IMPL(CharPosition) {
+HNDL_IMPL(CharPosition) {
 	//Convert the IP to string (stored in long)
 	struct in_addr addr;
 	addr.s_addr = pkt->getIp();
@@ -479,11 +505,11 @@ HNKD_IMPL(CharPosition) {
 	strcpy(FirstMap, pkt->getMapname());
 }
 
-HNKD_IMPL(MapAcctSend) {
+HNDL_IMPL(MapAcctSend) {
 	_log(OPENRO__TRACE, "Received accountID from mapserver: %d", pkt->getAccountId());
 }
 
-HNKD_IMPL(MapLoginSuccess) {
+HNDL_IMPL(MapLoginSuccess) {
 	short pos_x = pkt->getPosX(); 
 	short pos_y = pkt->getPosY();
 	short pos_dir = pkt->getPosDir();
@@ -510,10 +536,10 @@ HNKD_IMPL(MapLoginSuccess) {
 	_log(OPENRO__TRACE, "\tpos_x = %d\n\tpos_y = %d\n\tpos_dir = %d\n\tserver_tick = %d", pos_x, pos_y, pos_dir, server_tick);
 }
 
-HNKD_IMPL(OwnSpeech) {
+HNDL_IMPL(OwnSpeech) {
 	_log(OPENRO__TRACE, "OwnSpeech: %s",pkt->getText());
 }
 
-HNKD_IMPL(SkillList) {
+HNDL_IMPL(SkillList) {
 	_log(OPENRO__TRACE, "Received skill list.");
 }

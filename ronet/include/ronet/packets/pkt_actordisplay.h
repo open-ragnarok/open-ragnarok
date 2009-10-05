@@ -58,18 +58,21 @@ namespace ronet {
 		unsigned char karma;
 		unsigned char sex;
 		// a3
-		unsigned short coord_x, coord_y;
+		unsigned short coord_x, coord_y, dir;
 		// C3
 		unsigned char unknown1;
 		unsigned char unknown2;
 		unsigned char act;
 		// v
-		unsigned char lv;
+		unsigned short lv;
 		// ??
 		unsigned char unk;
 
 		pktActorDisplay();
 		virtual bool Decode(ucBuffer&);
+
+		void XYdecode(unsigned char buf[3]);
+
 	};
 }
 

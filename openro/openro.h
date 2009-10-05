@@ -13,10 +13,11 @@ class OpenRO;
 
 #include <string>
 
-/** Handler declaration */
+/** Handler declaration for network packets */
 #define HNDL_DECL(x) void hndl ##x (ronet::pkt ##x *)
-/** Handler implementation (function) */
-#define HNKD_IMPL(x) void OpenRO::hndl ##x (ronet::pkt ##x * pkt)
+
+/** Handler implementation (function) for network packets */
+#define HNDL_IMPL(x) void OpenRO::hndl ##x (ronet::pkt ##x * pkt)
 
 class OpenRO : public ROEngine {
 protected:
@@ -63,6 +64,7 @@ protected:
 	HNDL_DECL(OwnSpeech);
 	HNDL_DECL(SkillList);
 	HNDL_DECL(MapMoveOk);
+	HNDL_DECL(ActorDisplay);
 
 	int m_charslot;
 

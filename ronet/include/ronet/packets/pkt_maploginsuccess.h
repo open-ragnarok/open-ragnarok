@@ -53,7 +53,7 @@ namespace ronet {
 
 		unsigned int getServerTick() const;
 
-		void pktMapLoginSuccess::XYdecode(unsigned char buf[3]);
+		void XYdecode(unsigned char buf[3]);
 
 	};
 }
