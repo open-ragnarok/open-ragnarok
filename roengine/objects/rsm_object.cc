@@ -271,6 +271,9 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 }
 
 void RsmObject::Draw() {
+	if (m_frustum != NULL)
+		if (!isInFrustum(*m_frustum))
+			return;
 	if (is_static) {
 		if (glIsList(rsm_gl)) {
 			glCallList(rsm_gl);
