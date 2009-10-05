@@ -92,7 +92,8 @@ namespace ronet {
 		//DECL(StatInfo2);
 		DECL(HotkeyList);
 		DECL(ZenyExp);
-		DECL(StatsInfo);		
+		DECL(StatsInfo);
+		DECL(ActorDisplay);
 
 		void push(Packet*);
 

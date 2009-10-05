@@ -22,36 +22,55 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_ACTORDISPLAY_H
+#define __RONET_PACKET_ACTORDISPLAY_H
 
-#include "ronet/packets/pkt_zenyexp.h"
-
+#include "ronet/packet.h"
 
 namespace ronet {
+	class RONET_DLLAPI pktActorDisplay : public Packet {
+	public:
+		// a4
+		unsigned int id;
+		// v14
+		unsigned short walk_speed;
+		unsigned short opt1;
+		unsigned short opt2;
+		unsigned short option;
+		unsigned short type;
+		unsigned short hair_style;
+		unsigned short weapon;
+		unsigned short lowhead;
+		unsigned short shield;
+		unsigned short tophead;
+		unsigned short midhead;
+		unsigned short hair_color;
+		unsigned short clothes_color;
+		unsigned short head_dir;
+		// a4
+		unsigned int guildID;
+		// a2
+		unsigned short emblemID;
+		// v2
+		unsigned short manner;
+		unsigned short opt3;
+		// C2
+		unsigned char karma;
+		unsigned char sex;
+		// a3
+		unsigned short coord_x, coord_y;
+		// C3
+		unsigned char unknown1;
+		unsigned char unknown2;
+		unsigned char act;
+		// v
+		unsigned char lv;
+		// ??
+		unsigned char unk;
 
-pktZenyExp::pktZenyExp() : Packet(pktZenyExpID) {
+		pktActorDisplay();
+		virtual bool Decode(ucBuffer&);
+	};
 }
 
-bool pktZenyExp::Decode(ucBuffer& buf) {
-	// Sanity Check
-	if (!CheckID(buf))
-		return(false);
-
-	buf.ignore(2);
-
-	//Get data
-	buf >> type;
-	buf >> value;
-
-	return(true);
-}
-
-unsigned short pktZenyExp::getType() const {
-	return(type);
-}
-
-unsigned int pktZenyExp::getValue() const {
-	return(value);
-}
-
-}
+#endif /* __RONET_PACKET_ACTORDISPLAY_H */

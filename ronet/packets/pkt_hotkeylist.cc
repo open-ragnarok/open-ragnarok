@@ -32,13 +32,9 @@ pktHotkeyList::pktHotkeyList() : Packet(pktHotkeyListID) {
 }
 
 bool pktHotkeyList::Decode(ucBuffer& buf) {
-	// Sanity check
-	unsigned short buf_id;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		_log(RONET__ERROR, "Wrong packet id! Received: %04x, Expected: %04x", buf_id, id);
+	// Sanity Check
+	if (!CheckID(buf))
 		return(false);
-	}
 
 	if (buf.dataSize() < 191) {
 		return(false);

@@ -65,6 +65,7 @@ HANDLER(StatInfo)
 HANDLER(HotkeyList)
 HANDLER(ZenyExp)
 HANDLER(StatsInfo)
+HANDLER(ActorDisplay)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -96,6 +97,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(HotkeyList);
 	CALLER(ZenyExp);
 	CALLER(StatsInfo);
+	CALLER(ActorDisplay);
 }
 
 ronet::PacketFactory::~PacketFactory() {

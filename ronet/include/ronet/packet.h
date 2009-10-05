@@ -91,6 +91,9 @@ typedef enum PacketIDs{
 	pktCharLeaveScreenID = 0x0080,	// R 0080 <ID>.l <type>.B
 	pktOtherSpeechID = 0x008d,		// R 008d <len>.w <ID>.l <str>.?B
 	pktHpUpdatePartyID = 0x0106,	// R 0106 <ID>,l <HP>.w <MaxHP>.w
+	pktActorDisplayID = 0x0078,		// R 0078 
+	pktActorSpawnID = 0x0079,		// R 0079
+	pktActorWalkingID = 0x007b,		// R 007b
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

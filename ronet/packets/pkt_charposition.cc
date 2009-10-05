@@ -30,12 +30,10 @@ ronet::pktCharPosition::pktCharPosition() : Packet(pktCharPositionID) {
 }
 
 bool ronet::pktCharPosition::Decode(ucBuffer& buf) {
-	unsigned short buf_id;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
+	// Sanity Check
+	if (!CheckID(buf))
 		return(false);
-	}
+
 	unsigned short size;
 	size = *(unsigned short*)(buf.getBuffer() + 2);
 

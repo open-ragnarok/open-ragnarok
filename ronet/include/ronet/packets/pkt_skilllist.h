@@ -34,6 +34,7 @@ namespace ronet {
 		SkillInformation *p_skills;
 	public:
 		pktSkillList();
+		virtual ~pktSkillList();
 		virtual bool Decode(ucBuffer&);
 	};
 }

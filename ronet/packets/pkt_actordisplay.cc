@@ -22,36 +22,64 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
+
 #include "stdafx.h"
 
-#include "ronet/packets/pkt_zenyexp.h"
-
+#include "ronet/packets/pkt_actordisplay.h"
 
 namespace ronet {
 
-pktZenyExp::pktZenyExp() : Packet(pktZenyExpID) {
+pktActorDisplay::pktActorDisplay() : Packet(pktActorDisplayID) {
 }
 
-bool pktZenyExp::Decode(ucBuffer& buf) {
+bool pktActorDisplay::Decode(ucBuffer& buf) {
 	// Sanity Check
 	if (!CheckID(buf))
 		return(false);
+	if (buf.dataSize() < 55)
+		return(false);
 
-	buf.ignore(2);
+	buf.ignore(2); // Packet ID
 
-	//Get data
+
+	unsigned int c;
+	unsigned char *coord = (unsigned char*)&c;
+	coord++;
+
+	buf >> id;
+	buf >> walk_speed;
+	buf >> opt1;
+	buf >> opt2;
+	buf >> option;
 	buf >> type;
-	buf >> value;
+	buf >> hair_style;
+	buf >> weapon;
+	buf >> lowhead;
+	buf >> shield;
+	buf >> tophead;
+	buf >> midhead;
+	buf >> hair_color;
+	buf >> clothes_color;
+	buf >> head_dir;
+	buf >> guildID;
+	buf >> emblemID;
+	buf >> manner;
+	buf >> opt3;
+	buf >> karma;
+	buf >> sex;
+	buf.read(coord, 3);
+	buf >> unknown1;
+	buf >> unknown2;
+	buf >> act;
+	buf >> lv;
+	buf >> unk;
+
+	coord_x = (c >> 14) & 0x03ff;
+	coord_y = (c >>  4) & 0x03ff;
+
+	_log(RONET__DEBUG, "There is someone at %d, %d (id: %08x)!", coord_x, coord_y, id);
 
 	return(true);
-}
-
-unsigned short pktZenyExp::getType() const {
-	return(type);
-}
-
-unsigned int pktZenyExp::getValue() const {
-	return(value);
 }
 
 }

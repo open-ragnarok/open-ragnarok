@@ -150,7 +150,7 @@
 			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="0"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -173,12 +173,11 @@
 				EnableIntrinsicFunctions="false"
 				EnableFiberSafeOptimizations="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="3"
-				CompileAs="0"
+				DebugInformationFormat="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -191,7 +190,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				ImportLibrary="$(TargetDir)jpeg.dll.lib"
+				GenerateManifest="false"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(OutDir)\jpeg.dll.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

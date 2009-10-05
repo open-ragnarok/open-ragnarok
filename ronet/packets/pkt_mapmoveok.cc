@@ -39,13 +39,11 @@ int pktMapMoveOk::getTicks() const {
 }
 
 bool pktMapMoveOk::Decode(ucBuffer& buf) {
-	unsigned short buf_id;
 	unsigned int v;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! Expected %04x, received %04x.\n", id, buf_id);
+
+	// Sanity Check
+	if (!CheckID(buf))
 		return(false);
-	}
 
 	// Packet size is 12...
 	if (buf.dataSize() < 12)

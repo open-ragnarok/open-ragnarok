@@ -41,13 +41,10 @@ void ronet::pktServerList::Dump() {
 }
 
 bool ronet::pktServerList::Decode(ucBuffer& buf) {
-	// Sanity check
-	unsigned short buf_id;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
+	// Sanity Check
+	if (!CheckID(buf))
 		return(false);
-	}
+
 	unsigned short size;
 	size = *(unsigned short*)(buf.getBuffer() + 2);
 	std::cout << "Packet size: " << size << std::endl;

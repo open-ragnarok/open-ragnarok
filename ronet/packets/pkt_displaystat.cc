@@ -30,13 +30,9 @@ ronet::pktDisplayStat::pktDisplayStat() : Packet(pktDisplayStatID) {
 }
 
 bool ronet::pktDisplayStat::Decode(ucBuffer& buf) {
-	// Sanity check
-	unsigned short buf_id;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
+	// Sanity Check
+	if (!CheckID(buf))
 		return(false);
-	}
 
 	buf.ignore(2);
 

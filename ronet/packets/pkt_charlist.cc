@@ -37,16 +37,13 @@ ronet::pktCharList::~pktCharList()  {
 }
 
 bool ronet::pktCharList::Decode(ucBuffer& buf) {
-	unsigned short buf_id;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
+	// Sanity Check
+	if (!CheckID(buf))
 		return(false);
-	}
 
 	unsigned short size;
 	size = *(unsigned short*)(buf.getBuffer() + 2);
-	std::cout << "Packet size: " << size << std::endl;
+	_log(RONET__DEBUG, "Packet size: %d", size);
 
 	if (buf.dataSize() < size)//(size + 7)) // Not enough data
 		return(false);

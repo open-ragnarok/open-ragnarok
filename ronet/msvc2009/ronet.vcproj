@@ -383,6 +383,10 @@
 				Name="Packets"
 				>
 				<File
+					RelativePath="..\packets\pkt_actordisplay.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_attackrange.cc"
 					>
 				</File>
@@ -610,6 +614,10 @@
 				>
 				<File
 					RelativePath="..\include\ronet\packets\packets.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_actordisplay.h"
 					>
 				</File>
 				<File

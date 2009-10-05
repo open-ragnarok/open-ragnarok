@@ -34,12 +34,9 @@ pktCharLeaveScreen::pktCharLeaveScreen() : Packet(pktCharLeaveScreenID) {
 }
 
 bool pktCharLeaveScreen::Decode(ucBuffer& buf) {
-	unsigned short buf_id;
-	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! Expected %04x, received %04x.\n", id, buf_id);
+	// Sanity Check
+	if (!CheckID(buf))
 		return(false);
-	}
 
 	//TODO: Review this (kR105)
 	//if (buf.dataSize() < 12)
