@@ -113,40 +113,7 @@ void ActObject::Draw() {
 		return;
 	int xact = curaction;
 
-	float angle;
-	angle = getAngle(Vector3f::UNIT_Z);
-	angle = angle * 180.0f / 3.1415f;
-
-	// Dumb check. Need to improve this.
-	int offset = 4;
-
-	if (angle < act_angles[0]) {
-		offset = 4;
-	}
-	else if (angle < act_angles[1]) {
-		offset = 3;
-	}
-	else if (angle < act_angles[2]) {
-		offset = 2;
-	}
-	else if (angle < act_angles[3]) {
-		offset = 1;
-	}
-	else if (angle < act_angles[4]) {
-		offset = 0;
-	}
-	else if (angle < act_angles[5]) {
-		offset = 7;
-	}
-	else if (angle < act_angles[6]) {
-		offset = 6;
-	}
-	else if (angle < act_angles[7]) {
-		offset = 5;
-	}
-	else {
-		offset = 4;
-	}
+	int offset = cameraDir;
 
 	xact += offset;
 	// std::cout << "\t\t" << angle << " (" << offset << ")\r";

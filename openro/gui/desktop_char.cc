@@ -92,7 +92,7 @@ void DesktopChar::setInfo(int i){
 	
 	//If the selected slot is empty
 	if( m_used[x] == NULL || i == -1){
-		sprintf(buf, "%s", "");
+		buf[0] = 0;
 		lblStr->setText(buf);
 		lblAgi->setText(buf);
 		lblVit->setText(buf);
@@ -159,8 +159,8 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		if (!m_used[p+i])
 			continue;
 
-		DrawFullAct(bodies[p+i], (float)x[i], 158, 0, 0, false, NULL, false, false);
-		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], false, false);
+		DrawFullAct(bodies[p+i], (float)x[i], 158, 0, 0, false, NULL, true, false);
+		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], true, false);
 	}
 
 	curtick = SDL_GetTicks();

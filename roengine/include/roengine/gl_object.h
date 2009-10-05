@@ -23,7 +23,7 @@ protected:
 	bool m_visible;
 	long m_tickdelay;
 	bool m_frustum_check;
-	Vector3f cameraDir;
+	RO::CDir cameraDir;
 	const Frustum* m_frustum;
 
 public:
@@ -34,15 +34,13 @@ public:
 	/** Draws the object
 	 * @param tickdelay how many ticks have passed since the last render was called
 	 */
-	void Render(long tickdelay, const Frustum*, const Vector3f& CameraLook = Vector3f::UNIT_Z);
+	void Render(long tickdelay, const Frustum*, RO::CDir CameraLook = RO::DIR_N);
 	void setPos(const float&, const float&, const float&);
 	void setScale(const float&, const float&, const float&);
 	void setRot(const float&, const float&, const float&);
 	void setRotX(const float&);
 	void setRotY(const float&);
 	void setRotZ(const float&);
-
-	float getAngle(const Vector3f&) const;
 
 	Vector3f& getPos();
 	const Vector3f& getPos() const;

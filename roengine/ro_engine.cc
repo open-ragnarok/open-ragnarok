@@ -176,6 +176,7 @@ void ROEngine::DrawMap() {
 	float wx, wy, wz;
 	int mapx, mapy;
 	cam.Look();
+	m_cameradir = cam.getDirection();
 	m_frustum.Calculate();
 	m_map->setMouse(mousex, mousey);
 	m_map->Render(tickDelay, &m_frustum);
@@ -213,7 +214,7 @@ void ROEngine::DrawMap() {
 
 	if (me.valid()) {
 		me.setMap(m_map);
-		me.Render(50, &m_frustum);
+		me.Render(50, &m_frustum, m_cameradir);
 	}
 
 	afterDrawMap();

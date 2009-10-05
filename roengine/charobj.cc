@@ -8,6 +8,7 @@ CharObj::CharObj() : GLObject() {
 	m_act = 0;
 	m_frame = 0;
 	speed = 0.2f;
+	m_dir = RO::DIR_N;
 }
 
 CharObj::~CharObj() {
@@ -16,7 +17,6 @@ CharObj::~CharObj() {
 void CharObj::setMap(RswObject* map) {
 	m_map = map;
 }
-
 
 void CharObj::Draw() {
 	if (m_map == NULL)
@@ -52,13 +52,15 @@ void CharObj::Draw() {
 	m_map->getWorldPosition(map_x, map_y, &wx, &wy, &wz);
 	glPopMatrix();
 
+	int dir = 7 - cameraDir + m_dir;
+
 	glPushMatrix();
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_bodyact.Draw(m_tickdelay); // Draw
+	m_bodyact.Draw(m_tickdelay, (RO::CDir)dir); // Draw
 	if (m_headact.valid())
-		m_headact.Draw(m_tickdelay);
+		m_headact.Draw(m_tickdelay, (RO::CDir)dir);
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();

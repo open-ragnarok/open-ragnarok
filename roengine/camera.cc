@@ -2,6 +2,7 @@
 
 #include "roengine/camera.h"
 #include <gl/glu.h>
+#include <math.h>
 
 Camera::Camera() {
 	eye.set(20, 20, 20);
@@ -74,4 +75,42 @@ Vector3f& Camera::getEye() { return(eye); }
 Vector3f& Camera::getDest() { return(dest); }
 const Vector3f& Camera::getEye() const { return(eye); }
 const Vector3f& Camera::getDest() const  { return(dest); }
+
+RO::CDir Camera::getDirection() const {
+	Vector3f dir = dest - eye;
+	dir[1] = 0;
+	dir /= dir.size();
+
+	float a_cos = dir.dot(Vector3f(0, 0, -1));
+	float angle = acos(a_cos) * 180 / 3.1415f;
+
+	if (dir[0] < 0)
+		angle = 360 - angle;
+
+	/*
+	printf("Camera Angle: %.2f (%.2f)\t", angle, a_cos);
+	printf("Camera direction: %.2f %.2f\t", dir[0], dir[2]);
+	printf("\r");
+	*/
+
+	if (angle <= 22.5)
+		return(RO::DIR_N);
+	else if (angle <= 67.5)
+		return(RO::DIR_NE);
+	else if (angle <= 112.5)
+		return(RO::DIR_E);
+	else if (angle <= 157.5)
+		return(RO::DIR_SE);
+	else if (angle <= 202.5)
+		return(RO::DIR_S);
+	else if (angle <= 247.5)
+		return(RO::DIR_SW);
+	else if (angle <= 292.5)
+		return(RO::DIR_W);
+	else if (angle <= 337.5)
+		return(RO::DIR_NW);
+
+	return(RO::DIR_N);
+}
+
 

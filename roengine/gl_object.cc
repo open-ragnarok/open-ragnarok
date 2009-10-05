@@ -12,7 +12,7 @@ GLObject::GLObject() {
 	m_useTexture = false; 
 	m_visible = true;
 	m_frustum_check = true;
-	cameraDir = Vector3f::UNIT_Z;
+	cameraDir = RO::DIR_N;
 }
 
 GLObject::~GLObject() {}
@@ -31,20 +31,6 @@ bool GLObject::isVisible() const {
 	return(m_visible);
 }
 
-float GLObject::getAngle(const Vector3f& v) const {
-	Vector3f cam = cameraDir / cameraDir.size();
-	cam[1] = 0;
-	
-	Vector3f cross = cam * v;
-
-	float angle = cam.angle(v);
-
-	if (cross[1] < 0)
-		angle = -angle;
-
-	return(angle);
-}
-
 void GLObject::BeforeDraw() {
 	glPushMatrix();
 	glTranslatef(pos[0], pos[1], pos[2]);
@@ -61,7 +47,7 @@ void GLObject::BeforeDraw() {
 	}
 }
 
-void GLObject::Render(long tickdelay, const Frustum* f, const Vector3f& CameraLook) {
+void GLObject::Render(long tickdelay, const Frustum* f, RO::CDir CameraLook) {
 	m_tickdelay = tickdelay;
 	cameraDir = CameraLook;
 	m_frustum = f;

@@ -32,6 +32,9 @@ protected:
 	/** The speed */
 	float speed;
 
+	/** The direction we are facing */
+	RO::CDir m_dir;
+
 public:
 	CharObj();
 	virtual ~CharObj();

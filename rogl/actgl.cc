@@ -8,7 +8,7 @@ namespace rogl {
 ActGL::ActGL() {
 	act = NULL;
 	ext = NULL;
-	m_action = 10;
+	m_action = 0;
 	m_delay = 0;
 	m_frame = 0;
 }
@@ -20,6 +20,11 @@ ActGL::ActGL(const ActGL& _act) {
 ActGL::~ActGL() {
 }
 
+void ActGL::setAction(unsigned short a) {
+	m_action = a;
+}
+
+
 bool ActGL::valid() const {
 	return(act != NULL);
 }
@@ -29,7 +34,7 @@ void ActGL::Draw() const {
 }
 
 
-void ActGL::Draw(unsigned long delay) {
+void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 	m_delay += delay;
 	while (m_delay > 200) {
 		m_delay -= 200;
@@ -56,7 +61,7 @@ void ActGL::Draw(unsigned long delay) {
 
 
 	spr.getTexture().Activate();
-	RO::ACT::Act& a = act->getAct(m_action);
+	RO::ACT::Act& a = act->getAct(m_action * 8 + direction);
 	RO::ACT::Pat& p = a.pat[m_frame];
 	float u[2], v[2];
 	//float aux;

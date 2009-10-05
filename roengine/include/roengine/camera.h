@@ -2,6 +2,7 @@
 #define __CAMERA_H
 
 #include "vector.h"
+#include "ro/constants.h"
 
 /**
  * A simple camera with many functionalities.
@@ -39,6 +40,8 @@ public:
 	void ZoomOut(float);
 
 	void Look() const;
+
+	RO::CDir getDirection() const;
 };
 
 #endif /* __CAMERA_H */

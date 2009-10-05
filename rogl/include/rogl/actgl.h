@@ -8,6 +8,7 @@
 #include "ro/types/act.h"
 #include "ro/types/spr.h"
 #include "ro/types/grf.h"
+#include "ro/constants.h"
 
 #include <string>
 
@@ -29,7 +30,7 @@ protected:
 	 */
 	void Cross(float size = 5.0f);
 
-	unsigned int m_action;
+	unsigned short m_action;
 	/**
 	 * Accumulated delay. Used for calculating next frame.
 	 */
@@ -50,6 +51,8 @@ public:
 	 */
 	ActGL& operator = (const ActGL&);
 
+	void setAction(unsigned short);
+
 	void setExt(ActGL*);
 	ActGL* getExt();
 
@@ -67,7 +70,7 @@ public:
 	 * 
 	 * @param delay milliseconds passed since last Draw() was called (to calculate animations)
 	 */
-	void Draw(unsigned long delay);
+	void Draw(unsigned long delay, RO::CDir direction = RO::DIR_N);
 
 	void Draw() const;
 };
