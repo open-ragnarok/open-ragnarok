@@ -105,13 +105,34 @@ bool pktActorDisplay::Decode(ucBuffer& buf) {
 	return(true);
 }
 
-//by kR105
-void pktActorDisplay::XYdecode(unsigned char buf[3]){
-	//Decode the encoded X, Y and DIR sent by the server.
-	dir = buf[2] & 0x0F;
-	coord_x = (((buf[1] & 0x3F) << 4) | (buf[2] >> 4));
-	coord_y = ((buf[0] << 2) | (buf[1] >> 6));
+void pktActorDisplay::Dump() {
+	_log(RONET__DEBUG, "Dumping pktActorDisplay");
+	_log(RONET__DEBUG, "\tID: %d", id);
+	_log(RONET__DEBUG, "\tWalk speed: %d", walk_speed);
+	_log(RONET__DEBUG, "\t: %d", opt1);
+	_log(RONET__DEBUG, "\t: %d", opt2);
+	_log(RONET__DEBUG, "\t: %d", option);
+	_log(RONET__DEBUG, "\tType: %d", type);
+	_log(RONET__DEBUG, "\tHair: %d", hair_style);
+	_log(RONET__DEBUG, "\t: %d", weapon);
+	_log(RONET__DEBUG, "\t: %d", lowhead);
+	_log(RONET__DEBUG, "\t: %d", shield);
+	_log(RONET__DEBUG, "\t: %d", tophead);
+	_log(RONET__DEBUG, "\t: %d", midhead);
+	_log(RONET__DEBUG, "\t: %d", hair_color);
+	_log(RONET__DEBUG, "\t: %d", clothes_color);
+	_log(RONET__DEBUG, "\tHead Direction: %d", head_dir);
+	_log(RONET__DEBUG, "\tGuild: %d", guildID);
+	_log(RONET__DEBUG, "\tEmblem: %d", emblemID);
+	_log(RONET__DEBUG, "\t: %d", manner);
+	_log(RONET__DEBUG, "\t: %d", opt3);
+	_log(RONET__DEBUG, "\t: %d", karma);
+	_log(RONET__DEBUG, "\tSex: %d", sex);
+	_log(RONET__DEBUG, "\tCoordinates: %dx%d, %d", coord_x, coord_y, dir);
+	_log(RONET__DEBUG, "\t: %d", unknown1);
+	_log(RONET__DEBUG, "\t: %d", unknown2);
+	_log(RONET__DEBUG, "\tAct: %d", act);
+	_log(RONET__DEBUG, "\tLevel: %d", lv);
 }
-
 
 }

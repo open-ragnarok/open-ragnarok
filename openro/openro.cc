@@ -13,6 +13,11 @@ OpenRO::OpenRO() : ROEngine() {
 
 	m_serverlist = NULL;
 	m_map = NULL;
+
+	m_npc_names[94] = "4_f_maid";
+	m_npc_names[105] = "8w_soldier";
+	m_npc_names[111] = "";
+	m_npc_names[727] = "4_f_job_hunter";
 }
 
 OpenRO::~OpenRO() {
@@ -281,17 +286,27 @@ HNDL_IMPL(InventoryItems) {
 }
 
 HNDL_IMPL(ActorDisplay) {
-	CharObj *obj;
-	if (m_actors.find(pkt->id) != m_actors.end()) {
-		obj = (CharObj*)m_actors[pkt->id];
-	}
-	else {
-		obj = new CharObj();
+	if (m_npc_names.find(pkt->type) != m_npc_names.end()) {
+		NpcObj* npc = new NpcObj();
+		npc->setMap(m_map);
+		npc->open(*this, m_npc_names[pkt->type]);
+		npc->setPos((float)pkt->coord_x, (float)pkt->coord_y);
+		m_actors[pkt->id] = npc;
+		return;
 	}
 
-	obj->setMap(m_map);
+	if (m_actors.find(pkt->id) != m_actors.end()) {
+		Actor* actor = m_actors[pkt->id];
+		actor->setPos((float)pkt->coord_x, (float)pkt->coord_y);
+		return;
+	}
+
+	CharObj *obj = new CharObj();
 	obj->open(*this, RO::J_NOVICE, RO::S_FEMALE);
 	obj->setPos((float)pkt->coord_x, (float)pkt->coord_y);
+	obj->setMap(m_map);
+
+	pkt->Dump();
 
 	m_actors[pkt->id] = obj;
 }

@@ -16,6 +16,7 @@
 #include "roengine/objects/rsm_object.h"
 #include "roengine/objects/rsw_object.h"
 #include "roengine/objects/charobj.h"
+#include "roengine/objects/npcobj.h"
 
 #include "ro/ro.h"
 #include "rogl/rogl.h"

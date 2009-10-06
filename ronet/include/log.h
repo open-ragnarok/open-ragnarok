@@ -5,12 +5,9 @@
 #define RONET__ERROR 13002
 #define RONET__TRACE 13003
 
-#ifndef USE_LOGSYS
-#define _log(id, data, ...)
-#define _hexlog(id, data, size)
-#else
-#define _log(id, data, ...) LogSys::GetSingleton()->log(id, data, __VA_ARGS__)
-#define _hexlog(id, data, size) LogSys::GetSingleton()->hexlog(id, data, size)
+#include "logsys/logsys_macros.h"
+#ifdef USE_LOGSYS
+#	include "logsys/logsys.h"
 #endif
 
 #endif /* __LOG_H */

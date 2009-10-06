@@ -71,7 +71,7 @@ namespace ronet {
 		pktActorDisplay();
 		virtual bool Decode(ucBuffer&);
 
-		void XYdecode(unsigned char buf[3]);
+		virtual void Dump();
 
 	};
 }

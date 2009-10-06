@@ -38,9 +38,7 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 	m_delay += delay;
 	while (m_delay > 200) {
 		m_delay -= 200;
-		m_frame += 1;
-		if (m_frame >= spr.getFrameCount())
-			m_frame = 0;
+		m_frame++;
 	}
 
 	glPushMatrix();
@@ -62,6 +60,9 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 
 	spr.getTexture().Activate();
 	RO::ACT::Act& a = act->getAct(m_action * 8 + direction);
+	if(m_frame >= a.pat.size()) {
+		m_frame = m_frame % a.pat.size();
+	}
 	RO::ACT::Pat& p = a.pat[m_frame];
 	float u[2], v[2];
 	//float aux;
@@ -70,12 +71,22 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 		// WTH!?
 		sprcount = p.numspr;
 	}
+
+	int w, h;
+
 	for (int i = 0; i < sprcount; i++) {
 		RO::ACT::Spr& s = p[i];
-		if (s.sprNo < 0 || s.w <= 0) {
+		if (s.sprNo < 0) {
 			continue;
 		}
+		w = s.w;
+		h = s.h;
+
 		const rogl::sprInfo& info = spr.getFrameInfo(s.sprNo);
+		if (w == 0)
+			w = info.w;
+		if (h == 0)
+			h = info.h;
 
 		// Setup coordinates
 		v[0] = info.sv;
@@ -93,10 +104,10 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 		float y[2];
 
 		x[0] =  (float)s.x - 5.0f;
-		x[1] =  x[0] + s.w;
+		x[1] =  x[0] + w;
 
-		y[0] =  (float)s.y + (float)s.h / 2.0f;
-		y[1] =  y[0] + (float)s.h;
+		y[0] =  (float)s.y + (float)h / 2.0f;
+		y[1] =  y[0] + (float)h;
 
 		// Set things straight
 		x[0] = x[0] / 10.0f - 2.5f; // 2.5f = half of a gat tile.

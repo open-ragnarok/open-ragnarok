@@ -714,6 +714,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\objects\npcobj.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\objects\rsm_object.cc"
 				>
 			</File>
@@ -738,6 +742,10 @@
 				</File>
 				<File
 					RelativePath="..\include\roengine\objects\cube_object.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\objects\npcobj.h"
 					>
 				</File>
 				<File
