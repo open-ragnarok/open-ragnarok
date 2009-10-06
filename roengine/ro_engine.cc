@@ -4,7 +4,9 @@
 #include "roengine/ro_engine.h"
 #include "sdle/sdl_engine.h"
 
-#include<sys/stat.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int file_exists (char* fileName) {
 	struct stat buf;
@@ -133,6 +135,47 @@ void ROEngine::ReadIni(const std::string& name) {
 			if (strcmp(a,b) != 0) {
 				m_filemanager.addName(a, b);
 			}
+		}
+	}
+
+	// npclist.txt
+	if (m_filemanager.fileExists("npclist.txt")) {
+		FileData data = m_filemanager.getFile("npclist.txt");
+		char line[512];
+		char a[256], b[256];
+		unsigned int linepos;
+		unsigned int pos = 0;
+		char c;
+		while(pos < data.blobSize()) {
+			memset(line, 0, 512);
+			memset(a, 0, 256);
+			memset(b, 0, 256);
+			linepos = 0;
+			// Read the line
+			c = data[pos++];
+			while (pos < data.blobSize()) {
+				if (c == 13 || c == 0 || c == 10) {
+					if (linepos == 0) {
+						c = data[pos++];
+						continue;
+					}
+					break;
+				}
+				line[linepos++] = c;
+				c = data[pos++];
+			}
+			// Process the line
+			linepos = 0;
+			while (line[linepos] != '#' && line[linepos] != 0)
+				linepos++;
+			if (linepos >= strlen(line)) {
+				// Comments and stuff
+				continue;
+			}
+			strncpy(a, line, linepos);
+			strcpy(b, line + linepos + 1);
+			b[strlen(b) - 1] = 0;
+			m_npc_names[atoi(a)] = b;
 		}
 	}
 }

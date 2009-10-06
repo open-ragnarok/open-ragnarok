@@ -13,11 +13,6 @@ OpenRO::OpenRO() : ROEngine() {
 
 	m_serverlist = NULL;
 	m_map = NULL;
-
-	m_npc_names[94] = "4_f_maid";
-	m_npc_names[105] = "8w_soldier";
-	m_npc_names[111] = "";
-	m_npc_names[727] = "4_f_job_hunter";
 }
 
 OpenRO::~OpenRO() {

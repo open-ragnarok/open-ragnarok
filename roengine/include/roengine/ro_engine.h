@@ -96,6 +96,8 @@ protected:
 	 * Clears all the actors (useful when changing maps)
 	 */
 	void clearActors();
+	
+	std::map<unsigned short, std::string> m_npc_names;
 
 public:
 	ROEngine(const std::string& name = "");

@@ -83,8 +83,6 @@ protected:
 	/** Store the first map to load sent by the charserver **/
 	char FirstMap[256];
 
-	std::map<unsigned short, std::string> m_npc_names;
-
 public:
 	OpenRO();
 	virtual ~OpenRO();
