@@ -28,6 +28,7 @@
 #define TIXML_USE_STL
 
 #ifdef _MSC_VER
+#	define USE_LOGSYS // In MSVC we define it here. Other systems, we use the makefile.
 #	define _CRT_SECURE_NO_WARNINGS
 #	ifndef ROINT_DLL
 #		pragma comment(lib, "zlib.lib")
@@ -41,7 +42,8 @@
 #define ROINT_INTERNAL
 
 #include "ro/roint_import.h"
-
 #include "ro/ro.h"
+
+#include "log.h"
 
 #endif /* __STDAFX_H */

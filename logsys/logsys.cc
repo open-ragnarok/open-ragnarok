@@ -1,17 +1,15 @@
-/*
+/* $Id$
  * logsys.cc
  *
- *  Created on: 30/09/2009
+ *  Created on: 2009-09-30
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-
 #include "stdafx.h"
 #include "logsys/logsys.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-
 
 LogSys* LogSys::m_singleton = NULL;
 

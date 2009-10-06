@@ -1,11 +1,10 @@
-/*
+/* $Id$
  * logsys.h
  *
- *  Created on: 30/09/2009
+ *  Created on: 2009-09-30
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-
 #ifndef LOGSYS_H_
 #define LOGSYS_H_
 

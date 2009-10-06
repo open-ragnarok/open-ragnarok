@@ -28,18 +28,44 @@
 #include <fstream>
 #include <sstream>
 
-RO::SPR::SPR() : Object() {
+namespace RO {
+
+#pragma pack(push,1)
+struct bmpHeader {
+	struct fileHeader {
+		unsigned short magic;
+		unsigned int size;
+		unsigned short reserved1;
+		unsigned short reserved2;
+		unsigned int offset;
+	} bmp;
+	struct dibHeader {
+		unsigned int size; // 40
+		int w, h;
+		unsigned short planes; // 1
+		unsigned short bpp; // 8 in our case
+		unsigned int compression;
+		unsigned int datasize;
+		unsigned int hres, vres;
+		unsigned int colorcount;
+		unsigned int importantcolors;
+	} dib;
+};
+#pragma pack(pop)
+
+
+SPR::SPR() : Object() {
 	magicSize = 2;
 	m_imagesPal = NULL;
 	m_imagesRgba = NULL;
 	m_pal = NULL;
 }
 
-RO::SPR::~SPR() {
+SPR::~SPR() {
 	reset();
 }
 
-bool RO::SPR::readStream(std::istream& s) {
+bool SPR::readStream(std::istream& s) {
 	reset();
 	readHeader(s);
 	if (!checkHeader("SP"))
@@ -89,7 +115,7 @@ bool RO::SPR::readStream(std::istream& s) {
 	return(true);
 }
 
-unsigned short RO::SPR::getImgCount(const ImageType type) const {
+unsigned short SPR::getImgCount(const ImageType type) const {
 	switch (type) {
 		case IT_PAL:
 			return(m_imgCountPal);
@@ -99,7 +125,7 @@ unsigned short RO::SPR::getImgCount(const ImageType type) const {
 	return(0);
 }
 
-void RO::SPR::readImagePal(std::istream& s, const unsigned short idx) {
+void SPR::readImagePal(std::istream& s, const unsigned short idx) {
 	Image* img = &m_imagesPal[idx];
 
 	char *dPtr;
@@ -186,7 +212,7 @@ void RO::SPR::readImagePal(std::istream& s, const unsigned short idx) {
 	}
 }
 
-void RO::SPR::readImageRgba(std::istream& s, const unsigned short idx) {
+void SPR::readImageRgba(std::istream& s, const unsigned short idx) {
 	Image* img = &m_imagesRgba[idx];
 
 	char *dPtr;
@@ -212,7 +238,7 @@ void RO::SPR::readImageRgba(std::istream& s, const unsigned short idx) {
 	}
 }
 
-void RO::SPR::reset() {
+void SPR::reset() {
 	if (m_imagesPal != NULL) {
 		for (unsigned short i = 0; i < m_imgCountPal; i++)
 			if (m_imagesPal[i].data != NULL)
@@ -251,41 +277,11 @@ const RO::SPR::Image* RO::SPR::getImage(const unsigned short idx, const ImageTyp
 	return(NULL);
 }
 
-const RO::PAL* RO::SPR::getPal() const {
+const PAL* RO::SPR::getPal() const {
 	return(m_pal);
 }
 
-#ifdef MSVC
-#	pragma pack(push)
-#	pragma pack(1)
-#endif
-namespace RO {
-	struct bmpHeader {
-		struct fileHeader {
-			unsigned short magic;
-			unsigned int size;
-			unsigned short reserved1;
-			unsigned short reserved2;
-			unsigned int offset;
-		} bmp;
-		struct dibHeader {
-			unsigned int size; // 40
-			int w, h;
-			unsigned short planes; // 1
-			unsigned short bpp; // 8 in our case
-			unsigned int compression;
-			unsigned int datasize;
-			unsigned int hres, vres;
-			unsigned int colorcount;
-			unsigned int importantcolors;
-		} dib;
-	};
-}
-#ifdef MSVC
-#	pragma pack(pop)
-#endif
-
-bool RO::SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostream& s, const RO::PAL* pal) const {
+bool SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostream& s, const RO::PAL* pal) const {
 	const Image* img = getImage(idx, type);
 	if (img == NULL)
 		return(false);
@@ -363,11 +359,143 @@ bool RO::SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostre
 	return(!s.fail());
 }
 
-
-bool RO::SPR::saveBMP(const unsigned short idx, const ImageType type, const std::string& fn, const RO::PAL* pal) const {
+bool SPR::saveBMP(const unsigned short idx, const ImageType type, const std::string& fn, const RO::PAL* pal) const {
 	std::ofstream fp(fn.c_str(), std::ios_base::binary);
 	bool ret = saveBMP(idx, type, fp, pal);
 	fp.close();
 	return(ret);
 }
 
+bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pallete) const {
+	unsigned int imageWidth = 512;
+	unsigned int imageHeight = 16;
+	unsigned int neededHeight = 0;
+
+	unsigned int linespace = imageWidth;
+	unsigned int lineheight = 0;
+
+	unsigned int i;
+	int pos;
+
+	const RO::SPR::Image* img;
+	unsigned char *image;
+
+	const RO::PAL* pal = pallete;
+	if (pal == NULL)
+		pal = m_pal;
+
+	const RO::PAL::Pal* color;
+
+	// Check our image size
+	for (i = 0; i < getImgCount(type); i++) {
+		img = getImage(i, type);
+		if (img->w > imageWidth) {
+			_log(ROINT__ERROR, "SPR frame too big!");
+			return(false);
+		}
+		if (img->w > linespace) {
+			// Too big to fit this line. Increase one line.
+			linespace = imageWidth;
+			neededHeight += lineheight;
+			lineheight = 0;
+		}
+		if (img->h > lineheight) {
+			lineheight = img->h;
+		}
+		linespace -= img->w;
+	}
+	neededHeight += lineheight;
+
+	// Get the next power-of-two size
+	//while (imageHeight < neededHeight)
+	//	imageHeight <<= 1;
+	// ...or not.
+	imageHeight = neededHeight;
+
+	// Creates the Image
+	// Corner coordinates for the current image coordinates inside the texture
+	int ix = 0;
+	int iy = 0;
+	// Actual Coordinates of the pixel in the texture
+	int px, py;
+
+	// Pallete position
+	unsigned char palpos;
+	lineheight = 0;
+	linespace = imageWidth;
+	image = new unsigned char[imageWidth * imageHeight * 4];
+	memset(image, 0, imageWidth * imageHeight * 4);
+
+	for (i = 0; i < getImgCount(type); i++) {
+		img = getImage(i, type);
+		// Checks our position
+		if (img->w > linespace) {
+			// Too big to fit this line. Increase one line.
+			linespace = imageWidth;
+			iy += lineheight;
+			ix = 0;
+			lineheight = 0;
+		}
+		if (img->h > lineheight) {
+			lineheight = img->h;
+		}
+
+		// Copy data to image
+		for (unsigned int x = 0; x < img->w; x++) {
+			for (unsigned int y = 0; y < img->h; y++) {
+				px = ix + x;
+				py = iy + img->h - y - 1;
+				pos = y * img->w + x;
+				palpos = img->data[pos];
+				color = pal->getPal(palpos);
+				// Write data to image
+				image[4 * (px + py * imageWidth)] = color->r;
+				image[4 * (px + py * imageWidth) + 1] = color->g;
+				image[4 * (px + py * imageWidth) + 2] = color->b;
+
+				if (palpos == 0) {
+					image[4 * (px + py * imageWidth) + 3] = 0;
+				}
+				else {
+					image[4 * (px + py * imageWidth) + 3] = (unsigned char)0xff;
+				}
+			}
+		}
+
+		ix += img->w;
+		linespace -= img->w;
+	}
+
+	// Save to the file
+	bmpHeader header;
+
+	memset((char*)&header, 0, sizeof(bmpHeader));
+	header.bmp.magic = 0x4D42; // 'BM'
+	header.dib.size = 40;
+	header.dib.planes = 1;
+	header.dib.compression = 0;
+	header.dib.vres = 1;
+	header.dib.hres = 1;
+	header.dib.w = imageWidth;
+	header.dib.h = imageHeight;
+
+	header.dib.bpp = 32;
+	header.dib.colorcount = 0;
+	header.dib.importantcolors = 0;
+	header.dib.datasize = 4 * imageWidth * imageHeight;
+	header.bmp.offset = sizeof(bmpHeader);
+	header.bmp.size = header.bmp.offset + header.dib.datasize;
+
+	s.write((char*)&header, sizeof(bmpHeader));
+	s.write((char*)image, header.dib.datasize);
+
+	_log(ROINT__DEBUG, "Successfuly written the spr data to a bitmap");
+
+	// Free memory
+	delete[] image;
+
+	return(true);
+
+}
+
+}

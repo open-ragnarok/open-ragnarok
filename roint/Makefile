@@ -5,6 +5,7 @@ CP=cp
 MKDIR=mkdir -p
 
 CFLAGS=-Wall -g -Iinclude
+LDFLAGS=-lz
 
 MAJOR_VER=0
 MINOR_VER=1
@@ -20,8 +21,8 @@ SHARED_MAJOR=$(SHARED_SO).$(MAJOR_VER)
 SHARED=$(SHARED_MAJOR).$(MINOR_VER)
 STATIC=$(TARGET).a
 
-SRC=act.cc gat.cc grf.cc ro.cc rsm.cc spr.cc constants.cc gnd.cc \
-	ro_strings.cc rsw.cc common.cc ro_object.cc rsw_objects.cc \
+SRC=act.cc gat.cc grf.cc ro.cc rsm.cc spr.cc gnd.cc pal.cc constants.cc \
+	ro_strings.cc rsw.cc common.cc ro_object.cc rsw_objects.cc log.cc \
 	python/pyspr.cc python/pyrsm.cc python/pyact.cc python/pygrf.cc \
 	python/pyrsw.cc python/pystrings.cc \
 	tinyxml/tinyxml.cc tinyxml/tinyxmlerror.cc tinyxml/tinyxmlparser.cc
@@ -31,9 +32,17 @@ STATIC_OBJ=$(SRC:%.cc=$(OBJDIR)/%.o)
 DEPS=$(SRC:%.cc=$(DEPDIR)/%.P)
 
 PREFIX=/usr/local
-
   
-LDFLAGS=-lz
+## OPTIONAL SWITCHES
+
+#DEBUG
+CFLAGS+=-DDEBUG
+
+#LOGSYS
+CFLAGS+=-DUSE_LOGSYS -I../logsys/include
+LDFLAGS+=-L../logsys -llogsys
+
+## END OF OPTIONAL SWITCHES
 
 all: static
 

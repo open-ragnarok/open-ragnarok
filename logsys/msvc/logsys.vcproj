@@ -186,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\logsys\logsys_macros.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\stdafx.h"
 				>
 			</File>

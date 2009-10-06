@@ -1,13 +1,12 @@
-/*
+/* $Id$
  * colors.h
  *
- *  Created on: 30/09/2009
+ *  Created on: 2009-09-30
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-
-#ifndef COLORS_H_
-#define COLORS_H_
+#ifndef __LOGSYS_COLORS_H
+#define __LOGSYS_COLORS_H
 
 // for help with the console colors look here:
 // http://www.edoceo.com/liberum/?doc=printf-with-color
@@ -68,4 +67,4 @@
 #define CL_XXBL			"\033[0;44m"	// default on blue
 #define CL_PASS			"\033[0;32;42m"	// green on green
 
-#endif /* COLORS_H_ */
+#endif /* __LOGSYS_COLORS_H */

@@ -202,7 +202,7 @@ bool RO::GRF::open(const std::string& fn) {
 
 	m_fp.open(fn.c_str(), std::ios_base::binary);
 	if (!m_fp.is_open()) {
-		std::cerr << "Error opening GRF file " << fn << std::endl;
+		_log(ROINT__ERROR, "Error opening GRF file %s", fn.c_str());
 		return(false);
 	}
 
@@ -213,7 +213,7 @@ bool RO::GRF::open(const std::string& fn) {
 	m_fp.seekg(m_header.fileTableOffset, std::ios_base::cur);
 	if (m_fp.eof()) {
 		m_fp.close();
-		std::cerr << "Error seeking to position " << (46 + m_header.fileTableOffset) << std::endl;
+		_log(ROINT__ERROR, "Error seeking to position %d", 46 + m_header.fileTableOffset);
 		return(false);
 	}
 
@@ -225,12 +225,11 @@ bool RO::GRF::open(const std::string& fn) {
 
 	uncompress(m_filetableheader.uncompressedBody, &ul, m_filetableheader.body, m_filetableheader.compressedLength);
 	if (ul == 0) {
-		std::cerr << "cannot uncompress FileTableHeader" << std::endl;
+		_log(ROINT__ERROR, "Cannot uncompress FileTableHeader");
 		return(false);
 	}
 	if (ul != m_filetableheader.uncompressedLength) {
-		std::cerr << "GRF Warning: Uncompressed lengths for FileTableHeader differ!" << std::endl;
-		std::cerr << m_filetableheader.uncompressedLength << " / " << ul << std::endl;
+		_log(ROINT__WARNING, "GRF Warning: Uncompressed lengths for FileTableHeader differ! (%d/%d)", m_filetableheader.uncompressedLength, ul);
 	}
 
 	// Read files
@@ -250,12 +249,13 @@ bool RO::GRF::open(const std::string& fn) {
 		m_items[i].readStream(ss);
 
 	m_opened = true;
+	_log(ROINT__DEBUG, "GRF File %s successfully opened!", fn.c_str());
 	return(true);
 }
 
 void RO::GRF::close() {
 	if (!m_opened) {
-		std::cerr << "GRF already closed" << std::endl;
+		_log(ROINT__ERROR, "GRF already closed");
 		return;
 	}
 
@@ -287,50 +287,39 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 			unsigned long ul;
 
 			m_fp.seekg(m_items[i].offset + 46);
-//#ifdef DEBUG
-//			std::cout << "File: " << s << ", Offset: " << m_items[i].offset << "+46 ";
-//#endif
 			m_fp.read((char*)body, m_items[i].compressedLengthAligned);
 			if ((m_items[i].flags == 3) || (m_items[i].flags == 5)) {
 				// DES encoded. Let's decode!
-//#ifdef DEBUG
-//				std::cout << "Decoding " << s << "..." << std::endl;
-//#endif
 				DES::decode(body, m_items[i].compressedLengthAligned, m_items[i].cycle);
-//#ifdef DEBUG
-//				std::cout << "\tDone." << std::endl;
-//#endif
 			}
 
 			ul = m_items[i].uncompressedLength;
 			int r;
 			if ((r = uncompress(uncompressed, &ul, body, m_items[i].compressedLengthAligned)) != Z_OK) {
-				std::cerr << "Error uncompressing data ";
-				if (r == Z_MEM_ERROR)
-					std::cerr << "Z_MEM_ERROR";
-				if (r == Z_BUF_ERROR)
-					std::cerr << "Z_BUF_ERROR";
-				if (r == Z_STREAM_ERROR)
-					std::cerr << "Z_STREAM_ERROR";
-				if (r == Z_DATA_ERROR)
-					std::cerr << "Z_DATA_ERROR";
-				std::cerr << std::endl;
-
+				switch(r) {
+					case Z_MEM_ERROR:
+						_log(ROINT__ERROR, "Error uncompressing data Z_MEM_ERROR");
+						break;
+					case Z_BUF_ERROR:
+						_log(ROINT__ERROR, "Error uncompressing data Z_BUF_ERROR");
+						break;
+					case Z_STREAM_ERROR:
+						_log(ROINT__ERROR, "Error uncompressing data Z_STREAM_ERROR");
+						break;
+					case Z_DATA_ERROR:
+						_log(ROINT__ERROR, "Error uncompressing data Z_DATA_ERROR");
+						break;
+					default:
+						_log(ROINT__ERROR, "Unknown error when uncompressing data: %d", r);
+				}
 				delete[] uncompressed;
 				delete[] body;
 				return(false);
 			}
-			if ((long)ul != m_items[i].uncompressedLength)
-				std::cerr << "GRF Warning: Uncompressed lengths for file " << m_items[i].filename << " differs!" << std::endl;
+
+			_logif(((long)ul != m_items[i].uncompressedLength), ROINT__ERROR, "GRF Warning: Uncompressed lengths for file %s differs!", m_items[i].filename)
 
 			out.write((char*)uncompressed, ul);
-
-			/*{
-				char buf[16];
-				for (int k = 0; k< 4; k++)
-					buf[k] = uncompressed[k];
-				printf("0x%02x%02x%02x%02x - %c%c%c%c\n", buf[0], buf[1], buf[2], buf[3], buf[0], buf[1], buf[2], buf[3]);
-			}*/
 
 			delete[] body;
 			delete[] uncompressed;

@@ -73,6 +73,7 @@ CDir nextDirection(CDir dir) {
 		case DIR_NW:
 			return(DIR_N);
 		case DIR_N:
+		case DIR_N2:
 			return(DIR_NE);
 		case DIR_NE:
 			return(DIR_E);
@@ -95,6 +96,7 @@ CDir prevDirection(CDir dir) {
 		case DIR_NW:
 			return(DIR_W);
 		case DIR_N:
+		case DIR_N2:
 			return(DIR_NW);
 		case DIR_NE:
 			return(DIR_N);

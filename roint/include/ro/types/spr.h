@@ -85,6 +85,8 @@ namespace RO {
 
 		bool saveBMP(const unsigned short idx, const ImageType type, std::ostream& s, const RO::PAL* pal=NULL) const;
 		bool saveBMP(const unsigned short idx, const ImageType type, const std::string& fn, const RO::PAL* pal=NULL) const;
+		/** Saves all BMPs in a single file */
+		bool saveBMP(std::ostream& s, ImageType type = IT_PAL, const RO::PAL* pal=NULL) const;
 
 		// deprecated, backward compatible functions:
 		unsigned int getImgCount() const {
