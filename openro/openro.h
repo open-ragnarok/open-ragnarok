@@ -42,6 +42,9 @@ protected:
 	// Useful Packets
 	ronet::pktServerList* m_serverlist;
 
+	/** Processes incoming network packets */
+	void ProcessNetwork();
+
 	//Add new packets here
 	HNDL_DECL(InventoryItems);
 	HNDL_DECL(HpUpdateParty);

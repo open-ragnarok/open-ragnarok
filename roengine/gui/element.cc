@@ -203,6 +203,9 @@ void Element::Window(float x, float y, const sdle::Texture& tp) {
 	float w, h;
 	float u, v;
 
+	w = (float)this->w;
+	h = (float)this->h;
+
 	if (m_fullscreen) {
 		Gui* gui = Gui::getSingletonPtr();
 		w = (float)gui->getWidth();
@@ -213,8 +216,10 @@ void Element::Window(float x, float y, const sdle::Texture& tp) {
 		h = (float)this->h;
 	}
 	else {
-		w = (float)tp.getWidth();
-		h = (float)tp.getHeight();
+		if (w == 0)
+			w = (float)tp.getWidth();
+		if (h == 0)
+			h = (float)tp.getHeight();
 	}
 
 	if (tp.Valid()) {

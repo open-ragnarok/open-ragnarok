@@ -16,8 +16,12 @@ protected:
 	unsigned int ffps;
 	unsigned int fps;
 
+	GUI::Window* minimap;
+
 public:
 	DesktopIngame(OpenRO*);
+
+	void setMinimap(sdle::Texture&);
 
 	void SetHP(int hp, int max_hp);
 	void SetSP(int sp, int max_sp);

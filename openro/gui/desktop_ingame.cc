@@ -6,6 +6,8 @@
 DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 	hp = max_hp = 0;
 	sp = max_sp = 0;
+
+	minimap = (GUI::Window*)getElement("minimap");
 }
 
 void DesktopIngame::afterDraw(unsigned int delay) {
@@ -27,6 +29,10 @@ void DesktopIngame::afterDraw(unsigned int delay) {
 		m_ro->KeepAliveMap();
 		ptick = 0;
 	}
+}
+
+void DesktopIngame::setMinimap(sdle::Texture& tex) {
+	minimap->setTexture(tex);
 }
 
 void DesktopIngame::SetHP(int hp, int max_hp) {

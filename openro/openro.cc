@@ -90,39 +90,59 @@ void OpenRO::AfterDraw() {
 			m_cycle++;
 		else {
 			m_map = RswObject::open(*this, m_mapname);
+			std::string gnd_fn = m_map->getRSW()->gnd_file;
+			std::string aux;
+			char minimap_fn[256];
+
+			memset(minimap_fn, 0, 256);
+			strncpy(minimap_fn, gnd_fn.c_str(), gnd_fn.length() - 3);
+			strcat(minimap_fn, "bmp");
+
+			aux = "texture\\";
+			aux += RO::EUC::user_interface;
+			aux += "\\map\\";
+			aux += minimap_fn;
+			strcpy(minimap_fn, aux.c_str());
+
+			sdle::Texture m_minimap;
+			m_minimap = m_texturemanager.Register(m_filemanager, minimap_fn);
+			dskIngame->setMinimap(m_minimap);
+
 			m_gui.setDesktop(dskIngame);
 			m_maploaded = true;
 		}
 	}
 
+	ProcessNetwork();
+}
+
+void OpenRO::ProcessNetwork() {
+#define HANDLEPKT(pktid, delp) \
+	case ronet::pkt ##pktid ##ID : \
+		delpkt = delp; \
+		hndl ##pktid ((ronet::pkt ##pktid *)pkt); \
+		break
+
 	m_network.Process();
 
 	ronet::Packet* pkt = m_network.popPacket();
-
-#define HANDLEPKT(pktid, delp) case ronet::pkt ##pktid ##ID : delpkt = delp; hndl ##pktid ((ronet::pkt ##pktid *)pkt); break
 
 	bool delpkt; // if it's true, we dispose of the packet
 	while (pkt != NULL) {
 		delpkt = true;
 		switch(pkt->getID()) {
-			/*
-			case ronet::pktServerListID:
-				delpkt = false;
-				hndlServerList((ronet::pktServerList*)pkt);
-				break;
-			*/
 			//Add new packets here
-			HANDLEPKT(InventoryItems, false);
-			HANDLEPKT(HpUpdateParty, false);
+			HANDLEPKT(InventoryItems, true);
+			HANDLEPKT(HpUpdateParty, true);
 			HANDLEPKT(OtherSpeech, false);
 			HANDLEPKT(PlayerEquip, false);
 			HANDLEPKT(CharLeaveScreen, false);
-			HANDLEPKT(GmBroad, false);
-			HANDLEPKT(ServerTick, false);
-			HANDLEPKT(AttackRange, false);
-			HANDLEPKT(GuildMessage, false);
-			HANDLEPKT(DisplayStat, false);
-			HANDLEPKT(UpdateStatus, false);
+			HANDLEPKT(GmBroad, true);
+			HANDLEPKT(ServerTick, true);
+			HANDLEPKT(AttackRange, true);
+			HANDLEPKT(GuildMessage, true);
+			HANDLEPKT(DisplayStat, true);
+			HANDLEPKT(UpdateStatus, true);
 			HANDLEPKT(ServerList, false);
 			HANDLEPKT(CharList, true);
 			HANDLEPKT(LoginError, true);
@@ -131,12 +151,12 @@ void OpenRO::AfterDraw() {
 			HANDLEPKT(CharPosition, false);
 			HANDLEPKT(MapAcctSend, false);
 			HANDLEPKT(MapLoginSuccess, false);
-			HANDLEPKT(OwnSpeech, false);
-			HANDLEPKT(SkillList, false);
+			HANDLEPKT(OwnSpeech, true);
+			HANDLEPKT(SkillList, true);
 			HANDLEPKT(MapMoveOk, true);
 			HANDLEPKT(ActorDisplay, true);
 			default:
-				std::cerr << "Unhandled packet id " << pkt->getID() << "(len: " << pkt->size() << ")" << std::endl;
+				_log(OPENRO__ERROR, "Unhandled packet id %d (length: %d)", pkt->getID(), pkt->size());
 		}
 
 		if (delpkt)
