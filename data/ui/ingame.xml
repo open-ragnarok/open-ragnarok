@@ -2,14 +2,14 @@
 <desktop name="ingame_ui" transparent="true">
   <!-- $Id$ -->
   <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0">
-    <button name="stats_window/btnStatus" x="201" y="17" texture="basic_interface\btn_status_off.bmp" />
-    <button name="stats_window/btnOption" x="231" y="17" texture="basic_interface\btn_option_off.bmp" />
-    <button name="stats_window/btnItems" x="201" y="37" texture="basic_interface\btn_items_off.bmp" />
-    <button name="stats_window/btnEquip" x="231" y="37" texture="basic_interface\btn_equip_off.bmp" />
-    <button name="stats_window/btnSkill" x="201" y="57" texture="basic_interface\btn_skill_off.bmp" />
-    <button name="stats_window/btnMap" x="231" y="57" texture="basic_interface\btn_map_off.bmp" />
-    <button name="stats_window/btnChat" x="201" y="77" texture="basic_interface\btn_comm_off.bmp" />
-    <button name="stats_window/btnFriend" x="231" y="77" texture="basic_interface\btn_friend_off.bmp" />
+    <button name="stats_window/btnStatus" x="207" y="22" texture="basic_interface\btn_status_off.bmp" />
+    <button name="stats_window/btnOption" x="243" y="22" texture="basic_interface\btn_option_off.bmp" />
+    <button name="stats_window/btnItems" x="207" y="46" texture="basic_interface\btn_items_off.bmp" />
+    <button name="stats_window/btnEquip" x="243" y="46" texture="basic_interface\btn_equip_off.bmp" />
+    <button name="stats_window/btnSkill" x="207" y="70" texture="basic_interface\btn_skill_off.bmp" />
+    <button name="stats_window/btnMap" x="243" y="70" texture="basic_interface\btn_map_off.bmp" />
+    <button name="stats_window/btnChat" x="207" y="94" texture="basic_interface\btn_comm_off.bmp" />
+    <button name="stats_window/btnFriend" x="243" y="94" texture="basic_interface\btn_friend_off.bmp" />
 	<progressbar name="stats_window/hp" x="110" y="22" w="85" h="9" max="100" val="80" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
 	<progressbar name="stats_window/sp" x="110" y="43" w="85" h="9" max="100" val="40" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
   </window>
