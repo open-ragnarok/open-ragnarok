@@ -3,23 +3,26 @@
 #include "roengine/gui/dialog.h"
 #include "roengine/gui/gui.h"
 
-GUI::Dialog::Dialog(const std::string& title, const std::string& msg, TextureManager& tm, FileManager& fm) : Desktop() {
+GUI::Dialog::Dialog(const std::string& title, const std::string& msg, CacheManager& cache) : Desktop() {
 	ADD_HANDLER("", evtClick, Dialog::handleSelect);
 	setFullscreen(false);
 	setName("dialog");
+
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
 
 	texture = tm.Register(fm, Gui::getSingleton().getMsgboxBg());
 	if (texture.Valid()) {
 		setSize(texture.getWidth(), texture.getHeight());
 	}
 
-	btnOk = new Button(this, Gui::getSingleton().getMsgboxOk(), tm, fm);
+	btnOk = new Button(this, Gui::getSingleton().getMsgboxOk(), cache);
 	btnOk->setName("dialog/btnOk");
 
-	btnCancel = new Button(this, Gui::getSingleton().getMsgboxCancel(), tm, fm);
+	btnCancel = new Button(this, Gui::getSingleton().getMsgboxCancel(), cache);
 	btnCancel->setName("dialog/btnCancel");
 
-	btnExit = new Button(this, Gui::getSingleton().getMsgboxExit(), tm, fm);
+	btnExit = new Button(this, Gui::getSingleton().getMsgboxExit(), cache);
 	btnExit->setName("dialog/btnExit");
 
 	btnOk->setPos(this->getW() - btnOk->getW() - btnCancel->getW() - 10, this->getH() - btnOk->getH() - 5);

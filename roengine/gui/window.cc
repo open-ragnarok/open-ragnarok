@@ -17,11 +17,11 @@ GUI::Window::Window(const sdle::Texture& t, Element* parent) : Element(parent) {
 	texture = t;
 }
 
-GUI::Window::Window(Element* parent, class TiXmlElement const * xml, TextureManager& tm, FileManager& fm) : Element(parent, xml, tm, fm) {
+GUI::Window::Window(Element* parent, const TiXmlElement* xml, CacheManager& cache) : Element(parent, xml, cache) {
 	IsMouseDowning = false;
 }
 
-GUI::Window::Window(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) : Element(parent, background, tm, fm) {
+GUI::Window::Window(Element* parent, const std::string& background, CacheManager& cache) : Element(parent, background, cache) {
 	IsMouseDowning = false;
 }
 

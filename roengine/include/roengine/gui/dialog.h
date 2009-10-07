@@ -22,7 +22,7 @@ protected:
 	Button* btnCancel;
 	Button* btnExit;
 public:
-	Dialog(const std::string& title, const std::string& msg, TextureManager& tm, FileManager& fm);
+	Dialog(const std::string& title, const std::string& msg, CacheManager&);
 	virtual ~Dialog();
 	bool handleSelect(GUI::Event&);
 };

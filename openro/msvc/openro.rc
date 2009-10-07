@@ -1,39 +1,110 @@
-#include <windows.h>
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
 
-#ifdef GCC_WINDRES
-VS_VERSION_INFO		VERSIONINFO
-#else
-VS_VERSION_INFO		VERSIONINFO	MOVEABLE IMPURE LOADONCALL DISCARDABLE
-#endif
-  FILEVERSION		0,0,5,0
-  PRODUCTVERSION	0,0,5,0
-  FILEFLAGSMASK		VS_FFI_FILEFLAGSMASK
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Portuguese (Brazil) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
+#ifdef _WIN32
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 0,0,5,0
+ PRODUCTVERSION 0,0,5,0
+ FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
-  FILEFLAGS		1
+ FILEFLAGS 0x1L
 #else
-  FILEFLAGS		0
+ FILEFLAGS 0x0L
 #endif
-  FILEOS		VOS_DOS_WINDOWS32
-  FILETYPE		VFT_DLL
-  FILESUBTYPE		0	// not used
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
 BEGIN
-  BLOCK "StringFileInfo"
-  BEGIN
-    BLOCK "040904E4"
-    //language ID = U.S. English, char set = Windows, Multilingual
+    BLOCK "StringFileInfo"
     BEGIN
-      VALUE "FileDescription",	"Open Ragnarok Client\0"
-      VALUE "FileVersion",	"0.1.0\0"
-      VALUE "InternalName",	"openro.exe\0"
-      VALUE "LegalCopyright",	"(C) 2007-2009 Sergio Moura & Open-Ragnarok.org\0"
-      VALUE "OriginalFilename",	"openro.exe\0"
-      VALUE "ProductName",	"OpenRO\0"
-      VALUE "ProductVersion",	"0.0.5\0"
-      VALUE "Comments","http://www.open-ragnarok.org/\0"
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "Comments", "http://www.open-ragnarok.org/"
+            VALUE "CompanyName", "Open-Ragnarok"
+            VALUE "FileDescription", "Open Ragnarok Client"
+            VALUE "FileVersion", "0.1.0"
+            VALUE "InternalName", "openro.exe"
+            VALUE "LegalCopyright", "(C) 2007-2009 Sergio Moura & Open-Ragnarok.org"
+            VALUE "OriginalFilename", "openro.exe"
+            VALUE "ProductName", "OpenRO"
+            VALUE "ProductVersion", "0.0.5"
+        END
     END
-  END
-  BLOCK "VarFileInfo"
-  BEGIN
-    VALUE "Translation", 0x0409, 1252
-  END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
 END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "openro.ico"
+#endif    // Portuguese (Brazil) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

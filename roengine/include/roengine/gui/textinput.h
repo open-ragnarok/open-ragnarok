@@ -61,7 +61,7 @@ public:
 	TextEditor G_Text;
 	bool       SelectFlag;
 
-	TextInput(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+	TextInput(Element* parent, const TiXmlElement*, CacheManager&);
 	~TextInput();
 
 	/** Draws the control

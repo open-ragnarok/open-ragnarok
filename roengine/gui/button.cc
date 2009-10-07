@@ -41,9 +41,9 @@ GUI::Button::Button(Element* parent, const sdle::Texture& base, const sdle::Text
 	m_MouseIn = false;
 }
 
-GUI::Button::Button(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
+GUI::Button::Button(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
 	if (node != NULL)
-		ParseFromXml(node, tm, fm);
+		ParseFromXml(node, cache);
 
 	texture_base = texture;
 	m_MouseIn = false;
@@ -56,16 +56,18 @@ GUI::Button::Button(Element* parent, const TiXmlElement* node, TextureManager& t
 		texture_disabled = texture;
 }
 
-GUI::Button::Button(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) : Element(parent, background, tm, fm) {
+GUI::Button::Button(Element* parent, const std::string& background, CacheManager& cache) : Element(parent, background, cache) {
 	texture_base = texture;
 	texture_active = texture;
 	texture_hover = texture;
 	texture_disabled = texture;
 }
 
-bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
-	if (GUI::Element::ParseXmlAttr(attr, tm, fm))
+bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
+	if (GUI::Element::ParseXmlAttr(attr, cache))
 		return(true);
+
+	TextureManager& tm = cache.getTextureManager();
 
 	std::string attrname = attr->Name();
 
@@ -81,7 +83,7 @@ bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, F
 			tn = tn.substr(1);
 		}
 
-		texture_active = tm.Register(fm, tn);
+		texture_active = tm.Register(cache.getFileManager(), tn);
 		return(true);
 	}
 	else if (attrname == "hover") {
@@ -96,7 +98,7 @@ bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, F
 			tn = tn.substr(1);
 		}
 
-		texture_hover = tm.Register(fm, tn);
+		texture_hover = tm.Register(cache.getFileManager(), tn);
 		return(true);
 	}
 	else if (attrname == "disabled") {
@@ -111,7 +113,7 @@ bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, F
 			tn = tn.substr(1);
 		}
 
-		texture_disabled = tm.Register(fm, tn);
+		texture_disabled = tm.Register(cache.getFileManager(), tn);
 		return(true);
 	}
 

@@ -13,7 +13,7 @@ unsigned int GUI::TextInput::cursor_delay = 500;
 GUI::TextInput::~TextInput() {
 }
 
-GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, TextureManager& tm, FileManager& fm) : Label(parent, e, tm, fm) {
+GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, CacheManager& cache) : Label(parent, e, cache) {
 	m_focusable = true;
 	m_delay = 0;
 	m_pos = 0;

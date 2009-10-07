@@ -6,9 +6,9 @@ GUI::Desktop::Desktop() : Window() {
 	m_fullscreen = true;
 }
 
-GUI::Desktop::Desktop(const std::string& name, TextureManager& tm, FileManager& fm) : Window() {
+GUI::Desktop::Desktop(const std::string& name, CacheManager& cache) : Window() {
 	m_fullscreen = true;
-	Load(name, tm, fm);
+	Load(name, cache);
 }
 
 bool GUI::Desktop::addHandler(Event e, Handler h) {
@@ -44,9 +44,11 @@ bool GUI::Desktop::HandleEvent(const Event& e) {
 	return((this->*c)(e));
 }
 
-bool GUI::Desktop::Load(const std::string& name, TextureManager& tm, FileManager& fm) {
+bool GUI::Desktop::Load(const std::string& name, CacheManager& cache) {
 	TiXmlDocument doc;
 	FileData data;
+
+	FileManager& fm = cache.getFileManager();
 
 	data = fm.getFile(name);
 	if (data.blobSize() == 0) {
@@ -60,22 +62,22 @@ bool GUI::Desktop::Load(const std::string& name, TextureManager& tm, FileManager
 	if (node == NULL)
 		return(false);
 
-	return(Load(node, tm, fm));
+	return(Load(node, cache));
 }
 
-bool GUI::Desktop::Load(const TiXmlElement *node, TextureManager &tm, FileManager &fm) {
+bool GUI::Desktop::Load(const TiXmlElement *node, CacheManager& cache) {
 	std::string nodetype = node->Value();
 	if (nodetype != "desktop") {
 		std::cerr << "Invalid node type " << nodetype << std::endl;
 		return(false);
 	}
 
-	ParseFromXml(node, tm, fm);
+	ParseFromXml(node, cache);
 
 	const TiXmlElement* child = node->FirstChildElement();
 	GUI::Element* aux;
 	while (child != NULL) {
-		aux = GUI::Element::loadXml(this, child, tm, fm);
+		aux = GUI::Element::loadXml(this, child, cache);
 		if (aux != NULL)
 			add(aux);
 		child = child->NextSiblingElement();

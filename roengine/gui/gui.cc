@@ -289,7 +289,7 @@ void Gui::Dialog(const std::string& title, const std::string& text, CacheManager
 	FileManager& fm = cache.getFileManager();
 
 	GUI::Dialog* dialog;
-	dialog = new GUI::Dialog(title, text, tm, fm);
+	dialog = new GUI::Dialog(title, text, cache);
 	m_inactiveDesktop = m_desktop;
 	m_desktop = dialog;
 	dialog->setVisible(true);

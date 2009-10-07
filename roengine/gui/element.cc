@@ -81,7 +81,7 @@ Element::Element(Element* parent) {
 	m_elements.add(this);
 }
 
-Element::Element(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
+Element::Element(Element* parent, const TiXmlElement* node, CacheManager& cache) {
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
@@ -99,10 +99,13 @@ Element::Element(Element* parent, const TiXmlElement* node, TextureManager& tm, 
 	m_elements.add(this);
 
 	if (node != NULL)
-		ParseFromXml(node, tm, fm);
+		ParseFromXml(node, cache);
 }
 
-Element::Element(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm) {
+Element::Element(Element* parent, const std::string& background, CacheManager& cache) {
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
+
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
@@ -302,7 +305,10 @@ void Element::setSize(const int& w, const int& h) {
 	this->h = h;
 }
 
-bool Element::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
+bool Element::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
+
 	std::string attrname = attr->Name();
 
 	if (attrname == "x") {
@@ -405,12 +411,12 @@ bool Element::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileM
 	return(false);
 }
 
-void Element::ParseFromXml(const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
+void Element::ParseFromXml(const TiXmlElement* node, CacheManager& cache) {
 	const TiXmlAttribute* attr = node->FirstAttribute();
 	std::string attrname;
 
 	while (attr != NULL) {
-		ParseXmlAttr(attr, tm, fm);
+		ParseXmlAttr(attr, cache);
 		attr = attr->Next();
 	}
 
@@ -485,28 +491,28 @@ void Element::CenterY() {
 	pos_y = (ph - getH()) / 2;
 }
 
-Element* Element::loadXml(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) {
+Element* Element::loadXml(Element* parent, const TiXmlElement* node, CacheManager& cache) {
 	std::string nodetype = node->Value();
 	GUI::Element* ret = NULL;
 
 	if (nodetype == "window") {
-		ret = new GUI::Window(parent, node, tm, fm);
+		ret = new GUI::Window(parent, node, cache);
 	}
 	else if(nodetype == "textarea") {
-		ret = new GUI::TextInput(parent, node, tm, fm);
+		ret = new GUI::TextInput(parent, node, cache);
 	}
 	else if(nodetype == "label") {
-		ret = new GUI::Label(parent, node, tm, fm);
+		ret = new GUI::Label(parent, node, cache);
 	}
 	else if(nodetype == "button") {
-		ret = new GUI::Button(parent, node, tm, fm);
+		ret = new GUI::Button(parent, node, cache);
 	}
 	else if (nodetype == "list") {
-		ret = new GUI::List(parent, node, tm, fm);
+		ret = new GUI::List(parent, node, cache);
 	}
 	else {
 		// Default
-		ret = new Element(parent, node, tm, fm);
+		ret = new Element(parent, node, cache);
 	}
 
 	if (ret == NULL)
@@ -515,7 +521,7 @@ Element* Element::loadXml(Element* parent, const TiXmlElement* node, TextureMana
 	const TiXmlElement* child = node->FirstChildElement();
 	GUI::Element* aux;
 	while (child != NULL) {
-		aux = GUI::Element::loadXml(ret, child, tm, fm);
+		aux = GUI::Element::loadXml(ret, child, cache);
 		if (aux != NULL)
 			ret->add(aux);
 		child = child->NextSiblingElement();

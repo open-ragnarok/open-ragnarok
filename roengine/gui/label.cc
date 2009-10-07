@@ -7,10 +7,10 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-GUI::Label::Label(Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
+GUI::Label::Label(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
 	m_focusable = false;
 	if (node != NULL)
-		ParseFromXml(node, tm, fm);
+		ParseFromXml(node, cache);
 }
 
 GUI::Label& GUI::Label::setText(const std::string& s) {
@@ -40,8 +40,8 @@ void GUI::Label::Draw(unsigned int delay) {
 	glColor3f(1.0f,1.0f,1.0f);
 }
 
-bool GUI::Label::ParseXmlAttr(const TiXmlAttribute* attr, TextureManager& tm, FileManager& fm) {
-	if (GUI::Element::ParseXmlAttr(attr, tm, fm))
+bool GUI::Label::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
+	if (GUI::Element::ParseXmlAttr(attr, cache))
 		return(true);
 
 	std::string attrname = attr->Name();

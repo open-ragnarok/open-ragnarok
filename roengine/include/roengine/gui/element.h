@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "sdle/texture.h"
-#include "../texturemanager.h"
+#include "../cache_manager.h"
 
 #include "tinyxml/tinyxml.h"
 
@@ -111,8 +111,8 @@ protected:
 	int pos_x, pos_y,MaxLen;
 	int w, h,mw, mh;
 
-	virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
-	void ParseFromXml(const TiXmlElement*, TextureManager&, FileManager&);
+	virtual bool ParseXmlAttr(const TiXmlAttribute*, CacheManager&);
+	void ParseFromXml(const TiXmlElement*, CacheManager&);
 
 	void Window(float x, float y, const sdle::Texture& tp);
 public:
@@ -123,7 +123,7 @@ public:
 	 * @param parent the Parent element
 	 */
 	Element(Element* parent);
-	Element(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+	Element(Element* parent, const TiXmlElement*, CacheManager&);
 	
 	/**
 	 * Creates an element with a given parent, loads the background parameter and sets the element size to the
@@ -135,7 +135,7 @@ public:
 	 * @param tm
 	 * @param fm
 	 */
-	Element(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm);
+	Element(Element* parent, const std::string& background, CacheManager&);
 	virtual ~Element();
 
 	void setTexture(const sdle::Texture&);
@@ -199,7 +199,7 @@ public:
 	const Element* getActiveChild() const;
 
 	/* Static stuff */
-	static Element* loadXml(Element* parent, const TiXmlElement* node, TextureManager&, FileManager&);
+	static Element* loadXml(Element* parent, const TiXmlElement* node, CacheManager&);
 
 	/** Reteieves an element based on its name */
 	static Element* getElement(const std::string&);

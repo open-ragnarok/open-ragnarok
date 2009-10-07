@@ -18,7 +18,7 @@ namespace GUI {
 
 		// virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
 	public:
-		List(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+		List(Element* parent, const TiXmlElement*, CacheManager&);
 
 		virtual void Draw(unsigned int delay = 0);
 		virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);

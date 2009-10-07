@@ -12,7 +12,7 @@ namespace GUI {
 		sdle::Texture texture_hover;
 		sdle::Texture texture_disabled;
 
-		virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
+		virtual bool ParseXmlAttr(const TiXmlAttribute*, CacheManager&);
 
 	public:
 		Button(Element* parent);
@@ -21,7 +21,7 @@ namespace GUI {
 		Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active, const sdle::Texture& hover);
 		Button(Element* parent, const sdle::Texture& base, const sdle::Texture& active, const sdle::Texture& hover, const sdle::Texture& disabled);
 
-		Button(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+		Button(Element* parent, const TiXmlElement*, CacheManager&);
 
 		/**
 		 * Creates an window with a given parent, loads the background parameter and sets the element size to the
@@ -33,7 +33,7 @@ namespace GUI {
 		 * @param tm
 		 * @param fm
 		 */
-		Button(Element* parent, const std::string& background, TextureManager& tm, FileManager& fm);
+		Button(Element* parent, const std::string& background, CacheManager&);
 
 		virtual void Draw(unsigned int delay = 0);
 

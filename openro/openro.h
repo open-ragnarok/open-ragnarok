@@ -37,6 +37,7 @@ protected:
 	DesktopCreate* dskCreate;
 	DesktopChar* dskChar;
 	DesktopIngame* dskIngame;
+	GUI::Desktop* dskLoading;
 
 	// Useful Packets
 	ronet::pktServerList* m_serverlist;
@@ -80,8 +81,10 @@ protected:
 	/** Parses the client information on the given xml file */
 	void ParseClientInfo(const std::string& name = "sclientinfo.xml");
 
-	/** Store the first map to load sent by the charserver **/
-	char FirstMap[256];
+	/** Store the name of the map load */
+	char m_mapname[256];
+	bool m_maploaded;
+	int m_cycle;
 
 public:
 	OpenRO();

@@ -65,6 +65,17 @@ sdle::Texture TextureManager::Register(FileManager& fm, const std::string& name)
 		return(sdle::Texture());
 	}
 
+	const char* fn = name.c_str();
+	const char* extension = fn + (strlen(fn) - 3);
+
+	if (!strcmp(extension, "jpg")) {
+		return(RegisterJPEG(fm, name));
+	}
+
+	if (!strcmp(extension, "png")) {
+		return(RegisterPNG(fm, name));
+	}
+
 	if (IsRegistered(name))
 		return(textures[name]);
 

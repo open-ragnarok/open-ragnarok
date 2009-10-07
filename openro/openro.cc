@@ -13,6 +13,8 @@ OpenRO::OpenRO() : ROEngine() {
 
 	m_serverlist = NULL;
 	m_map = NULL;
+	m_maploaded = true;
+	m_cycle = 0;
 }
 
 OpenRO::~OpenRO() {
@@ -83,6 +85,16 @@ void OpenRO::Quit() {
 }
 
 void OpenRO::AfterDraw() {
+	if (!m_maploaded) {
+		if (!m_cycle)
+			m_cycle++;
+		else {
+			m_map = RswObject::open(*this, m_mapname);
+			m_gui.setDesktop(dskIngame);
+			m_maploaded = true;
+		}
+	}
+
 	m_network.Process();
 
 	ronet::Packet* pkt = m_network.popPacket();
@@ -157,6 +169,7 @@ void OpenRO::BeforeRun() {
 	dskCreate = new DesktopCreate(this);
 	dskChar = new DesktopChar(this);
 	dskIngame = new DesktopIngame(this);
+	dskLoading = new GUI::Desktop("ui\\loading.xml", *this);
 
 	m_gui.setDesktop(dskLogin);
 
@@ -512,7 +525,15 @@ HNDL_IMPL(CharPosition) {
 	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
 
 	//Save the map sent by the charserver
-	strcpy(FirstMap, pkt->getMapname());
+	strcpy(m_mapname, pkt->getMapname());
+	int i = 0;
+	while (m_mapname[i] != 0) {
+		if (m_mapname[i] == '.') {
+			m_mapname[i] = 0;
+			break;
+		}
+		i++;
+	}
 }
 
 HNDL_IMPL(MapAcctSend) {
@@ -527,19 +548,10 @@ HNDL_IMPL(MapLoginSuccess) {
 
 	_log(OPENRO__DEBUG, "Login successful to the MapServer!");
 
-	int i = 0;
-	while (FirstMap[i] != 0) {
-		if (FirstMap[i] == '.') {
-			FirstMap[i] = 0;
-			break;
-		}
-		i++;
-	}
+	m_gui.setDesktop(dskLoading);
+	m_cycle = 0;
+	m_maploaded = false;
 	
-	m_map = RswObject::open(*this, FirstMap);
-
-	m_gui.setDesktop(dskIngame);
-
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
 	me.setPos(pos_x, pos_y);
 

@@ -20,12 +20,12 @@ private:
 
 public:
 	Desktop();
-	Desktop(const std::string&, TextureManager&, FileManager&);
+	Desktop(const std::string&, CacheManager&);
 	
 	bool HandleEvent(const Event&);
 
-	bool Load(const std::string&, TextureManager&, FileManager&);
-	bool Load(const TiXmlElement* node, TextureManager& tm, FileManager& fm);
+	bool Load(const std::string&, CacheManager&);
+	bool Load(const TiXmlElement* node, CacheManager&);
 
 	//bool HandleMouseDown(int x, int y, int button);
 };

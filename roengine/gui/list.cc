@@ -7,9 +7,9 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-GUI::List::List(GUI::Element* parent, const TiXmlElement* node, TextureManager& tm, FileManager& fm) : Element(parent) {
+GUI::List::List(GUI::Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
 	if (node != NULL)
-		ParseFromXml(node, tm, fm);
+		ParseFromXml(node, cache);
 	selected = 0;
 	m_first = 0;
 }

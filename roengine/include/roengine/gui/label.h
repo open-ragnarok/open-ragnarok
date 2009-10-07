@@ -10,10 +10,10 @@ namespace GUI {
 	protected:
 		std::string m_text;
 
-		virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
+		virtual bool ParseXmlAttr(const TiXmlAttribute*, CacheManager&);
 
 	public:
-		Label(Element* parent, const TiXmlElement*, TextureManager&, FileManager&);
+		Label(Element* parent, const TiXmlElement*, CacheManager&);
 
 		virtual void Draw(unsigned int delay = 0);
 
