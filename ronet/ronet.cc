@@ -205,4 +205,10 @@ void RONet::KeepAliveMap(unsigned int acc_id) {
 	return;
 }
 
+bool RONet::Talk(unsigned int npc_id) {
+	ronet::pktTalk pkt(npc_id);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
 }

@@ -26,15 +26,17 @@
 
 #include "ronet/packet_factory.h"
 
-#define HANDLER(x) bool ronet::PacketFactory::Handle_ ##x (ronet::ucBuffer& b) { \
+#define HANDLER(x) \
+bool ronet::PacketFactory::Handle_ ##x (ronet::ucBuffer& b) { \
 	pkt ##x *p; \
 	p = new pkt ##x (); \
 	if (!p->Decode(b)) { delete(p); return(false); } \
 	push(p); \
-	return(true); }
+	return(true); \
+}
 
-#define CALLER(x) m_dispatcher.Register(pkt ##x ##ID, &ronet::PacketFactory::Handle_ ##x )
-// List of packets that we know how to decode
+#define CALLER(x) \
+	m_dispatcher.Register(pkt ##x ##ID, &ronet::PacketFactory::Handle_ ##x )
 
 //Add new packets here
 HANDLER(HpUpdateParty)
@@ -66,6 +68,8 @@ HANDLER(HotkeyList)
 HANDLER(ZenyExp)
 HANDLER(StatsInfo)
 HANDLER(ActorDisplay)
+HANDLER(RecvNpcTalk)
+HANDLER(RecvNpcTalkNext)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -98,6 +102,8 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(ZenyExp);
 	CALLER(StatsInfo);
 	CALLER(ActorDisplay);
+	CALLER(RecvNpcTalk);
+	CALLER(RecvNpcTalkNext);
 }
 
 ronet::PacketFactory::~PacketFactory() {

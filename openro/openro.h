@@ -20,6 +20,8 @@ class OpenRO;
 #define HNDL_IMPL(x) void OpenRO::hndl ##x (ronet::pkt ##x * pkt)
 
 class OpenRO : public ROEngine {
+private:
+	unsigned int m_tickoffset;
 protected:
 	/** Current client state */
 	ROState m_state;
@@ -130,6 +132,9 @@ public:
 
 	/** Event received from ROEngine */
 	//virtual void clickPortal(int x, int y);
+
+	/** Event received from ROEngine */
+	virtual void clickNpc(int x, int y, NpcObj* npc);
 };
 
 #endif /* __OPENRO_H */

@@ -39,6 +39,9 @@ public:
 	/** Actor ID as assigned by the server */
 	unsigned int id;
 
+	/** Actor Type as assigned by the server */
+	unsigned int type;
+
 	Actor();
 	virtual ~Actor();
 

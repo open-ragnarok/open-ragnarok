@@ -32,41 +32,46 @@
 
 namespace ronet {
 typedef enum PacketIDs{
+	// ============== //
 	// == OUTBOUND == //
+	// ============== //
 	// To LOGIN
 	pktLoginID = 0x0064,
 
 	// To CHAR
-	pktCharLoginID = 0x0065, //  17 bytes
-	pktCharSelectID = 0x0066, // 3 bytes -- S 0066 <character number>.B
-	pktCharCreateID = 0x0067, // 37 bytes -- S 0067 <name>.24B <str>.B <agi>.B <vit>.B <int>.B <dex>.B <luk>.B <slot>.B <hair color>.W <hair style>.W
-	pktCharDeleteID = 0x0068, // 46 bytes
-	pktCharDelete2ID = 0x01fb, // 56 bytes
+	pktCharLoginID = 0x0065,		// 17 bytes
+	pktCharSelectID = 0x0066,		// 3 bytes -- S 0066 <character number>.B
+	pktCharCreateID = 0x0067,		// 37 bytes -- S 0067 <name>.24B <str>.B <agi>.B <vit>.B <int>.B <dex>.B <luk>.B <slot>.B <hair color>.W <hair style>.W
+	pktCharDeleteID = 0x0068,		// 46 bytes
+	pktCharDelete2ID = 0x01fb,		// 56 bytes
 	pktKeepAliveID = 0x0187,
 
 	// To MAP
-	pktMapLoginID = 0x0072, // (19 bytes) S 0072 <account id>.int <char id>.int <session id1>.int <client tick>.unsigned int <gender>.byte
-	pktMapMoveID = 0x0085, // 5 bytes S 0085 <x>.10bits <y>.10bits <0>.4bits
-	pktGuildInfoRequestID = 0x014d, // 2 bytes
-	pktMapLoadedID = 0x007d, // 2 bytes
-	pktKeepAliveMapID = 0x007e, // (6 bytes) S 0x007e <ticks>.uint
+	pktMapLoginID = 0x0072,			// (19 bytes) S 0072 <account id>.int <char id>.int <session id1>.int <client tick>.unsigned int <gender>.byte
+	pktMapMoveID = 0x0085,			// (5 bytes)  S 0085 <x>.10bits <y>.10bits <0>.4bits
+	pktGuildInfoRequestID = 0x014d,	// (2 bytes)  S 014d
+	pktMapLoadedID = 0x007d,		// (2 bytes)  S 007d
+	pktKeepAliveMapID = 0x007e,		// (6 bytes)  S 007e <ticks>.uint
+	pktTalkID = 0x0090,				// (7 bytes)  S 0090 <id>.uint <0x01>.byte
 
 	// Packetver 23
-	pktMapLogin23ID = 0x0436, // (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
+	pktMapLogin23ID = 0x0436,		// (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
 	pktKeepAliveMap23ID = 0x0089,
 
-	// == INBOUND == //
+	// ============== //
+	// == INBOUND  == //
+	// ============== //
 	// From LOGIN
 	pktServerListID = 0x0069,
-	pktLoginErrorID = 0x006a, // (23 bytes) S 006A <type>.short 0x00 * 20
-	pktAuthFailedID = 0x0081, // (3 bytes) S 0081 <type>.short
+	pktLoginErrorID = 0x006a,		// (23 bytes) S 006A <type>.short 0x00 * 20
+	pktAuthFailedID = 0x0081,		// (3 bytes)  S 0081 <type>.short
 
 	// From CHAR
 	pktCharListID = 0x006b,
-	pktCharSelectionFailID = 0x006c, // S 006c <unk>.short
-	pktCharPositionID = 0x0071, // (30 bytes) S 0071 <charid>.int <mapname>.16B <ip>.int <port>.short
-	pktCharCreatedID = 0x006d, // Also named "NewCharInfo" (108 or 110 bytes)
-	pktCharCreateErrorID = 0x006e, // (3 bytes)
+	pktCharSelectionFailID = 0x006c,// S 006c <unk>.short
+	pktCharPositionID = 0x0071,		// (30 bytes) S 0071 <charid>.int <mapname>.16B <ip>.int <port>.short
+	pktCharCreatedID = 0x006d,		// Also named "NewCharInfo" (108 or 110 bytes)
+	pktCharCreateErrorID = 0x006e,	// (3 bytes)
 	pktCharRenameID = 0x028d,
 
 	// From MAP
@@ -94,6 +99,8 @@ typedef enum PacketIDs{
 	pktActorDisplayID = 0x0078,		// R 0078 
 	pktActorSpawnID = 0x0079,		// R 0079
 	pktActorWalkingID = 0x007b,		// R 007b
+	pktRecvNpcTalkID = 0x00b4,		// R 00b4 <len>.short <id>.int <message>.string
+	pktRecvNpcTalkNextID = 0x00b5,	// R 00b4 <len>.short <id>.int
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0

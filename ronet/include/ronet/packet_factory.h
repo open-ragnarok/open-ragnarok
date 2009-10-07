@@ -94,6 +94,8 @@ namespace ronet {
 		DECL(ZenyExp);
 		DECL(StatsInfo);
 		DECL(ActorDisplay);
+		DECL(RecvNpcTalk);
+		DECL(RecvNpcTalkNext);
 
 		void push(Packet*);
 

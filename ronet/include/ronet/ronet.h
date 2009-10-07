@@ -96,6 +96,8 @@ public:
 	bool RequestGuiildInfo();
 	bool MapLoaded();
 
+	bool Talk(unsigned int npc_id);
+
 
 	/** Moves the character
 	 *

@@ -110,6 +110,7 @@ public:
 	/** Event raised when the user left-clicks a map and there is nothing (mob, items, portals, etc) on the clicked place */
 	virtual void clickMap(int x, int y);
 	virtual void clickMob(int x, int y);
+	virtual void clickNpc(int x, int y, NpcObj* npc);
 	virtual void clickItem(int x, int y);
 	virtual void clickPortal(int x, int y);
 

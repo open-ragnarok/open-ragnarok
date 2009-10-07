@@ -359,7 +359,23 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 				mapx = m_map->getMouseMapX();
 				mapy = m_map->getMouseMapY();
 
-				clickMap(mapx, mapy);
+				// Any actors there?
+				std::map<unsigned int, Actor*>::iterator itr = m_actors.begin();
+				bool m_actor = false;
+				while (itr != m_actors.end()) {
+					Actor* actor = itr->second;
+					if (actor->getPositionX() == mapx && actor->getPositionY() == mapy) {
+						if (m_npc_names.find(actor->type) != m_npc_names.end()) {
+							clickNpc(mapx, mapy, (NpcObj*)actor);
+						}
+						m_actor = true;
+						break;
+					}						
+					itr++;
+				}
+
+				if (!m_actor)
+					clickMap(mapx, mapy);
 				//me.setDest(mapx, mapy);
 			}
 		}
@@ -427,3 +443,7 @@ void ROEngine::clickMap(int x, int y) {}
 void ROEngine::clickMob(int x, int y) {}
 void ROEngine::clickItem(int x, int y) {}
 void ROEngine::clickPortal(int x, int y) {}
+void ROEngine::clickNpc(int x, int y, NpcObj* npc) {
+	printf("Clicked NPC %08x at %d,%d\n", npc->id, x, y);
+}
+

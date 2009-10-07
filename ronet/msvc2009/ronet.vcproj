@@ -507,6 +507,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_recvnpctalk.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_recvnpctalknext.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_serverlist.cc"
 					>
 				</File>
@@ -528,6 +536,10 @@
 				</File>
 				<File
 					RelativePath="..\packets\pkt_statsinfo.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_talk.cc"
 					>
 				</File>
 				<File
@@ -741,6 +753,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_recvnpctalk.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_recvnpctalknext.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_serverlist.h"
 					>
 				</File>
@@ -762,6 +782,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_statsinfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_talk.h"
 					>
 				</File>
 				<File

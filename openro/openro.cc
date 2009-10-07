@@ -15,6 +15,7 @@ OpenRO::OpenRO() : ROEngine() {
 	m_map = NULL;
 	m_maploaded = true;
 	m_cycle = 0;
+	m_tickoffset = 0;
 }
 
 OpenRO::~OpenRO() {
@@ -278,7 +279,7 @@ void OpenRO::KeepAliveMap(){
 		return;
 
 	//Send the KeepAlive packet
-	m_network.KeepAliveMap(SDL_GetTicks());
+	m_network.KeepAliveMap(SDL_GetTicks() - m_tickoffset);
 	_log(OPENRO__DEBUG, "MapServer KeepAlive sent.");
 }
 
@@ -302,7 +303,10 @@ unsigned int OpenRO::GetClientVersion(){return ClientVersion;}
 
 void OpenRO::clickMap(int x, int y) {
 	m_network.MoveCharacter(x, y);
-	//me.setDest(x, y);
+}
+
+void OpenRO::clickNpc(int x, int y, NpcObj* npc) {
+	m_network.Talk(npc->id);
 }
 
 
@@ -319,6 +323,8 @@ HNDL_IMPL(ActorDisplay) {
 		npc->setMap(m_map);
 		npc->open(*this, m_npc_names[pkt->type]);
 		npc->setPos((float)pkt->coord_x, (float)pkt->coord_y);
+		npc->id = pkt->id;
+		npc->type = pkt->type;
 		m_actors[pkt->id] = npc;
 		return;
 	}
@@ -357,19 +363,21 @@ HNDL_IMPL(HpUpdateParty) {
 }
 
 HNDL_IMPL(OtherSpeech) {
-	_log(OPENRO__DEBUG, "Player %d talk: %s\n",pkt->getIdMes(), pkt->getText());
+	_log(OPENRO__DEBUG, "Player %d talk: %s",pkt->getIdMes(), pkt->getText());
 }
 
 HNDL_IMPL(PlayerEquip) {
-	_log(OPENRO__DEBUG, "Player %d put %d in %d (left hand %d)\n", pkt->getPlayer(), pkt->getID1(), pkt->getType(), pkt->getID2());
+	_log(OPENRO__DEBUG, "Player %d put %d in %d (left hand %d)", pkt->getPlayer(), pkt->getID1(), pkt->getType(), pkt->getID2());
 }
 
 HNDL_IMPL(GmBroad) {
-	_log(OPENRO__DEBUG, "Received GM Broadcast: %s\n",pkt->getText());
+	_log(OPENRO__DEBUG, "Received GM Broadcast: %s",pkt->getText());
 }
 
 HNDL_IMPL(ServerTick) {
-	_log(OPENRO__DEBUG, "Received server tick: %d\n", pkt->getServerTick());
+	unsigned int m_expected = SDL_GetTicks() - m_tickoffset;
+	unsigned int m_lag = pkt->getServerTick() - m_expected;
+	_log(OPENRO__DEBUG, "Received server tick: %d.\tExpected: %d.\tLag: %dms", pkt->getServerTick(), m_expected, m_lag);
 }
 
 HNDL_IMPL(MapMoveOk) {
@@ -503,7 +511,7 @@ HNDL_IMPL(AuthFailed) {
 			sprintf(errorDesc,"Unknown error");
 			break;
 	}
-	_log(OPENRO__DEBUG, "Auth Failed: %s (Error number %d)\n", errorDesc, errorId);
+	_log(OPENRO__DEBUG, "Auth Failed: %s (Error number %d)", errorDesc, errorId);
 
 	//We don't need the connection anymore.
 	CloseSockets();
@@ -512,7 +520,7 @@ HNDL_IMPL(AuthFailed) {
 
 HNDL_IMPL(CharCreated) {
 	unsigned short cid = pkt->getID();
-	_log(OPENRO__TRACE, "Received the new character created with ID %d\n", cid);
+	_log(OPENRO__TRACE, "Received the new character created with ID %d", cid);
 	
 	CharInformation newchar = pkt->getChar();
 	dskChar->addChar(newchar);
@@ -574,6 +582,8 @@ HNDL_IMPL(MapLoginSuccess) {
 	
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
 	me.setPos(pos_x, pos_y);
+
+	m_tickoffset = SDL_GetTicks() - pkt->getServerTick();
 
 	_log(OPENRO__TRACE, "\tpos_x = %d\n\tpos_y = %d\n\tpos_dir = %d\n\tserver_tick = %d", pos_x, pos_y, pos_dir, server_tick);
 }
