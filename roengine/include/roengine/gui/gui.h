@@ -11,6 +11,7 @@
 #include "textinput.h"
 #include "list.h"
 #include "dialog.h"
+#include "progressbar.h"
 
 // Other stuff
 #include "singleton.h"

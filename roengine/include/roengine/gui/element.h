@@ -115,6 +115,8 @@ protected:
 	void ParseFromXml(const TiXmlElement*, CacheManager&);
 
 	void Window(float x, float y, const sdle::Texture& tp);
+	void Window(float x, float y, float w, float h, const sdle::Texture& tp);
+
 public:
 	Element();
 	float m_opacity;

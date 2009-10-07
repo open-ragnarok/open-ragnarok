@@ -115,7 +115,7 @@ bool ImageBMP::Read8BPP(std::istream& input, const bool& flipvertical) {
 	int bpr = m_width;
 	if (((m_width) % 4) > 0) {
 		bpr += 4 - ((m_width) % 4);
-		m_width -= 2;
+		//m_width -= 2;
 	}
 	int size = bpr * m_height; 
 	input.seekg(fileHeader.offset, std::ios_base::beg);

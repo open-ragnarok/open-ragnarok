@@ -232,6 +232,22 @@ void Element::Window(float x, float y, const sdle::Texture& tp) {
 		v = 0;
 	}
 
+	Window(x, y, w, h, tp);
+}
+
+void Element::Window(float x, float y, float w, float h, const sdle::Texture& tp) {
+	float u, v;
+
+	if (tp.Valid()) {
+		tp.Activate();
+		u = tp.getMaxU();
+		v = tp.getMaxV();
+	}
+	else {
+		u = 0;
+		v = 0;
+	}
+
 	bool blend = (glIsEnabled(GL_BLEND) == 1);
 
 	if (!blend)
@@ -266,6 +282,7 @@ void Element::Window(float x, float y, const sdle::Texture& tp) {
 	if (!blend)
 		glDisable(GL_BLEND);
 }
+
 
 void Element::add(Element* e) {
 	if (e == NULL)
@@ -514,6 +531,9 @@ Element* Element::loadXml(Element* parent, const TiXmlElement* node, CacheManage
 	}
 	else if (nodetype == "list") {
 		ret = new GUI::List(parent, node, cache);
+	}
+	else if (nodetype == "progressbar") {
+		ret = new GUI::ProgressBar(parent, node, cache);
 	}
 	else {
 		// Default

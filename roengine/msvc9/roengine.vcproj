@@ -794,6 +794,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\progressbar.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\textinput.cc"
 				>
 			</File>
@@ -834,6 +838,10 @@
 				</File>
 				<File
 					RelativePath="..\include\roengine\gui\list.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\gui\progressbar.h"
 					>
 				</File>
 				<File
