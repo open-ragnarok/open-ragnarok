@@ -271,7 +271,7 @@ void SprGL::Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& 
 	if (cpat[sprno].sprNo < 0)
 		return;
 
-	const RO::ACT::Spr& cspr = cpat[cpat[sprno].sprNo];
+	const RO::ACT::Spr& cspr = cpat[sprno];
 
 	unsigned int idx = cspr.sprNo;
 
@@ -301,17 +301,14 @@ void SprGL::Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& 
 		v[1] = aux;
 	}
 
-	x += cpat[0].x;
-	y += cpat[0].y;
-
 	if (ext) {
 		x -= cpat.ext_x;
 		y -= cpat.ext_y;
 	}
 
 	struct Rect r;
-	r.pos.x = x;
-	r.pos.y = y - h/2;
+	r.pos.x = x + cspr.x;
+	r.pos.y = y - h/2 + cspr.y;
 	r.dim.w = w;
 	r.dim.h = h;
 

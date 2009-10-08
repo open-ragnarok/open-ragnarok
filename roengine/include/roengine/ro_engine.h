@@ -92,6 +92,8 @@ protected:
 	 */
 	std::map<unsigned int, Actor*> m_actors;
 
+	Actor* m_overactor;
+
 	/**
 	 * Clears all the actors (useful when changing maps)
 	 */

@@ -189,6 +189,7 @@ ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 	m_map = NULL;
 	cam.getEye().set(200, 200, -200);
 	m_rotating = false;
+	m_overactor = NULL;
 }
 
 ROEngine::~ROEngine() {
@@ -359,24 +360,14 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 				mapx = m_map->getMouseMapX();
 				mapy = m_map->getMouseMapY();
 
-				// Any actors there?
-				std::map<unsigned int, Actor*>::iterator itr = m_actors.begin();
-				bool m_actor = false;
-				while (itr != m_actors.end()) {
-					Actor* actor = itr->second;
-					if (actor->getPositionX() == mapx && actor->getPositionY() == mapy) {
-						if (m_npc_names.find(actor->type) != m_npc_names.end()) {
-							clickNpc(mapx, mapy, (NpcObj*)actor);
-						}
-						m_actor = true;
-						break;
-					}						
-					itr++;
+				if (m_overactor != NULL) {
+					if (m_npc_names.find(m_overactor->type) != m_npc_names.end()) {
+						clickNpc(mapx, mapy, (NpcObj*)m_overactor);
+					}					
 				}
-
-				if (!m_actor)
+				else {
 					clickMap(mapx, mapy);
-				//me.setDest(mapx, mapy);
+				}
 			}
 		}
 		else if (buttons == 5) { // SDL_BUTTON_WHEELDOWN
@@ -404,27 +395,63 @@ bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int
 	//Save the mouse pos to draw the spr cursor
 	mousex = x;
 	mousey = y;
-	if (m_rotating) {
-		cam.Rotate((float)dx / 10);
-		//printf("Rotating... %d\n", dx);
-		return(true);
+
+	m_overactor = NULL;
+
+	if (m_map != NULL) {
+
+		if (m_rotating) {
+			cam.Rotate((float)dx / 10);
+			return(true);
+		}
+
+		int mapx, mapy;
+		mapx = m_map->getMouseMapX();
+		mapy = m_map->getMouseMapY();
+
+		std::map<unsigned int, Actor*>::iterator itr = m_actors.begin();
+		while (itr != m_actors.end()) {
+			Actor* actor = itr->second;
+			if (actor->getPositionX() == mapx && actor->getPositionY() == mapy) {
+				m_overactor = actor;
+				break;
+			}						
+			itr++;
+		}
 	}
+
 	return(m_gui.InjectMouseMove(x, y, dx, dy));
 }
 
 void ROEngine::ProcessMouse(int xless, int yless){
 	//Change the cursor sprite every 100ms
-	m_cursorTick += tickDelay;
-	while (m_cursorTick >= 100) {
-		m_cursorTick = m_cursorTick % (100 * 10);
-		m_cursorSprite++;
-		m_cursorTick -= 100;
-		if(m_cursorSprite >= 10)
-			m_cursorSprite = 0;
+
+	int action = 0;
+	int maxspr;
+	if (m_rotating) {
+		action = 4;
+	}
+	else if (m_overactor != NULL) {
+		// TODO: Check if NPC/Mob/Character/Portal
+		action = 1; // npc
+		// action = 5; // attack
+		// action = 7; // portal
 	}
 
+	maxspr = getCursor().getAct()->getAct(action).pat.size();
+
+	m_cursorTick += tickDelay;
+	m_cursorTick = m_cursorTick % (100 * maxspr);
+	while (m_cursorTick >= 100) {
+		m_cursorSprite++;
+		m_cursorTick -= 100;
+	}
+
+	m_cursorSprite = m_cursorSprite % maxspr;
+
+
 	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
-	DrawFullAct(getCursor(), (float)(getMouseX() - xless), (float)(getMouseY() - yless), 0, m_cursorSprite, false, NULL, true, false);
+	DrawFullAct(getCursor(), (float)(getMouseX() - xless), (float)(getMouseY() - yless), action, m_cursorSprite, false, NULL, true, false);
 }
 
 /** Sets the current map */
