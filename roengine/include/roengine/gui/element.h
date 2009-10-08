@@ -55,15 +55,6 @@ namespace GUI {
 class Element;
 
 /**
- * Checks if the point (x, y) is inside a given element.
- * @param e Const Element*
- * @param x int X coordinate
- * @param y int Y coordinate
- */
-bool isInside(const Element* e, int x, int y);
-bool isInsideMoveArea(const GUI::Element* e, int x, int y);
-
-/**
  * Basic class for building the interface. All GUI objects must come from this one.
  * This class can still be used for basic display. No events will be caught on this class.
  */
@@ -108,8 +99,15 @@ protected:
 	Element* m_active_child;
 	sdle::Texture texture;
 
-	int pos_x, pos_y,MaxLen;
-	int w, h,mw, mh;
+	int pos_x, pos_y, MaxLen;
+	int w, h;
+
+	/** 
+	 * Move Area
+	 * These coordinates define a place where you can click and the corresponding window will move
+	 */
+	int mw, mh;
+	int mx, my;
 
 	virtual bool ParseXmlAttr(const TiXmlAttribute*, CacheManager&);
 	void ParseFromXml(const TiXmlElement*, CacheManager&);
@@ -206,6 +204,15 @@ public:
 	/** Reteieves an element based on its name */
 	static Element* getElement(const std::string&);
 	static GUI::Element::Cache& getCache();
+
+	/**
+	 * Checks if the point (x, y) is inside a given element.
+	 * @param e Const Element*
+	 * @param x int X coordinate
+	 * @param y int Y coordinate
+	 */
+	static bool isInside(const Element* e, int x, int y);
+	static bool isInsideMoveArea(const GUI::Element* e, int x, int y);
 };
 
 }

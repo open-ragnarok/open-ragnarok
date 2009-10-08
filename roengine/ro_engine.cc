@@ -432,10 +432,15 @@ void ROEngine::ProcessMouse(int xless, int yless){
 		action = 4;
 	}
 	else if (m_overactor != NULL) {
-		// TODO: Check if NPC/Mob/Character/Portal
-		action = 1; // npc
-		// action = 5; // attack
-		// action = 7; // portal
+		// TODO: Check if Another player
+		if (m_npc_names.find(m_overactor->type) != m_npc_names.end()) {
+			action = 1; // npc
+			if (m_overactor->type == 45)
+				action = 7; // portal
+		}
+		else {
+			action = 5; // attack
+		}
 	}
 
 	maxspr = getCursor().getAct()->getAct(action).pat.size();

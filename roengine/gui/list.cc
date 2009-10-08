@@ -50,7 +50,7 @@ bool GUI::List::HandleKeyDown(SDL_Event  *sdlEvent, int mod) {
 bool GUI::List::HandleMouseDown(int x, int y, int button) {
 	if (!m_enabled)
 		return(false);
-	std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
+	//std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
 
 	unsigned int itm = y / 18;
 

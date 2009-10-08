@@ -10,14 +10,16 @@ namespace GUI {
 
 Element::Cache Element::m_elements;
 
-bool isInside(const GUI::Element* e, int x, int y) {
-	if ((x >= e->getX()) && (y >= e->getY()) && (x <= (e->getX() + e->getW())) && (y <= (e->getY() + e->getH())))
+bool Element::isInside(const GUI::Element* e, int x, int y) {
+	if ((x >= e->pos_x) && (y >= e->pos_y) && 
+		(x <= (e->pos_x + e->w)) && (y <= (e->pos_y + e->h)))
 		return(true);
 	return(false);
 }
 
-bool isInsideMoveArea(const GUI::Element* e, int x, int y) {
-	if ((x >= e->getX()) && (y >= e->getY()) && (x <= (e->getX() + e->getMW())) && (y <= (e->getY() + e->getMH())))
+bool Element::isInsideMoveArea(const GUI::Element* e, int x, int y) {
+	if ((x >= (e->pos_x + e->mx)) && (y >= (e->pos_y + e->my)) &&
+		(x <= (e->pos_x + e->mx + e->mw)) && (y <= (e->pos_y + e->my + e->mh)))
 		return(true);
 	return(false);
 }
@@ -57,6 +59,8 @@ Element::Element() {
 	w = 0;
 	h = 0;
 	m_active_child = NULL;
+	mw = mh = 0;
+	mx = my = 0;
 
 	m_elements.add(this);
 }
@@ -77,6 +81,8 @@ Element::Element(Element* parent) {
 	w = 0;
 	h = 0;
 	m_active_child = NULL;
+	mw = mh = 0;
+	mx = my = 0;
 
 	m_elements.add(this);
 }
@@ -95,6 +101,8 @@ Element::Element(Element* parent, const TiXmlElement* node, CacheManager& cache)
 	w = 0;
 	h = 0;
 	m_active_child = NULL;
+	mw = mh = 0;
+	mx = my = 0;
 
 	m_elements.add(this);
 
@@ -121,6 +129,8 @@ Element::Element(Element* parent, const std::string& background, CacheManager& c
 	w = 0;
 	h = 0;
 	m_active_child = NULL;
+	mw = mh = 0;
+	mx = my = 0;
 
 	m_elements.add(this);
 
@@ -289,15 +299,11 @@ void Element::add(Element* e) {
 		return;
 	m_children.push_back(e);
 	if (m_active_child == NULL) {
-		if (e->m_focusable)
-		{
+		if (e->m_focusable) {
 			m_active_child = e;
-
 			std::vector<Element*>::iterator itr = m_active_child->m_children.begin();
-
-			if( itr == m_active_child->m_children.end() )
-			{
-				std::cout << e->name << "::GetFocus" << std::endl;
+			if( itr == m_active_child->m_children.end() ) {
+				//std::cout << e->name << "::GetFocus" << std::endl;
 				e->onGetFocus();
 			}
 		}
@@ -418,16 +424,33 @@ bool Element::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
 	else if (attrname == "moveablewidth" || attrname == "mw") {
 		if (attr->QueryIntValue(&mw) != TIXML_SUCCESS) {
 			printf("ERROR");
-			mw = 0;
 		}
 		return(true);
 	}
 	else if (attrname == "moveableheight" || attrname == "mh") {
 		if (attr->QueryIntValue(&mh) != TIXML_SUCCESS) {
 			printf("ERROR");
-			mh = 0;
 		}
 		return(true);
+	}
+	else if (attrname == "moveablex" || attrname == "mx") {
+		if (attr->QueryIntValue(&mx) != TIXML_SUCCESS) {
+			printf("ERROR");
+		}
+		return(true);
+	}
+	else if (attrname == "moveabley" || attrname == "my") {
+		if (attr->QueryIntValue(&my) != TIXML_SUCCESS) {
+			printf("ERROR");
+		}
+		return(true);
+	}
+	else if (attrname == "focusable") {
+		std::string val = attr->Value();
+		if (val == "false" || val == "0" || val == "f")
+			m_focusable = false;
+		else
+			m_focusable = true;
 	}
 
 	return(false);
@@ -663,17 +686,17 @@ bool Element::HandleMouseRelease(int x, int y, int button) {
 }
 
 void Element::onGetFocus() {
-	std::cout << name << "::GetFocus" << std::endl;
+	//std::cout << name << "::GetFocus" << std::endl;
 
-	Element* e = this;
-	return(e->onGetFocus());
+	//Element* e = this;
+	//return(e->onGetFocus());
 }
 
 void Element::onLoseFocus() {
-	std::cout << name << "::LoseFocus" << std::endl;
+	//std::cout << name << "::LoseFocus" << std::endl;
 
-	Element* e = this;
-	return(e->onLoseFocus());
+	//Element* e = this;
+	//return(e->onLoseFocus());
 }
 
 void Element::setActive() {

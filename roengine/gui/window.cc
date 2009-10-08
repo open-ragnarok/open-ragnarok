@@ -32,7 +32,7 @@ void GUI::Window::setCaption(const std::string& n) {
 }
 
 bool GUI::Window::HandleMouseRelease(int x, int y, int button) {
-	std::cout << getName() << "::MouseRelease (" << x << ", " << y << ")" << std::endl;
+	//std::cout << getName() << "::MouseRelease (" << x << ", " << y << ")" << std::endl;
 
 	std::vector<Element*>::iterator itr = m_children.begin();
 	GUI::Gui& gui = GUI::Gui::getSingleton();
@@ -43,7 +43,7 @@ bool GUI::Window::HandleMouseRelease(int x, int y, int button) {
 			Element* e = *itr;
 
 			if ( button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
-				std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
+				//std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
 				IsMouseDowning = false;
 				e->setStransparent(false);
 			}
@@ -66,7 +66,7 @@ bool GUI::Window::HandleMouseDown(int x, int y, int button) {
 	if (!m_enabled)
 		return(false);
 
-	std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
+	//std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
 	std::vector<Element*>::iterator itr = m_children.begin();
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 
@@ -75,7 +75,7 @@ bool GUI::Window::HandleMouseDown(int x, int y, int button) {
 			Element* e = *itr;
 
 			if (button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
-				std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
+				//std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
 				IsMouseDowning = true;
 				e->setStransparent(true);
 			}

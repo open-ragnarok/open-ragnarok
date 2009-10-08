@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <desktop name="ingame_ui" transparent="true">
   <!-- $Id$ -->
-  <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0">
+  <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0" mx="5" mw="270" mh="10">
 	<label text="Basic Info" x="17" y="5" />
 	<label text="HP" x="94" y="32" />
 	<label text="SP" x="94" y="53" />
@@ -10,14 +10,15 @@
 	<label name="stats_window/status" text="Weight: 190 / 2240  Zeny: 164" x="3" y="105" />
 	<label name="stats_window/hp_text" text="0 / 0" x="128" y="32" />
 	<label name="stats_window/sp_text" text="0 / 0" x="128" y="54" />
-    <button name="stats_window/btnStatus" x="207" y="22" texture="basic_interface\btn_status_off.bmp" />
-    <button name="stats_window/btnOption" x="243" y="22" texture="basic_interface\btn_option_off.bmp" />
-    <button name="stats_window/btnItems" x="207" y="46" texture="basic_interface\btn_items_off.bmp" />
-    <button name="stats_window/btnEquip" x="243" y="46" texture="basic_interface\btn_equip_off.bmp" />
-    <button name="stats_window/btnSkill" x="207" y="70" texture="basic_interface\btn_skill_off.bmp" />
-    <button name="stats_window/btnMap" x="243" y="70" texture="basic_interface\btn_map_off.bmp" />
-    <button name="stats_window/btnChat" x="207" y="94" texture="basic_interface\btn_comm_off.bmp" />
-    <button name="stats_window/btnFriend" x="243" y="94" texture="basic_interface\btn_friend_off.bmp" />
+    <button name="stats_window/btnStatus" focusable="false" x="207" y="22" texture="basic_interface\btn_status_off.bmp" active="basic_interface\btn_status_on.bmp" />
+    <button name="stats_window/btnOption" focusable="false" x="243" y="22" texture="basic_interface\btn_option_off.bmp" active="basic_interface\btn_option_on.bmp" />
+    <button name="stats_window/btnItems" focusable="false" x="207" y="46" texture="basic_interface\btn_items_off.bmp" active="basic_interface\btn_items_on.bmp" />
+    <button name="stats_window/btnEquip" focusable="false" x="243" y="46" texture="basic_interface\btn_equip_off.bmp" active="basic_interface\btn_equip_on.bmp" />
+    <button name="stats_window/btnSkill" focusable="false" x="207" y="70" texture="basic_interface\btn_skill_off.bmp" active="basic_interface\btn_skill_on.bmp" />
+    <button name="stats_window/btnMap" focusable="false" x="243" y="70" texture="basic_interface\btn_map_off.bmp" active="basic_interface\btn_map_on.bmp" />
+    <button name="stats_window/btnChat" focusable="false" x="207" y="94" texture="basic_interface\btn_comm_off.bmp" active="basic_interface\btn_comm_on.bmp" />
+    <button name="stats_window/btnFriend" focusable="false" x="243" y="94" texture="basic_interface\btn_friend_off.bmp" active="basic_interface\btn_friend_on.bmp" />
+	
 	<progressbar name="stats_window/hp" x="110" y="22" w="85" h="9" max="100" val="80" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
 	<progressbar name="stats_window/sp" x="110" y="43" w="85" h="9" max="100" val="40" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
 	

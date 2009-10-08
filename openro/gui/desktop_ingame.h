@@ -23,6 +23,8 @@ public:
 
 	void setMinimap(sdle::Texture&);
 
+	bool handleBtnMap(GUI::Event&);
+
 	void SetHP(int hp, int max_hp);
 	void SetSP(int sp, int max_sp);
 };

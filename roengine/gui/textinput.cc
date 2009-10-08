@@ -112,7 +112,7 @@ bool GUI::TextInput::HandleMouseDown(int x, int y, int button) {
 	if (!m_enabled)
 		return(false);
 
-	std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
+	//std::cout << getName() << "::MouseDown (" << x << ", " << y << ")" << std::endl;
 
 	if (!(button & 1))
 		return(false);

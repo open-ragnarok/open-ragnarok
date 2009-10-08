@@ -171,6 +171,8 @@ void OpenRO::BeforeRun() {
 
 	InitDisplay(1024, 768, false);
 
+	SDL_WM_SetCaption("Open Ragnarok - www.open-ragnarok.org", "OpenRO");
+
 	// TODO: This should be a parameter
 	sdle::FTFont* lsans = new sdle::FTFont();
 	FileData data = m_filemanager.getFile("font\\lsans.ttf");

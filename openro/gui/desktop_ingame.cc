@@ -4,10 +4,18 @@
 #include "desktop_ingame.h"
 
 DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
+	ADD_HANDLER("stats_window/btnMap", evtClick, DesktopIngame::handleBtnMap);
+
 	hp = max_hp = 0;
 	sp = max_sp = 0;
 
 	minimap = (GUI::Window*)getElement("minimap");
+}
+
+bool DesktopIngame::handleBtnMap(GUI::Event&) {
+	minimap->setVisible(!minimap->isVisible());
+
+	return(true);
 }
 
 void DesktopIngame::afterDraw(unsigned int delay) {
