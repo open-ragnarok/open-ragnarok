@@ -112,12 +112,12 @@ void Gui::Draw(unsigned int delay, Vector3f CameraLook) {
 			m_inactiveDesktop = NULL;
 		}
 		else {
-			m_inactiveDesktop->Draw(delay);
+			m_inactiveDesktop->Render(delay);
 		}
 	}
 
 	if (m_desktop)
-		m_desktop->Draw(delay);
+		m_desktop->Render(delay);
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_TEXTURE_2D);
@@ -339,7 +339,7 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 	}
 
 	glColor3f(0, 0, 0);
-	m_defaultFont->drawText(G_Text->x, G_Text->y, text);
+	m_defaultFont->drawText(0, 4, text);
 	glColor3f(1, 1, 1);
 #else
 	//SDL_Surface *Font_Screen = NULL;

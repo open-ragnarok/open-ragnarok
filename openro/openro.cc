@@ -156,6 +156,9 @@ void OpenRO::ProcessNetwork() {
 			HANDLEPKT(SkillList, true);
 			HANDLEPKT(MapMoveOk, true);
 			HANDLEPKT(ActorDisplay, true);
+			HANDLEPKT(RecvNpcTalk, true);
+			HANDLEPKT(RecvNpcTalkNext, true);
+
 			default:
 				_log(OPENRO__ERROR, "Unhandled packet id %d (length: %d)", pkt->getID(), pkt->size());
 		}
@@ -311,10 +314,31 @@ void OpenRO::clickNpc(int x, int y, NpcObj* npc) {
 	m_network.Talk(npc->id);
 }
 
+ronet::RONet& OpenRO::getNetwork() {
+	return(m_network);
+}
+
+void OpenRO::NpcClose() {
+	m_network.NPCCancel(m_npc_talk_id);
+}
+
+void OpenRO::NpcContinue() {
+	m_network.NPCNext(m_npc_talk_id);
+}
 
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+HNDL_IMPL(RecvNpcTalk) {
+	dskIngame->AddNpcLine(pkt->getMessage());
+	_log(OPENRO__DEBUG, "NPC Talk: %s", pkt->getMessage());
+	m_npc_talk_id = pkt->getID();
+}
+
+HNDL_IMPL(RecvNpcTalkNext) {
+	dskIngame->AddNpcNextBtn();
+}
+
 HNDL_IMPL(InventoryItems) {
 	_log(OPENRO__DEBUG, "Received %d items in inventory",pkt->getItemCount());
 }

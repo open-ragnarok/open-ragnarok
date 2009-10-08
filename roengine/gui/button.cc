@@ -72,48 +72,15 @@ bool GUI::Button::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) 
 	std::string attrname = attr->Name();
 
 	if (attrname == "active") {
-		std::string tn = attr->Value();
-		if (tn[0] != '\\') {
-			std::string aux = "texture\\";
-			aux += RO::EUC::user_interface;
-			aux += "\\";
-			tn = aux + tn;
-		}
-		else {
-			tn = tn.substr(1);
-		}
-
-		texture_active = tm.Register(cache.getFileManager(), tn);
+		texture_active = LoadTexture(attr->Value(), cache);
 		return(true);
 	}
 	else if (attrname == "hover") {
-		std::string tn = attr->Value();
-		if (tn[0] != '\\') {
-			std::string aux = "texture\\";
-			aux += RO::EUC::user_interface;
-			aux += "\\";
-			tn = aux + tn;
-		}
-		else {
-			tn = tn.substr(1);
-		}
-
-		texture_hover = tm.Register(cache.getFileManager(), tn);
+		texture_hover = LoadTexture(attr->Value(), cache);
 		return(true);
 	}
 	else if (attrname == "disabled") {
-		std::string tn = attr->Value();
-		if (tn[0] != '\\') {
-			std::string aux = "texture\\";
-			aux += RO::EUC::user_interface;
-			aux += "\\";
-			tn = aux + tn;
-		}
-		else {
-			tn = tn.substr(1);
-		}
-
-		texture_disabled = tm.Register(cache.getFileManager(), tn);
+		texture_disabled = LoadTexture(attr->Value(), cache);
 		return(true);
 	}
 

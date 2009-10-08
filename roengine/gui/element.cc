@@ -147,10 +147,12 @@ Element::Cache& Element::getCache() {
 
 Element::~Element() {
 	std::vector<Element*>::iterator itr = m_children.begin();
+	printf("GUI: Deleting element %s\n", this->name.c_str());
 	m_elements.remove(this->name, false);
 	while(itr != m_children.end()) {
 		Element* e = *itr;
 		m_children.erase(itr);
+		printf("GUI: Deleting child element %s\n", e->getName().c_str());
 		delete(e);
 		itr = m_children.begin();
 	}
@@ -189,6 +191,11 @@ void Element::beforeDraw(unsigned int delay) {}
 void Element::afterDraw(unsigned int delay) {}
 
 void Element::Draw(unsigned int delay) {
+	if (!m_transparent)
+		Window(0, 0, texture);
+}
+
+void Element::Render(unsigned int delay) {
 	if (!m_visible)
 		return;
 
@@ -196,12 +203,11 @@ void Element::Draw(unsigned int delay) {
 	glTranslatef((float)pos_x, (float)pos_y, 0);
 	beforeDraw(delay);
 
-	if (!m_transparent)
-		Window(0, 0, texture);
+	Draw(delay);
 
 	std::vector<Element*>::iterator itr = m_children.begin();
 	while (itr != m_children.end()) {
-		(*itr)->Draw(delay);
+		(*itr)->Render(delay);
 		itr++;
 	}
 
@@ -407,18 +413,7 @@ bool Element::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
 		return(true);
 	}
 	else if (attrname == "texture") {
-		std::string tn = attr->Value();
-		if (tn[0] != '\\') {
-			std::string aux = "texture\\";
-			aux += RO::EUC::user_interface;
-			aux += "\\";
-			tn = aux + tn;
-		}
-		else {
-			tn = tn.substr(1);
-		}
-
-		texture = tm.Register(fm, tn);
+		texture = LoadTexture(attr->Value(), cache);
 		return(true);
 	}
 	else if (attrname == "moveablewidth" || attrname == "mw") {
@@ -455,6 +450,22 @@ bool Element::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
 
 	return(false);
 }
+
+sdle::Texture Element::LoadTexture(std::string name, CacheManager& cache) {
+	std::string tn = name;
+	if (tn[0] != '\\') {
+		std::string aux = "texture\\";
+		aux += RO::EUC::user_interface;
+		aux += "\\";
+		tn = aux + tn;
+	}
+	else {
+		tn = tn.substr(1);
+	}
+
+	return(cache.getTextureManager().Register(cache.getFileManager(), tn));
+}
+
 
 void Element::ParseFromXml(const TiXmlElement* node, CacheManager& cache) {
 	const TiXmlAttribute* attr = node->FirstAttribute();
@@ -557,6 +568,12 @@ Element* Element::loadXml(Element* parent, const TiXmlElement* node, CacheManage
 	}
 	else if (nodetype == "progressbar") {
 		ret = new GUI::ProgressBar(parent, node, cache);
+	}
+	else if (nodetype == "buttonbar") {
+		ret = new GUI::ButtonBar(parent, node, cache);
+	}
+	else if (nodetype == "chatwindow") {
+		ret = new GUI::ChatWindow(parent, node, cache);
 	}
 	else {
 		// Default
@@ -680,6 +697,7 @@ bool Element::HandleMouseRelease(int x, int y, int button) {
 		Element* e = *itr;
 		if (isInside(e, x, y))
 			return(e->HandleMouseRelease(x - e->getX(), y - e->getY(), button));
+		itr++;
 	}
 
 	return(false);
@@ -745,5 +763,28 @@ bool Element::isEnabled() const {
 void Element::SetMouseInFlag(bool flag) {
 	m_MouseIn = flag;
 }
+
+void Element::WindowSeq(float x, float y, float w, float h, const sdle::Texture& start, const sdle::Texture& mid, const sdle::Texture& end) {
+	float used_x = 0;
+	float available_x;
+
+	// Left texture
+	Window(x, y, (float)start.getWidth(), (float)start.getHeight(), start);
+	used_x += start.getWidth();
+	
+	// Checkout how much space we have
+	available_x = w - used_x - end.getWidth();
+
+	// Draw it.
+	while (available_x > 0) {
+		Window(x+used_x, y, (float)mid.getWidth(), (float)mid.getHeight(), mid);
+		used_x += mid.getWidth();
+		available_x -= mid.getWidth();
+	}
+
+	// Right edge
+	Window(w - end.getWidth(), y, (float)end.getWidth(), (float)end.getHeight(), end);
+}
+
 
 }

@@ -70,8 +70,8 @@ void GUI::TextInput::Draw(unsigned int delay) {
 		glDisable(GL_TEXTURE_2D);
 		glColor3f(0,0,0);
 		glBegin(GL_LINES);
-		glVertex3i(x+1, pos_y + 3, 0);
-		glVertex3i(x+1, pos_y + 15, 0);
+		glVertex3i(x+1, 3, 0);
+		glVertex3i(x+1, 15, 0);
 		glEnd();
 		glColor3f(1,1,1);
 		glEnable(GL_TEXTURE_2D);
@@ -505,7 +505,7 @@ int GUI::TextInput::GetCursorX() {
 	Buffer[k] = AU('\0');
 	font->getSize(Buffer, &w, &h);
 	delete []Buffer;
-	return (G_Text.x + w);
+	return (w);
 }
 //==================================================================================
 // ÅÐ¶Ï×óÓÒ¼«ÏÞ

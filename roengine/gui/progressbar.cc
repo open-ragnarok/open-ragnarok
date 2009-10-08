@@ -43,48 +43,15 @@ bool ProgressBar::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) 
 	std::string attrname = attr->Name();
 
 	if (attrname == "start") {
-		std::string tn = attr->Value();
-		if (tn[0] != '\\') {
-			std::string aux = "texture\\";
-			aux += RO::EUC::user_interface;
-			aux += "\\";
-			tn = aux + tn;
-		}
-		else {
-			tn = tn.substr(1);
-		}
-
-		texture_start = cache.getTextureManager().Register(cache.getFileManager(), tn);
+		texture_start = LoadTexture(attr->Value(), cache);
 		return(true);
 	}
 	else if (attrname == "mid") {
-		std::string tn = attr->Value();
-		if (tn[0] != '\\') {
-			std::string aux = "texture\\";
-			aux += RO::EUC::user_interface;
-			aux += "\\";
-			tn = aux + tn;
-		}
-		else {
-			tn = tn.substr(1);
-		}
-
-		texture_mid = cache.getTextureManager().Register(cache.getFileManager(), tn);
+		texture_mid = LoadTexture(attr->Value(), cache);
 		return(true);
 	}
 	else if (attrname == "end") {
-		std::string tn = attr->Value();
-		if (tn[0] != '\\') {
-			std::string aux = "texture\\";
-			aux += RO::EUC::user_interface;
-			aux += "\\";
-			tn = aux + tn;
-		}
-		else {
-			tn = tn.substr(1);
-		}
-
-		texture_end = cache.getTextureManager().Register(cache.getFileManager(), tn);
+		texture_end = LoadTexture(attr->Value(), cache);
 		return(true);
 	}
 	else if (attrname == "val" || attrname == "value" || attrname == "v") {
@@ -137,7 +104,7 @@ void ProgressBar::Draw(unsigned int delay) {
 	if (bar_w == 0)
 		return;
 
-	Window((float)pos_x, (float)pos_y, (float)texture_start.getWidth(), (float)texture_start.getHeight(), texture_start);
+	Window((float)0, (float)0, (float)texture_start.getWidth(), (float)texture_start.getHeight(), texture_start);
 	used_w = texture_start.getWidth();
 	if (used_w >= bar_w)
 		return;
@@ -145,12 +112,12 @@ void ProgressBar::Draw(unsigned int delay) {
 	if (used_w <= (bar_w + texture_end.getWidth())) {
 		int bar_width = bar_w - used_w - texture_end.getWidth();
 		for (int i = 0; i < bar_width; i++) {
-			Window((float)(used_w + pos_x + i), (float)pos_y, 1.0f, (float)h, texture_mid);
+			Window((float)(used_w + i), (float)0, 1.0f, (float)h, texture_mid);
 		}
 		used_w += bar_width;
 	}
 
-	Window((float)(used_w+pos_x), (float)pos_y, (float)texture_end.getWidth(), (float)texture_end.getHeight(), texture_end);
+	Window((float)(used_w), (float)0, (float)texture_end.getWidth(), (float)texture_end.getHeight(), texture_end);
 }
 
 void ProgressBar::SetValue(int value) {

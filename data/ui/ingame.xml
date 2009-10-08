@@ -25,5 +25,13 @@
 	<button texture="basic_interface\sys_mini_off.bmp" active="basic_interface\sys_mini_on.bmp" x="267" y="4" />
 	<button texture="basic_interface\sys_base_off.bmp" active="basic_interface\sys_base_on.bmp" x="4" y="4" />
   </window>
-  <window name="minimap" width="100" height="100" x="-110" y="10" />
+  <window name="minimap" width="100" height="100" x="-110" y="10">
+  </window>
+  
+  <chatwindow name="chatwindow" visible="false" x="20" y="120" mw="200" mh="10">
+    <buttonbar>
+		<button name="chatwindow/btnCancel" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" focusable="false" />
+		<button name="chatwindow/btnNext" texture="btn_next.bmp" active="btn_next_a.bmp" focusable="false" />
+	</buttonbar>
+  </chatwindow>
 </desktop>

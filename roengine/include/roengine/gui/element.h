@@ -114,6 +114,19 @@ protected:
 
 	void Window(float x, float y, const sdle::Texture& tp);
 	void Window(float x, float y, float w, float h, const sdle::Texture& tp);
+	
+	/** Draws a sequence of 3 textures.
+	 * The first and last are only drawn once, the mid one is repeated until the width gap is fixed.
+	 *
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h Height to draw. Currently ignored.
+	 * @param start
+	 * @param mid
+	 * @param end
+	 */
+	void WindowSeq(float x, float y, float w, float h, const sdle::Texture& start, const sdle::Texture& mid, const sdle::Texture& end);
 
 public:
 	Element();
@@ -141,6 +154,7 @@ public:
 	void setTexture(const sdle::Texture&);
 	void SetMouseInFlag(bool flag);
 
+	void Render(unsigned int delay = 0);
 	virtual void Draw(unsigned int delay = 0);
 	virtual void beforeDraw(unsigned int delay = 0);
 	virtual void afterDraw(unsigned int delay = 0);
@@ -213,6 +227,8 @@ public:
 	 */
 	static bool isInside(const Element* e, int x, int y);
 	static bool isInsideMoveArea(const GUI::Element* e, int x, int y);
+
+	static sdle::Texture LoadTexture(std::string, CacheManager&);
 };
 
 }

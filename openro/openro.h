@@ -71,6 +71,8 @@ protected:
 	HNDL_DECL(SkillList);
 	HNDL_DECL(MapMoveOk);
 	HNDL_DECL(ActorDisplay);
+	HNDL_DECL(RecvNpcTalk);
+	HNDL_DECL(RecvNpcTalkNext);
 
 	int m_charslot;
 
@@ -90,6 +92,9 @@ protected:
 	char m_mapname[256];
 	bool m_maploaded;
 	int m_cycle;
+
+	/** The NPC we are currently talking to. */
+	unsigned int m_npc_talk_id;
 
 public:
 	OpenRO();
@@ -120,6 +125,11 @@ public:
 	unsigned int GetAccountID();
 	unsigned char GetAccountSex();
 	unsigned int GetClientVersion();
+
+	ronet::RONet& getNetwork();
+	
+	void NpcClose();
+	void NpcContinue();
 
 	/** Event received from ROEngine */
 	virtual void clickMap(int x, int y);

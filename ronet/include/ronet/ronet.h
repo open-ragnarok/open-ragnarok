@@ -98,6 +98,10 @@ public:
 
 	bool Talk(unsigned int npc_id);
 
+	bool NPCNext(unsigned int id);
+	bool NPCCancel(unsigned int id);
+	bool NPCResponse(unsigned int id, unsigned char);
+
 
 	/** Moves the character
 	 *

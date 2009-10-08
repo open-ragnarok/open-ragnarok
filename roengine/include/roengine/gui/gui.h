@@ -12,6 +12,8 @@
 #include "list.h"
 #include "dialog.h"
 #include "progressbar.h"
+#include "chatwindow.h"
+#include "buttonbar.h"
 
 // Other stuff
 #include "singleton.h"

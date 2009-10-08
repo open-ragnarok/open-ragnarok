@@ -766,6 +766,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\buttonbar.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\chatwindow.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\desktop.cc"
 				>
 			</File>
@@ -810,6 +818,14 @@
 				>
 				<File
 					RelativePath="..\include\roengine\gui\button.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\gui\buttonbar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\gui\chatwindow.h"
 					>
 				</File>
 				<File

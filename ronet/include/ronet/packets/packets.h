@@ -68,5 +68,7 @@
 #include "pkt_talk.h"
 #include "pkt_recvnpctalk.h"
 #include "pkt_recvnpctalknext.h"
+#include "pkt_npccancel.h"
+#include "pkt_npccontinue.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

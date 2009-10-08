@@ -5,17 +5,51 @@
 
 DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 	ADD_HANDLER("stats_window/btnMap", evtClick, DesktopIngame::handleBtnMap);
+	ADD_HANDLER("chatwindow/btnNext", evtClick, DesktopIngame::handleBtnNpcNext);
+	ADD_HANDLER("chatwindow/btnCancel", evtClick, DesktopIngame::handleBtnNpcClose);
 
 	hp = max_hp = 0;
 	sp = max_sp = 0;
 
 	minimap = (GUI::Window*)getElement("minimap");
+	chatwindow = (GUI::ChatWindow*)getElement("chatwindow");
+	
+	m_npc_answered = false;
+}
+
+bool DesktopIngame::handleBtnNpcClose(GUI::Event&) {
+	m_ro->NpcClose();
+	m_npc_answered = true;
+	return(true);
+}
+
+bool DesktopIngame::handleBtnNpcNext(GUI::Event&) {
+	m_ro->NpcContinue();
+	m_npc_answered = true;
+	return(true);
 }
 
 bool DesktopIngame::handleBtnMap(GUI::Event&) {
 	minimap->setVisible(!minimap->isVisible());
 
 	return(true);
+}
+
+void DesktopIngame::AddNpcLine(std::string line) {
+	if (!chatwindow->isVisible()) {
+		chatwindow->setVisible(true);
+		chatwindow->Clear();
+		getElement("chatwindow/btnNext")->setVisible(false);
+	}
+	if (m_npc_answered == true) {
+		chatwindow->Clear();
+		m_npc_answered = false;
+	}
+	chatwindow->Add(line);
+}
+
+void DesktopIngame::AddNpcNextBtn() {
+	getElement("chatwindow/btnNext")->setVisible(true);
 }
 
 void DesktopIngame::afterDraw(unsigned int delay) {

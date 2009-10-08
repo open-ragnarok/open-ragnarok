@@ -53,6 +53,8 @@ typedef enum PacketIDs{
 	pktMapLoadedID = 0x007d,		// (2 bytes)  S 007d
 	pktKeepAliveMapID = 0x007e,		// (6 bytes)  S 007e <ticks>.uint
 	pktTalkID = 0x0090,				// (7 bytes)  S 0090 <id>.uint <0x01>.byte
+	pktNpcContinueID = 0x00b9,		// (6 bytes)  S 00b9 <id>.uint
+	pktNpcCancelID = 0x0146,		// (6 bytes)  S 0146 <id>.uint
 
 	// Packetver 23
 	pktMapLogin23ID = 0x0436,		// (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte

@@ -17,6 +17,9 @@ protected:
 	unsigned int fps;
 
 	GUI::Window* minimap;
+	GUI::ChatWindow* chatwindow;
+
+	bool m_npc_answered;
 
 public:
 	DesktopIngame(OpenRO*);
@@ -24,9 +27,14 @@ public:
 	void setMinimap(sdle::Texture&);
 
 	bool handleBtnMap(GUI::Event&);
+	bool handleBtnNpcClose(GUI::Event&);
+	bool handleBtnNpcNext(GUI::Event&);
 
 	void SetHP(int hp, int max_hp);
 	void SetSP(int sp, int max_sp);
+
+	void AddNpcLine(std::string);
+	void AddNpcNextBtn();
 };
 
 #endif /* __DESKTOP_LOGIN_H */

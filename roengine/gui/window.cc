@@ -37,8 +37,7 @@ bool GUI::Window::HandleMouseRelease(int x, int y, int button) {
 	std::vector<Element*>::iterator itr = m_children.begin();
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 
-	if( this == gui.getDesktop() )
-	{
+	if (this == gui.getDesktop()) {
 		if(itr != m_children.end()) {
 			Element* e = *itr;
 

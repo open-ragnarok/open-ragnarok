@@ -1,4 +1,4 @@
-/* $Id: pkt_servertick.cc 147 2009-09-30 12:13:45Z sergio $ */
+/* $Id: pkt_keepalivemap.cc 147 2009-09-30 12:13:45Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -24,48 +24,22 @@
 */
 #include "stdafx.h"
 
-#include "ronet/packets/pkt_recvnpctalk.h"
+#include "ronet/packets/pkt_npccancel.h"
 
 namespace ronet {
 
-pktRecvNpcTalk::pktRecvNpcTalk() : Packet(pktRecvNpcTalkID) {
-	message = NULL;
+pktNpcCancel::pktNpcCancel(unsigned int id) : Packet(pktNpcCancelID) {
+	this->id = id;
+	setSize(6);
 }
 
-pktRecvNpcTalk::~pktRecvNpcTalk() {
-	if (message != NULL)
-		delete[] message;
-}
+bool pktNpcCancel::PrepareData() {
+	unsigned char* ptr = buffer;
+	ptr += sizeof(short); // id automagic handled by Packet class.
 
-bool pktRecvNpcTalk::Decode(ucBuffer& buf) {
-	// Sanity Check
-	if (!CheckID(buf))
-		return(false);
-
-	unsigned short size;
-	unsigned short msgsize;
-	size = *(unsigned short*)(buf.getBuffer() + 2);
-
-	if (buf.dataSize() < size) // Not enough data
-		return(false);
-
-	buf.ignore(2); // ID
-	buf.ignore(2); // Size
-	buf >> id;
-	msgsize = size-8;
-	message = new char[msgsize];
-	memset(message, 0, msgsize);
-	buf.read((unsigned char*)message, msgsize);
+	memcpy(ptr, (unsigned char*)&id, sizeof(int)); ptr += sizeof(int);
 
 	return(true);
-}
-
-const char* pktRecvNpcTalk::getMessage() const {
-	return(message);
-}
-
-unsigned int pktRecvNpcTalk::getID() const {
-	return(id);
 }
 
 }

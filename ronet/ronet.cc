@@ -211,4 +211,17 @@ bool RONet::Talk(unsigned int npc_id) {
 	return(true);
 }
 
+bool RONet::NPCNext(unsigned int id) {
+	ronet::pktNpcContinue pkt(id);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+bool RONet::NPCCancel(unsigned int id) {
+	ronet::pktNpcCancel pkt(id);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+
 }
