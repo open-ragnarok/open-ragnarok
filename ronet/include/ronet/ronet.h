@@ -102,6 +102,8 @@ public:
 	bool NPCCancel(unsigned int id);
 	bool NPCResponse(unsigned int id, unsigned char);
 
+	bool RequestPlayerInfo(unsigned int id);
+
 
 	/** Moves the character
 	 *

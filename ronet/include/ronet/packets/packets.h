@@ -26,6 +26,7 @@
 #define __RONET_PACKETS_PACKETS_H
 
 //Add new packets here
+#include "generic_packets.h"
 #include "pkt_charcreate.h"
 #include "pkt_charcreated.h"
 #include "pkt_charcreateerror.h"

@@ -141,7 +141,7 @@ public:
 	//virtual void clickItem(int x, int y);
 
 	/** Event received from ROEngine */
-	//virtual void clickPortal(int x, int y);
+	virtual void clickPortal(int x, int y, NpcObj* portal);
 
 	/** Event received from ROEngine */
 	virtual void clickNpc(int x, int y, NpcObj* npc);

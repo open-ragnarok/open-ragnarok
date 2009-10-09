@@ -362,7 +362,12 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 
 				if (m_overactor != NULL) {
 					if (m_npc_names.find(m_overactor->type) != m_npc_names.end()) {
-						clickNpc(mapx, mapy, (NpcObj*)m_overactor);
+						if (m_overactor->type == 45) {
+							clickPortal(mapx, mapy, (NpcObj*)m_overactor);
+						}
+						else {
+							clickNpc(mapx, mapy, (NpcObj*)m_overactor);
+						}
 					}					
 				}
 				else {
@@ -474,8 +479,10 @@ int ROEngine::getMouseY(){return mousey;}
 void ROEngine::clickMap(int x, int y) {}
 void ROEngine::clickMob(int x, int y) {}
 void ROEngine::clickItem(int x, int y) {}
-void ROEngine::clickPortal(int x, int y) {}
+void ROEngine::clickPortal(int x, int y, NpcObj* npc) {
+	printf("Clicked Portal 0x%08x at %d,%d\n", npc->id, x, y);
+}
 void ROEngine::clickNpc(int x, int y, NpcObj* npc) {
-	printf("Clicked NPC %08x at %d,%d\n", npc->id, x, y);
+	printf("Clicked NPC 0x%08x at %d,%d\n", npc->id, x, y);
 }
 

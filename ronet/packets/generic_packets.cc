@@ -1,4 +1,4 @@
-/* $Id: pkt_servertick.cc 147 2009-09-30 12:13:45Z sergio $ */
+/* $Id$ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -24,29 +24,12 @@
 */
 #include "stdafx.h"
 
-#include "ronet/packets/pkt_recvnpctalknext.h"
+#include "ronet/packets/generic_packets.h"
 
 namespace ronet {
-
-pktRecvNpcTalkNext::pktRecvNpcTalkNext() : Packet(pktRecvNpcTalkNextID) {
-}
-
-bool pktRecvNpcTalkNext::Decode(ucBuffer& buf) {
-	// Sanity Check
-	if (!CheckID(buf))
-		return(false);
-
-	if (buf.dataSize() < 6) // Not enough data
-		return(false);
-
-	buf.ignore(2);
-	buf >> id;
-
-	return(true);
-}
-
-unsigned int pktRecvNpcTalkNext::getID() const {
-	return(id);
-}
-
+	RONET_GENERIC_ID_IMPL(RequestPlayerInfo)
+	RONET_GENERIC_ID_IMPL(RequestCharacterName)
+	RONET_GENERIC_TRAILING_IMPL(GetStoreInfo)
+	RONET_GENERIC_IMPL(RequestIgnoreList)
+	RONET_GENERIC_ID_IMPL(Take)
 }

@@ -383,6 +383,10 @@
 				Name="Packets"
 				>
 				<File
+					RelativePath="..\packets\generic_packets.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_actordisplay.cc"
 					>
 				</File>
@@ -632,6 +636,10 @@
 			<Filter
 				Name="Packets"
 				>
+				<File
+					RelativePath="..\include\ronet\packets\generic_packets.h"
+					>
+				</File>
 				<File
 					RelativePath="..\include\ronet\packets\packets.h"
 					>

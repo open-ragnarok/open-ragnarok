@@ -314,6 +314,10 @@ void OpenRO::clickNpc(int x, int y, NpcObj* npc) {
 	m_network.Talk(npc->id);
 }
 
+void OpenRO::clickPortal(int x, int y, NpcObj* npc) {
+	m_network.RequestPlayerInfo(npc->id);
+}
+
 ronet::RONet& OpenRO::getNetwork() {
 	return(m_network);
 }

@@ -18,8 +18,9 @@ DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 }
 
 bool DesktopIngame::handleBtnNpcClose(GUI::Event&) {
-	m_ro->NpcClose();
-	m_npc_answered = true;
+	//m_ro->NpcClose();
+	chatwindow->setVisible(false);
+	//m_npc_answered = true;
 	return(true);
 }
 

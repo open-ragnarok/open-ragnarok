@@ -223,5 +223,10 @@ bool RONet::NPCCancel(unsigned int id) {
 	return(true);
 }
 
+bool RONet::RequestPlayerInfo(unsigned int id) {
+	ronet::pktRequestPlayerInfo pkt(id);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
 
 }

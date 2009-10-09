@@ -55,6 +55,11 @@ typedef enum PacketIDs{
 	pktTalkID = 0x0090,				// (7 bytes)  S 0090 <id>.uint <0x01>.byte
 	pktNpcContinueID = 0x00b9,		// (6 bytes)  S 00b9 <id>.uint
 	pktNpcCancelID = 0x0146,		// (6 bytes)  S 0146 <id>.uint
+	pktRequestPlayerInfoID = 0x0094,// (6 bytes)  S 0094 <id>.uint
+	pktRequestCharacterNameID = 0x0193,// (6 bytes)  S 0193 <id>.uint
+	pktGetStoreInfoID = 0x00c5,		// (7 bytes)  S 00c5 <id>.uint <info>.byte
+	pktRequestIgnoreListID = 0x00d3, 
+	pktTakeID = 0x009f,				// (6 bytes)  S 009f <id>.uint
 
 	// Packetver 23
 	pktMapLogin23ID = 0x0436,		// (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
@@ -246,6 +251,83 @@ public:
 		virtual bool Decode(ucBuffer&);
 		unsigned short getID() const;
 	};
+
+
+	/*
+	=====================================
+	== DECLARATION FOR GENERIC PACKETS ==
+	=====================================
+	These declarations are good for inbound and outbound data.
+	*/
+
+/** This is for all packets that are like <packet_id>.short */
+#define RONET_GENERIC_DECL(name) \
+	class pkt ##name : public Packet { \
+	protected: \
+		virtual bool PrepareData(); \
+	public: \
+		pkt ##name (); \
+		virtual bool Decode(ucBuffer&); \
+	}
+
+#define RONET_GENERIC_IMPL(name) \
+pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { setSize(2); } \
+bool pkt ##name ::PrepareData() { return(true); } \
+bool pkt ##name ::Decode(ucBuffer& buf) { \
+	if (!CheckID(buf)) return(false); \
+	buf.ignore(2); return(true); \
+}
+
+/** This is for all packets that are like <packet_id>.short <id>.uint */
+#define RONET_GENERIC_ID_DECL(name) \
+	class pkt ##name : public Packet { \
+	protected: \
+		unsigned int id; \
+		virtual bool PrepareData(); \
+	public: \
+		pkt ##name (); \
+		pkt ##name (unsigned int); \
+		unsigned int getID() const; \
+		virtual bool Decode(ucBuffer&); \
+	}
+
+#define RONET_GENERIC_ID_IMPL(name) \
+pkt ##name ::pkt ##name (unsigned int id) : Packet(pkt ##name ##ID) { this->id = id; setSize(6); } \
+bool pkt ##name ::PrepareData() { unsigned char* ptr = buffer; ptr += sizeof(short); memcpy(ptr, (unsigned char*)&id, sizeof(int)); ptr += sizeof(int); return(true); } \
+unsigned int pkt ##name ::getID() const { return(id); } \
+bool pkt ##name ::Decode(ucBuffer& buf) { \
+	if (!CheckID(buf)) return(false); \
+	if (buf.dataSize() < 6) return(false); \
+	buf.ignore(2); buf >> id; return(true); \
+}
+
+/** This is for all packets that are like <packet_id>.short <id>.uint <trailing>.byte */
+#define RONET_GENERIC_TRAILING_DECL(name) \
+	class pkt ##name : public Packet { \
+	protected: \
+		unsigned int id; \
+		unsigned char trail; \
+		virtual bool PrepareData(); \
+	public: \
+		pkt ##name (); \
+		pkt ##name (unsigned int, unsigned char); \
+		unsigned int getID() const; \
+		unsigned char getTrail() const; \
+		virtual bool Decode(ucBuffer&); \
+	}
+
+#define RONET_GENERIC_TRAILING_IMPL(name) \
+pkt ##name ::pkt ##name (unsigned int id, unsigned char trail) : Packet(pkt ##name ##ID) { this->id = id; this->trail = trail; setSize(7); } \
+bool pkt ##name ::PrepareData() { unsigned char* ptr = buffer; ptr += sizeof(short); memcpy(ptr, (unsigned char*)&id, sizeof(int)); ptr += sizeof(int); *ptr = trail; return(true); } \
+unsigned int pkt ##name ::getID() const { return(id); } \
+unsigned char pkt ##name ::getTrail() const { return(trail); } \
+bool pkt ##name ::Decode(ucBuffer& buf) { \
+	if (!CheckID(buf)) return(false); \
+	if (buf.dataSize() < 7) return(false); \
+	buf.ignore(2); buf >> id; buf >>trail; return(true); \
+}
+
+
 }
 
 #endif /* __RONET_PACKET_H */

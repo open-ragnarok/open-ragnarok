@@ -212,18 +212,19 @@ void Element::Render(unsigned int delay) {
 		glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
+	float speed = (float)delay / 20.0f;
 	if(m_stransparent){
 		if(m_opacity > 0.5){
-			m_opacity -= 0.006f;
-			glColor4f(1.0f, 1.0f, 1.0f, m_opacity);
+			m_opacity -= 0.006f * speed;
 		}
 		else {
-			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+			m_opacity = 0.5f;
 		}
+		glColor4f(1.0f, 1.0f, 1.0f, m_opacity);
 	}
 	else {
 		if(m_opacity < 1) {
-			m_opacity += 0.006f;
+			m_opacity += 0.006f * speed;
 			glColor4f(1.0f, 1.0f, 1.0f, m_opacity);
 		}
 	}

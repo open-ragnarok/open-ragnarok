@@ -114,7 +114,7 @@ public:
 	virtual void clickMob(int x, int y);
 	virtual void clickNpc(int x, int y, NpcObj* npc);
 	virtual void clickItem(int x, int y);
-	virtual void clickPortal(int x, int y);
+	virtual void clickPortal(int x, int y, NpcObj* portal);
 
 	virtual void evtQuit();
 
