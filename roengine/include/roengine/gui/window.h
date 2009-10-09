@@ -10,7 +10,6 @@ class Window : public Element {
 protected:
 	std::string caption;
 public:
-	bool IsMouseDowning;
 	Window();
 	Window(Element* parent);
 	Window(const sdle::Texture&, Element* parent = NULL);
@@ -32,9 +31,6 @@ public:
 
 	void setCaption(const std::string&);
 	virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);
-	virtual bool HandleMouseDown(int x, int y, int button);
-	virtual bool HandleMouseRelease(int x, int y, int button);
-	virtual bool HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy);
 };
 
 }

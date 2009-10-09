@@ -84,10 +84,16 @@ protected:
 	/** Indicates if this object is visible or not. If it's false, not the object nor its children will be drawn */
 	bool m_visible;
 
-	/** Indicates if this object is transparent or not. If it's false, the object will not be drawn, but its children will */
+	/**
+	 * Indicates if this object is transparent or not.
+	 * If it's true, the object will not be drawn, but its children will
+	 */
 	bool m_transparent;
 
-	/** Indicates if this object is semi-transparent or not. If it's true, the object will be drawn 50% trensparent, with it's childen too */
+	/**
+	 * Indicates if this object is semi-transparent or not.
+	 * If it's true, the object will be drawn 50% trensparent, with its childen too
+	 */
 	bool m_stransparent;
 
 	bool m_focusable;

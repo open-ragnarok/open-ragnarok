@@ -18,6 +18,9 @@ protected:
 private:
 	std::map<std::string, Handler> m_handlers;
 
+	/** The object we're currently moving */
+	Element* m_movableobj;
+
 public:
 	Desktop();
 	Desktop(const std::string&, CacheManager&);
@@ -27,8 +30,11 @@ public:
 	bool Load(const std::string&, CacheManager&);
 	bool Load(const TiXmlElement* node, CacheManager&);
 
-	//bool HandleMouseDown(int x, int y, int button);
+	virtual bool HandleMouseDown(int x, int y, int button);
+	virtual bool HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy);
+	virtual bool HandleMouseRelease(int x, int y, int button);
 };
+
 }
 
 #endif /* __GUI_DESKTOP_H */

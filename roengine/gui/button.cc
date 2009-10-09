@@ -128,10 +128,10 @@ void GUI::Button::Draw(unsigned int delay) {
 		if (m_parent->getActiveChild() == this) {
 			texture = texture_active;
 		}
+	}
 
-		if ( m_MouseIn ) {
-			texture = texture_active;
-		}
+	if (m_MouseIn) {
+		texture = texture_active;
 	}
 
 	Element::Draw();

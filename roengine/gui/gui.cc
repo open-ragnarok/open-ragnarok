@@ -338,9 +338,13 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 		n = n->Next;
 	}
 
-	glColor3f(0, 0, 0);
+	float color[4];
+
+	glGetFloatv(GL_CURRENT_COLOR, color);
+
+	glColor4f(0, 0, 0, color[3]);
 	m_defaultFont->drawText(0, 4, text);
-	glColor3f(1, 1, 1);
+	glColor4fv(color);
 #else
 	//SDL_Surface *Font_Screen = NULL;
 	SDL_Color Font_FColor, Font_BColor, Font_SBColor, Font_SFColor;

@@ -27,6 +27,11 @@ bool Element::isInsideMoveArea(const GUI::Element* e, int x, int y) {
 bool Element::Cache::add(GUI::Element* e) {
 	if (e->getName() == "")
 		e->setName(GUI::Element::createName());
+	else {
+		if (this->exists(e->getName())) {
+			printf("Warning. Adding element with name %s Twice!\n", e->getName().c_str());
+		}
+	}
 
 	return(BaseCache<Element>::add(e->getName(), e));
 }
@@ -147,12 +152,10 @@ Element::Cache& Element::getCache() {
 
 Element::~Element() {
 	std::vector<Element*>::iterator itr = m_children.begin();
-	printf("GUI: Deleting element %s\n", this->name.c_str());
 	m_elements.remove(this->name, false);
 	while(itr != m_children.end()) {
 		Element* e = *itr;
 		m_children.erase(itr);
-		printf("GUI: Deleting child element %s\n", e->getName().c_str());
 		delete(e);
 		itr = m_children.begin();
 	}
@@ -203,67 +206,6 @@ void Element::Render(unsigned int delay) {
 	glTranslatef((float)pos_x, (float)pos_y, 0);
 	beforeDraw(delay);
 
-	Draw(delay);
-
-	std::vector<Element*>::iterator itr = m_children.begin();
-	while (itr != m_children.end()) {
-		(*itr)->Render(delay);
-		itr++;
-	}
-
-	afterDraw(delay);
-	glPopMatrix();
-}
-
-void Element::Window(float x, float y, const sdle::Texture& tp) {
-	float w, h;
-	float u, v;
-
-	w = (float)this->w;
-	h = (float)this->h;
-
-	if (m_fullscreen) {
-		Gui* gui = Gui::getSingletonPtr();
-		w = (float)gui->getWidth();
-		h = (float)gui->getHeight();
-	}
-	else if (!tp.Valid()) {
-		w = (float)this->w;
-		h = (float)this->h;
-	}
-	else {
-		if (w == 0)
-			w = (float)tp.getWidth();
-		if (h == 0)
-			h = (float)tp.getHeight();
-	}
-
-	if (tp.Valid()) {
-		tp.Activate();
-		u = tp.getMaxU();
-		v = tp.getMaxV();
-	}
-	else {
-		u = 0;
-		v = 0;
-	}
-
-	Window(x, y, w, h, tp);
-}
-
-void Element::Window(float x, float y, float w, float h, const sdle::Texture& tp) {
-	float u, v;
-
-	if (tp.Valid()) {
-		tp.Activate();
-		u = tp.getMaxU();
-		v = tp.getMaxV();
-	}
-	else {
-		u = 0;
-		v = 0;
-	}
-
 	bool blend = (glIsEnabled(GL_BLEND) == 1);
 
 	if (!blend)
@@ -284,19 +226,71 @@ void Element::Window(float x, float y, float w, float h, const sdle::Texture& tp
 			m_opacity += 0.006f;
 			glColor4f(1.0f, 1.0f, 1.0f, m_opacity);
 		}
-		else {
-			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		}
 	}
+
+	Draw(delay);
+
+	std::vector<Element*>::iterator itr = m_children.begin();
+	while (itr != m_children.end()) {
+		(*itr)->Render(delay);
+		itr++;
+	}
+
+	if (!blend)
+		glDisable(GL_BLEND);
+
+	if(m_opacity < 1) {
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	afterDraw(delay);
+	glPopMatrix();
+}
+
+void Element::Window(float x, float y, const sdle::Texture& tp) {
+	float w, h;
+
+	w = (float)this->w;
+	h = (float)this->h;
+
+	if (m_fullscreen) {
+		Gui* gui = Gui::getSingletonPtr();
+		w = (float)gui->getWidth();
+		h = (float)gui->getHeight();
+	}
+	else if (!tp.Valid()) {
+		w = (float)this->w;
+		h = (float)this->h;
+	}
+	else {
+		if (w == 0)
+			w = (float)tp.getWidth();
+		if (h == 0)
+			h = (float)tp.getHeight();
+	}
+
+	Window(x, y, w, h, tp);
+}
+
+void Element::Window(float x, float y, float w, float h, const sdle::Texture& tp) {
+	float u, v;
+
+	if (tp.Valid()) {
+		tp.Activate();
+		u = tp.getMaxU();
+		v = tp.getMaxV();
+	}
+	else {
+		u = 0;
+		v = 0;
+	}
+
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0f, v);		glVertex3f(x,   y,   0);
 	glTexCoord2f(0.0f, 0.0f);	glVertex3f(x,   y+h, 0);
 	glTexCoord2f(u, 0.0f);		glVertex3f(x+w, y+h, 0);
 	glTexCoord2f(u, v);			glVertex3f(x+w, y,   0);
 	glEnd();
-
-	if (!blend)
-		glDisable(GL_BLEND);
 }
 
 
@@ -613,24 +607,12 @@ void Element::setTransparent(bool b) {
 }
 
 void Element::setStransparent(bool b) {
-	if(m_active_child != NULL)	{
-		m_stransparent = b;
-		std::vector<Element*>::iterator itr = m_children.begin();
-		while (itr != m_children.end()) {
-			Element* e = *itr;
-			e->setStransparent(b);
-			itr++;
-		}
-	}
-	else{
-		m_stransparent = b;
-	}
+	m_stransparent = b;
 }
 
 void Element::setEnabled(bool b) {
 	m_enabled = b;
 }
-
 
 bool Element::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	if (m_parent == NULL)
@@ -659,9 +641,12 @@ bool Element::HandleMouseMove(const int& x, const int& y, const int& dx, const i
 
 	while (itr != m_children.end()) {
 		Element* e = *itr;
+		e->m_MouseIn = false;
 		if (isInside(e, x, y)) {
-			if (e->isVisible())
+			if (e->isVisible()) {
+				e->m_MouseIn = true;
 				e->HandleMouseMove(x - e->getX(), y - e->getY(), dx ,dy);
+			}
 		}
 		itr++;
 	}
@@ -672,7 +657,6 @@ bool Element::HandleMouseMove(const int& x, const int& y, const int& dx, const i
 bool Element::HandleMouseDown(int x, int y, int button) {
 	if (!m_enabled)
 		return(false);
-	std::cout << name << "::MouseDown (" << x << ", " << y << ")" << std::endl;
 
 	std::vector<Element*>::iterator itr = m_children.begin();
 
@@ -689,7 +673,7 @@ bool Element::HandleMouseDown(int x, int y, int button) {
 }
 
 bool Element::HandleMouseRelease(int x, int y, int button) {
-	std::cout << name << "::MouseUp (" << x << ", " << y << ")" << std::endl;
+	//std::cout << name << "::MouseUp (" << x << ", " << y << ")" << std::endl;
 
 	std::vector<Element*>::iterator itr = m_children.begin();
 

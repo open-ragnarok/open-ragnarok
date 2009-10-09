@@ -58,6 +58,9 @@ void GUI::TextInput::Draw(unsigned int delay) {
 	m_delay += delay;
 
 	//GetStringFromNode();
+	float color[4];
+	glGetFloatv(GL_CURRENT_COLOR, color);
+
 	gui.TextOutEx(&G_Text);
 
 	x = GetCursorX();
@@ -68,14 +71,17 @@ void GUI::TextInput::Draw(unsigned int delay) {
 	}
 	if (m_bar && actived) {
 		glDisable(GL_TEXTURE_2D);
-		glColor3f(0,0,0);
+
+		glColor4f(0, 0, 0, color[3]);
 		glBegin(GL_LINES);
 		glVertex3i(x+1, 3, 0);
 		glVertex3i(x+1, 15, 0);
 		glEnd();
-		glColor3f(1,1,1);
+
 		glEnable(GL_TEXTURE_2D);
 	}
+
+	glColor4fv(color);
 
 	return;
 

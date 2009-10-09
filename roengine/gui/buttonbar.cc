@@ -103,7 +103,7 @@ void ButtonBar::Draw(unsigned int delay) {
 	}
 
 	// Right edge
-	Window(w - tex_right.getWidth(), y, (float)tex_right.getWidth(), (float)tex_right.getHeight(), tex_right);
+	Window((float)w - tex_right.getWidth(), y, (float)tex_right.getWidth(), (float)tex_right.getHeight(), tex_right);
 
 	// Position buttons
 	used_x = 0;

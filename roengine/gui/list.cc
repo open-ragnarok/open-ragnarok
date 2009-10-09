@@ -69,11 +69,15 @@ void GUI::List::Draw(unsigned int delay) {
 	unsigned int i;
 	GUI::Gui& gui = GUI::Gui::getSingleton();
 	const sdle::Font* font = gui.getDefaultFont();
-	glColor3f(0,0,0);
+
+	float color[4];
+	glGetFloatv(GL_CURRENT_COLOR, color);
+
+	glColor4f(0, 0, 0, color[3]);
 
 	for (i = m_first; i < m_items.size(); i++) {
 		if (i == selected) {
-			glColor3f(0.482352941f, 0.580392157f, 0.803921569f);
+			glColor4f(0.482352941f, 0.580392157f, 0.803921569f, color[3]);
 			glDisable(GL_TEXTURE_2D);
 			glBegin(GL_QUADS);
 			glVertex3i(0, cy-1, 0);
@@ -82,13 +86,13 @@ void GUI::List::Draw(unsigned int delay) {
 			glVertex3i(0, cy+17, 0);
 			glEnd();
 			glEnable(GL_TEXTURE_2D);
-			glColor3f(0, 0, 0);
+			glColor4f(0, 0, 0, color[3]);
 		}
 		font->drawText((float)pos_x + 2, (float)cy + 4, m_items[i].c_str());
 		cy += 17;
 	}
 
-	glColor3f(1,1,1);
+	glColor4fv(color);
 }
 
 int GUI::List::getSelected() const {

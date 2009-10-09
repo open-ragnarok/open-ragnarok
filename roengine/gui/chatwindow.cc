@@ -5,16 +5,12 @@
 
 namespace GUI {
 
-ChatWindow::ChatWindow(Element* parent, CacheManager& cache) {
+ChatWindow::ChatWindow(Element* parent, CacheManager& cache) : Element(parent) {
 }
 
-ChatWindow::ChatWindow(Element* parent, const TiXmlElement* node, CacheManager& cache) {
+ChatWindow::ChatWindow(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent, node, cache) {
 	w = 200;
 	h = 122;
-
-	Add("Line 1");
-	Add("Writing something");
-	Add("Yadayadayada");
 
 	if (node != NULL)
 		ParseFromXml(node, cache);
@@ -73,13 +69,17 @@ void ChatWindow::Draw(unsigned int delay) {
 	
 	std::vector<std::string>::iterator itr = m_text.begin();
 	GUI::Gui& gui = GUI::Gui::getSingleton();
-	glColor3f(0.0f,0.0f,0.0f);
+
+	float color[4];
+	glGetFloatv(GL_CURRENT_COLOR, color);
+
+	glColor4f(0.0f,0.0f,0.0f, color[3]);
 	while (itr != m_text.end()) {
 		gui.textOut(*itr, x, y, 0, 0);
 		y += 12.0f;
 		itr++;
 	}
-	glColor3f(1.0f,1.0f,1.0f);
+	glColor4fv(color);
 
 }
 
