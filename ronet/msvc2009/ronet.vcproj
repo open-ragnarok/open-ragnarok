@@ -479,6 +479,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_mapchange.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_maploaded.cc"
 					>
 				</File>
@@ -524,6 +528,22 @@
 				</File>
 				<File
 					RelativePath="..\packets\pkt_recvnpctalknext.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_recvnpctalkresponses.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_sendnpcnumber.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_sendnpcresponse.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_sendnpctext.cc"
 					>
 				</File>
 				<File
@@ -737,6 +757,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_mapchange.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_maploaded.h"
 					>
 				</File>
@@ -782,6 +806,22 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_recvnpctalknext.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_recvnpctalkresponses.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_sendnpcnumber.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_sendnpcresponse.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_sendnpctext.h"
 					>
 				</File>
 				<File

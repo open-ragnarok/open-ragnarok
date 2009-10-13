@@ -46,6 +46,9 @@ void RswObject::getWorldPosition(float mapx, float mapy, float *rx, float *ry, f
 	float sizex = 0, sizey = 0;
 
 	float tile = m_tilesize / 2;
+	
+	if (gat == NULL)
+		return;
 
 	if (mapx < 0 || mapx >= (int)gat->getWidth())
 		return;
@@ -205,20 +208,26 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 	
 	rsw_fn += ".rsw";
 	// Load the rsw object
-	if (!cache.getROObjects().ReadRSW(rsw_fn.c_str(), cache.getFileManager())) {
-		fprintf(stderr, "Error loading RSW file %s\n", rsw_fn.c_str());
-		return(NULL);
+	if (!cache.getROObjects().exists(rsw_fn)) {
+		if (!cache.getROObjects().ReadRSW(rsw_fn.c_str(), cache.getFileManager())) {
+			fprintf(stderr, "Error loading RSW file %s\n", rsw_fn.c_str());
+			return(NULL);
+		}
 	}
 	rsw = (RO::RSW*)cache.getROObjects().get(rsw_fn);
 
-	if (!cache.getROObjects().ReadGND(rsw->gnd_file, cache.getFileManager())) {
-		fprintf(stderr, "Error loading GND file %s\n", rsw->gnd_file);
-		return(NULL);
+	if (!cache.getROObjects().exists(rsw->gnd_file)) {
+		if (!cache.getROObjects().ReadGND(rsw->gnd_file, cache.getFileManager())) {
+			fprintf(stderr, "Error loading GND file %s\n", rsw->gnd_file);
+			return(NULL);
+		}
 	}
 
-	if (!cache.getROObjects().ReadGAT(rsw->gat_file, cache.getFileManager())) {
-		fprintf(stderr, "Error loading GAT file %s\n", rsw->gat_file);
-		return(NULL);
+	if (!cache.getROObjects().exists(rsw->gat_file)) {
+		if (!cache.getROObjects().ReadGAT(rsw->gat_file, cache.getFileManager())) {
+			fprintf(stderr, "Error loading GAT file %s\n", rsw->gat_file);
+			return(NULL);
+		}
 	}
 
 	RswObject* obj = new RswObject(rsw, cache);
@@ -330,10 +339,10 @@ void RswObject::DrawGND() {
 				if (tex.Valid()) {
 					tex.Activate();
 					float texcoords[4][2] = {
-						{ tile.texture_start[0], tile.texture_end[0]},
-						{ tile.texture_start[1], tile.texture_end[1]},
+						{ tile.texture_start[2], tile.texture_end[2]},
 						{ tile.texture_start[3], tile.texture_end[3]},
-						{ tile.texture_start[2], tile.texture_end[2]}
+						{ tile.texture_start[1], tile.texture_end[1]},
+						{ tile.texture_start[0], tile.texture_end[0]}
 					};
 					glBegin(GL_QUADS);
 					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cube.height[2],	m_tilesize * (j + 1));
@@ -352,17 +361,17 @@ void RswObject::DrawGND() {
 				if (tex.Valid()) {
 					tex.Activate();
 					float texcoords[4][2] = {
-						{ tile.texture_start[0], tile.texture_end[0]},
-						{ tile.texture_start[1], tile.texture_end[1]},
+						{ tile.texture_start[2], tile.texture_end[2]},
 						{ tile.texture_start[3], tile.texture_end[3]},
-						{ tile.texture_start[2], tile.texture_end[2]}
+						{ tile.texture_start[1], tile.texture_end[1]},
+						{ tile.texture_start[0], tile.texture_end[0]}
 					};
 
 					glBegin(GL_QUADS);
-					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * (i + 1),	cube.height[3],		m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	cube.height[1],		m_tilesize * j);
-					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	cube2.height[0],	m_tilesize * j);
-					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * (i + 1),	cube2.height[2],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * (i + 1),	-cube.height[3],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cube.height[1],	m_tilesize * j);
+					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cube2.height[0],	m_tilesize * j);
+					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * (i + 1),	-cube2.height[2],	m_tilesize * (j + 1));
 					glEnd();
 				}
 			}

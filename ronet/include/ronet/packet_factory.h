@@ -96,6 +96,10 @@ namespace ronet {
 		DECL(ActorDisplay);
 		DECL(RecvNpcTalk);
 		DECL(RecvNpcTalkNext);
+		DECL(RecvNpcTalkClose);
+		DECL(RecvNpcTalkResponses);
+		DECL(RecvNpcInputReq);
+		DECL(MapChange);
 
 		void push(Packet*);
 

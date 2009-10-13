@@ -229,4 +229,23 @@ bool RONet::RequestPlayerInfo(unsigned int id) {
 	return(true);
 }
 
+bool RONet::NPCText(unsigned int id, const char* text) {
+	ronet::pktSendNpcText pkt(id, text);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+bool RONet::NPCNumber(unsigned int id, unsigned int num) {
+	ronet::pktSendNpcNumber pkt(id, num);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+bool RONet::NPCResponse(unsigned int id, unsigned char num) {
+	ronet::pktSendNpcResponse pkt(id, num);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+
 }

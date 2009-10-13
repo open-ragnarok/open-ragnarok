@@ -190,6 +190,7 @@ ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 	cam.getEye().set(200, 200, -200);
 	m_rotating = false;
 	m_overactor = NULL;
+	m_drawmap = true;
 }
 
 ROEngine::~ROEngine() {
@@ -222,7 +223,7 @@ void ROEngine::beforeDrawMap() {}
 void ROEngine::afterDrawMap() {}
 
 void ROEngine::DrawMap() {
-	if (m_map == NULL)
+	if (!m_drawmap || (m_map == NULL))
 		return;
 
 	beforeDrawMap();
@@ -363,12 +364,16 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 				if (m_overactor != NULL) {
 					if (m_npc_names.find(m_overactor->type) != m_npc_names.end()) {
 						if (m_overactor->type == 45) {
+							// Yeah, yeah... We click on the portal and move to it.
+							// The server handles the warp by walking into the portal location
+							// Kudos to FlavioJS.
 							clickPortal(mapx, mapy, (NpcObj*)m_overactor);
+							clickMap(mapx, mapy);
 						}
 						else {
 							clickNpc(mapx, mapy, (NpcObj*)m_overactor);
 						}
-					}					
+					}
 				}
 				else {
 					clickMap(mapx, mapy);

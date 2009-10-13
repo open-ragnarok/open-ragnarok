@@ -39,14 +39,22 @@
     </buttonbar>
   </chatwindow>
 
-  <chatwindow name="npcchoose" visible="false">
+  <chatwindow name="npcchoose" x="90" y="90" visible="false">
     <list name="npcchoose/options" x="10" y="19" w="260" h="72" />
     <buttonbar>
       <button name="npcchoose/btnOk" texture="btn_ok.bmp" active="btn_ok_a.bmp" hover="btn_ok_b.bmp"  focusable="false" />
       <button name="npcchoose/btnCancel" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" hover="btn_cancel_b.bmp" focusable="false" />
     </buttonbar>
   </chatwindow>
-
+  
+  <chatwindow name="npcinput" visible="false" x="90" y="90" w="150" mh="15" mw="150">
+    <textarea name="npcinput/input" x="10" y="25" w="120" h="18" MaxLen="120" />
+    <buttonbar>
+      <button name="npcinput/btnOk" texture="btn_ok.bmp" active="btn_ok_a.bmp" hover="btn_ok_b.bmp"  focusable="false" />
+      <button name="npcinput/btnCancel" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" hover="btn_cancel_b.bmp" focusable="false" />
+    </buttonbar>
+  </chatwindow>
+  
   <window name="minimap" width="100" height="100" x="-110" y="10">
     <button name="minimap/btnPlus" texture="basic_interface\battle_option_a.bmp" x="-10" y="5" />
     <button name="minimap/btnLess" texture="basic_interface\wnd_mini_a.bmp" x="-10" y="15" />

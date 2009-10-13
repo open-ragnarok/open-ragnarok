@@ -60,6 +60,9 @@ typedef enum PacketIDs{
 	pktGetStoreInfoID = 0x00c5,		// (7 bytes)  S 00c5 <id>.uint <info>.byte
 	pktRequestIgnoreListID = 0x00d3, 
 	pktTakeID = 0x009f,				// (6 bytes)  S 009f <id>.uint
+	pktSendNpcTextID = 0x01d5,		// S 01d5 <size>.short <npcid>.uint <message>.text <0x00>.byte
+	pktSendNpcResponseID = 0x00b8,	// (7 bytes)  S 00b8 <npcid>.uint <number>.byte
+	pktSendNpcNumberID = 0x0143,	// (10 bytes) S 0143 <npcid>.uint <number>.uint
 
 	// Packetver 23
 	pktMapLogin23ID = 0x0436,		// (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
@@ -107,7 +110,11 @@ typedef enum PacketIDs{
 	pktActorSpawnID = 0x0079,		// R 0079
 	pktActorWalkingID = 0x007b,		// R 007b
 	pktRecvNpcTalkID = 0x00b4,		// R 00b4 <len>.short <id>.int <message>.string
-	pktRecvNpcTalkNextID = 0x00b5,	// R 00b4 <len>.short <id>.int
+	pktRecvNpcTalkNextID = 0x00b5,	// R 00b5 <len>.short <id>.int
+	pktRecvNpcTalkCloseID = 0x00b6,	// R 00b6 <len>.short <id>.int
+	pktRecvNpcTalkResponsesID = 0x00b7,
+	pktMapChangeID = 0x0091,		// R 0091 <map>.16B <pos>.int
+	pktRecvNpcInputReqID = 0x01d4,	// R 01d4 <id>.int
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0
@@ -292,6 +299,7 @@ bool pkt ##name ::Decode(ucBuffer& buf) { \
 	}
 
 #define RONET_GENERIC_ID_IMPL(name) \
+pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { this->id = id; setSize(6); } \
 pkt ##name ::pkt ##name (unsigned int id) : Packet(pkt ##name ##ID) { this->id = id; setSize(6); } \
 bool pkt ##name ::PrepareData() { unsigned char* ptr = buffer; ptr += sizeof(short); memcpy(ptr, (unsigned char*)&id, sizeof(int)); ptr += sizeof(int); return(true); } \
 unsigned int pkt ##name ::getID() const { return(id); } \

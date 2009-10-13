@@ -88,6 +88,12 @@ protected:
 	RswObject* m_map;
 
 	/**
+	 * Weather to draw or not to draw the map.
+	 * Will only draw if this is true.
+	 */
+	bool m_drawmap;
+
+	/**
 	 * All the actors that the user can currently see
 	 */
 	std::map<unsigned int, Actor*> m_actors;

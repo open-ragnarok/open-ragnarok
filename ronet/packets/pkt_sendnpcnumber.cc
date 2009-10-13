@@ -24,14 +24,28 @@
 */
 #include "stdafx.h"
 
-#include "ronet/packets/generic_packets.h"
+#include "ronet/packets/pkt_sendnpcnumber.h"
 
 namespace ronet {
-	RONET_GENERIC_ID_IMPL(RequestPlayerInfo)
-	RONET_GENERIC_ID_IMPL(RequestCharacterName)
-	RONET_GENERIC_TRAILING_IMPL(GetStoreInfo)
-	RONET_GENERIC_IMPL(RequestIgnoreList)
-	RONET_GENERIC_ID_IMPL(Take)
-	RONET_GENERIC_ID_IMPL(RecvNpcInputReq)
-	RONET_GENERIC_ID_IMPL(RecvNpcTalkClose)
+
+pktSendNpcNumber::pktSendNpcNumber(unsigned int npc, unsigned int number) : Packet(pktSendNpcNumberID) {
+	this->number = number;
+	this->npc = npc;
+	setSize(10);
+}
+
+bool pktSendNpcNumber::PrepareData() {
+	unsigned char* ptr = buffer;
+
+	memcpy(ptr, (unsigned char*)&id, sizeof(short));
+	ptr += sizeof(short);
+
+	memcpy(ptr, (unsigned char*)&npc, sizeof(int));
+	ptr += sizeof(int);
+	memcpy(ptr, (unsigned char*)&number, sizeof(int));
+	ptr += sizeof(int);
+
+	return(true);
+}
+
 }

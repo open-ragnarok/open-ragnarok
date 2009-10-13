@@ -71,5 +71,10 @@
 #include "pkt_recvnpctalknext.h"
 #include "pkt_npccancel.h"
 #include "pkt_npccontinue.h"
+#include "pkt_mapchange.h"
+#include "pkt_sendnpctext.h"
+#include "pkt_sendnpcnumber.h"
+#include "pkt_recvnpctalkresponses.h"
+#include "pkt_sendnpcresponse.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

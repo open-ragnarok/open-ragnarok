@@ -73,6 +73,10 @@ protected:
 	HNDL_DECL(ActorDisplay);
 	HNDL_DECL(RecvNpcTalk);
 	HNDL_DECL(RecvNpcTalkNext);
+	HNDL_DECL(RecvNpcTalkClose);
+	HNDL_DECL(MapChange);
+	HNDL_DECL(RecvNpcInputReq);
+	HNDL_DECL(RecvNpcTalkResponses);
 
 	int m_charslot;
 
@@ -130,6 +134,9 @@ public:
 	
 	void NpcClose();
 	void NpcContinue();
+	void NpcText(const char*);
+	void NpcNumber(unsigned int);
+	void NpcResponse(unsigned char);
 
 	/** Event received from ROEngine */
 	virtual void clickMap(int x, int y);

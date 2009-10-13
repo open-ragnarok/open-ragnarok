@@ -22,16 +22,54 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
+
 #include "stdafx.h"
+#include "ronet/packets/pkt_mapchange.h"
 
-#include "ronet/packets/generic_packets.h"
-
+/*
+0000 | 91 00 6e 65 77 5f 31 2d  32 2e 67 61 74 00 00 00 | ..new_1- 2.gat...
+0010 | 00 00 64 00 09 00                                | ..d...
+*/
 namespace ronet {
-	RONET_GENERIC_ID_IMPL(RequestPlayerInfo)
-	RONET_GENERIC_ID_IMPL(RequestCharacterName)
-	RONET_GENERIC_TRAILING_IMPL(GetStoreInfo)
-	RONET_GENERIC_IMPL(RequestIgnoreList)
-	RONET_GENERIC_ID_IMPL(Take)
-	RONET_GENERIC_ID_IMPL(RecvNpcInputReq)
-	RONET_GENERIC_ID_IMPL(RecvNpcTalkClose)
+
+pktMapChange::pktMapChange() : Packet(pktMapChangeID) {
+	m_map[0] = 0;
+	pos_x = pos_y = 0;
+	setSize(22);
+}
+
+bool pktMapChange::Decode(ucBuffer& buf) {
+	// Sanity Check
+	if (!CheckID(buf))
+		return(false);
+
+	// Packet size is 12...
+	if (buf.dataSize() < 22)
+		return(false);
+
+	buf.ignore(2); // id
+	buf.read((unsigned char*)m_map, 16);
+	buf >> pos_x;
+	buf >> pos_y;
+
+	return(true);
+}
+
+void pktMapChange::getPos(int* x, int* y) const {
+	*x = pos_x;
+	*y = pos_y;
+}
+
+int pktMapChange::getPosX() const {
+	return(pos_x);
+}
+
+int pktMapChange::getPosY() const {
+	return(pos_y);
+}
+
+const char* pktMapChange::getMapName() const {
+	return(m_map);
+}
+
 }

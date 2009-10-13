@@ -101,6 +101,8 @@ public:
 	bool NPCNext(unsigned int id);
 	bool NPCCancel(unsigned int id);
 	bool NPCResponse(unsigned int id, unsigned char);
+	bool NPCText(unsigned int id, const char*);
+	bool NPCNumber(unsigned int id, unsigned int num);
 
 	bool RequestPlayerInfo(unsigned int id);
 

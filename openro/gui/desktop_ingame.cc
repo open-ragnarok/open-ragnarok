@@ -6,7 +6,14 @@
 DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 	ADD_HANDLER("stats_window/btnMap", evtClick, DesktopIngame::handleBtnMap);
 	ADD_HANDLER("chatwindow/btnNext", evtClick, DesktopIngame::handleBtnNpcNext);
+
 	ADD_HANDLER("chatwindow/btnCancel", evtClick, DesktopIngame::handleBtnNpcClose);
+
+	ADD_HANDLER("npcchoose/btnOk", evtClick, DesktopIngame::handleBtnNpcSendNumber);
+	ADD_HANDLER("npcchoose/btnCancel", evtClick, DesktopIngame::handleBtnNpcClose);
+
+	ADD_HANDLER("npcinput/btnOk", evtClick, DesktopIngame::handleBtnNpcSendText);
+	ADD_HANDLER("npcinput/btnCancel", evtClick, DesktopIngame::handleBtnNpcClose);
 
 	ADD_HANDLER("stats_window/btnMinimize", evtClick, DesktopIngame::handleMinimize);
 	ADD_HANDLER("mini_stats/btnMinimize", evtClick, DesktopIngame::handleMaximize);
@@ -22,6 +29,24 @@ DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 	m_npc_answered = false;
 }
 
+bool DesktopIngame::handleBtnNpcSendText(GUI::Event&) {
+	GUI::TextInput* text = (GUI::TextInput*)getElement("npcinput/input");
+	m_ro->NpcText(text->getText().c_str());
+	getElement("npcinput")->setVisible(false);
+	return(true);
+}
+
+bool DesktopIngame::handleBtnNpcSendNumber(GUI::Event&) {
+	GUI::List* list = (GUI::List*)getElement("npcchoose/options");
+	int n = list->getSelected();
+	if (n < 0)
+		return(false);
+
+	m_ro->NpcResponse(n);
+	getElement("npcchoose")->setVisible(false);
+	return(true);
+}
+
 bool DesktopIngame::handleMinimize(GUI::Event&) {
 	getElement("mini_stats")->setVisible(true);
 	getElement("stats_window")->setVisible(false);
@@ -35,7 +60,6 @@ bool DesktopIngame::handleMaximize(GUI::Event&) {
 
 	return(true);
 }
-
 
 void DesktopIngame::updateHP() {
 	GUI::ProgressBar* bar;
@@ -151,9 +175,11 @@ void DesktopIngame::setZeny(unsigned int zeny) {
 
 
 bool DesktopIngame::handleBtnNpcClose(GUI::Event&) {
-	//m_ro->NpcClose();
+	// Hide all npc windows
 	chatwindow->setVisible(false);
-	//m_npc_answered = true;
+	getElement("npcinput")->setVisible(false);
+	getElement("npcchoose")->setVisible(false);
+	m_ro->NpcClose();
 	return(true);
 }
 
@@ -170,38 +196,57 @@ bool DesktopIngame::handleBtnMap(GUI::Event&) {
 }
 
 void DesktopIngame::AddNpcLine(std::string line) {
-	// We hide the NPC list when we receive new info.
+	// We hide the other NPC windows when we receive new info.
 	if (getElement("npcchoose")->isVisible()) {
 		getElement("npcchoose")->setVisible(false);
 		GUI::List* list = (GUI::List*)getElement("npcchoose/options");
 		list->clear();
 	}
+	getElement("npcinput")->setVisible(false);
 
 	if (!chatwindow->isVisible()) {
 		chatwindow->setVisible(true);
 		chatwindow->Clear();
+		getElement("chatwindow/btnCancel")->setVisible(false);
 		getElement("chatwindow/btnNext")->setVisible(false);
-		getElement("chatwindow/btnCancel")->setVisible(true);
 	}
 	if (m_npc_answered == true) {
 		chatwindow->Clear();
 		m_npc_answered = false;
 	}
+
+	getElement("chatwindow/btnCancel")->setVisible(true);
 	chatwindow->Add(line);
 }
 
 void DesktopIngame::AddNpcOption(std::string line) {
-	getElement("npcchoose")->setVisible(true);
 	GUI::List* list = (GUI::List*)getElement("npcchoose/options");
-	list->setVisible(true);
+
+	if (!getElement("npcchoose")->isVisible()) {
+		list->clear();
+	}
+	getElement("npcchoose")->setVisible(true);
 	// The buttons will be handled by the "npcchoose" window
 	getElement("chatwindow/btnNext")->setVisible(false);
 	getElement("chatwindow/btnCancel")->setVisible(false);
 	list->add(line);
 }
 
+void DesktopIngame::NpcText() {
+	getElement("npcinput")->setVisible(true);
+	getElement("npcinput/input")->setActive();
+	GUI::Gui::getSingleton().setFocus(getElement("npcinput/input"));
+	// The buttons will be handled by the "npcinput" window
+	getElement("chatwindow/btnNext")->setVisible(false);
+	getElement("chatwindow/btnCancel")->setVisible(false);
+}
+
 void DesktopIngame::AddNpcNextBtn() {
 	getElement("chatwindow/btnNext")->setVisible(true);
+}
+
+void DesktopIngame::AddNpcCloseBtn() {
+	getElement("chatwindow/btnCancel")->setVisible(true);
 }
 
 void DesktopIngame::afterDraw(unsigned int delay) {

@@ -22,16 +22,29 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_MAPCHANGE_H
+#define __RONET_PACKET_MAPCHANGE_H
 
-#include "ronet/packets/generic_packets.h"
+#include "ronet/packet.h"
 
 namespace ronet {
-	RONET_GENERIC_ID_IMPL(RequestPlayerInfo)
-	RONET_GENERIC_ID_IMPL(RequestCharacterName)
-	RONET_GENERIC_TRAILING_IMPL(GetStoreInfo)
-	RONET_GENERIC_IMPL(RequestIgnoreList)
-	RONET_GENERIC_ID_IMPL(Take)
-	RONET_GENERIC_ID_IMPL(RecvNpcInputReq)
-	RONET_GENERIC_ID_IMPL(RecvNpcTalkClose)
+
+class RONET_DLLAPI pktMapChange : public Packet {
+protected:
+	char m_map[16];
+	unsigned short pos_x, pos_y;
+
+public:
+	pktMapChange();
+
+	bool Decode(ucBuffer& buf);
+
+	void getPos(int*, int*) const;
+	int getPosX() const;
+	int getPosY() const;
+	const char* getMapName() const;
+};
+
 }
+
+#endif /* __RONET_PACKET_MAPCHANGE_H */

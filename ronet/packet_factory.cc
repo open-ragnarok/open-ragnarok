@@ -70,6 +70,10 @@ HANDLER(StatsInfo)
 HANDLER(ActorDisplay)
 HANDLER(RecvNpcTalk)
 HANDLER(RecvNpcTalkNext)
+HANDLER(RecvNpcTalkClose)
+HANDLER(RecvNpcInputReq)
+HANDLER(RecvNpcTalkResponses)
+HANDLER(MapChange)
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -104,6 +108,10 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(ActorDisplay);
 	CALLER(RecvNpcTalk);
 	CALLER(RecvNpcTalkNext);
+	CALLER(RecvNpcTalkClose);
+	CALLER(RecvNpcInputReq);
+	CALLER(RecvNpcTalkResponses);
+	CALLER(MapChange);
 }
 
 ronet::PacketFactory::~PacketFactory() {

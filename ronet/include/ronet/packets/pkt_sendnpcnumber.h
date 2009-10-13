@@ -22,16 +22,21 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_SENDNPCNUMBER_H
+#define __RONET_PACKET_SENDNPCNUMBER_H
 
-#include "ronet/packets/generic_packets.h"
+#include "ronet/packet.h"
 
 namespace ronet {
-	RONET_GENERIC_ID_IMPL(RequestPlayerInfo)
-	RONET_GENERIC_ID_IMPL(RequestCharacterName)
-	RONET_GENERIC_TRAILING_IMPL(GetStoreInfo)
-	RONET_GENERIC_IMPL(RequestIgnoreList)
-	RONET_GENERIC_ID_IMPL(Take)
-	RONET_GENERIC_ID_IMPL(RecvNpcInputReq)
-	RONET_GENERIC_ID_IMPL(RecvNpcTalkClose)
+	class RONET_DLLAPI pktSendNpcNumber : public Packet {
+	protected:
+		unsigned int npc;
+		unsigned int number;
+
+		virtual bool PrepareData();
+	public:
+		pktSendNpcNumber(unsigned int npc, unsigned int number);
+	};
 }
+
+#endif /* __RONET_PACKET_SENDNPCNUMBER_H */

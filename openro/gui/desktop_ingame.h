@@ -36,6 +36,8 @@ public:
 	bool handleBtnMap(GUI::Event&);
 	bool handleBtnNpcClose(GUI::Event&);
 	bool handleBtnNpcNext(GUI::Event&);
+	bool handleBtnNpcSendText(GUI::Event&);
+	bool handleBtnNpcSendNumber(GUI::Event&);
 	bool handleMinimize(GUI::Event&);
 	bool handleMaximize(GUI::Event&);
 
@@ -76,7 +78,11 @@ public:
 
 	void AddNpcLine(std::string);
 	void AddNpcNextBtn();
+	void AddNpcCloseBtn();
 	void AddNpcOption(std::string);
+
+	/** Opens up a text box for the user to input text to a NPC */
+	void NpcText();
 };
 
 #endif /* __DESKTOP_LOGIN_H */

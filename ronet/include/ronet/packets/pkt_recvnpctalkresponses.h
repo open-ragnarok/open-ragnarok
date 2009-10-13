@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: pkt_recvnpctalk.h 181 2009-10-07 17:16:48Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -22,19 +22,34 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKETS_GENERIC_H
-#define __RONET_PACKETS_GENERIC_H
+#ifndef __RONET_PACKET_RECVNPCTALKRESPONSES_H
+#define __RONET_PACKET_RECVNPCTALKRESPONSES_H
 
 #include "ronet/packet.h"
 
 namespace ronet {
-	RONET_GENERIC_ID_DECL(RequestPlayerInfo);
-	RONET_GENERIC_ID_DECL(RequestCharacterName);
-	RONET_GENERIC_TRAILING_DECL(GetStoreInfo);
-	RONET_GENERIC_DECL(RequestIgnoreList);
-	RONET_GENERIC_ID_DECL(Take);
-	RONET_GENERIC_ID_DECL(RecvNpcInputReq);
-	RONET_GENERIC_ID_DECL(RecvNpcTalkClose);
+
+class RONET_DLLAPI pktRecvNpcTalkResponses : public Packet {
+protected:
+	unsigned int npc;
+	char* message;
+
+	std::vector<std::string> lines;
+
+	void DecodeMessage();
+
+public:
+	pktRecvNpcTalkResponses();
+	virtual ~pktRecvNpcTalkResponses();
+
+	const char* getMessage() const;
+	unsigned int getNPC() const;
+	unsigned int getLineCount() const;
+	const std::string& getLine(unsigned int i) const;
+
+	virtual bool Decode(ucBuffer&);
+};
+
 }
 
-#endif /* __RONET_PACKETS_GENERIC_H */
+#endif /* __RONET_PACKET_RECVNPCTALKRESPONSES_H */

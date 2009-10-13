@@ -87,14 +87,25 @@ void OpenRO::Quit() {
 
 void OpenRO::AfterDraw() {
 	if (!m_maploaded) {
-		if (!m_cycle)
+		m_gui.setDesktop(dskLoading);
+
+		if (m_cycle <= 2)
 			m_cycle++;
 		else {
+			if (m_map != NULL) {
+				delete(m_map);
+				m_map = NULL;
+			}
+
 			m_map = RswObject::open(*this, m_mapname);
+			if (m_map == NULL) {
+				printf("Error loading map %s!\n", m_mapname);
+			}
 			std::string gnd_fn = m_map->getRSW()->gnd_file;
 			std::string aux;
 			char minimap_fn[256];
 
+			// Loads minimap
 			memset(minimap_fn, 0, 256);
 			strncpy(minimap_fn, gnd_fn.c_str(), gnd_fn.length() - 3);
 			strcat(minimap_fn, "bmp");
@@ -109,8 +120,14 @@ void OpenRO::AfterDraw() {
 			m_minimap = m_texturemanager.Register(m_filemanager, minimap_fn);
 			dskIngame->setMinimap(m_minimap);
 
+			// Set the desktop
 			m_gui.setDesktop(dskIngame);
 			m_maploaded = true;
+			m_cycle = 0;
+			m_drawmap = true;
+
+			// Send message to the server that we're good to go.
+			m_network.MapLoaded();
 		}
 	}
 
@@ -158,6 +175,10 @@ void OpenRO::ProcessNetwork() {
 			HANDLEPKT(ActorDisplay, true);
 			HANDLEPKT(RecvNpcTalk, true);
 			HANDLEPKT(RecvNpcTalkNext, true);
+			HANDLEPKT(RecvNpcTalkClose, true);
+			HANDLEPKT(MapChange, true);
+			HANDLEPKT(RecvNpcInputReq, true);
+			HANDLEPKT(RecvNpcTalkResponses, true);
 
 			default:
 				_log(OPENRO__ERROR, "Unhandled packet id %d (length: %d)", pkt->getID(), pkt->size());
@@ -331,9 +352,58 @@ void OpenRO::NpcContinue() {
 	m_network.NPCNext(m_npc_talk_id);
 }
 
+void OpenRO::NpcText(const char* text) {
+	m_network.NPCText(m_npc_talk_id, text);
+}
+
+void OpenRO::NpcNumber(unsigned int n) {
+	m_network.NPCNumber(m_npc_talk_id, n);
+}
+
+void OpenRO::NpcResponse(unsigned char num) {
+	m_network.NPCResponse(m_npc_talk_id, num);
+}
+
+void OpenRO::LoadMap(const char* name) {
+	char mapname[64];
+	strcpy(mapname, name);
+
+	int i = 0;
+	while (mapname[i] != 0) {
+		if (mapname[i] == '.') {
+			mapname[i] = 0;
+			break;
+		}
+		i++;
+	}
+
+	if (strcmp(m_mapname, mapname) == 0) {
+		return;
+	}
+
+	strcpy(m_mapname, mapname);
+
+	m_maploaded = false;
+	m_drawmap = false;
+}
+
 /* ========================================================================== *
  * Add new packets here                                                       *
  * ========================================================================== */
+HNDL_IMPL(RecvNpcTalkResponses) {
+	m_npc_talk_id = pkt->getNPC();
+	unsigned int s = pkt->getLineCount();
+	unsigned int i;
+	for (i = 0; i < s; i++) {
+		dskIngame->AddNpcOption(pkt->getLine(i));
+	}
+}
+
+HNDL_IMPL(RecvNpcInputReq) {
+	m_npc_talk_id = pkt->getID();
+	dskIngame->NpcText();
+}
+
 HNDL_IMPL(RecvNpcTalk) {
 	dskIngame->AddNpcLine(pkt->getMessage());
 	_log(OPENRO__DEBUG, "NPC Talk: %s", pkt->getMessage());
@@ -343,6 +413,11 @@ HNDL_IMPL(RecvNpcTalk) {
 HNDL_IMPL(RecvNpcTalkNext) {
 	dskIngame->AddNpcNextBtn();
 }
+
+HNDL_IMPL(RecvNpcTalkClose) {
+	dskIngame->AddNpcCloseBtn();
+}
+
 
 HNDL_IMPL(InventoryItems) {
 	_log(OPENRO__DEBUG, "Received %d items in inventory",pkt->getItemCount());
@@ -424,7 +499,7 @@ HNDL_IMPL(AttackRange) {
 
 HNDL_IMPL(GuildMessage) {
 	_log(OPENRO__TRACE, "Guild Message: %s", pkt->getText());
-	m_network.MapLoaded();
+	//m_network.MapLoaded();
 }
 
 HNDL_IMPL(DisplayStat) {
@@ -608,15 +683,12 @@ HNDL_IMPL(CharPosition) {
 	m_network.MapLogin(m_serverlist->getAccountId(), pkt->getCharID(), m_serverlist->getSessionId1(), SDL_GetTicks(), m_serverlist->getSex());
 
 	//Save the map sent by the charserver
-	strcpy(m_mapname, pkt->getMapname());
-	int i = 0;
-	while (m_mapname[i] != 0) {
-		if (m_mapname[i] == '.') {
-			m_mapname[i] = 0;
-			break;
-		}
-		i++;
-	}
+	LoadMap(pkt->getMapname());
+}
+
+HNDL_IMPL(MapChange) {
+	me.setPos((float)pkt->getPosX(), (float)pkt->getPosY());
+	LoadMap(pkt->getMapName());
 }
 
 HNDL_IMPL(MapAcctSend) {
@@ -631,8 +703,6 @@ HNDL_IMPL(MapLoginSuccess) {
 
 	_log(OPENRO__DEBUG, "Login successful to the MapServer!");
 
-	m_gui.setDesktop(dskLoading);
-	m_cycle = 0;
 	m_maploaded = false;
 	
 	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
