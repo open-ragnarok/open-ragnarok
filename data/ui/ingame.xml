@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <desktop name="ingame_ui" transparent="true">
   <!-- $Id$ -->
-  <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0" mx="5" mw="270" mh="10">
-	<label text="Basic Info" x="17" y="5" />
-	<label text="HP" x="94" y="32" />
-	<label text="SP" x="94" y="53" />
-	<label name="stats_window/charname" text="Open Ragnarok" x="9" y="25" />
-	<label name="stats_window/class" text="Super Novice" x="9" y="38" />
-	<label name="stats_window/status" text="Weight: 190 / 2240  Zeny: 164" x="3" y="105" />
-	<label name="stats_window/hp_text" text="0 / 0" x="128" y="32" />
-	<label name="stats_window/sp_text" text="0 / 0" x="128" y="54" />
+  <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0" mx="5" mw="260" mh="10">
+    <label text="Basic Info" x="17" y="5" />
+    <label text="HP" x="94" y="32" />
+    <label text="SP" x="94" y="53" />
+    <label name="stats_window/charname" text="Open Ragnarok" x="9" y="25" />
+    <label name="stats_window/class" text="Super Novice" x="9" y="38" />
+    <label name="stats_window/status" text="Weight: 190 / 2240  Zeny: 164" x="3" y="105" />
+    <label name="stats_window/hp_text" text="0 / 0" x="128" y="32" />
+    <label name="stats_window/sp_text" text="0 / 0" x="128" y="54" />
     <button name="stats_window/btnStatus" focusable="false" x="207" y="22" texture="basic_interface\btn_status_off.bmp" active="basic_interface\btn_status_on.bmp" />
     <button name="stats_window/btnOption" focusable="false" x="243" y="22" texture="basic_interface\btn_option_off.bmp" active="basic_interface\btn_option_on.bmp" />
     <button name="stats_window/btnItems" focusable="false" x="207" y="46" texture="basic_interface\btn_items_off.bmp" active="basic_interface\btn_items_on.bmp" />
@@ -18,19 +18,33 @@
     <button name="stats_window/btnMap" focusable="false" x="243" y="70" texture="basic_interface\btn_map_off.bmp" active="basic_interface\btn_map_on.bmp" />
     <button name="stats_window/btnChat" focusable="false" x="207" y="94" texture="basic_interface\btn_comm_off.bmp" active="basic_interface\btn_comm_on.bmp" />
     <button name="stats_window/btnFriend" focusable="false" x="243" y="94" texture="basic_interface\btn_friend_off.bmp" active="basic_interface\btn_friend_on.bmp" />
-	
-	<progressbar name="stats_window/hp" x="110" y="22" w="85" h="9" max="100" val="80" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
-	<progressbar name="stats_window/sp" x="110" y="43" w="85" h="9" max="100" val="40" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
-	
-	<button texture="basic_interface\sys_mini_off.bmp" active="basic_interface\sys_mini_on.bmp" x="267" y="4" />
-	<button texture="basic_interface\sys_base_off.bmp" active="basic_interface\sys_base_on.bmp" x="4" y="4" />
+    <progressbar name="stats_window/hp" x="110" y="22" w="85" h="9" max="100" val="80" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
+    <progressbar name="stats_window/sp" x="110" y="43" w="85" h="9" max="100" val="40" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
+    <button name="stats_window/btnMinimize" texture="basic_interface\sys_mini_off.bmp" active="basic_interface\sys_mini_on.bmp" x="267" y="4" />
+    <button texture="basic_interface\sys_base_off.bmp" active="basic_interface\sys_base_on.bmp" x="4" y="4" />
+  </window>
+
+  <window name="mini_stats" visible="false" texture="basic_interface\basewin_mini.bmp" x="0" y="0" mx="5" mw="270" mh="10" >
+    <label name="mini_stats/lblChar" text="OpenRO" x="10" y="4" />
+    <label name="mini_stats/lblInfo1" text="Lv. 85 / Blacksmith / Lv.50 / Exp. 13%" x="50" y="4" />
+    <label name="mini_stats/lblInfo2" text="HP 5262 / 6303 | SP 206 / 395 | 13,510,853 Z" x="10" y="16" />
+    <button name="mini_stats/btnMinimize" texture="basic_interface\sys_mini_off.bmp" active="basic_interface\sys_mini_on.bmp" x="267" y="4" focusable="false" />
+    <button texture="basic_interface\sys_base_off.bmp" active="basic_interface\sys_base_on.bmp" x="4" y="4" focusable="false" />
   </window>
   
   <chatwindow name="chatwindow" visible="false" x="20" y="120" mw="200" mh="10">
     <buttonbar name="chatwindow/btnbar">
-		<button name="chatwindow/btnCancel" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" focusable="false" />
-		<button name="chatwindow/btnNext" texture="btn_next.bmp" active="btn_next_a.bmp" focusable="false" />
-	</buttonbar>
+      <button name="chatwindow/btnCancel" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" focusable="false" />
+      <button name="chatwindow/btnNext" texture="btn_next.bmp" active="btn_next_a.bmp" focusable="false" />
+    </buttonbar>
+  </chatwindow>
+
+  <chatwindow name="npcchoose" visible="false">
+    <list name="npcchoose/options" x="10" y="19" w="260" h="72" />
+    <buttonbar>
+      <button name="npcchoose/btnOk" texture="btn_ok.bmp" active="btn_ok_a.bmp" hover="btn_ok_b.bmp"  focusable="false" />
+      <button name="npcchoose/btnCancel" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" hover="btn_cancel_b.bmp" focusable="false" />
+    </buttonbar>
   </chatwindow>
 
   <window name="minimap" width="100" height="100" x="-110" y="10">

@@ -8,15 +8,34 @@ DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 	ADD_HANDLER("chatwindow/btnNext", evtClick, DesktopIngame::handleBtnNpcNext);
 	ADD_HANDLER("chatwindow/btnCancel", evtClick, DesktopIngame::handleBtnNpcClose);
 
+	ADD_HANDLER("stats_window/btnMinimize", evtClick, DesktopIngame::handleMinimize);
+	ADD_HANDLER("mini_stats/btnMinimize", evtClick, DesktopIngame::handleMaximize);
+
 	m_hp = m_maxhp = 0;
 	m_sp = m_maxsp = 0;
-	m_weight = m_maxweight = m_zeny = 0;
+	m_weight = m_maxweight = 0.0f;
+	m_zeny = 0;
 
 	minimap = (GUI::Window*)getElement("minimap");
 	chatwindow = (GUI::ChatWindow*)getElement("chatwindow");
 	
 	m_npc_answered = false;
 }
+
+bool DesktopIngame::handleMinimize(GUI::Event&) {
+	getElement("mini_stats")->setVisible(true);
+	getElement("stats_window")->setVisible(false);
+
+	return(true);
+}
+
+bool DesktopIngame::handleMaximize(GUI::Event&) {
+	getElement("mini_stats")->setVisible(false);
+	getElement("stats_window")->setVisible(true);
+
+	return(true);
+}
+
 
 void DesktopIngame::updateHP() {
 	GUI::ProgressBar* bar;
@@ -151,10 +170,18 @@ bool DesktopIngame::handleBtnMap(GUI::Event&) {
 }
 
 void DesktopIngame::AddNpcLine(std::string line) {
+	// We hide the NPC list when we receive new info.
+	if (getElement("npcchoose")->isVisible()) {
+		getElement("npcchoose")->setVisible(false);
+		GUI::List* list = (GUI::List*)getElement("npcchoose/options");
+		list->clear();
+	}
+
 	if (!chatwindow->isVisible()) {
 		chatwindow->setVisible(true);
 		chatwindow->Clear();
 		getElement("chatwindow/btnNext")->setVisible(false);
+		getElement("chatwindow/btnCancel")->setVisible(true);
 	}
 	if (m_npc_answered == true) {
 		chatwindow->Clear();
@@ -163,12 +190,21 @@ void DesktopIngame::AddNpcLine(std::string line) {
 	chatwindow->Add(line);
 }
 
+void DesktopIngame::AddNpcOption(std::string line) {
+	getElement("npcchoose")->setVisible(true);
+	GUI::List* list = (GUI::List*)getElement("npcchoose/options");
+	list->setVisible(true);
+	// The buttons will be handled by the "npcchoose" window
+	getElement("chatwindow/btnNext")->setVisible(false);
+	getElement("chatwindow/btnCancel")->setVisible(false);
+	list->add(line);
+}
+
 void DesktopIngame::AddNpcNextBtn() {
 	getElement("chatwindow/btnNext")->setVisible(true);
 }
 
 void DesktopIngame::afterDraw(unsigned int delay) {
-
 	elapsed += delay;
 	ptick += delay;
 	ffps += delay;

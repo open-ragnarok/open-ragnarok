@@ -36,6 +36,8 @@ public:
 	bool handleBtnMap(GUI::Event&);
 	bool handleBtnNpcClose(GUI::Event&);
 	bool handleBtnNpcNext(GUI::Event&);
+	bool handleMinimize(GUI::Event&);
+	bool handleMaximize(GUI::Event&);
 
 	/** Sets the current HP */
 	void setHP(unsigned short);
@@ -74,6 +76,7 @@ public:
 
 	void AddNpcLine(std::string);
 	void AddNpcNextBtn();
+	void AddNpcOption(std::string);
 };
 
 #endif /* __DESKTOP_LOGIN_H */
