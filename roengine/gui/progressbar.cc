@@ -120,11 +120,11 @@ void ProgressBar::Draw(unsigned int delay) {
 	Window((float)(used_w), (float)0, (float)texture_end.getWidth(), (float)texture_end.getHeight(), texture_end);
 }
 
-void ProgressBar::SetValue(int value) {
+void ProgressBar::setValue(int value) {
 	m_value = value;
 }
 
-void ProgressBar::SetMaxValue(int maxvalue) {
+void ProgressBar::setMaxValue(int maxvalue) {
 	m_maxvalue = maxvalue;
 }
 

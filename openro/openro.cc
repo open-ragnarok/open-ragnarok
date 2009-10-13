@@ -39,7 +39,7 @@ void OpenRO::CharSelectScreen() {
 
 void OpenRO::ProcessLogin(const std::string& user, const std::string& pass, unsigned int version) {
 	dskLogin->setEnabled(false);
-	m_network.getLogin().Connect(OpenRO::ConnectionIP, OpenRO::ConnectionPort);
+	m_network.getLogin().Connect(m_connectionip, m_connectionport);
 	m_network.GameLogin(user, pass, version);
 }
 
@@ -239,19 +239,18 @@ void OpenRO::ParseClientInfo(const std::string& name){
 			TiXmlElement* sclient_child_addr = sclient_child->FirstChildElement("address");
 			if(sclient_child_addr){
 				const char *ip = sclient_child_addr->GetText();
-				strcpy(OpenRO::ConnectionIP, ip);
+				strcpy(m_connectionip, ip);
 			}
 			TiXmlElement* sclient_child_port = sclient_child->FirstChildElement("port");
 			if(sclient_child_port){
 				const char *port = sclient_child_port->GetText();
-				OpenRO::ConnectionPort = atoi(port);
+				m_connectionport = atoi(port);
 			}
 			TiXmlElement* sclient_child_version = sclient_child->FirstChildElement("version");
 			if(sclient_child_version){
 				const char *version = sclient_child_version->GetText();
-				OpenRO::ClientVersion = atoi(version);
+				m_clientversion = atoi(version);
 			}
-
 		}
 	}
 }
@@ -304,7 +303,9 @@ unsigned char OpenRO::GetAccountSex(){
 		return 0;
 	}
 }
-unsigned int OpenRO::GetClientVersion(){return ClientVersion;}
+unsigned int OpenRO::GetClientVersion(){
+	return(m_clientversion);
+}
 
 void OpenRO::clickMap(int x, int y) {
 	m_network.MoveCharacter(x, y);
@@ -438,7 +439,31 @@ HNDL_IMPL(UpdateStatus) {
 	unsigned short type = pkt->getType();
 	unsigned int value = pkt->getValue();
 
-	_log(OPENRO__TRACE, "Update status \"%s\", with value %d!", RO::dnames[type], value);
+	switch(type) {
+		case 5: // HP
+			dskIngame->setHP(value);
+			break;
+		case 6: // MAX HP
+			dskIngame->setMaxHP(value);
+			break;
+		case 7: // SP
+			dskIngame->setSP(value);
+			break;
+		case 8: // MAX SP
+			dskIngame->setMaxSP(value);
+			break;
+		case 20: // Zeny
+			dskIngame->setZeny(value);
+			break;
+		case 24: // Weight
+			dskIngame->setWeight((float)value/10.0f);
+			break;
+		case 25: // Max Weight
+			dskIngame->setMaxWeight((float)value/10.0f);
+			break;
+		default:
+			_log(OPENRO__TRACE, "Unhandled update status \"%s\" (%d), with value %d", RO::dnames[type], type, value);
+	}
 }
 
 HNDL_IMPL(ServerList) {

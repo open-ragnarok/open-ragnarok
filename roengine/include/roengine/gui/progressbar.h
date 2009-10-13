@@ -29,8 +29,8 @@ public:
 
 	void Click();
 
-	void SetValue(int value);
-	void SetMaxValue(int maxvalue);
+	void setValue(int value);
+	void setMaxValue(int maxvalue);
 	int getValue() const;
 	int getMaxValue() const;
 };

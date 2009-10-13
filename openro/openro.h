@@ -76,14 +76,14 @@ protected:
 
 	int m_charslot;
 
-	/** IP address to connect */
-	char ConnectionIP[256];
+	/** Login IP address to connect */
+	char m_connectionip[256];
 
-	/** Port to connect */
-	unsigned int ConnectionPort;
+	/** Login Server Port to connect */
+	unsigned int m_connectionport;
 
 	/** Client Version taken from (s)clientinfo.xml */
-	unsigned int ClientVersion;
+	unsigned int m_clientversion;
 
 	/** Parses the client information on the given xml file */
 	void ParseClientInfo(const std::string& name = "sclientinfo.xml");
