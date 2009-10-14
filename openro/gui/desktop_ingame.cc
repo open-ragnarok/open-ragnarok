@@ -27,6 +27,7 @@ DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 	chatwindow = (GUI::ChatWindow*)getElement("chatwindow");
 	
 	m_npc_answered = false;
+	m_lag = 0;
 }
 
 bool DesktopIngame::handleBtnNpcSendText(GUI::Event&) {
@@ -42,7 +43,7 @@ bool DesktopIngame::handleBtnNpcSendNumber(GUI::Event&) {
 	if (n < 0)
 		return(false);
 
-	m_ro->NpcResponse(n);
+	m_ro->NpcResponse(n + 1);
 	getElement("npcchoose")->setVisible(false);
 	return(true);
 }
@@ -254,12 +255,24 @@ void DesktopIngame::afterDraw(unsigned int delay) {
 	ptick += delay;
 	ffps += delay;
 
+	GUI::Gui& gui = GUI::Gui::getSingleton();
+
 	if(ffps >= 1000){
-		printf("FPS: %d aprox\t\t\r", fps);
+		m_lastfps = fps;
+		//printf("FPS: %d aprox\t\t\r", fps);
 		ffps = 0;
 		fps = 0;
-	}else
+	}
+	else {
 		fps++;
+	}
+
+	char fpsbuf[36];
+	sprintf(fpsbuf, "FPS: %d aprox", m_lastfps);
+	gui.textOut(fpsbuf, 20, 200, 0, 0);
+
+	sprintf(fpsbuf, "Lag: %dms", m_lag);
+	gui.textOut(fpsbuf, 20, 220, 0, 0);
 
 
 	//Keep Alive packet to CharServer

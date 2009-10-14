@@ -305,7 +305,7 @@ void OpenRO::KeepAliveMap(){
 
 	//Send the KeepAlive packet
 	m_network.KeepAliveMap(SDL_GetTicks() - m_tickoffset);
-	_log(OPENRO__DEBUG, "MapServer KeepAlive sent.");
+	//_log(OPENRO__DEBUG, "MapServer KeepAlive sent.");
 }
 
 unsigned int OpenRO::GetAccountID(){return m_serverlist->getAccountId();}
@@ -378,6 +378,9 @@ void OpenRO::LoadMap(const char* name) {
 	}
 
 	if (strcmp(m_mapname, mapname) == 0) {
+		// We're in the same map. No need to reload stuff, but we need to
+		// send to the server information that we're good to go.
+		m_network.MapLoaded();
 		return;
 	}
 
@@ -483,7 +486,8 @@ HNDL_IMPL(GmBroad) {
 HNDL_IMPL(ServerTick) {
 	unsigned int m_expected = SDL_GetTicks() - m_tickoffset;
 	unsigned int m_lag = pkt->getServerTick() - m_expected;
-	_log(OPENRO__DEBUG, "Received server tick: %d.\tExpected: %d.\tLag: %dms", pkt->getServerTick(), m_expected, m_lag);
+	//_log(OPENRO__DEBUG, "Received server tick: %d.\tExpected: %d.\tLag: %dms", pkt->getServerTick(), m_expected, m_lag);
+	dskIngame->m_lag = m_lag;
 }
 
 HNDL_IMPL(MapMoveOk) {

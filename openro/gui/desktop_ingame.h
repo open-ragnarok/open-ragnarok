@@ -21,6 +21,7 @@ protected:
 	unsigned int ptick;
 	unsigned int ffps;
 	unsigned int fps;
+	unsigned int m_lastfps;
 
 	GUI::Window* minimap;
 	GUI::ChatWindow* chatwindow;
@@ -29,6 +30,8 @@ protected:
 	bool m_npc_answered;
 
 public:
+	unsigned int m_lag;
+
 	DesktopIngame(OpenRO*);
 
 	void setMinimap(sdle::Texture&);
