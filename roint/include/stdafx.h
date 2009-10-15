@@ -35,6 +35,9 @@
 #	else
 #		pragma comment(lib, "zlib.dll.lib")
 #	endif
+#	ifdef USE_LOGSYS
+#		pragma comment(lib, "logsys.lib")
+#	endif
 #endif
 
 #include "ro/roint_settings.h"

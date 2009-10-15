@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Open-Ragnarok Project
+# Copyright (C) 2008-2009 Open-Ragnarok Project
 # http://www.open-ragnarok.org
 # $Id$
 

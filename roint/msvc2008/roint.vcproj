@@ -183,7 +183,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\include\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)\..\logsys\include\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
@@ -318,7 +318,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\include\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)\..\logsys\include\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;ROINT_DLL"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -452,9 +452,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="$(SolutionDir)\zlib123\;$(ProjectDir)..\include\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)\..\logsys\include\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;ROINT_DLL"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -611,6 +611,10 @@
 			</File>
 			<File
 				RelativePath="..\grf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\log.cc"
 				>
 			</File>
 			<File

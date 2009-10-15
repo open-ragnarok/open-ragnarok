@@ -6,6 +6,9 @@
  *    Revision: $Rev$
  */
 #include "stdafx.h"
+#include "log.h"
+
+namespace ro {
 
 #ifdef USE_LOGSYS
 #ifdef DEBUG
@@ -14,7 +17,7 @@
 #	define DEBUGLOG false
 #endif
 // Checkout logsys.h for more info.
-struct LogSysInfo ronet_logsys[] = {
+struct LogSysInfo roint_logsys[] = {
 	{ ROINT__DEBUG, "ROINT", DEBUGLOG, NULL },
 	{ ROINT__TRACE, "RO", false, NULL },
 	{ ROINT__ERROR, "RoError", true, stderr },
@@ -24,9 +27,19 @@ struct LogSysInfo ronet_logsys[] = {
 #undef DEBUGLOG
 #endif
 
-void ro::SetupLogs() {
+void SetupLogs() {
 #ifdef USE_LOGSYS
-	LogSys* log = LogSys::GetSingleton();
-	log->registerInfo(ronet_logsys, 3);
+#ifdef DEBUG
+	printf("ROINT Setting up logs...\n");
+	fflush(stdout);
 #endif
+	LogSys* log = LogSys::GetSingleton();
+	log->registerInfo(roint_logsys, 3);
+#ifdef DEBUG
+	printf("ROINT Log initialized\n");
+	fflush(stdout);
+#endif
+#endif
+}
+
 }

@@ -37,17 +37,13 @@
 #	endif
 #endif
 
-#ifndef _MSC_VER
+#ifndef ROINT_DLL
 #	define ROINT_DLLAPI
 #else
-#	ifndef ROINT_DLL
-#		define ROINT_DLLAPI
+#	ifdef ROINT_INTERNAL
+#		define ROINT_DLLAPI  __declspec( dllexport )
 #	else
-#		ifdef ROINT_INTERNAL
-#			define ROINT_DLLAPI  __declspec( dllexport )
-#		else
-#			define ROINT_DLLAPI  __declspec( dllimport )
-#		endif
+#		define ROINT_DLLAPI  __declspec( dllimport )
 #	endif
 #endif
 

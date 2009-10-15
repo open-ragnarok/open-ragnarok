@@ -4,7 +4,7 @@ RM=rm -f
 CP=cp
 MKDIR=mkdir -p
 
-CFLAGS=-Wall -g -Iinclude
+CFLAGS=-Wall -Iinclude
 LDFLAGS=-lz
 
 MAJOR_VER=0
@@ -13,18 +13,16 @@ MINOR_VER=1
 DEPDIR=.deps
 OBJDIR=.objs
 
-TARGET=libroint
+PROJECTNAME=roint
 
-SHARED_SO=$(TARGET).so
-SHARED_MAJOR=$(SHARED_SO).$(MAJOR_VER)
+TARGET=lib$(PROJECTNAME)
 
-SHARED=$(SHARED_MAJOR).$(MINOR_VER)
-STATIC=$(TARGET).a
+HOST_PLATFORM = ${shell $(CPP) -dumpmachine}
 
-SRC=act.cc gat.cc grf.cc ro.cc rsm.cc spr.cc gnd.cc pal.cc constants.cc \
-	ro_strings.cc rsw.cc common.cc ro_object.cc rsw_objects.cc log.cc \
-	python/pyspr.cc python/pyrsm.cc python/pyact.cc python/pygrf.cc \
+SRC=python/pyspr.cc python/pyrsm.cc python/pyact.cc python/pygrf.cc \
 	python/pyrsw.cc python/pystrings.cc \
+	act.cc gat.cc grf.cc ro.cc rsm.cc spr.cc gnd.cc pal.cc constants.cc \
+	ro_strings.cc rsw.cc common.cc ro_object.cc rsw_objects.cc log.cc \
 	tinyxml/tinyxml.cc tinyxml/tinyxmlerror.cc tinyxml/tinyxmlparser.cc
 
 SHARED_OBJ=$(SRC:%.cc=$(OBJDIR)/%.lo)
@@ -34,9 +32,7 @@ DEPS=$(SRC:%.cc=$(DEPDIR)/%.P)
 PREFIX=/usr/local
   
 ## OPTIONAL SWITCHES
-
-#DEBUG
-CFLAGS+=-DDEBUG
+DEBUG_BUILD=1
 
 #LOGSYS
 CFLAGS+=-DUSE_LOGSYS -I../logsys/include
@@ -44,7 +40,33 @@ LDFLAGS+=-L../logsys -llogsys
 
 ## END OF OPTIONAL SWITCHES
 
-all: static
+STATIC=$(TARGET).a
+
+# debug flags
+ifeq ($(DEBUG_BUILD),1)
+CFLAGS+=-g -DDEBUG
+else
+CFLAGS+=-O2
+endif
+
+# In mingw we should use .dll, not .so.
+ifeq ($(HOST_PLATFORM), mingw32)
+SHARED_SO=$(PROJECTNAME).dll
+SHARED_MAJOR=lib$(SHARED_SO).a
+SHARED=$(SHARED_SO)
+
+SHARED_LDFLAGS=-shared -Wl,--out-implib,$(SHARED_MAJOR)
+SHARED_CFLAGS=$(CFLAGS)
+else
+SHARED_SO=$(TARGET).so
+SHARED_MAJOR=$(SHARED_SO).$(MAJOR_VER)
+SHARED=$(SHARED_MAJOR).$(MINOR_VER)
+
+SHARED_LDFLAGS=-shared -Wl,-soname,$(SHARED_MAJOR)
+SHARED_CFLAGS=-fPIC $(CFLAGS)
+endif
+
+all: static shared
 
 -include $(SRC:%.cc=$(DEPDIR)/%.P)
 
@@ -72,7 +94,7 @@ uninstall:
 	$(RM) -r $(PREFIX)/include/ro	
 
 shared $(SHARED): $(SHARED_OBJ)
-	$(CC) -shared $(LDFLAGS) -Wl,-soname,$(SHARED_MAJOR) -o $(SHARED) $^
+	$(CC) $(SHARED_LDFLAGS) -o $(SHARED) $^ $(LDFLAGS)
 
 static $(STATIC): $(STATIC_OBJ)
 	$(AR) rcs $(STATIC) $^ 
@@ -80,6 +102,7 @@ static $(STATIC): $(STATIC_OBJ)
 clean:
 	$(RM) $(SHARED_OBJ) $(STATIC_OBJ)
 	$(RM) $(SHARED) $(STATIC)
+	$(RM) $(SHARED_MAJOR)
 	
 distclean:	
 	$(RM) $(SHARED_OBJ) $(STATIC_OBJ)
@@ -108,7 +131,7 @@ $(OBJDIR)/%.lo: %.cc $(DEPDIR)/%.P
 		mkdir $(OBJDIR)/python;\
 		mkdir $(OBJDIR)/tinyxml;\
 	fi
-	$(CC) -fPIC $(CFLAGS) -c -o $@ $<
+	$(CC) $(SHARED_CFLAGS) -c -o $@ $<
 
 # Regular objects
 $(OBJDIR)/%.o: %.cc $(DEPDIR)/%.P

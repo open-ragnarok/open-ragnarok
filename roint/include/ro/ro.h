@@ -63,9 +63,11 @@
  * 
  */
 namespace RO {
+extern "C" {
 	ROINT_DLLAPI unsigned short Version();
 	ROINT_DLLAPI void printVersion();
 	ROINT_DLLAPI const char* strVersion();
+}
 }
 
 #include "ro_strings.h"

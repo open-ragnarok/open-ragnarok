@@ -121,6 +121,7 @@ bool RO::RSM::readStream(std::istream& s) {
 		std::cout << "Invalid RSM header (" << magic[0] << magic[1] << magic[2] << magic[3] << ")" << std::endl;
 		return(false);
 	}
+	_log(ROINT__DEBUG, "RSM Header check ok.");
 	unsigned int i;
 
 	/*
@@ -138,6 +139,8 @@ bool RO::RSM::readStream(std::istream& s) {
 
 	// ===== Reading texture names
 	m_textures.readStream(s);
+	_log(ROINT__DEBUG, "Read %d textures.", m_textures.size());
+
 	// The old-fashioned way, just for reference...
 	//s.read((char*)&textureCount, sizeof(unsigned int));
 	//m_textures = new TexName[textureCount];

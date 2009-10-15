@@ -8,9 +8,18 @@
 #ifndef LOG_H_
 #define LOG_H_
 
-#include "logsys/logsys_macros.h"
 #ifdef USE_LOGSYS
+#	include "logsys/logsys_macros.h"
 #	include "logsys/logsys.h"
+#else
+#	ifdef _MSC_VER
+#		define _log(id, data, ...)
+#		define _logif(statement, id, data, ...)
+#	else
+#		define _log(id, data...)
+#		define _logif(statement, id, data...)
+#	endif
+#	define _hexlog(id, data, size)
 #endif
 
 #define ROINT__DEBUG 10001
@@ -19,7 +28,7 @@
 #define ROINT__WARNING 10004
 
 namespace ro {
-	void SetupLogs();
+	ROINT_DLLAPI void SetupLogs();
 }
 
 #endif /* LOG_H_ */

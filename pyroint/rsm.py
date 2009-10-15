@@ -68,6 +68,7 @@ class RSM_Mesh_Surface(Structure):
 
 class RSM:
 	__roint = None
+	_base = None
 	def __init__(self):
 		self.__roint = ro.Int()
 		self._base = self.__roint.new_RSM() # store C++ superclass obj
@@ -142,12 +143,12 @@ class RSM:
 if __name__ == "__main__":
   ro.printVersion();
   rsm = RSM()
-  print ""
-  print rsm.read("test1.rsm")
-  print("Texture count: %d")
+  print("")
+  print(rsm.read("test.rsm"))
+  print("Texture count: %d" % rsm.getTextureCount())
   r = range(rsm.getTextureCount())
   for i in r:
-    print rsm.getTexture(i)
+    print(rsm.getTexture(i))
   print("Mesh count: %d" % rsm.getMeshCount())
   surfcount = rsm.getMeshSurfCount(0)
   print("Surface count: %d" % surfcount)
