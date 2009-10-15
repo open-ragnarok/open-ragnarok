@@ -103,9 +103,9 @@ void ActObject::Window(float x, float y, const sdle::Texture& tex, bool mirrorX,
 	glDisable(GL_TEXTURE_2D);
 }
 
-void ActObject::DrawAct(const RO::ACT::Pat& pat, sdle::Texture& t) {
+void ActObject::DrawAct(const RO::ACT::Motion& mot, sdle::Texture& t) {
 	Billboard();
-	Window((float)pat.spr[0].x, (float)pat.spr[0].y, t, (pat.spr[0].mirrorOn == 1));
+	Window((float)mot.getClip(0).x, (float)mot.getClip(0).y, t, (mot.getClip(0).mirrorOn == 1));
 }
 
 void ActObject::Draw() {
@@ -118,7 +118,7 @@ void ActObject::Draw() {
 	xact += offset;
 	// std::cout << "\t\t" << angle << " (" << offset << ")\r";
 
-	const RO::ACT::Act& cur_act = m_act->getAct(xact);
+	const RO::ACT::Action& cur_act = m_act->getAction(xact);
 	int texidx = 0;
 	bool mirror;
 
@@ -126,14 +126,14 @@ void ActObject::Draw() {
 	while (m_time > 100) {
 		m_time -= 100;
 		curframe++;
-		if (curframe >= cur_act.patnum)
+		if (curframe >= cur_act.getMotionCount())
 			curframe = 0;
 	}
 
-	const RO::ACT::Pat& cpat = cur_act[curframe];
+	const RO::ACT::Motion& cmot = cur_act.getMotion(curframe);
 
-	texidx = cpat.spr[0].sprNo;
-	mirror = (cpat.spr[0].mirrorOn == 1)?true:false;
+	texidx = cmot.getClip(0).sprNo;
+	mirror = (cmot.getClip(0).mirrorOn == 1)?true:false;
 
 	glTranslatef(pos[0], pos[1], pos[2]);
 	// TODO: FIX

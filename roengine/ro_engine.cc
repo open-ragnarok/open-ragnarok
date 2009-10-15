@@ -453,7 +453,7 @@ void ROEngine::ProcessMouse(int xless, int yless){
 		}
 	}
 
-	maxspr = getCursor().getAct()->getAct(action).pat.size();
+	maxspr = getCursor().getAct()->getMotionCount(action);
 
 	m_cursorTick += tickDelay;
 	m_cursorTick = m_cursorTick % (100 * maxspr);

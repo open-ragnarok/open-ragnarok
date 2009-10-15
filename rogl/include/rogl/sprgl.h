@@ -38,7 +38,7 @@ public:
 	void Draw(unsigned int idx, bool xmirror = false) const;
 	void Draw(unsigned int idx, float width, float height, bool xmirror = false, bool ymirror = false) const;
 	void Draw(unsigned int idx, struct Rect rect, bool xmirror = false, bool ymirror = false) const;
-	void Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const;
+	void Draw(const RO::ACT::Motion& cmot, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const;
 
 	// Deletes all info
 	void release();

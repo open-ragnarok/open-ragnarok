@@ -86,11 +86,13 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	
 	if (parent != NULL) {
 		if (parent->getAct() != NULL) {
-			const RO::ACT::Act& pact = parent->getAct()->getAct(act_no);
-			const RO::ACT::Pat& ppat = pact[pat_no];
+			const RO::ACT::Action& pact = parent->getAct()->getAction(act_no);
+			const RO::ACT::Motion& pmot = parent->getAct()->getMotion(act_no, pat_no);
 
-			x = x + ppat.ext_x;
-			y = y + ppat.ext_y;
+			if (pmot.attachPoints.size() > 0) {
+				x = x + pmot.attachPoints[0].x;
+				y = y + pmot.attachPoints[0].y;
+			}
 		}
 	}
 
@@ -103,11 +105,10 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	if (act.getAct() == NULL)
 		return;
 
-	const RO::ACT::Act& cact = act->getAct(act_no);
-	const RO::ACT::Pat& cpat = cact[pat_no];
+	const RO::ACT::Motion& cmot = act->getMotion(act_no, pat_no);
 
-	for (spr = 0; spr < cpat.spr.size(); spr++) {
-		act.getSpr().Draw(cpat, spr, x, y, v_mirror, ext);
+	for (spr = 0; spr < cmot.getClipCount(); spr++) {
+		act.getSpr().Draw(cmot, spr, x, y, v_mirror, ext);
 
 /*
 		if (cpat[spr].sprNo < 0)

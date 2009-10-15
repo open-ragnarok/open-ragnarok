@@ -250,10 +250,10 @@ void DesktopCreate::drawChar() {
 
 	while (elapsed > 100) {
 		m_act = m_action * 8 + m_dir;
-		const RO::ACT::Act& cact = obj->getAct(m_act);
+		const RO::ACT::Action& cact = obj->getAction(m_act);
 		elapsed -= 100;
 		m_pat++;
-		if (m_pat >= cact.pat.size()) {
+		if (m_pat >= cact.getMotionCount()) {
 			m_pat = 0;
 			m_dir++;
 			if (m_dir >= 8)
@@ -262,17 +262,18 @@ void DesktopCreate::drawChar() {
 	}
 
 	m_act = m_action * 8 + m_dir;
-	const RO::ACT::Act& cact = obj->getAct(m_act);
-	const RO::ACT::Pat& cpat = cact[m_pat];
-	const RO::ACT::Act& cact2 = head->getAct(m_act);
-	const RO::ACT::Pat& cpat2 = cact2[m_pat];
+	const RO::ACT::Motion& cmot = obj->getMotion(m_act, m_pat);
+	const RO::ACT::Motion& cmot2 = head->getMotion(m_act, m_pat);
 
 	drawAct(x, y, obj, m_pat);
 
 	// EXT position
-	float cx, cy;
-	cx = x + cpat.ext_x;
-	cy = y + cpat.ext_y;
+	float cx = x;
+	float cy = y;
+	if (cmot.attachPoints.size() > 0) {
+		cx += cmot.attachPoints[0].x;
+		cy += cmot.attachPoints[0].y;
+	}
 
 	//cx += cpat[0].w / 2;
 
@@ -280,8 +281,10 @@ void DesktopCreate::drawChar() {
 	cross(cx, cy, dif);
 	glColor3f(1, 1, 1);
 
-	cx -= cpat2.ext_x;
-	cy -= cpat2.ext_y;
+	if (cmot2.attachPoints.size() > 0) {
+		cx -= cmot2.attachPoints[0].x;
+		cy -= cmot2.attachPoints[0].y;
+	}
 
 	drawAct(cx, cy, head, m_pat, false); // << Work most of the times
 
@@ -291,21 +294,21 @@ void DesktopCreate::drawChar() {
 }
 
 void DesktopCreate::drawAct(float x, float y, GuiAct& o, int pat, bool ext) {
-	const RO::ACT::Pat& cpat = o->getAct(m_act)[pat];
+	const RO::ACT::Motion& cmot = o->getMotion(m_act, pat);
 	
 	unsigned int i;
 
-	for (i = 0; i < cpat.spr.size(); i++)
+	for (i = 0; i < cmot.getClipCount(); i++)
 		drawSpr(x, y, o, pat, i, ext);
 }
 
 void DesktopCreate::drawSpr(float x, float y, GuiAct& o, int pat, int spr, bool ext) {
 	//float w, h;
 	//float u[2], v[2];
-	const RO::ACT::Pat& cpat = o->getAct(m_act)[pat];
+	const RO::ACT::Motion& cmot = o->getMotion(m_act, pat);
 	//sdle::Texture tp;
 
-	o.getSpr().Draw(cpat, spr, x, y, false, ext);
+	o.getSpr().Draw(cmot, spr, x, y, false, ext);
 
 	/*
 	if (cpat[spr].sprNo < 0)

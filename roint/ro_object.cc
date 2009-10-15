@@ -64,15 +64,13 @@ bool RO::Object::IsCompatibleWith(short ver) const {
 bool RO::Object::readHeader(std::istream &s) {
 	s.read((char*)&magic, magicSize);
 	s.read((char*)&m_version, 2);
-	// TODO: Check if we read all data.
-	return(true);
+	return(!s.fail());
 }
 
 bool RO::Object::writeHeader(std::ostream &s) const {
 	s.write((char*)&magic, magicSize);
 	s.write((char*)&m_version, 2);
-
-	return(true);
+	return(!s.fail());
 }
 
 bool RO::Object::copyHeader(Object* o) const {

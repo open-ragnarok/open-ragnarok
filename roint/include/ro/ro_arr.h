@@ -22,31 +22,74 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
-
-#include "ro/python/pyact.h"
-#include <fstream>
+#ifndef __RO_ARR_H
+#define __RO_ARR_H
 
 namespace RO {
 
-ACT* ACT_new() {
-	return(new ACT());
-}
+template <typename T>
+class ROINT_DLLAPI Arr {
+protected:
+	unsigned int _size;
+	T* _data;
+public:
+	typedef T type;
 
-void ACT_del(ACT* act) {
-	delete(act);
-}
+	Arr() {
+		_size = 0;
+		_data = 0;
+	}
 
-bool ACT_read(ACT* act, const char* fn) {
-	return(act->read(fn));
-}
+	~Arr() {
+		clear();
+	}
 
-void ACT_dump(const ACT* act, const char* pfx) {
-	act->Dump(std::cout, pfx);
-}
+	void resize(unsigned int n) {
+		T* newData = 0;
+		if (n > 0) {
+			newData = new T[n];
+			unsigned int i, end = (_size < n? _size: n);
+			for (i = 0; i < end; i++) {
+				newData[i] = _data[i];
+			}
+		}
+		clear();
+		_size = n;
+		_data = newData;
+	}
 
-unsigned int ACT_count(const ACT* act) {
-	return(act->getActionCount());
-}
+	unsigned int size() const {
+		return(_size);
+	}
 
-}
+	void operator = (const Arr<T>& a) {
+		clear();
+		_size = a._size;
+		if (_size > 0) {
+			_data = new T[_size];
+			for (unsigned int i = 0; i < _size; i++) {
+				_data[i] = a._data[i];
+			}
+		}
+	}
+
+	T& operator[] (unsigned int i) {
+		return(_data[i]);
+	}
+
+	const T& operator[] (unsigned int i) const {
+		return(_data[i]);
+	}
+
+	void clear() {
+		if (_size > 0) {
+			delete[] _data;
+			_data = 0;
+			_size = 0;
+		}
+	}
+};
+
+};
+
+#endif /* __RO_ARR_H */

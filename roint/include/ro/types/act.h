@@ -26,7 +26,7 @@
 #define __ACT_H
 
 #include "../ro_object.h"
-#include "../ro_seq.h"
+#include "../ro_arr.h"
 
 namespace RO {
 
@@ -39,17 +39,17 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI ACT : public Object {
 	public:
-		// ACT Strutures
-		class ROINT_DLLAPI Spr {
+		/** Sprite Clip. */
+		class ROINT_DLLAPI SprClip {
 		public:
-			Spr();
-			Spr(const Spr&);
-			~Spr();
+			SprClip();
+			SprClip(const SprClip&);
+			~SprClip();
 
 			bool readStream(std::istream&, const s_obj_ver&);
 			bool writeStream(std::ostream&, const s_obj_ver&) const;
 
-			Spr& operator = (const Spr&);
+			SprClip& operator = (const SprClip&);
 
 #ifdef ROINT_USE_XML
 			TiXmlElement *GenerateXML(const s_obj_ver&) const;
@@ -57,87 +57,98 @@ namespace RO {
 			// DATA //
 			int x;
 			int y;
-			int sprNo;
-			unsigned int mirrorOn;
-			unsigned int color;
-			float xyMag;
+			int sprNo; //< -1 for none
+			unsigned int mirrorOn; //< mirror image along the vertical axis if non-zero
+			unsigned int color; //< (uchar r,g,b,a;)
 			float xMag;
 			float yMag;
-			unsigned int rot;
-			unsigned int type;
-
+			int angle; //< degrees
+			int sprType; //< 0=palette image,1=rgba image
 			int w;
 			int h;
 		protected:
-			void copyFrom(const Spr&);
+			void copyFrom(const SprClip&);
 		};
 
-		class ROINT_DLLAPI Pat {
+		/** Motion, represents a frame in an action.
+		 * Holds a collection of sprite clips and a collection of attach points.
+		 */
+		class ROINT_DLLAPI Motion {
 		public:
-			Pat();
-			Pat(const Pat&);
-			~Pat();
+			Motion();
+			Motion(const Motion&);
+			~Motion();
 
 			bool readStream(std::istream&, const s_obj_ver&);
 			bool writeStream(std::ostream&, const s_obj_ver&) const;
 
-			Spr& operator[] (unsigned int i);
-			const Spr& operator[] (unsigned int i) const;
+			SprClip& operator[] (unsigned int i);
+			const SprClip& operator[] (unsigned int i) const;
+			unsigned int getClipCount() const;
+			const SprClip& getClip(unsigned int clp) const;
 
-			Pat& operator = (const Pat&);
+			Motion& operator = (const Motion&);
 
 #ifdef ROINT_USE_XML
 			TiXmlElement *GenerateXML(const s_obj_ver&) const;
 #endif
 
 			// DATA //
-			int pal[2];
-			short unk[12];
-			unsigned int numspr;
-			Seq<Spr> spr;
-			int sndNo; // only in version 2.
-			int numxxx; // version > 0x0201 (does not exists on 0x0201)
-			int ext1;
-			int ext_x;
-			int ext_y;
-			int terminate;
+			struct AttachPoint {
+				int x;
+				int y;
+				int attr;
+			};
+
+			int range1[4]; //< left,top,right,bottom
+			int range2[4]; //< left,top,right,bottom
+			int eventId; //< -1 for none
+			Arr<SprClip> sprClips;
+			Arr<AttachPoint> attachPoints;
 
 		protected:
-			void copyFrom(const Pat&);
+			void copyFrom(const Motion&);
 		};
 
-		class ROINT_DLLAPI Act {
+		/** Action. Holds a collection of motions. */
+		class ROINT_DLLAPI Action {
 		public:
-			Act();
-			Act(const Act&);
-			~Act();
+			Action();
+			Action(const Action&);
+			~Action();
 
 			bool readStream(std::istream&, const s_obj_ver&);
 			bool writeStream(std::ostream&, const s_obj_ver&) const;
 
-			Pat& operator[] (unsigned int i);
-			const Pat& operator[] (unsigned int i) const;
+			Motion& operator[] (unsigned int i);
+			const Motion& operator[] (unsigned int i) const;
+			unsigned int getMotionCount() const;
+			const Motion& getMotion(unsigned int mot) const;
 
-			Act& operator = (const Act&);
+			Action& operator = (const Action&);
 
 #ifdef ROINT_USE_XML
 			TiXmlElement *GenerateXML(const s_obj_ver&) const;
 #endif
 
 			// DATA //
-			unsigned int patnum;
-			Seq<Pat> pat;
+			Arr<Motion> motions;
 		protected:
-			void copyFrom(const Act&);
+			void copyFrom(const Action&);
 		};
 
 	protected:
-		Seq<Act> acts;
-		short unk1;
-		int unk2;
-		int unk3;
+		void reset();
 
-		void ClearAll();
+		struct Event {
+			char name[40];
+		};
+
+		unsigned char m_reserved[10];
+		Arr<Action> m_actions;
+		Arr<Event> m_events;
+		Arr<float> m_delays;
+
 	public:
 		/** Basic Contructor */
 		ACT();
@@ -153,21 +164,23 @@ namespace RO {
 			Note that the stream passed must be in binary mode or things will not look good.
 		*/
 		virtual bool writeStream(std::ostream&) const;
-		unsigned int count() const;
 		void Dump(std::ostream&, const std::string& pfx = "") const;
 
 		/** Basic copier */
 		ACT& operator = (const ACT&);
 
-		const Act& operator[] (const unsigned int&) const;
-		Act& operator[] (const unsigned int&);
-		const Act& getAct(const unsigned int&) const;
-		Act& getAct(const unsigned int&);
-
+		const Action& operator[] (unsigned int act) const;
+		unsigned int getActionCount() const;
+		const Action& getAction(unsigned int act) const;
+		unsigned int getMotionCount(unsigned int act) const;
+		const Motion& getMotion(unsigned int act, unsigned int mot) const;
+		const char* getEventName(unsigned int evt) const;
+		float getDelay(unsigned int act) const;
 
 #ifdef ROINT_USE_XML
 		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
 #endif
+
 	};
 }
 

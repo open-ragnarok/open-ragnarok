@@ -415,11 +415,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\ro\ro_object.h"
+				RelativePath="..\include\ro\ro_arr.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\ro\ro_seq.h"
+				RelativePath="..\include\ro\ro_object.h"
 				>
 			</File>
 			<File

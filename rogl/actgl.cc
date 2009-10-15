@@ -59,23 +59,18 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 
 
 	spr.getTexture().Activate();
-	RO::ACT::Act& a = act->getAct(m_action * 8 + direction);
-	if(m_frame >= a.pat.size()) {
-		m_frame = m_frame % a.pat.size();
+	const RO::ACT::Action& a = act->getAction(m_action * 8 + direction);
+	if(m_frame >= a.getMotionCount()) {
+		m_frame = m_frame % a.getMotionCount();
 	}
-	RO::ACT::Pat& p = a.pat[m_frame];
+	const RO::ACT::Motion& p = a.getMotion(m_frame);
 	float u[2], v[2];
 	//float aux;
-	int sprcount = p.spr.size();
-	if (p.numspr != 0xCDCDCDCD) {
-		// WTH!?
-		sprcount = p.numspr;
-	}
-
+	int sprcount = p.getClipCount();
 	int w, h;
 
 	for (int i = 0; i < sprcount; i++) {
-		RO::ACT::Spr& s = p[i];
+		const RO::ACT::SprClip& s = p.getClip(i);
 		if (s.sprNo < 0) {
 			continue;
 		}
@@ -126,8 +121,8 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 
 	//spr.Draw(m_frame, true);
 	if (ext != NULL) {
-		if (p.numxxx > 0)
-			glTranslatef((float)p.ext_x / 10.0f, (float)p.ext_y / 10.0f, 0.0f);
+		if (p.attachPoints.size() > 0)
+			glTranslatef((float)p.attachPoints[0].x / 10.0f, (float)p.attachPoints[0].y / 10.0f, 0.0f);
 		ext->Draw(delay);
 	}
 	glColor3f(1,0,0);

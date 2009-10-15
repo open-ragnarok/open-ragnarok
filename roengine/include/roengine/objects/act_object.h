@@ -14,7 +14,7 @@ protected:
 
 	void Billboard();
 	void Window(float x, float y, const sdle::Texture& tex, bool mirrorX = false, bool mirrorY = false);
-	virtual void DrawAct(const RO::ACT::Pat& pat, sdle::Texture& t);
+	virtual void DrawAct(const RO::ACT::Motion& mot, sdle::Texture& t);
 
 public:
 	ActObject();

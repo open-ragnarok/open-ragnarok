@@ -267,11 +267,11 @@ void SprGL::Draw(unsigned int idx, bool xmirror) const {
 	Draw(idx, r, xmirror);
 }
 
-void SprGL::Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const {
-	if (cpat[sprno].sprNo < 0)
+void SprGL::Draw(const RO::ACT::Motion& cmot, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const {
+	if (cmot[sprno].sprNo < 0)
 		return;
 
-	const RO::ACT::Spr& cspr = cpat[sprno];
+	const RO::ACT::SprClip& cspr = cmot[sprno];
 
 	unsigned int idx = cspr.sprNo;
 
@@ -301,9 +301,9 @@ void SprGL::Draw(const RO::ACT::Pat& cpat, unsigned int sprno, float& x, float& 
 		v[1] = aux;
 	}
 
-	if (ext) {
-		x -= cpat.ext_x;
-		y -= cpat.ext_y;
+	if (ext && cmot.attachPoints.size() > 0) {
+		x -= cmot.attachPoints[0].x;
+		y -= cmot.attachPoints[0].y;
 	}
 
 	struct Rect r;
