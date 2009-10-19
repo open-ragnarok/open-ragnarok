@@ -27,267 +27,365 @@
 #include "ro/ro.h"
 
 // ===== OBJECT
-RO::RSW::RSMObject::RSMObject(RO::RSW::ObjectType t) {
-	m_type = t;
+RO::RSW::Object::Object(RO::RSW::ObjectType t) : m_type(t) {
 }
 
-RO::RSW::RSMObject::~RSMObject() {
+RO::RSW::Object::~Object() {
 }
 
-RO::RSW::ObjectType RO::RSW::RSMObject::getType() const {
-	return(m_type);
-}
+RO::RSW::Object* RO::RSW::Object::readStream(std::istream& s, const RO::s_obj_ver& ver) {
+	int objtype;
+	s.read((char*)&objtype, sizeof(int));
+	if (s.fail())
+		return(NULL);
 
-bool RO::RSW::RSMObject::isType(RO::RSW::ObjectType t) const {
-	return(m_type == t);
-}
-
-void RO::RSW::RSMObject::Dump(std::ostream& o, const std::string& pfx) const {
-	o << pfx << "No data to dump" << std::endl;
-}
-
-void RO::RSW::RSMObject::Dump(std::ostream& o) const {
-	Dump(o, "");
-}
-
-RO::RSW::RSMObject* RO::RSW::RSMObject::Copy() const {
-	RSMObject* ret = NULL;
-	switch(m_type) {
-		case OT_Model:
-			ret = new Model((Model*)this);
+	switch ((ObjectType)objtype) {
+		case ModelType:
+			{
+				ModelObject* obj = new ModelObject();
+				if (!obj->readData(s, ver)) {
+					delete obj;
+					return(NULL);
+				}
+				return obj;
+			}
 			break;
-		case OT_Light:
-			ret = new Light((Light*)this);
+		case LightType:
+			{
+				LightObject* obj = new LightObject();
+				if (!obj->readData(s, ver)) {
+					delete obj;
+					return(NULL);
+				}
+				return obj;
+			}
 			break;
-		case OT_Sound:
-			ret = (RSMObject*)new Sound((Sound*)this);
+		case SoundType:
+			{
+				SoundObject* obj = new SoundObject();
+				if (!obj->readData(s, ver)) {
+					delete obj;
+					return(NULL);
+				}
+				return obj;
+			}
 			break;
-		case OT_Effect:
-			ret = (RSMObject*)new Effect((Effect*)this);
+		case EffectType:
+			{
+				EffectObject* obj = new EffectObject();
+				if (!obj->readData(s, ver)) {
+					delete obj;
+					return(NULL);
+				}
+				return obj;
+			}
 			break;
-		case OT_Unknown:
 		default:
-			ret = NULL;
+			fprintf(stderr, "ERROR! invalid object %d\n", objtype);
+			return(NULL);
+	}
+}
+
+bool RO::RSW::Object::writeStream(std::ostream& s, const RO::s_obj_ver& ver) const {
+	s.write((char*)&m_type, sizeof(int));
+	if (s.fail())
+		return(false);
+
+	bool ret = false;
+	switch (m_type) {
+		case ModelType:
+			ret = ((const ModelObject*)this)->writeData(s, ver);
+			break;
+		case LightType:
+			ret = ((const LightObject*)this)->writeData(s, ver);
+			break;
+		case SoundType:
+			ret = ((const SoundObject*)this)->writeData(s, ver);
+			break;
+		case EffectType:
+			ret = ((const EffectObject*)this)->writeData(s, ver);
 			break;
 	}
-
 	return(ret);
 }
 
-void RO::RSW::RSMObject::Copy(const RSMObject& o) {
-	if (!isType(o.m_type))
-		return;
+RO::RSW::ObjectType RO::RSW::Object::getType() const {
+	return(m_type);
+}
+
+bool RO::RSW::Object::isType(RO::RSW::ObjectType t) const {
+	return(m_type == t);
+}
+
+RO::RSW::Object* RO::RSW::Object::Copy() const {
+	Object* ret = NULL;
 	switch(m_type) {
-		case OT_Unknown:
+		case ModelType:
+			ret = new ModelObject(*((const ModelObject*)this));
 			break;
-		case OT_Model:
-			{
-				Model* m = (Model*)this;
-				*m = (const Model*)&o;
-			}
+		case LightType:
+			ret = new LightObject(*((const LightObject*)this));
 			break;
-		case OT_Light:
-			{
-				Light* l = (Light*)this;
-				*l = (const Light*)&o;
-			}
+		case SoundType:
+			ret = new SoundObject(*((const SoundObject*)this));
 			break;
-		case OT_Sound:
-			{
-				Sound* s = (Sound*)this;
-				*s = (const Sound*)&o;
-			}
-			break;
-		case OT_Effect:
-			{
-				Effect* e = (Effect*)this;
-				*e = (const Effect*)&o;
-			}
+		case EffectType:
+			ret = new EffectObject(*((const EffectObject*)this));
 			break;
 	}
+	return(ret);
 }
+
 
 // ===== MODEL
-RO::RSW::Model::Model() : RSMObject(RO::RSW::OT_Model) {
-	memset(&m_data, 0, sizeof(ModelData));
-	data = &m_data;
+RO::RSW::ModelObject::ModelObject() : Object(RO::RSW::ModelType) {
+	memset(name, 0, sizeof(name));
+	animType = 0;
+	animSpeed = 1.0f;
+	blockType = 0;
+	memset(modelName, 0, sizeof(modelName));
+	memset(nodeName, 0, sizeof(nodeName));
+	pos[0] = pos[1] = pos[2] = 0.0f;
+	rot[0] = rot[1] = rot[2] = 0.0f;
+	scale[0] = scale[1] = scale[2] = 0.0f;
 }
 
-RO::RSW::Model::Model(const Model& mdl) : RSMObject(RO::RSW::OT_Model) {
-	data = &m_data;
-	memcpy(&m_data, &mdl.m_data, sizeof(ModelData));
+RO::RSW::ModelObject::ModelObject(const ModelObject& obj) : Object(RO::RSW::ModelType) {
+	*this = obj;
 }
 
-RO::RSW::Model::Model(const Model* mdl) : RSMObject(RO::RSW::OT_Model) {
-	data = &m_data;
-	memcpy(&m_data, &mdl->m_data, sizeof(ModelData));
+RO::RSW::ModelObject::~ModelObject() {
 }
 
-RO::RSW::Model::~Model() {
+bool RO::RSW::ModelObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+	if ((ver.cver.major == 1 && ver.cver.minor >= 3) || ver.cver.major > 1) {
+		s.read(name, 40);
+		name[39] = 0;
+		s.read((char*)&animType, sizeof(int));
+		s.read((char*)&animSpeed, sizeof(float));
+		if (animSpeed < 0.0f || animSpeed >= 100.0f)
+			animSpeed = 1.0f;// not [0 100[
+		s.read((char*)&blockType, sizeof(int));
+	}
+	else {
+		name[0] = 0;
+		animType = 0;
+		animSpeed = 1.0f;
+		blockType = 0;
+	}
+	s.read(modelName, 80);
+	s.read(nodeName, 80);
+	s.read((char*)&pos, sizeof(float) * 3);
+	s.read((char*)&rot, sizeof(float) * 3);
+	s.read((char*)&scale, sizeof(float) * 3);
+	return(!s.fail());
 }
 
-bool RO::RSW::Model::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(ModelData));
-	return(true);
+bool RO::RSW::ModelObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+	if ((ver.cver.major == 1 && ver.cver.minor >= 3) || ver.cver.major > 1) {
+		s.write(name, 40);
+		s.write((char*)&animType, sizeof(int));
+		s.write((char*)&animSpeed, sizeof(float));
+		s.write((char*)&blockType, sizeof(int));
+	}
+	s.write(modelName, 80);
+	s.write(nodeName, 80);
+	s.write((char*)&pos, sizeof(float) * 3);
+	s.write((char*)&rot, sizeof(float) * 3);
+	s.write((char*)&scale, sizeof(float) * 3);
+	return(!s.fail());
 }
 
-bool RO::RSW::Model::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(ModelData));
-	return(true);
+void RO::RSW::ModelObject::Dump(std::ostream& o, const std::string& pfx) const {
+	o << pfx << "ModelObject" << std::endl;
+	o << pfx << "\tName: " << name << std::endl;
+	o << pfx << "\tAnim type: " << animType << std::endl;
+	o << pfx << "\tAnim speed: " << animSpeed << std::endl;
+	o << pfx << "\tBlock type: " << blockType << std::endl;
+	o << pfx << "\tModel name: " << modelName << std::endl;
+	o << pfx << "\tNode name: " << nodeName << std::endl;
+	o << pfx << "\tPos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+	o << pfx << "\tRot: " << rot[0] << ", " << rot[1] << ", " << rot[2] << std::endl;
+	o << pfx << "\tScale: " << scale[0] << ", " << scale[1] << ", " << scale[2] << std::endl;
 }
 
-void RO::RSW::Model::Dump(std::ostream& o, const std::string& pfx) const {
-	char buf[512];
-	o << pfx << "Model " << m_data.filename << std::endl;
-	o << pfx << "\t" << m_data.m_name << std::endl;
-	sprintf(buf, "pos: %.2f, %.2f, %.2f", m_data.pos[0], m_data.pos[1], m_data.pos[2]);
-	o << pfx << "\t" << buf << std::endl;
-	sprintf(buf, "rot: %.2f, %.2f, %.2f", m_data.rot[0], m_data.rot[1], m_data.rot[2]);
-	o << pfx << "\t" << buf << std::endl;
-	sprintf(buf, "scale: %.2f, %.2f, %.2f", m_data.scale[0], m_data.scale[1], m_data.scale[2]);
-	o << pfx << "\t" << buf << std::endl;
-}
-
-const char* RO::RSW::Model::getName() const {
-	return(m_data.m_name);
-}
-
-RO::RSW::Model& RO::RSW::Model::operator = (const Model& m) {
-	memcpy(&m_data, &m.m_data, sizeof(ModelData));
-	return(*this);
-}
-
-RO::RSW::Model& RO::RSW::Model::operator = (const Model* m) {
-	memcpy(&m_data, &m->m_data, sizeof(ModelData));
+RO::RSW::ModelObject& RO::RSW::ModelObject::operator = (const ModelObject& obj) {
+	memcpy(name, obj.name, sizeof(name));
+	animType = obj.animType;
+	animSpeed = obj.animSpeed;
+	blockType = obj.blockType;
+	memcpy(modelName, obj.modelName, sizeof(modelName));
+	memcpy(nodeName, obj.nodeName, sizeof(nodeName));
+	memcpy(pos, obj.pos, sizeof(pos));
+	memcpy(rot, obj.rot, sizeof(rot));
+	memcpy(scale, obj.scale, sizeof(scale));
 	return(*this);
 }
 
 
 // ===== LIGHT
-RO::RSW::Light::Light() : RSMObject(RO::RSW::OT_Light) {
-	memset(&m_data, 0, sizeof(LightData));
-	data = &m_data;
+RO::RSW::LightObject::LightObject() : Object(RO::RSW::LightType) {
 }
 
-RO::RSW::Light::Light(const Light& l) : RSMObject(RO::RSW::OT_Light) {
-	Copy(l);
+RO::RSW::LightObject::LightObject(const LightObject& obj) : Object(RO::RSW::LightType) {
+	*this = obj;
 }
 
-RO::RSW::Light::Light(const Light* l) : RSMObject(RO::RSW::OT_Light) {
-	Copy(*l);
+RO::RSW::LightObject::~LightObject() {
 }
 
-RO::RSW::Light::~Light() {
+bool RO::RSW::LightObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+	s.read((char*)&name, 80);
+	name[79] = 0;
+	s.read((char*)&pos, sizeof(float) * 3);
+	s.read((char*)&red, sizeof(int));
+	s.read((char*)&green, sizeof(int));
+	s.read((char*)&blue, sizeof(int));
+	s.read((char*)&range, sizeof(float));
+	return(!s.fail());
 }
 
-bool RO::RSW::Light::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(LightData));
-	return(true);
+bool RO::RSW::LightObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+	s.write((char*)&name, 80);
+	s.write((char*)&pos, sizeof(float) * 3);
+	s.write((char*)&red, sizeof(int));
+	s.write((char*)&green, sizeof(int));
+	s.write((char*)&blue, sizeof(int));
+	s.write((char*)&range, sizeof(float));
+	return(!s.fail());
 }
 
-bool RO::RSW::Light::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(LightData));
-	return(true);
+void RO::RSW::LightObject::Dump(std::ostream& o, const std::string& pfx) const {
+	o << pfx << "LightObject" << std::endl;
+	o << pfx << "\tName: " << name << std::endl;
+	o << pfx << "\tPos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+	o << pfx << "\tRed: " << red << std::endl;
+	o << pfx << "\tGreen: " << green << std::endl;
+	o << pfx << "\tBlue: " << blue << std::endl;
+	o << pfx << "\tRange: " << range << std::endl;
 }
 
-const char* RO::RSW::Light::getName() const {
-	return(m_data.name);
-}
-
-RO::RSW::Light& RO::RSW::Light::operator = (const Light& o) {
-	memcpy(&m_data, &o.m_data, sizeof(LightData));
-	return(*this);
-}
-
-RO::RSW::Light& RO::RSW::Light::operator = (const Light* o) {
-	memcpy(&m_data, &o->m_data, sizeof(LightData));
+RO::RSW::LightObject& RO::RSW::LightObject::operator = (const LightObject& obj) {
+	memcpy(name, obj.name, sizeof(name));
+	memcpy(pos, obj.pos, sizeof(pos));
+	red = obj.red;
+	green = obj.green;
+	blue = obj.blue;
+	range = obj.range;
 	return(*this);
 }
 
 
 // ===== SOUND
-RO::RSW::Sound::Sound() : RSMObject(RO::RSW::OT_Sound) {
-	memset(&m_data, 0, sizeof(SoundData));
-	data = &m_data;
+RO::RSW::SoundObject::SoundObject() : Object(RO::RSW::SoundType) {
 }
 
-RO::RSW::Sound::Sound(const Sound& l) : RSMObject(RO::RSW::OT_Sound) {
-	Copy(l);
+RO::RSW::SoundObject::SoundObject(const SoundObject& obj) : Object(RO::RSW::SoundType) {
+	*this = obj;
 }
 
-RO::RSW::Sound::Sound(const Sound* l) : RSMObject(RO::RSW::OT_Sound) {
-	Copy(*l);
+RO::RSW::SoundObject::~SoundObject() {
 }
 
-RO::RSW::Sound::~Sound() {
+bool RO::RSW::SoundObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+	s.read(name, 80);
+	s.read(waveName, 80);
+	name[79] = waveName[79] = 0;
+	s.read((char*)&pos, sizeof(float) * 3);
+	s.read((char*)&vol, sizeof(float));
+	s.read((char*)&width, sizeof(int));
+	s.read((char*)&height, sizeof(int));
+	s.read((char*)&range, sizeof(float));
+	if (ver.cver.major >= 2)
+		s.read((char*)&cycle, sizeof(float));
+	else
+		cycle = 4.0f;
+	return(!s.fail());
 }
 
-bool RO::RSW::Sound::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(SoundData));
-	return(true);
+bool RO::RSW::SoundObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+	s.write(name, 80);
+	s.write(waveName, 80);
+	s.write((char*)&pos, sizeof(float) * 3);
+	s.write((char*)&vol, sizeof(float));
+	s.write((char*)&width, sizeof(int));
+	s.write((char*)&height, sizeof(int));
+	s.write((char*)&range, sizeof(float));
+	if (ver.cver.major >= 2)
+		s.write((char*)&cycle, sizeof(float));
+	return(!s.fail());
 }
 
-bool RO::RSW::Sound::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(SoundData));
-	return(true);
+void RO::RSW::SoundObject::Dump(std::ostream& o, const std::string& pfx) const {
+	o << pfx << "SoundObject" << std::endl;
+	o << pfx << "\tName: " << name << std::endl;
+	o << pfx << "\tWave name: " << waveName << std::endl;
+	o << pfx << "\tPos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+	o << pfx << "\tVol: " << vol << std::endl;
+	o << pfx << "\tWidth: " << width << std::endl;
+	o << pfx << "\tHeight: " << height << std::endl;
+	o << pfx << "\tRange: " << range << std::endl;
+	o << pfx << "\tCycle: " << cycle << std::endl;
 }
 
-const char* RO::RSW::Sound::getName() const {
-	return(m_data.name);
-}
-
-RO::RSW::Sound& RO::RSW::Sound::operator = (const Sound& o) {
-	memcpy(&m_data, &o.m_data, sizeof(SoundData));
+RO::RSW::SoundObject& RO::RSW::SoundObject::operator = (const SoundObject& obj) {
+	memcpy(name, obj.name, sizeof(name));
+	memcpy(waveName, obj.waveName, sizeof(waveName));
+	memcpy(pos, obj.pos, sizeof(pos));
+	vol = obj.vol;
+	width = obj.width;
+	height = obj.height;
+	range = obj.range;
+	cycle = obj.cycle;
 	return(*this);
 }
 
-RO::RSW::Sound& RO::RSW::Sound::operator = (const Sound* o) {
-	memcpy(&m_data, &o->m_data, sizeof(SoundData));
-	return(*this);
-}
 
 // ===== EFFECT
-RO::RSW::Effect::Effect() : RSMObject(RO::RSW::OT_Effect) {
-	memset(&m_data, 0, sizeof(EffectData));
-	data = &m_data;
+RO::RSW::EffectObject::EffectObject() : Object(RO::RSW::EffectType) {
 }
 
 
-RO::RSW::Effect::Effect(const Effect& l) : RSMObject(RO::RSW::OT_Effect) {
-	Copy(l);
+RO::RSW::EffectObject::EffectObject(const EffectObject& obj) : Object(RO::RSW::EffectType) {
+	*this = obj;
 }
 
-RO::RSW::Effect::Effect(const Effect* l) : RSMObject(RO::RSW::OT_Effect) {
-	Copy(*l);
+RO::RSW::EffectObject::~EffectObject() {
 }
 
-RO::RSW::Effect::~Effect() {
+bool RO::RSW::EffectObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+	s.read(name, 80);
+	name[79] = 0;
+	s.read((char*)&pos, sizeof(float) * 3);
+	s.read((char*)&type, sizeof(int));
+	s.read((char*)&emitSpeed, sizeof(float));
+	s.read((char*)&param, sizeof(float) * 4);
+	return(!s.fail());
 }
 
-bool RO::RSW::Effect::readStream(std::istream& s) {
-	s.read((char*)&m_data, sizeof(EffectData));
-	return(true);
+bool RO::RSW::EffectObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+	s.write(name, 80);
+	s.write((char*)&pos, sizeof(float) * 3);
+	s.write((char*)&type, sizeof(int));
+	s.write((char*)&emitSpeed, sizeof(float));
+	s.write((char*)&param, sizeof(float) * 4);
+	return(!s.fail());
 }
 
-bool RO::RSW::Effect::writeStream(std::ostream& s) const {
-	s.write((char*)&m_type, sizeof(int));
-	s.write((char*)&m_data, sizeof(EffectData));
-	return(true);
+void RO::RSW::EffectObject::Dump(std::ostream& o, const std::string& pfx) const {
+	o << pfx << "EffectObject" << std::endl;
+	o << pfx << "\tName: " << name << std::endl;
+	o << pfx << "\tPos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+	o << pfx << "\tType: " << type << std::endl;
+	o << pfx << "\tEmit speed: " << emitSpeed << std::endl;
+	o << pfx << "\tParam: " << param[0] << ", " << param[1] << ", " << param[2] << ", " << param[3] << std::endl;
 }
 
-const char* RO::RSW::Effect::getName() const {
-	return(m_data.name);
-}
-
-RO::RSW::Effect& RO::RSW::Effect::operator = (const Effect& o) {
-	memcpy(&m_data, &o.m_data, sizeof(EffectData));
-	return(*this);
-}
-
-RO::RSW::Effect& RO::RSW::Effect::operator = (const Effect* o) {
-	memcpy(&m_data, &o->m_data, sizeof(EffectData));
+RO::RSW::EffectObject& RO::RSW::EffectObject::operator = (const EffectObject& obj) {
+	memcpy(name, obj.name, sizeof(name));
+	memcpy(pos, obj.pos, sizeof(pos));
+	type = obj.type;
+	emitSpeed = obj.emitSpeed;
+	memcpy(param, obj.param, sizeof(param));
 	return(*this);
 }

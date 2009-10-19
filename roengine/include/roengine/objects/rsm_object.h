@@ -17,7 +17,7 @@
 class RsmObject : public GLObject {
 protected:
 	const RO::RSM* rsm;
-	const RO::RSW::Model* model;
+	const RO::RSW::ModelObject* model;
 	TextureCache textures;
 
 	static void DrawBoundingBox(const RO::RSM::BoundingBox& box);
@@ -29,7 +29,7 @@ protected:
 	unsigned int rsm_gl;
 
 public:
-	RsmObject(const RO::RSM*, const RO::RSW::Model* mdl = NULL);
+	RsmObject(const RO::RSM*, const RO::RSW::ModelObject* mdl = NULL);
 	virtual ~RsmObject();
 
 	bool loadTextures(CacheManager&);

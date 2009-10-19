@@ -41,230 +41,201 @@ namespace RO {
 	 */
 	class ROINT_DLLAPI RSW : public Object {
 	public:
-		typedef enum {
-			OT_Unknown = 0,
-			OT_Model = 1,
-			OT_Light = 2,
-			OT_Sound = 3,
-			OT_Effect = 4
-		} ObjectType;
-#pragma pack(push,1)
-		/**
-		 * Base class for RSW objects
-		 */
-		class ROINT_DLLAPI RSMObject {
-		public:
-			virtual bool readStream(std::istream&) = 0;
-			virtual bool writeStream(std::ostream&) const = 0;
-			virtual const char* getName() const = 0;
+		enum ObjectType {
+			ModelType = 1,
+			LightType = 2,
+			SoundType = 3,
+			EffectType = 4
+		};
 
-			RSMObject(ObjectType);
-			virtual ~RSMObject();
+#pragma pack(push,1)
+		/** Abstract RSW object. */
+		class ROINT_DLLAPI Object {
+		protected:
+			Object(ObjectType);
+		public:
+			virtual ~Object();
+
+			static RO::RSW::Object* readStream(std::istream& s, const RO::s_obj_ver& ver);
+			bool writeStream(std::ostream& s, const RO::s_obj_ver& ver) const;
+			virtual void Dump(std::ostream& s = std::cout, const std::string& pfx = "") const = 0;
 
 			/** Returns the object type */
 			ObjectType getType() const;
 
-			virtual void Dump(std::ostream&, const std::string&) const;
-			void Dump(std::ostream& = std::cout) const;
-			
 			/** Check if we are the same type as the parameter */
 			bool isType(ObjectType) const;
 
 			/** Returns a copy of this object */
-			RSMObject* Copy() const;
+			Object* Copy() const;
 
 		protected:
 			ObjectType m_type;
-			unsigned int datasize;
-			void Copy(const RSMObject& o);
 		};
 
-		/**
-		 * RSW Object Model
-		 */
-		class ROINT_DLLAPI Model : public RSMObject {
+		/** Model RSW object. */
+		class ROINT_DLLAPI ModelObject : public Object {
 		public:
-			Model();
-			Model(const Model&);
-			Model(const Model*);
-			virtual ~Model();
-			virtual bool readStream(std::istream&);
-			virtual bool writeStream(std::ostream&) const;
-			virtual const char* getName() const;
+			ModelObject();
+			ModelObject(const ModelObject& obj);
+			virtual ~ModelObject();
 
-			virtual void Dump(std::ostream&, const std::string&) const;
+			bool readData(std::istream& s, const RO::s_obj_ver& ver);
+			bool writeData(std::ostream& s, const RO::s_obj_ver& ver) const;
+			virtual void Dump(std::ostream& s = std::cout, const std::string& pfx = "") const;
 
-			typedef struct {
-				char m_name[40];
-				int unk1;// (version >= 1.3)
-				float unk2;// (version >= 1.3)
-				float unk3;// (version >= 1.3)
-				char filename[40];
-				char reserved[40];
-				char type[20];
-				char sound[20];
-				char todo1[40];
-				float pos[3];
-				float rot[3];
-				float scale[3];
-			} ModelData;
+			ModelObject& operator = (const ModelObject& obj);
 
-			const ModelData *data;
-
-			virtual Model& operator = (const Model&);
-			virtual Model& operator = (const Model*);
-
-		protected:
-			ModelData m_data;
+			char name[40];
+			int animType;
+			float animSpeed;
+			int blockType;
+			char modelName[80]; //< RSM filename
+			char nodeName[80];
+			float pos[3];
+			float rot[3];
+			float scale[3];
 		};
 
-		/**
-		 * RSW Object Light
-		 */
-		class ROINT_DLLAPI Light : public RSMObject {
+		/** Light source RSW object. */
+		class ROINT_DLLAPI LightObject : public Object {
 		public:
-			Light();
-			Light(const Light&);
-			Light(const Light*);
-			virtual ~Light();
-			virtual bool readStream(std::istream&);
-			virtual bool writeStream(std::ostream&) const;
-			virtual const char* getName() const;
+			LightObject();
+			LightObject(const LightObject& obj);
+			virtual ~LightObject();
 
-			typedef struct {
-				char name[40];
-				float pos[3];
-				char unk1[40];
-				float color[3];
-				float unk2;
-			} LightData;
+			bool readData(std::istream& s, const RO::s_obj_ver& ver);
+			bool writeData(std::ostream& s, const RO::s_obj_ver& ver) const;
+			virtual void Dump(std::ostream& s = std::cout, const std::string& pfx = "") const;
 
-			const LightData* data;
+			LightObject& operator = (const LightObject& obj);
 
-			virtual Light& operator = (const Light&);
-			virtual Light& operator = (const Light*);
-		protected:
-			LightData m_data;
+			char name[80];
+			float pos[3];
+			int red;
+			int green;
+			int blue;
+			float range;
 		};
 
-		/**
-		 * RSW Object Sound
-		 */
-		class ROINT_DLLAPI Sound : public RSMObject {
+		/** Sound source RSW object. */
+		class ROINT_DLLAPI SoundObject : public Object {
 		public:
-			Sound();
-			Sound(const Sound&);
-			Sound(const Sound*);
-			virtual ~Sound();
-			virtual bool readStream(std::istream&);
-			virtual bool writeStream(std::ostream&) const;
-			virtual const char* getName() const;
+			SoundObject();
+			SoundObject(const SoundObject& obj);
+			virtual ~SoundObject();
 
-			typedef struct {
-				char name[80];
-				char filename[80];
-				float unk[8];
-			} SoundData;
+			bool readData(std::istream& s, const RO::s_obj_ver& ver);
+			bool writeData(std::ostream& s, const RO::s_obj_ver& ver) const;
+			virtual void Dump(std::ostream& s = std::cout, const std::string& pfx = "") const;
 
-			const SoundData *data;
+			SoundObject& operator = (const SoundObject& obj);
 
-			virtual Sound& operator = (const Sound&);
-			virtual Sound& operator = (const Sound*);
+			char name[80];
+			char waveName[80];
+			float pos[3];
+			float vol;
+			int width;
+			int height;
+			float range;
+			float cycle;
+		};
+
+		/** Effect RSW object. */
+		class ROINT_DLLAPI EffectObject : public Object {
 		public:
-			SoundData m_data;
+			EffectObject();
+			EffectObject(const EffectObject& obj);
+			virtual ~EffectObject();
+
+			bool readData(std::istream& s, const RO::s_obj_ver& ver);
+			bool writeData(std::ostream& s, const RO::s_obj_ver& ver) const;
+			virtual void Dump(std::ostream& s = std::cout, const std::string& pfx = "") const;
+
+			EffectObject& operator = (const EffectObject& obj);
+
+			char name[80];
+			float pos[3];
+			int type;
+			float emitSpeed;
+			float param[4];
 		};
 
-		/**
-		 * RSW Object Effect
-		 */
-		class ROINT_DLLAPI Effect : public RSMObject {
-		public:
-			Effect();
-			Effect(const Effect&);
-			Effect(const Effect*);
-			virtual ~Effect();
-			virtual bool readStream(std::istream&);
-			virtual bool writeStream(std::ostream&) const;
-			virtual const char* getName() const;
-
-			typedef struct {
-				char name[40];
-				float unk1[9];
-				int category;
-				float pos[3];
-				int type;
-				float loop;
-				float unk2[2];
-				int unk3[2];
-			} EffectData;
-
-			const EffectData *data;
-
-			virtual Effect& operator = (const Effect&);
-			virtual Effect& operator = (const Effect*);
-		protected:
-			EffectData m_data;
+		struct Ground {
+			int top;
+			int bottom;
+			int left;
+			int right;
 		};
 
-		/** Water information */
-		struct strWater {
-			float height;
-			unsigned int type;
-			float amplitude;
-			float phase;
-			float surface_curve_level;
-			int texture_cycling;
+		struct Light {
+			int longitude; //< degrees
+			int latitude; //< degrees
+			float diffuse[3]; //< color
+			float ambient[3]; //< color
+			float ignored; //< ignored, float?
 		};
 
-		/** Light information */
-		struct strLight {
-			float ambient[3];
-			float diffuse[3];
-			float shadow[3];
-			float alpha;
+		struct Water {
+			float level;
+			int type;
+			float waveHeight;
+			float waveSpeed;
+			float wavePitch;
+			int animSpeed;
 		};
 
+		struct QuadTreeNode {
+			float max[3];
+			float min[3];
+			float halfSize[3];
+			float center[3];
+			unsigned int child[4]; //< index of child node (generated), 0 for no child
+		};
 #pragma pack(pop)
 
 	protected:
-		RSMObject** m_objects;
-		RSMObject* readObject(std::istream&);
+		void reset();
+		void readQuadTree(std::istream& s, unsigned int level, unsigned int& i);
 
-		unsigned int object_count;
+		char m_iniFile[40];
+		char m_gndFile[40];
+		char m_gatFile[40];
+		char m_scrFile[40];
+		Water m_water;
+		Light m_light;
+		Ground m_ground;
+		Arr<Object*> m_objects;
+		Arr<QuadTreeNode> m_quadTree; //< 0 or 1365 entries (4^0 + 4^1 + 4^2 + 4^3 + 4^4 + 4^5, quadtree with 6 levels, depth-first ordering)
 
 	public:
-		/** INI File associated */
-		char ini_file[40];
-		
-		/** GND File associated */
-		char gnd_file[40];
-
-		/** GAT File associated. Version >= 1.4 */
-		char gat_file[40];
-
-		/** SCR File associated */
-		char scr_file[40];
-
-		strWater water;
-		strLight light;
-
-		int unk[3];
+		const char* getIniFile() const;
+		const char* getGndFile() const;
+		const char* getGatFile() const;
+		const char* getScrFile() const;
+		const Water& getWater() const;
+		const Light& getLight() const;
+		const Ground& getGround() const;
 
 		unsigned int getObjectCount() const;
-
-		RSMObject* getObject(const unsigned int&);
-		const RSMObject* getObject(const unsigned int&) const;
-
-		RSMObject* operator[] (const unsigned int&);
-		const RSMObject* operator[] (const unsigned int&) const;
-
+		const Object* getObject(unsigned int obj) const;
+		const Object* operator[] (unsigned int obj) const;
+		const ModelObject* getModelObject(unsigned int obj) const;
+		const LightObject* getLightObject(unsigned int obj) const;
+		const SoundObject* getSoundObject(unsigned int obj) const;
+		const EffectObject* getEffectObject(unsigned int obj) const;
+		bool isType(unsigned int obj, ObjectType t) const;
 
 		RSW();
-		RSW(const RSW&);
-		// RSW(const RSW*);
+		RSW(const RSW& rsw);
 		virtual ~RSW();
 
-		virtual bool readStream(std::istream&);
+		virtual bool readStream(std::istream& s);
+		/** Write the RSW data to a stream */
+		virtual bool writeStream(std::ostream& s) const;
+		virtual void Dump(std::ostream& o = std::cout, const std::string& pfx = "") const;
+
+		RSW& operator = (const RSW&);
 
 #ifdef ROINT_USE_XML
 		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
@@ -279,16 +250,6 @@ namespace RO {
 		bool SaveFullXML(const std::map<std::string, RSM>, std::ostream& out, const std::string& name = "", bool utf = true) const;
 		bool SaveFullXML(const std::map<std::string, RSM>, const std::string& fn, const std::string& name = "", bool utf = true) const;
 #endif
-
-		/** Write the RSW data to a stream */
-		virtual bool writeStream(std::ostream&) const;
-		virtual void Dump(std::ostream& = std::cout) const;
-		virtual void Dump(std::ostream&, const std::string&) const;
-
-		/** Clear all variables. Disallocate all data from memory. */
-		void Clear();
-
-		RSW& operator = (const RSW&);
 	};
 }
 

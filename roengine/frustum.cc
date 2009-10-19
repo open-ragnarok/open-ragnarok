@@ -195,14 +195,14 @@ bool Frustum::BoxVisible(float x, float y, float z, float width, float height, f
 	return true;
 }
 
-bool Frustum::ModelVisible(const RO::RSM* rsm, const RO::RSW::Model* model) const {
+bool Frustum::ModelVisible(const RO::RSM* rsm, const RO::RSW::ModelObject* model) const {
 	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
 	return(BoxVisible(
-		model->data->pos[0],
-		model->data->pos[1],
-		model->data->pos[2],
-		box.range.v[0] * model->data->scale[0],
-		box.range.v[1] * model->data->scale[1],
-		box.range.v[2] * model->data->scale[2]
+		model->pos[0],
+		model->pos[1],
+		model->pos[2],
+		box.range.v[0] * model->scale[0],
+		box.range.v[1] * model->scale[1],
+		box.range.v[2] * model->scale[2]
 		));
 }

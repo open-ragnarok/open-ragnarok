@@ -101,7 +101,7 @@ void OpenRO::AfterDraw() {
 			if (m_map == NULL) {
 				printf("Error loading map %s!\n", m_mapname);
 			}
-			std::string gnd_fn = m_map->getRSW()->gnd_file;
+			std::string gnd_fn = m_map->getRSW()->getGndFile();
 			std::string aux;
 			char minimap_fn[256];
 

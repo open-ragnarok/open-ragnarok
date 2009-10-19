@@ -8,7 +8,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-RsmObject::RsmObject(const RO::RSM* o, const RO::RSW::Model* mdl) : GLObject() {
+RsmObject::RsmObject(const RO::RSM* o, const RO::RSW::ModelObject* mdl) : GLObject() {
 	rsm = o;
 	m_time = 0;
 
@@ -19,9 +19,9 @@ RsmObject::RsmObject(const RO::RSM* o, const RO::RSW::Model* mdl) : GLObject() {
 	}
 	model = mdl;
 	if (model != NULL) {
-		setPos(model->data->pos[0], -model->data->pos[1], model->data->pos[2]);
-		setRot(model->data->rot[0], model->data->rot[1], model->data->rot[2]);
-		setScale(model->data->scale[0], -model->data->scale[1], model->data->scale[2]);
+		setPos(model->pos[0], -model->pos[1], model->pos[2]);
+		setRot(model->rot[0], model->rot[1], model->rot[2]);
+		setScale(model->scale[0], -model->scale[1], model->scale[2]);
 	}
 }
 

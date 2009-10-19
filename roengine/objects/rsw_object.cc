@@ -15,8 +15,8 @@ RswObject::RswObject(const RO::RSW* rsw, CacheManager& c) : GLObject(), m_cache(
 	ROObjectCache& cache = m_cache.getROObjects();
 
 	this->rsw = rsw;
-	std::string gnd_fn = rsw->gnd_file;
-	std::string gat_fn = rsw->gat_file;
+	std::string gnd_fn = rsw->getGndFile();
+	std::string gat_fn = rsw->getGatFile();
 	this->gnd = (RO::GND*)cache[gnd_fn];
 	this->gat = (RO::GAT*)cache[gat_fn];
 
@@ -188,7 +188,7 @@ bool RswObject::loadTextures(CacheManager& cache) {
 	// Load water
 	char waterfn[128];
 	for (i = 0; i <= 31; i++) {
-		sprintf(waterfn, "texture\\%s\\water%d%02d.jpg", RO::EUC::water, rsw->water.type, i);
+		sprintf(waterfn, "texture\\%s\\water%d%02d.jpg", RO::EUC::water, rsw->getWater().type, i);
 		tex = tm.RegisterJPEG(fm, waterfn);
 		water_tex.add(tex);
 	}
@@ -216,16 +216,16 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 	}
 	rsw = (RO::RSW*)cache.getROObjects().get(rsw_fn);
 
-	if (!cache.getROObjects().exists(rsw->gnd_file)) {
-		if (!cache.getROObjects().ReadGND(rsw->gnd_file, cache.getFileManager())) {
-			fprintf(stderr, "Error loading GND file %s\n", rsw->gnd_file);
+	if (!cache.getROObjects().exists(rsw->getGndFile())) {
+		if (!cache.getROObjects().ReadGND(rsw->getGndFile(), cache.getFileManager())) {
+			fprintf(stderr, "Error loading GND file %s\n", rsw->getGndFile());
 			return(NULL);
 		}
 	}
 
-	if (!cache.getROObjects().exists(rsw->gat_file)) {
-		if (!cache.getROObjects().ReadGAT(rsw->gat_file, cache.getFileManager())) {
-			fprintf(stderr, "Error loading GAT file %s\n", rsw->gat_file);
+	if (!cache.getROObjects().exists(rsw->getGatFile())) {
+		if (!cache.getROObjects().ReadGAT(rsw->getGatFile(), cache.getFileManager())) {
+			fprintf(stderr, "Error loading GAT file %s\n", rsw->getGatFile());
 			return(NULL);
 		}
 	}
@@ -235,16 +235,15 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 
 	// Load objects
 	RO::RSM* rsm;
-	RO::RSW::Model* rswobj;
 	RsmObject* rsmobject;
 	char fn[128];
 	unsigned int i;
 	for (i = 0; i < rsw->getObjectCount(); i++) {
-		if (!rsw->getObject(i)->isType(RO::RSW::OT_Model))
+		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
+		if (rswobj == NULL)
 			continue;
 
-		rswobj = (RO::RSW::Model*)rsw->getObject(i);
-		sprintf(fn, "model\\%s", rswobj->data->filename);
+		sprintf(fn, "model\\%s", rswobj->modelName);
 		if (!cache.getROObjects().exists(fn)) {
 			if (!cache.getROObjects().ReadRSM(fn, cache.getFileManager())) {
 				fprintf(stderr, "Error loading RSM file %s.\n", fn);
@@ -255,7 +254,7 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 		rsmobject = new RsmObject(rsm, rswobj);
 		rsmobject->loadTextures(cache);
 
-		cache.getGLObjects().add(rswobj->getName(), rsmobject);
+		cache.getGLObjects().add(rswobj->name, rsmobject);
 	}
 
 	// TODO: Hide loading screen
@@ -384,7 +383,7 @@ void RswObject::DrawGND() {
 void RswObject::DrawWater() {
 #define WATER_MULTIPLIER 4
 	m_waterdelay += m_tickdelay;
-	unsigned int cycle = rsw->water.texture_cycling * 100;
+	unsigned int cycle = rsw->getWater().animSpeed * 100;
 	while (m_waterdelay > cycle) {
 		m_waterdelay -= cycle;
 		m_waterframe++;
@@ -402,7 +401,7 @@ void RswObject::DrawWater() {
 	m_watergl = glGenLists(1);
 	glNewList(m_watergl, GL_COMPILE_AND_EXECUTE);
 
-	float waterh = (float)rsw->water.height;
+	float waterh = (float)rsw->getWater().level;
 
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
@@ -464,7 +463,6 @@ void RswObject::setMouse(int screen_x, int screen_y) {
 void RswObject::DrawObjects() {
 	unsigned int i = 0;
 	float sizex, sizey;
-	RO::RSW::Model* rswobj;
 	GLObjectCache& cache = m_cache.getGLObjects();
 
 	sizex = m_tilesize * gnd->getWidth();
@@ -474,13 +472,12 @@ void RswObject::DrawObjects() {
 	glTranslatef(sizex / 2, 0, sizey / 2);
 
 	for (i = 0; i < rsw->getObjectCount(); i++) {
-		if (!rsw->getObject(i)->isType(RO::RSW::OT_Model))
+		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
+		if (rswobj == NULL)
 			continue;
 
-		rswobj = (RO::RSW::Model*)rsw->getObject(i);
-
-		if (cache.exists(rswobj->data->m_name)) {
-			cache[rswobj->data->m_name]->Render(m_tickdelay, m_frustum);
+		if (cache.exists(rswobj->name)) {
+			cache[rswobj->name]->Render(m_tickdelay, m_frustum);
 		}
 	}
 

@@ -44,27 +44,26 @@ namespace RO {
 		rsw->Dump(std::cout, pfx);
 	}
 
-	bool write_RSW(const RSW*, const char*) {
-		return(false);
+	bool write_RSW(const RSW* rsw, const char* filename) {
+		std::ofstream fp(filename, std::ios_base::binary);
+		bool ret = rsw->writeStream(fp);
+		fp.close();
+		return(ret);
 	}
 
-	void clear_RSW(RSW* rsw) {
-		rsw->Clear();
+	const char* get_RSW_ini(RSW* rsw) {
+		return(rsw->getIniFile());
 	}
 
-	char* get_RSW_ini(RSW* rsw) {
-		return(rsw->ini_file);
+	const char* get_RSW_gnd(RSW* rsw) {
+		return(rsw->getGndFile());
 	}
 
-	char* get_RSW_gnd(RSW* rsw) {
-		return(rsw->gnd_file);
+	const char* get_RSW_gat(RSW* rsw) {
+		return(rsw->getGatFile());
 	}
 
-	char* get_RSW_gat(RSW* rsw) {
-		return(rsw->gat_file);
-	}
-
-	char* get_RSW_scr(RSW* rsw) {
-		return(rsw->scr_file);
+	const char* get_RSW_scr(RSW* rsw) {
+		return(rsw->getScrFile());
 	}
 } // namespace RO

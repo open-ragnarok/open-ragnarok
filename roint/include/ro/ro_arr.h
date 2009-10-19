@@ -27,6 +27,9 @@
 
 namespace RO {
 
+/** Array.
+ * The data type must support 'a = b'.
+ */
 template <typename T>
 class ROINT_DLLAPI Arr {
 protected:
@@ -48,12 +51,14 @@ public:
 		T* newData = 0;
 		if (n > 0) {
 			newData = new T[n];
-			unsigned int i, end = (_size < n? _size: n);
-			for (i = 0; i < end; i++) {
-				newData[i] = _data[i];
+			if (_size > 0) {
+				unsigned int i, end = (_size < n? _size: n);
+				for (i = 0; i < end; i++) {
+					newData[i] = _data[i];
+				}
+				delete[] _data;
 			}
 		}
-		clear();
 		_size = n;
 		_data = newData;
 	}
@@ -73,11 +78,11 @@ public:
 		}
 	}
 
-	T& operator[] (unsigned int i) {
+	type& operator[] (unsigned int i) {
 		return(_data[i]);
 	}
 
-	const T& operator[] (unsigned int i) const {
+	const type& operator[] (unsigned int i) const {
 		return(_data[i]);
 	}
 

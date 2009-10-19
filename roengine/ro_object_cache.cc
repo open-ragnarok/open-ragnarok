@@ -46,16 +46,17 @@ bool ROObjectCache::ReadRSW(const std::string& name, FileManager& fm, bool deped
 	if (depedencies) {
 		std::string fn;
 
-		fn = rsw->gat_file;
+		fn = rsw->getGatFile();
 		// ReadGAT(fn, fm);
-		fn = rsw->gnd_file;
+		fn = rsw->getGndFile();
 		ReadGND(fn, fm);
 
 		std::string model_pfx = "model\\";
 		unsigned int i;
 		for (i = 0; i < rsw->getObjectCount(); i++) {
-			if (rsw->getObject(i)->isType(RO::RSW::OT_Model)) {
-				fn = model_pfx + ((RO::RSW::Model*)rsw->getObject(i))->data->filename;
+			const RO::RSW::ModelObject* obj = rsw->getModelObject(i);
+			if (obj != NULL) {
+				fn = model_pfx + obj->modelName;
 				if (!exists(fn))
 					if (!ReadRSM(fn, fm))
 						std::cerr << "Error loading model " << fn << " for RSW " << name << std::endl;
