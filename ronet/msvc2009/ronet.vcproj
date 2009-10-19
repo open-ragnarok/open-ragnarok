@@ -387,7 +387,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_actoraction.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_actordisplay.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_actormove.cc"
 					>
 				</File>
 				<File
@@ -634,6 +642,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\ronet\packet_ids.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\ronet\packet_vector.h"
 				>
 			</File>
@@ -673,7 +685,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_actoraction.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_actordisplay.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_actormove.h"
 					>
 				</File>
 				<File

@@ -102,6 +102,13 @@ protected:
 	bool m_MouseIn;
 
 	std::vector<Element*> m_children;
+
+	/**
+	 * Brings the given element to the front, making it the first in the m_children array.
+	 * This function has no effect if the given element is not in the children list.
+	 */
+	void BringToFront(Element*);
+
 	Element* m_active_child;
 	sdle::Texture texture;
 

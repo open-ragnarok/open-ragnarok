@@ -99,7 +99,7 @@ void OpenRO::AfterDraw() {
 
 			m_map = RswObject::open(*this, m_mapname);
 			if (m_map == NULL) {
-				printf("Error loading map %s!\n", m_mapname);
+				_log(OPENRO__ERROR, "Error loading map %s!", m_mapname);
 			}
 			std::string gnd_fn = m_map->getRSW()->getGndFile();
 			std::string aux;
@@ -125,6 +125,9 @@ void OpenRO::AfterDraw() {
 			m_maploaded = true;
 			m_cycle = 0;
 			m_drawmap = true;
+
+			// Place ourselves
+			me.setMap(m_map);
 
 			// Send message to the server that we're good to go.
 			m_network.MapLoaded();
@@ -172,13 +175,16 @@ void OpenRO::ProcessNetwork() {
 			HANDLEPKT(OwnSpeech, true);
 			HANDLEPKT(SkillList, true);
 			HANDLEPKT(MapMoveOk, true);
-			HANDLEPKT(ActorDisplay, true);
 			HANDLEPKT(RecvNpcTalk, true);
 			HANDLEPKT(RecvNpcTalkNext, true);
 			HANDLEPKT(RecvNpcTalkClose, true);
 			HANDLEPKT(MapChange, true);
 			HANDLEPKT(RecvNpcInputReq, true);
 			HANDLEPKT(RecvNpcTalkResponses, true);
+			// Actor
+			HANDLEPKT(ActorDisplay, true);
+			HANDLEPKT(ActorSpawn, true);
+			HANDLEPKT(ActorWalking, true);
 
 			default:
 				_log(OPENRO__ERROR, "Unhandled packet id %d (length: %d)", pkt->getID(), pkt->size());
@@ -377,6 +383,14 @@ void OpenRO::LoadMap(const char* name) {
 		i++;
 	}
 
+	// Clears all the actors
+	std::map<unsigned int, Actor*>::iterator itr = m_actors.begin();
+	while (itr != m_actors.end()) {
+		delete(itr->second);
+		itr++;
+	}
+	m_actors.clear();
+
 	if (strcmp(m_mapname, mapname) == 0) {
 		// We're in the same map. No need to reload stuff, but we need to
 		// send to the server information that we're good to go.
@@ -388,6 +402,103 @@ void OpenRO::LoadMap(const char* name) {
 
 	m_maploaded = false;
 	m_drawmap = false;
+}
+
+void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
+	Actor *actor = NULL;
+
+	if (m_actors.find(info->id) != m_actors.end()) {
+		// Already on the database...
+		actor = m_actors[info->id];
+	}
+	else if (m_npc_names.find(info->type) != m_npc_names.end()) {
+		// Actor is a NPC
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[info->type]);
+		npc->type = info->type;
+	}
+	else if (m_job_names.find(info->type) != m_job_names.end()) {
+		// Actor is a player
+		CharObj *obj = new CharObj();
+		actor = obj;
+		obj->open(*this, (RO::CJob)info->type, (RO::CSex)info->sex);
+	}
+	else if (m_homunculus_names.find(info->type) != m_homunculus_names.end()) {
+		// Homunculus
+		HomunObj* obj = new HomunObj();
+		actor = obj;
+		obj->open(*this, m_homunculus_names[info->type]);
+		obj->type = info->type;
+	}
+	else if (m_mercenary_names.find(info->type) != m_mercenary_names.end()) {
+		// TODO: Mercenary
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[46]);
+		npc->type = info->type;
+		_log(OPENRO__TRACE, "Warning: Unhandled actor type %d", info->type);
+	}
+	else if (info->hair_style == 0x64) {
+		// TODO: Pet
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[46]);
+		npc->type = info->type;
+		_log(OPENRO__TRACE, "Warning: Unhandled actor type %d", info->type);
+	}
+	else {
+		// We're a monster!
+		// TODO: Monster
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[46]);
+		npc->type = info->type;
+		_log(OPENRO__TRACE, "Warning: Unhandled actor type %d", info->type);
+	}
+
+	if (actor == NULL) {
+		// Should not happen. EVER.
+		_log(OPENRO__ERROR, "Invalid actor received.");
+		return;
+	}
+
+	actor->setMap(m_map);
+	actor->setDirection((RO::CDir)info->dir);
+	actor->id = info->id;
+	actor->setPos((float)info->coord_x, (float)info->coord_y);
+
+#ifdef DEBUG
+	_log(OPENRO__DEBUG, "Dumping pktActorDisplay");
+	_log(OPENRO__DEBUG, "\tID: %d", info->id);
+	_log(OPENRO__DEBUG, "\tWalk speed: %d", info->walk_speed);
+	_log(OPENRO__DEBUG, "\t: %d", info->opt1);
+	_log(OPENRO__DEBUG, "\t: %d", info->opt2);
+	_log(OPENRO__DEBUG, "\t: %d", info->option);
+	_log(OPENRO__DEBUG, "\tType: %d", info->type);
+	_log(OPENRO__DEBUG, "\tHair: %d", info->hair_style);
+	_log(OPENRO__DEBUG, "\t: %d", info->weapon);
+	_log(OPENRO__DEBUG, "\t: %d", info->lowhead);
+	_log(OPENRO__DEBUG, "\t: %d", info->shield);
+	_log(OPENRO__DEBUG, "\t: %d", info->tophead);
+	_log(OPENRO__DEBUG, "\t: %d", info->midhead);
+	_log(OPENRO__DEBUG, "\t: %d", info->hair_color);
+	_log(OPENRO__DEBUG, "\t: %d", info->clothes_color);
+	_log(OPENRO__DEBUG, "\tHead Direction: %d", info->head_dir);
+	_log(OPENRO__DEBUG, "\tGuild: %d", info->guildID);
+	_log(OPENRO__DEBUG, "\tEmblem: %d", info->emblemID);
+	_log(OPENRO__DEBUG, "\t: %d", info->manner);
+	_log(OPENRO__DEBUG, "\t: %d", info->opt3);
+	_log(OPENRO__DEBUG, "\t: %d", info->karma);
+	_log(OPENRO__DEBUG, "\tSex: %d", info->sex);
+	_log(OPENRO__DEBUG, "\tCoordinates: %dx%d, %d", info->coord_x, info->coord_y, info->dir);
+	_log(OPENRO__DEBUG, "\t: %d", info->unknown1);
+	_log(OPENRO__DEBUG, "\t: %d", info->unknown2);
+	_log(OPENRO__DEBUG, "\tAct: %d", info->act);
+	_log(OPENRO__DEBUG, "\tLevel: %d", info->lv);
+#endif
+
+	m_actors[info->id] = actor;
 }
 
 /* ========================================================================== *
@@ -427,75 +538,15 @@ HNDL_IMPL(InventoryItems) {
 }
 
 HNDL_IMPL(ActorDisplay) {
-	Actor *actor = NULL;
+	HandleActorInfo(&pkt->info);
+}
 
-	if (m_actors.find(pkt->id) != m_actors.end()) {
-		// Already on the database...
-		actor = m_actors[pkt->id];
-		return;
-	}
-	else if (m_npc_names.find(pkt->type) != m_npc_names.end()) {
-		// Actor is a NPC
-		NpcObj* npc = new NpcObj();
-		actor = npc;
-		npc->open(*this, m_npc_names[pkt->type]);
-		npc->id = pkt->id;
-		npc->type = pkt->type;
-	}
-	else if (m_job_names.find(pkt->type) != m_job_names.end()) {
-		// Actor is a player
-		CharObj *obj = new CharObj();
-		actor = obj;
-		obj->open(*this, (RO::CJob)pkt->type, (RO::CSex)pkt->sex);
-	}
-	else if (m_homunculus_names.find(pkt->type) != m_homunculus_names.end()) {
-		// Homunculus
-		HomunObj* obj = new HomunObj();
-		actor = obj;
-		obj->open(*this, m_homunculus_names[pkt->type]);
-		obj->id = pkt->id;
-		obj->type = pkt->type;
-	}
-	else if (m_mercenary_names.find(pkt->type) != m_mercenary_names.end()) {
-		// TODO: Mercenary
-		NpcObj* npc = new NpcObj();
-		actor = npc;
-		npc->open(*this, m_npc_names[46]);
-		npc->id = pkt->id;
-		npc->type = pkt->type;
-	}
-	else if (pkt->hair_style == 0x64) {
-		// TODO: Pet
-		NpcObj* npc = new NpcObj();
-		actor = npc;
-		npc->open(*this, m_npc_names[46]);
-		npc->id = pkt->id;
-		npc->type = pkt->type;
-	}
-	else {
-		// We're a monster!
-		// TODO: Monster
-		NpcObj* npc = new NpcObj();
-		actor = npc;
-		npc->open(*this, m_npc_names[46]);
-		npc->id = pkt->id;
-		npc->type = pkt->type;
-	}
+HNDL_IMPL(ActorSpawn) {
+	HandleActorInfo(&pkt->info);
+}
 
-
-	if (actor == NULL) {
-		// Should not happen. EVER.
-		_log(OPENRO__ERROR, "Invalid actor received.");
-		pkt->Dump();
-		return;
-	}
-	actor->setPos((float)pkt->coord_x, (float)pkt->coord_y);
-
-#ifdef DEBUG
-	pkt->Dump();
-#endif
-
-	m_actors[pkt->id] = actor;
+HNDL_IMPL(ActorWalking) {
+	HandleActorInfo(&pkt->info);
 }
 
 HNDL_IMPL(CharLeaveScreen) {

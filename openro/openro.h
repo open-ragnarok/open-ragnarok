@@ -71,6 +71,8 @@ protected:
 	HNDL_DECL(SkillList);
 	HNDL_DECL(MapMoveOk);
 	HNDL_DECL(ActorDisplay);
+	HNDL_DECL(ActorSpawn);
+	HNDL_DECL(ActorWalking);
 	HNDL_DECL(RecvNpcTalk);
 	HNDL_DECL(RecvNpcTalkNext);
 	HNDL_DECL(RecvNpcTalkClose);
@@ -99,6 +101,9 @@ protected:
 
 	/** The NPC we are currently talking to. */
 	unsigned int m_npc_talk_id;
+
+	/** Receives information on an actor displayed */
+	void HandleActorInfo(const struct ActorInfo* info);
 
 public:
 	OpenRO();

@@ -101,6 +101,8 @@ namespace ronet {
 		DECL(RecvNpcTalkResponses);
 		DECL(RecvNpcInputReq);
 		DECL(MapChange);
+		DECL(ActorMove);
+		DECL(ActorAction);
 
 		// Guild
 		//DECL(GuildAlliesEnemiesList);

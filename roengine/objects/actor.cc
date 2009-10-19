@@ -51,6 +51,10 @@ float Actor::getDestinationY() const {
 	return(dest_y);
 }
 
+void Actor::setDirection(RO::CDir dir) {
+	m_dir = dir;
+}
+
 void Actor::setPos(float x, float y) {
 	map_x = x;
 	map_y = y;

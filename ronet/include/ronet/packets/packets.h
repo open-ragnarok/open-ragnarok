@@ -78,5 +78,7 @@
 #include "pkt_sendnpcnumber.h"
 #include "pkt_recvnpctalkresponses.h"
 #include "pkt_sendnpcresponse.h"
+#include "pkt_actormove.h"
+#include "pkt_actoraction.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

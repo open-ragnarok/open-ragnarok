@@ -97,4 +97,34 @@ struct SkillInformation {
 	char up;
 };
 
+struct ActorInfo {
+	unsigned int id;
+	unsigned short walk_speed;
+	unsigned short opt1;
+	unsigned short opt2;
+	unsigned short option;
+	unsigned short type;
+	unsigned short hair_style;
+	unsigned short weapon;
+	unsigned short lowhead;
+	unsigned short shield;
+	unsigned short tophead;
+	unsigned short midhead;
+	unsigned short hair_color;
+	unsigned short clothes_color;
+	unsigned short head_dir;
+	unsigned int guildID;
+	unsigned short emblemID;
+	unsigned short manner;
+	unsigned short opt3;
+	unsigned char karma;
+	unsigned char sex;
+	unsigned short coord_x, coord_y, dir;
+	unsigned char unknown1;
+	unsigned char unknown2;
+	unsigned char act;
+	unsigned short lv;
+	unsigned int ticks;
+};
+
 #endif /* __OPENRO_RO_STRUCTURES_H */

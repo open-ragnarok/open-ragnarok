@@ -67,6 +67,8 @@ public:
 	float getDestinationX() const;
 	float getDestinationY() const;
 
+	void setDirection(RO::CDir);
+
 	/**
 	 * Setup the current position.
 	 * It teleports the char to the given point

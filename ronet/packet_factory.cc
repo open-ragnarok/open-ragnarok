@@ -75,6 +75,8 @@ HANDLER(RecvNpcTalkClose)
 HANDLER(RecvNpcInputReq)
 HANDLER(RecvNpcTalkResponses)
 HANDLER(MapChange)
+HANDLER(ActorMove)
+HANDLER(ActorAction)
 
 // Guild
 //HANDLER(GuildAlliesEnemiesList)
@@ -154,6 +156,8 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(RecvNpcInputReq);
 	CALLER(RecvNpcTalkResponses);
 	CALLER(MapChange);
+	CALLER(ActorMove);
+	CALLER(ActorAction);
 	
 	// Guild
 	//CALLER(GuildAlliesEnemiesList);

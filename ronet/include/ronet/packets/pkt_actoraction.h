@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: pkt_mapmoveok.h 147 2009-09-30 12:13:45Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -22,25 +22,34 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKET_ACTORSPAWN_H
-#define __RONET_PACKET_ACTORSPAWN_H
+#ifndef __RONET_PACKET_ACTORACTION_H
+#define __RONET_PACKET_ACTORACTION_H
 
 #include "ronet/packet.h"
-#include "ronet/structures.h"
 
 namespace ronet {
-	class RONET_DLLAPI pktActorSpawn : public Packet {
+	class RONET_DLLAPI pktActorAction : public Packet {
+	protected:
 	public:
-		struct ActorInfo info;
-		unsigned char unk;
+		unsigned int sourceID;
+		unsigned int targetID;
+		unsigned int ticks;
+		unsigned int srcSpeed;
+		unsigned int dstSpeed;
+		unsigned short damage;
+		unsigned short div;
+		unsigned char type;
+		unsigned short dual_wield_damage;
 
-		pktActorSpawn();
-		pktActorSpawn(unsigned short pktID);
-		virtual bool Decode(ucBuffer&);
+		pktActorAction();
 
-		virtual void Dump();
+		bool Decode(ucBuffer& buf);
 
+		unsigned int getId();
+		void getStart(int*, int*) const;
+		void getDest(int*, int*) const;
+		unsigned int getTicks() const;
 	};
 }
 
-#endif /* __RONET_PACKET_ACTORDISPLAY_H */
+#endif /* __RONET_PACKET_ACTORACTION_H */

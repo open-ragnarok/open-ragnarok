@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: pkt_mapmoveok.cc 173 2009-10-05 16:08:10Z sergio $ */
 /*
     ------------------------------------------------------------------------------------
     LICENSE:
@@ -22,25 +22,74 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __RONET_PACKET_ACTORSPAWN_H
-#define __RONET_PACKET_ACTORSPAWN_H
+#include "stdafx.h"
 
-#include "ronet/packet.h"
-#include "ronet/structures.h"
+#include "ronet/packets/pkt_actormove.h"
 
 namespace ronet {
-	class RONET_DLLAPI pktActorSpawn : public Packet {
-	public:
-		struct ActorInfo info;
-		unsigned char unk;
 
-		pktActorSpawn();
-		pktActorSpawn(unsigned short pktID);
-		virtual bool Decode(ucBuffer&);
-
-		virtual void Dump();
-
-	};
+pktActorMove::pktActorMove() : Packet(pktActorMoveID) {
+	ticks = 0;
+	start_x = start_y = 0;
+	dest_x = dest_y = 0;
 }
 
-#endif /* __RONET_PACKET_ACTORDISPLAY_H */
+unsigned int pktActorMove::getTicks() const {
+	return(ticks);
+}
+
+bool pktActorMove::Decode(ucBuffer& buf) {
+	unsigned int v;
+
+	// Sanity Check
+	if (!CheckID(buf))
+		return(false);
+
+	// Packet size is 16...
+	if (buf.dataSize() < 16)
+		return(false);
+
+	buf.ignore(2); // id
+	buf >> id;
+	
+	unsigned char coord[5];
+	buf.read(coord, 5);
+	buf.ignore(1);
+	buf >> ticks;
+	unsigned char *ptr = (unsigned char*)&v;
+	v = 0;
+
+	// Read source
+	ptr[0] = coord[2];
+	ptr[1] = coord[1];
+	ptr[2] = coord[0];
+
+	start_x = ((v >> 14) & 0x03FF);
+	start_y = ((v >> 4) & 0x03FF);
+
+	// Read destination
+	ptr[0] = coord[4];
+	ptr[1] = coord[3];
+	ptr[2] = coord[2];
+
+	dest_x = ((v >> 10) & 0x03FF);
+	dest_y = ((v >> 0) & 0x03FF);
+
+	printf("Moving from %d,%d -> %d,%d @ %d\n", start_x, start_y, dest_x, dest_y, ticks);
+
+	buf.ignore(1);
+
+	return(true);
+}
+
+void pktActorMove::getStart(int* x, int* y) const {
+	*x = start_x;
+	*y = start_y;
+}
+
+void pktActorMove::getDest(int* x, int* y) const {
+	*x = dest_x;
+	*y = dest_y;
+}
+
+}

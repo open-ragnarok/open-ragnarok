@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <desktop name="ingame_ui" transparent="true">
   <!-- $Id$ -->
-  <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0" mx="5" mw="260" mh="10">
+  <window name="stats_window" texture="basic_interface\basewin_bg.bmp" x="0" y="0" mx="5" mw="260" mh="15">
     <label text="Basic Info" x="17" y="5" />
     <label text="HP" x="94" y="32" />
     <label text="SP" x="94" y="53" />
@@ -24,7 +24,7 @@
     <button texture="basic_interface\sys_base_off.bmp" active="basic_interface\sys_base_on.bmp" x="4" y="4" />
   </window>
 
-  <window name="mini_stats" visible="false" texture="basic_interface\basewin_mini.bmp" x="0" y="0" mx="5" mw="270" mh="10" >
+  <window name="mini_stats" visible="false" texture="basic_interface\basewin_mini.bmp" x="0" y="0" mx="5" mw="250" mh="15" >
     <label name="mini_stats/lblChar" text="OpenRO" x="10" y="4" />
     <label name="mini_stats/lblInfo1" text="Lv. 85 / Blacksmith / Lv.50 / Exp. 13%" x="50" y="4" />
     <label name="mini_stats/lblInfo2" text="HP 5262 / 6303 | SP 206 / 395 | 13,510,853 Z" x="10" y="16" />
@@ -39,7 +39,7 @@
     </buttonbar>
   </chatwindow>
 
-  <chatwindow name="npcchoose" x="90" y="90" visible="false">
+  <chatwindow name="npcchoose" x="90" y="90" mw="200" mh="10" visible="false">
     <list name="npcchoose/options" x="10" y="19" w="260" h="72" />
     <buttonbar>
       <button name="npcchoose/btnOk" texture="btn_ok.bmp" active="btn_ok_a.bmp" hover="btn_ok_b.bmp"  focusable="false" />

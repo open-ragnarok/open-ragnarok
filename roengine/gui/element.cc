@@ -231,8 +231,9 @@ void Element::Render(unsigned int delay) {
 
 	Draw(delay);
 
-	std::vector<Element*>::iterator itr = m_children.begin();
-	while (itr != m_children.end()) {
+	// Draw from the back to the front, so that the first element is always in the front.
+	std::vector<Element*>::reverse_iterator itr = m_children.rbegin();
+	while (itr != m_children.rend()) {
 		(*itr)->Render(delay);
 		itr++;
 	}
@@ -293,7 +294,6 @@ void Element::Window(float x, float y, float w, float h, const sdle::Texture& tp
 	glTexCoord2f(u, v);			glVertex3f(x+w, y,   0);
 	glEnd();
 }
-
 
 void Element::add(Element* e) {
 	if (e == NULL)
@@ -706,7 +706,24 @@ void Element::setActive() {
 	if (m_parent != NULL) {
 		m_parent->m_active_child = this;
 		m_parent->setActive();
+		m_parent->BringToFront(this);
 	}
+}
+
+void Element::BringToFront(Element* e) {
+	std::vector<Element*>::iterator itr = m_children.begin();
+	while (itr != m_children.end()) {
+		if ((*itr) == e)
+			break;
+		itr++;
+	}
+	if (itr == m_children.end()) {
+		// object not found. do nothing.
+		return;
+	}
+
+	m_children.erase(itr);
+	m_children.insert(m_children.begin(), e);
 }
 
 void Element::setActiveChild(Element* e) {

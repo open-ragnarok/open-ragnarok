@@ -29,10 +29,13 @@
 
 namespace ronet {
 
-pktActorSpawn::pktActorSpawn() : Packet(pktActorSpawnID) {}
+pktActorSpawn::pktActorSpawn() : Packet(pktActorSpawnID) {
+	memset((void*)&info, 0, sizeof(struct ActorInfo));
+}
 
-pktActorSpawn::pktActorSpawn(unsigned short pktID) : Packet(pktID) {}
-
+pktActorSpawn::pktActorSpawn(unsigned short pktID) : Packet(pktID) {
+	memset((void*)&info, 0, sizeof(struct ActorInfo));
+}
 
 bool pktActorSpawn::Decode(ucBuffer& buf) {
 	// Sanity Check
@@ -62,44 +65,44 @@ bool pktActorSpawn::Decode(ucBuffer& buf) {
 	 My headache is gone!
 	 */
 
-	buf >> id;
-	buf >> walk_speed;
-	buf >> opt1;
-	buf >> opt2;
-	buf >> option;
-	buf >> type;
-	buf >> hair_style;
-	buf >> weapon;
-	buf >> lowhead;
-	buf >> shield;
-	buf >> tophead;
-	buf >> midhead;
-	buf >> hair_color;
-	buf >> clothes_color;
-	buf >> head_dir;
-	buf >> guildID;
-	buf >> emblemID;
-	buf >> manner;
-	buf >> opt3;
-	buf >> karma;
-	buf >> sex;
+	buf >> info.id;
+	buf >> info.walk_speed;
+	buf >> info.opt1;
+	buf >> info.opt2;
+	buf >> info.option;
+	buf >> info.type;
+	buf >> info.hair_style;
+	buf >> info.weapon;
+	buf >> info.lowhead;
+	buf >> info.shield;
+	buf >> info.tophead;
+	buf >> info.midhead;
+	buf >> info.hair_color;
+	buf >> info.clothes_color;
+	buf >> info.head_dir;
+	buf >> info.guildID;
+	buf >> info.emblemID;
+	buf >> info.manner;
+	buf >> info.opt3;
+	buf >> info.karma;
+	buf >> info.sex;
 
 	buf >> coord[2];
 	buf >> coord[1];
 	buf >> coord[0];
 
-	buf >> unknown1;
-	buf >> unknown2;
-	//buf >> act;
-	buf >> lv;
+	buf >> info.unknown1;
+	buf >> info.unknown2;
+	//buf >> info.act;
+	buf >> info.lv;
 
 	//XYdecode(coord);
 
-	dir = c & 0x0f;
+	info.dir = c & 0x0f;
 	c >>= 4;
-	coord_y = c & 0x03FF;
+	info.coord_y = c & 0x03FF;
 	c >>= 10;
-	coord_x = c & 0x03FF;
+	info.coord_x = c & 0x03FF;
 
 	//_log(RONET__DEBUG, "There is someone at %d, %d (id: %08x)!", coord_x, coord_y, id);
 	//_log(RONET__DEBUG, "Type: %d", type);
@@ -109,32 +112,32 @@ bool pktActorSpawn::Decode(ucBuffer& buf) {
 
 void pktActorSpawn::Dump() {
 	_log(RONET__DEBUG, "Dumping pktActorDisplay");
-	_log(RONET__DEBUG, "\tID: %d", id);
-	_log(RONET__DEBUG, "\tWalk speed: %d", walk_speed);
-	_log(RONET__DEBUG, "\t: %d", opt1);
-	_log(RONET__DEBUG, "\t: %d", opt2);
-	_log(RONET__DEBUG, "\t: %d", option);
-	_log(RONET__DEBUG, "\tType: %d", type);
-	_log(RONET__DEBUG, "\tHair: %d", hair_style);
-	_log(RONET__DEBUG, "\t: %d", weapon);
-	_log(RONET__DEBUG, "\t: %d", lowhead);
-	_log(RONET__DEBUG, "\t: %d", shield);
-	_log(RONET__DEBUG, "\t: %d", tophead);
-	_log(RONET__DEBUG, "\t: %d", midhead);
-	_log(RONET__DEBUG, "\t: %d", hair_color);
-	_log(RONET__DEBUG, "\t: %d", clothes_color);
-	_log(RONET__DEBUG, "\tHead Direction: %d", head_dir);
-	_log(RONET__DEBUG, "\tGuild: %d", guildID);
-	_log(RONET__DEBUG, "\tEmblem: %d", emblemID);
-	_log(RONET__DEBUG, "\t: %d", manner);
-	_log(RONET__DEBUG, "\t: %d", opt3);
-	_log(RONET__DEBUG, "\t: %d", karma);
-	_log(RONET__DEBUG, "\tSex: %d", sex);
-	_log(RONET__DEBUG, "\tCoordinates: %dx%d, %d", coord_x, coord_y, dir);
-	_log(RONET__DEBUG, "\t: %d", unknown1);
-	_log(RONET__DEBUG, "\t: %d", unknown2);
-	//_log(RONET__DEBUG, "\tAct: %d", act);
-	_log(RONET__DEBUG, "\tLevel: %d", lv);
+	_log(RONET__DEBUG, "\tID: %d", info.id);
+	_log(RONET__DEBUG, "\tWalk speed: %d", info.walk_speed);
+	_log(RONET__DEBUG, "\t: %d", info.opt1);
+	_log(RONET__DEBUG, "\t: %d", info.opt2);
+	_log(RONET__DEBUG, "\t: %d", info.option);
+	_log(RONET__DEBUG, "\tType: %d", info.type);
+	_log(RONET__DEBUG, "\tHair: %d", info.hair_style);
+	_log(RONET__DEBUG, "\t: %d", info.weapon);
+	_log(RONET__DEBUG, "\t: %d", info.lowhead);
+	_log(RONET__DEBUG, "\t: %d", info.shield);
+	_log(RONET__DEBUG, "\t: %d", info.tophead);
+	_log(RONET__DEBUG, "\t: %d", info.midhead);
+	_log(RONET__DEBUG, "\t: %d", info.hair_color);
+	_log(RONET__DEBUG, "\t: %d", info.clothes_color);
+	_log(RONET__DEBUG, "\tHead Direction: %d", info.head_dir);
+	_log(RONET__DEBUG, "\tGuild: %d", info.guildID);
+	_log(RONET__DEBUG, "\tEmblem: %d", info.emblemID);
+	_log(RONET__DEBUG, "\t: %d", info.manner);
+	_log(RONET__DEBUG, "\t: %d", info.opt3);
+	_log(RONET__DEBUG, "\t: %d", info.karma);
+	_log(RONET__DEBUG, "\tSex: %d", info.sex);
+	_log(RONET__DEBUG, "\tCoordinates: %dx%d, %d", info.coord_x, info.coord_y, info.dir);
+	_log(RONET__DEBUG, "\t: %d", info.unknown1);
+	_log(RONET__DEBUG, "\t: %d", info.unknown2);
+	_log(RONET__DEBUG, "\tAct: %d", info.act);
+	_log(RONET__DEBUG, "\tLevel: %d", info.lv);
 }
 
 }

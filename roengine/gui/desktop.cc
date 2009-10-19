@@ -28,12 +28,19 @@ bool Desktop::HandleMouseDown(int x, int y, int button) {
 		while (itr != m_children.end()) {
 			Element* e = *itr;
 
-			if (button == 1 && isInside(e, x, y) && e->isVisible() && isInsideMoveArea(e, x, y) ) {
-				//std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
-				m_movableobj = e;
-				m_movableobj->setStransparent(true);
-				// We're moving the window. There's nothing else to do.
-				return(true);
+			if (button == 1 && isInside(e, x, y) && e->isVisible()) {
+				e->setActive();
+				if (isInsideMoveArea(e, x, y)) {
+					//std::cout << getName() << "::MouseDownOnWindowMoveArea (" << x << ", " << y << ")" << std::endl;
+					m_movableobj = e;
+					m_movableobj->setStransparent(true);
+					// We're moving the window. There's nothing else to do.
+					return(true);
+				}
+				// We're inside something but we aren't going to move stuff around, so we are ok.
+				// Also, if we don't break here, the itr++ code below will mess things up because e->setActive()
+				// Changed the vector.
+				break;
 			}
 			itr++;
 		}

@@ -30,13 +30,8 @@
 namespace ronet {
 	class RONET_DLLAPI pktActorWalking : public pktActorSpawn {
 	public:
-		unsigned int ticks;
-		
 		pktActorWalking();
 		virtual bool Decode(ucBuffer&);
-
-		virtual void Dump();
-
 	};
 }
 
