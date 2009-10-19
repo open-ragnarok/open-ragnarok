@@ -34,4 +34,22 @@ namespace ronet {
 	RONET_GENERIC_ID_IMPL(Take)
 	RONET_GENERIC_ID_IMPL(RecvNpcInputReq)
 	RONET_GENERIC_ID_IMPL(RecvNpcTalkClose)
+	RONET_GENERIC_2PARAM_IMPL(StatChanged, short, short)
+	
+	// Guild
+	RONET_GENERIC_ID_IMPL(GuildMasterMember)
+	RONET_GENERIC_1PARAM_IMPL(GuildBroken, unsigned int)
+	RONET_GENERIC_1PARAM_IMPL(GuildCreateResult, unsigned char)
+	RONET_GENERIC_1PARAM_IMPL(GuildInviteResult, unsigned char)
+	RONET_GENERIC_3PARAM_IMPL(GuildMemberOnlineStatus, unsigned int, unsigned int, unsigned int)
+	RONET_GENERIC_1PARAM_IMPL(GuildAlliance, unsigned int)
+	RONET_GENERIC_1PARAM_IMPL(GuildOppositionResult, unsigned char)
+	RONET_GENERIC_2PARAM_IMPL(GuildUnally, unsigned int, unsigned int)
+	RONET_GENERIC_3PARAM_IMPL(GuildLocation, unsigned int, unsigned short, unsigned short)
+
+	// Pet
+	RONET_GENERIC_1PARAM_IMPL(PetCaptureResult, unsigned char)
+	RONET_GENERIC_2PARAM_IMPL(PetFood, unsigned char, unsigned short)
+	RONET_GENERIC_3PARAM_IMPL(PetInfo2, unsigned char, unsigned int, unsigned int)
+	RONET_GENERIC_2PARAM_IMPL(PetEmotion, unsigned int, unsigned int)
 }

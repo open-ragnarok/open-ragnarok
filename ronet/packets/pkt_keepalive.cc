@@ -33,8 +33,7 @@ ronet::pktKeepAlive::pktKeepAlive(unsigned int acct) : Packet(pktKeepAliveID) {
 
 bool ronet::pktKeepAlive::PrepareData() {
 	unsigned char* ptr = buffer;
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
-	ptr += sizeof(short);
+	ptr += sizeof(short); // ID Handled by the caller
 	memcpy(ptr, (unsigned char*)&account_id, sizeof(int));
 	return(true);
 }

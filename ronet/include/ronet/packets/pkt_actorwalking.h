@@ -22,30 +22,22 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_ACTORWALKING_H
+#define __RONET_PACKET_ACTORWALKING_H
 
-#include "ronet/packets/pkt_charlogin.h"
+#include "ronet/packets/pkt_actorspawn.h"
 
-ronet::pktCharLogin::pktCharLogin(unsigned int acct, unsigned int sid1, unsigned int sid2, unsigned char s) : Packet(pktCharLoginID) {
-	accountid = acct;
-	sessionid1 = sid1;
-	sessionid2 = sid2;
-	sex = s;
+namespace ronet {
+	class RONET_DLLAPI pktActorWalking : public pktActorSpawn {
+	public:
+		unsigned int ticks;
+		
+		pktActorWalking();
+		virtual bool Decode(ucBuffer&);
 
-	setSize(17);
+		virtual void Dump();
+
+	};
 }
 
-bool ronet::pktCharLogin::PrepareData() {
-	unsigned char* ptr = buffer;
-	ptr += sizeof(short); // ID handled by the caller
-
-	memcpy(ptr, (unsigned char*)&accountid, sizeof(int));
-	ptr += sizeof(int);
-	memcpy(ptr, (unsigned char*)&sessionid1, sizeof(int));
-	ptr += sizeof(int);
-	memcpy(ptr, (unsigned char*)&sessionid2, sizeof(int));
-	ptr += sizeof(int);
-	ptr += 2;
-	*ptr = sex;
-	return(true);
-}
+#endif /* __RONET_PACKET_ACTORDISPLAY_H */

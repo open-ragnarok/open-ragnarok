@@ -27,12 +27,12 @@
 #include "ronet/packet.h"
 
 ronet::Packet::Packet() : DynamicBlob<unsigned char>() {
-	id = 0;
+	pktID = 0;
 	setSize(2);
 }
 
-ronet::Packet::Packet(unsigned short pktid) : DynamicBlob<unsigned char>() {
-	id = pktid;
+ronet::Packet::Packet(unsigned short pktID) : DynamicBlob<unsigned char>() {
+	this->pktID = pktID;
 	setSize(2);
 }
 
@@ -49,7 +49,7 @@ bool ronet::Packet::PrepareData() {
 }
 
 ronet::Packet& ronet::Packet::operator >> (ronet::ucBuffer& b) {
-	memcpy(buffer, (unsigned char*)&id, sizeof(short));
+	memcpy(buffer, (unsigned char*)&pktID, sizeof(short));
 
 	if (!PrepareData())
 		return(*this);
@@ -73,7 +73,7 @@ bool ronet::Packet::Decode(ucBuffer&) {
 }
 
 unsigned short ronet::Packet::getID() const {
-	return(id);
+	return(pktID);
 }
 
 bool ronet::Packet::CheckID(const ucBuffer& buf) const {
@@ -82,8 +82,8 @@ bool ronet::Packet::CheckID(const ucBuffer& buf) const {
 
 	unsigned short buf_id;
 	buf.peek((unsigned char*)&buf_id, 2);
-	if (buf_id != id) {
-		_log(RONET__ERROR, "Wrong packet id. Received: 0x%04x. Expected: 0x%04x.", id, buf_id);
+	if (buf_id != pktID) {
+		_log(RONET__ERROR, "Wrong packet id. Received: 0x%04x. Expected: 0x%04x.", buf_id, pktID);
 		return(false);
 	}
 

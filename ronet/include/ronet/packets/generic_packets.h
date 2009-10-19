@@ -35,6 +35,24 @@ namespace ronet {
 	RONET_GENERIC_ID_DECL(Take);
 	RONET_GENERIC_ID_DECL(RecvNpcInputReq);
 	RONET_GENERIC_ID_DECL(RecvNpcTalkClose);
+	RONET_GENERIC_2PARAM_DECL(StatChanged, short, short);
+	
+	// Guild
+	RONET_GENERIC_ID_DECL(GuildMasterMember);
+	RONET_GENERIC_1PARAM_DECL(GuildBroken, unsigned int);
+	RONET_GENERIC_1PARAM_DECL(GuildCreateResult, unsigned char);
+	RONET_GENERIC_1PARAM_DECL(GuildInviteResult, unsigned char);
+	RONET_GENERIC_3PARAM_DECL(GuildMemberOnlineStatus, unsigned int, unsigned int, unsigned int);
+	RONET_GENERIC_1PARAM_DECL(GuildAlliance, unsigned int);
+	RONET_GENERIC_1PARAM_DECL(GuildOppositionResult, unsigned char);
+	RONET_GENERIC_2PARAM_DECL(GuildUnally, unsigned int, unsigned int);
+	RONET_GENERIC_3PARAM_DECL(GuildLocation, unsigned int, unsigned short, unsigned short);
+
+	// Pet
+	RONET_GENERIC_1PARAM_DECL(PetCaptureResult, unsigned char);
+	RONET_GENERIC_2PARAM_DECL(PetFood, unsigned char, unsigned short);
+	RONET_GENERIC_3PARAM_DECL(PetInfo2, unsigned char, unsigned int, unsigned int);
+	RONET_GENERIC_2PARAM_DECL(PetEmotion, unsigned int, unsigned int);
 }
 
 #endif /* __RONET_PACKETS_GENERIC_H */

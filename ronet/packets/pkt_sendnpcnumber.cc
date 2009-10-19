@@ -37,7 +37,7 @@ pktSendNpcNumber::pktSendNpcNumber(unsigned int npc, unsigned int number) : Pack
 bool pktSendNpcNumber::PrepareData() {
 	unsigned char* ptr = buffer;
 
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
+	memcpy(ptr, (unsigned char*)&pktID, sizeof(short));
 	ptr += sizeof(short);
 
 	memcpy(ptr, (unsigned char*)&npc, sizeof(int));

@@ -47,8 +47,7 @@ ronet::pktCharCreate::pktCharCreate(const std::string& name, const CharAttribute
 
 bool ronet::pktCharCreate::PrepareData() {
 	unsigned char* ptr = buffer;
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
-	ptr += sizeof(short);
+	ptr += sizeof(short); // ID handled by the caller
 
 	memcpy(ptr, charname.c_str(), charname.length());
 	ptr += 24;

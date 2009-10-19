@@ -66,6 +66,8 @@
 #include "pkt_otherspeech.h"		//[kR105]
 #include "pkt_hpupdateparty.h"		//[kR105]
 #include "pkt_actordisplay.h"
+#include "pkt_actorspawn.h"
+#include "pkt_actorwalking.h"
 #include "pkt_talk.h"
 #include "pkt_recvnpctalk.h"
 #include "pkt_recvnpctalknext.h"

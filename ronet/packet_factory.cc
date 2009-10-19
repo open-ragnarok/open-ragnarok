@@ -45,7 +45,6 @@ HANDLER(CharLeaveScreen)
 HANDLER(GmBroad)
 HANDLER(ServerTick)
 HANDLER(AttackRange)
-HANDLER(GuildMessage)
 HANDLER(DisplayStat)
 HANDLER(UpdateStatus)
 HANDLER(ServerList)
@@ -68,12 +67,54 @@ HANDLER(HotkeyList)
 HANDLER(ZenyExp)
 HANDLER(StatsInfo)
 HANDLER(ActorDisplay)
+HANDLER(ActorSpawn)
+HANDLER(ActorWalking)
 HANDLER(RecvNpcTalk)
 HANDLER(RecvNpcTalkNext)
 HANDLER(RecvNpcTalkClose)
 HANDLER(RecvNpcInputReq)
 HANDLER(RecvNpcTalkResponses)
 HANDLER(MapChange)
+
+// Guild
+//HANDLER(GuildAlliesEnemiesList)
+HANDLER(GuildMasterMember)
+//HANDLER(GuildEmblem)
+//HANDLER(GuildMembersList)
+//HANDLER(GuildMemberPositionChanged)
+//HANDLER(GuildLeave)
+//HANDLER(GuildExpulsion)
+HANDLER(GuildBroken)
+//HANDLER(GuildMemberSettingList)
+//HANDLER(GuildSkillsList)
+//HANDLER(GuildExpulsionList)
+//HANDLER(GuildMembersTitleList)
+HANDLER(GuildCreateResult)
+HANDLER(GuildInviteResult)
+//HANDLER(GuildRequest)
+//HANDLER(GuildName)
+HANDLER(GuildMemberOnlineStatus)
+//HANDLER(GuildNotice)
+//HANDLER(GuildAllyRequest)
+HANDLER(GuildAlliance)
+//HANDLER(GuildPositionChanged)
+HANDLER(GuildMessage)
+HANDLER(GuildOppositionResult)
+HANDLER(GuildUnally)
+//HANDLER(GuildAllianceAdded)
+//HANDLER(GuildInfo)
+HANDLER(GuildLocation)
+//HANDLER(GuildMemberOnlineStatus2)
+
+// Pet
+//HANDLER(PetCaptureProcess);
+HANDLER(PetCaptureResult);
+HANDLER(PetFood);
+//HANDLER(PetInfo);
+HANDLER(PetInfo2);
+HANDLER(PetEmotion);
+//HANDLER(EggList);
+
 
 ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	//Add new packets here
@@ -83,7 +124,6 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(GmBroad);
 	CALLER(ServerTick);
 	CALLER(AttackRange);
-	CALLER(GuildMessage);
 	CALLER(DisplayStat);
 	CALLER(UpdateStatus);
 	CALLER(ServerList);
@@ -106,12 +146,53 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(ZenyExp);
 	CALLER(StatsInfo);
 	CALLER(ActorDisplay);
+	CALLER(ActorSpawn);
+	CALLER(ActorWalking);
 	CALLER(RecvNpcTalk);
 	CALLER(RecvNpcTalkNext);
 	CALLER(RecvNpcTalkClose);
 	CALLER(RecvNpcInputReq);
 	CALLER(RecvNpcTalkResponses);
 	CALLER(MapChange);
+	
+	// Guild
+	//CALLER(GuildAlliesEnemiesList);
+	CALLER(GuildMasterMember);
+	//CALLER(GuildEmblem);
+	//CALLER(GuildMembersList);
+	//CALLER(GuildMemberPositionChanged);
+	//CALLER(GuildLeave);
+	//CALLER(GuildExpulsion);
+	CALLER(GuildBroken);
+	//CALLER(GuildMemberSettingList);
+	//CALLER(GuildSkillsList);
+	//CALLER(GuildExpulsionList);
+	//CALLER(GuildMembersTitleList);
+	CALLER(GuildCreateResult);
+	CALLER(GuildInviteResult);
+	//CALLER(GuildRequest);
+	//CALLER(GuildName);
+	CALLER(GuildMemberOnlineStatus);
+	//CALLER(GuildNotice);
+	//CALLER(GuildAllyRequest);
+	CALLER(GuildAlliance);
+	//CALLER(GuildPositionChanged);
+	CALLER(GuildMessage);
+	CALLER(GuildOppositionResult);
+	CALLER(GuildUnally);
+	//CALLER(GuildAllianceAdded);
+	//CALLER(GuildInfo);
+	CALLER(GuildLocation);
+	//CALLER(GuildMemberOnlineStatus2);
+
+	// Pet
+	//CALLER(PetCaptureProcess);
+	CALLER(PetCaptureResult);
+	CALLER(PetFood);
+	//CALLER(PetInfo);
+	CALLER(PetInfo2);
+	CALLER(PetEmotion);
+	//CALLER(EggList);
 }
 
 ronet::PacketFactory::~PacketFactory() {

@@ -28,8 +28,10 @@
 
 namespace ronet {
 
-pktMapLogin::pktMapLogin() :
-	Packet(pktMapLoginID) {
+pktMapLogin::pktMapLogin() : Packet(pktMapLoginID) {
+}
+
+pktMapLogin::pktMapLogin(unsigned short pktID) : Packet(pktID) {
 }
 
 pktMapLogin::pktMapLogin(int id1, int id2,
@@ -43,19 +45,18 @@ pktMapLogin::pktMapLogin(int id1, int id2,
 	setSize(19);
 }
 
-pktMapLogin23::pktMapLogin23() : pktMapLogin() {
-	id = pktMapLogin23ID;
+pktMapLogin23::pktMapLogin23() : pktMapLogin(pktMapLogin23ID) {
 }
 
 pktMapLogin23::pktMapLogin23(int id1, int id2, int id3, unsigned int tick, char s) : pktMapLogin(id1, id2, id3, tick, s) {
-	id = pktMapLogin23ID;
+	pktID = pktMapLogin23ID;
 }
 
 
 bool pktMapLogin::PrepareData() {
 	unsigned char* ptr = buffer;
 
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
+	memcpy(ptr, (unsigned char*)&pktID, sizeof(short));
 	ptr += sizeof(short);
 
 	memcpy(ptr, (unsigned char*)&account_id, sizeof(int));
@@ -75,12 +76,8 @@ bool pktMapLogin::PrepareData() {
 }
 
 bool pktMapLogin::Decode(ucBuffer& buf) {
-	unsigned short buf_id;
-	buf.peek((unsigned char*) &buf_id, 2);
-	if (buf_id != id) {
-		fprintf(stderr, "Wrong packet id! (%04x != %04x)\n", id, buf_id);
-		return (false);
-	}
+	if (!CheckID(buf))
+		return(false);
 	unsigned short size;
 	size = *(unsigned short*) (buf.getBuffer() + 2);
 

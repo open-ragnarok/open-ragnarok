@@ -41,6 +41,7 @@ protected:
 	char gender;
 public:
 	pktMapLogin();
+	pktMapLogin(unsigned short pktID);
 	pktMapLogin(int, int, int, unsigned int, char);
 	bool Decode(ucBuffer & buf);
 	void setGender(char gender);

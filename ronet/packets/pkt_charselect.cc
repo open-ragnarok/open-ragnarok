@@ -33,8 +33,7 @@ ronet::pktCharSelect::pktCharSelect(unsigned int slot) : Packet(pktCharSelectID)
 
 bool ronet::pktCharSelect::PrepareData() {
 	unsigned char* ptr = buffer;
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
-	ptr += sizeof(short);
+	ptr += sizeof(short); // ID Handled by the caller
 	*ptr++ = char_selected;
 	return(true);
 }

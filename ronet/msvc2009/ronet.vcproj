@@ -391,6 +391,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_actorspawn.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_actorwalking.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_attackrange.cc"
 					>
 				</File>
@@ -666,6 +674,14 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_actordisplay.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_actorspawn.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_actorwalking.h"
 					>
 				</File>
 				<File

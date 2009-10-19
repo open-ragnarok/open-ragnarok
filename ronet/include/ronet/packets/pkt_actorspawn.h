@@ -22,30 +22,59 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_ACTORSPAWN_H
+#define __RONET_PACKET_ACTORSPAWN_H
 
-#include "ronet/packets/pkt_charlogin.h"
+#include "ronet/packet.h"
 
-ronet::pktCharLogin::pktCharLogin(unsigned int acct, unsigned int sid1, unsigned int sid2, unsigned char s) : Packet(pktCharLoginID) {
-	accountid = acct;
-	sessionid1 = sid1;
-	sessionid2 = sid2;
-	sex = s;
+namespace ronet {
+	class RONET_DLLAPI pktActorSpawn : public Packet {
+	public:
+		// a4
+		unsigned int id;
+		// v14
+		unsigned short walk_speed;
+		unsigned short opt1;
+		unsigned short opt2;
+		unsigned short option;
+		unsigned short type;
+		unsigned short hair_style;
+		unsigned short weapon;
+		unsigned short lowhead;
+		unsigned short shield;
+		unsigned short tophead;
+		unsigned short midhead;
+		unsigned short hair_color;
+		unsigned short clothes_color;
+		unsigned short head_dir;
+		// a4
+		unsigned int guildID;
+		// a2
+		unsigned short emblemID;
+		// v2
+		unsigned short manner;
+		unsigned short opt3;
+		// C2
+		unsigned char karma;
+		unsigned char sex;
+		// a3
+		unsigned short coord_x, coord_y, dir;
+		// C2
+		unsigned char unknown1;
+		unsigned char unknown2;
+		//unsigned char act;
+		// v
+		unsigned short lv;
+		// ??
+		unsigned char unk;
 
-	setSize(17);
+		pktActorSpawn();
+		pktActorSpawn(unsigned short pktID);
+		virtual bool Decode(ucBuffer&);
+
+		virtual void Dump();
+
+	};
 }
 
-bool ronet::pktCharLogin::PrepareData() {
-	unsigned char* ptr = buffer;
-	ptr += sizeof(short); // ID handled by the caller
-
-	memcpy(ptr, (unsigned char*)&accountid, sizeof(int));
-	ptr += sizeof(int);
-	memcpy(ptr, (unsigned char*)&sessionid1, sizeof(int));
-	ptr += sizeof(int);
-	memcpy(ptr, (unsigned char*)&sessionid2, sizeof(int));
-	ptr += sizeof(int);
-	ptr += 2;
-	*ptr = sex;
-	return(true);
-}
+#endif /* __RONET_PACKET_ACTORDISPLAY_H */

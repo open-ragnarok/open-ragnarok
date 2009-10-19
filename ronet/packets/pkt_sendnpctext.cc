@@ -39,7 +39,7 @@ bool pktSendNpcText::PrepareData() {
 	unsigned char* ptr = buffer;
 	unsigned short size;
 
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
+	memcpy(ptr, (unsigned char*)&pktID, sizeof(short));
 	ptr += sizeof(short);
 
 	size = 9 + text.length();

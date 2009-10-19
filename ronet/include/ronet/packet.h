@@ -91,7 +91,6 @@ typedef enum PacketIDs{
 	pktSkillListID = 0x010f,		// R 010f <len>.w {<skill ID>.w <target type>.w ?.w <lv>.w <sp>.w <range>.w <skill name>.24B <up>.B}.37B*
 	pktUpdateStatusID = 0x00b0,		// R 00b0 <type>.w <val>.l
 	pktDisplayStatID = 0x0141,		// R 0141 <type>.l <base>.l <bonus>.l
-	pktGuildMessageID = 0x017f,		// R 017f <len>.w <message>.?B
 	pktAttackRangeID = 0x013a,		// R 013a <val>.w
 	pktMapMoveOkID = 0x0087,		// (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
 	pktServerTickID = 0x007f,		// R 007f <server tick>.l
@@ -115,6 +114,44 @@ typedef enum PacketIDs{
 	pktRecvNpcTalkResponsesID = 0x00b7,
 	pktMapChangeID = 0x0091,		// R 0091 <map>.16B <pos>.int
 	pktRecvNpcInputReqID = 0x01d4,	// R 01d4 <id>.int
+	pktStatChangedID = 0x013d,		// R 013d <type>.short <amount>.short
+	// GUILD
+	pktGuildAlliesEnemiesListID = 0x014c,
+	pktGuildMasterMemberID = 0x014e,		// R 014e <id>.int
+	pktGuildEmblemID = 0x0152,				// R 0152 <len>.short <guildID>.int <emblemID>.int <emblem>.?
+	pktGuildMembersListID = 0x0154,
+	pktGuildMemberPositionChangedID = 0x0156,
+	pktGuildLeaveID = 0x015a,
+	pktGuildExpulsionID = 0x015c,
+	pktGuildBrokenID = 0x015e,				// R 0167 <flag>.int
+	pktGuildMemberSettingListID = 0x0160,
+	pktGuildSkillsListID = 0x0162,
+	pktGuildExpulsionListID = 0x0162,
+	pktGuildMembersTitleListID = 0x0166,
+	pktGuildCreateResultID = 0x0167,		// R 0167 <type>.byte
+	pktGuildInviteResultID = 0x0169,		// R 0169 <type>.byte
+	pktGuildRequestID = 0x016a,
+	pktGuildNameID = 0x016c,
+	pktGuildMemberOnlineStatusID = 0x016d,	// R 016d <id>.uint <charid>.uint <online>.uint
+	pktGuildNoticeID = 0x016f,
+	pktGuildAllyRequestID = 0x0171,
+	pktGuildAllianceID = 0x0173,			// R 0173 <flag>.uint
+	pktGuildPositionChangedID = 0x0174,
+	pktGuildMessageID = 0x017f,				// R 017f <len>.w <message>.?B
+	pktGuildOppositionResultID = 0x0181,	// R 0181 <flag>.byte
+	pktGuildUnallyID = 0x0184,				// R 0184 <guild_id>.uint <flag>.uint
+	pktGuildAllianceAddedID = 0x0185,
+	pktGuildInfoID = 0x01b6,
+	pktGuildLocationID = 0x1eb,				// R 01eb <id>.uint <x>.short <y>.short
+	pktGuildMemberOnlineStatus2ID = 0x01f2,
+	// PET
+	pktPetCaptureProcessID = 0x19e,	// R 019e
+	pktPetCaptureResultID = 0x1a0,	// R 01a0 <type>.byte
+	pktPetInfoID = 0x01a2,			// R 01a2 <name> <renameflag> <level> <hungry> <friendly> <accessory> <type>
+	pktPetFoodID = 0x01a3,			// R 01a3 <success>.byte <food_id>.short
+	pktPetInfo2ID = 0x01a4,			// R 01a4 <type>.byte <id>.int <value>.int
+	pktPetEmotionID = 0x01aa,		// R 01aa <id>.int <type>.int
+	pktEggListID = 0x1a6,			// R 01a6
 
 	// == "WTF!?"s == //
 	pktUnknown1 = 0x2974, // 74 29 00 04 05 00 d0
@@ -241,14 +278,14 @@ public:
 
 	class RONET_DLLAPI Packet : public DynamicBlob<unsigned char> {
 	protected:
-		unsigned short id;
+		unsigned short pktID;
 
 		virtual bool PrepareData();
 
 		bool CheckID(const ucBuffer&) const;
 	public:
 		Packet();
-		Packet(unsigned short pktid);
+		Packet(unsigned short pktID);
 		virtual ~Packet();
 
 		Packet& operator >> (ucBuffer&);
@@ -275,7 +312,7 @@ public:
 	public: \
 		pkt ##name (); \
 		virtual bool Decode(ucBuffer&); \
-	}
+	};
 
 #define RONET_GENERIC_IMPL(name) \
 pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { setSize(2); } \
@@ -296,7 +333,7 @@ bool pkt ##name ::Decode(ucBuffer& buf) { \
 		pkt ##name (unsigned int); \
 		unsigned int getID() const; \
 		virtual bool Decode(ucBuffer&); \
-	}
+	};
 
 #define RONET_GENERIC_ID_IMPL(name) \
 pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { this->id = id; setSize(6); } \
@@ -307,6 +344,117 @@ bool pkt ##name ::Decode(ucBuffer& buf) { \
 	if (!CheckID(buf)) return(false); \
 	if (buf.dataSize() < 6) return(false); \
 	buf.ignore(2); buf >> id; return(true); \
+}
+
+/**
+ * This is for all packets that are like
+ * <id> <packet_id>.short <param1>.type1
+ */
+#define RONET_GENERIC_1PARAM_DECL(name, type1) \
+	class pkt ##name : public Packet { \
+	protected: \
+		type1 m_param1; \
+		virtual bool PrepareData(); \
+	public: \
+		pkt ##name (); \
+		pkt ##name (type1); \
+		type1 getParam() const; \
+		void setParam(type1); \
+		virtual bool Decode(ucBuffer&); \
+	};
+
+#define RONET_GENERIC_1PARAM_IMPL(name, type1) \
+pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { m_param1 = 0; setSize(2 + sizeof(type1)); } \
+pkt ##name ::pkt ##name (type1 v) : Packet(pkt ##name ##ID) { m_param1 = v; setSize(2 + sizeof(type1)); } \
+bool pkt ##name ::PrepareData() { unsigned char* ptr = buffer; ptr += sizeof(short); memcpy(ptr, (unsigned char*)&m_param1, sizeof(type1)); ptr += sizeof(type1); return(true); } \
+type1 pkt ##name ::getParam() const { return(m_param1); } \
+void pkt ##name ::setParam(type1 v) { m_param1 = v; } \
+bool pkt ##name ::Decode(ucBuffer& buf) { \
+	if (!CheckID(buf)) return(false); \
+	if (buf.dataSize() < (2 + sizeof(type1))) return(false); \
+	buf.ignore(2); \
+	buf >> m_param1; \
+	return(true); \
+}
+
+/**
+ * This is for all packets that are like
+ * <id> <packet_id>.short <param1>.type1 <param2>.type2
+ */
+#define RONET_GENERIC_2PARAM_DECL(name, type1, type2) \
+	class pkt ##name : public Packet { \
+	protected: \
+		type1 m_param1; \
+		type2 m_param2; \
+		virtual bool PrepareData(); \
+	public: \
+		pkt ##name (); \
+		pkt ##name (type1, type2); \
+		type1 getParam1() const; \
+		void setParam1(type1); \
+		type2 getParam2() const; \
+		void setParam2(type2); \
+		virtual bool Decode(ucBuffer&); \
+	};
+
+#define RONET_GENERIC_2PARAM_IMPL(name, type1, type2) \
+pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { m_param1 = m_param2 = 0; setSize(2 + sizeof(type1) + sizeof(type2)); } \
+pkt ##name ::pkt ##name (type1 v1, type2 v2) : Packet(pkt ##name ##ID) { m_param1 = v1; m_param2 = v2; setSize(2 + sizeof(type1) + sizeof(type2)); } \
+bool pkt ##name ::PrepareData() { unsigned char* ptr = buffer; ptr += sizeof(short); memcpy(ptr, (unsigned char*)&m_param1, sizeof(type1)); ptr += sizeof(type1); memcpy(ptr, (unsigned char*)&m_param2, sizeof(type2)); ptr += sizeof(type2); return(true); } \
+type1 pkt ##name ::getParam1() const { return(m_param1); } \
+void pkt ##name ::setParam1(type1 v) { m_param1 = v; } \
+type2 pkt ##name ::getParam2() const { return(m_param2); } \
+void pkt ##name ::setParam2(type2 v) { m_param2 = v; } \
+bool pkt ##name ::Decode(ucBuffer& buf) { \
+	if (!CheckID(buf)) return(false); \
+	if (buf.dataSize() < (2 + sizeof(type1) + sizeof(type2))) return(false); \
+	buf.ignore(2); \
+	buf >> m_param1; \
+	buf >> m_param2; \
+	return(true); \
+}
+
+/**
+ * This is for all packets that are like
+ * <id> <packet_id>.short <param1>.type1 <param2>.type2 <param3>.type3
+ */
+#define RONET_GENERIC_3PARAM_DECL(name, type1, type2, type3) \
+	class pkt ##name : public Packet { \
+	protected: \
+		type1 m_param1; \
+		type2 m_param2; \
+		type3 m_param3; \
+		virtual bool PrepareData(); \
+	public: \
+		pkt ##name (); \
+		pkt ##name (type1, type2, type3); \
+		type1 getParam1() const; \
+		void setParam1(type1); \
+		type2 getParam2() const; \
+		void setParam2(type2); \
+		type3 getParam3() const; \
+		void setParam3(type3); \
+		virtual bool Decode(ucBuffer&); \
+	};
+
+#define RONET_GENERIC_3PARAM_IMPL(name, type1, type2, type3) \
+pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { m_param1 = m_param2 = m_param3 = 0; setSize(2 + sizeof(type1) + sizeof(type2) + sizeof(type3)); } \
+pkt ##name ::pkt ##name (type1 v1, type2 v2, type3 v3) : Packet(pkt ##name ##ID) { m_param1 = v1; m_param2 = v2; m_param3 = v3; setSize(2 + sizeof(type1) + sizeof(type2) + sizeof(type3)); } \
+bool pkt ##name ::PrepareData() { unsigned char* ptr = buffer; ptr += sizeof(short); memcpy(ptr, (unsigned char*)&m_param1, sizeof(type1)); ptr += sizeof(type1); memcpy(ptr, (unsigned char*)&m_param2, sizeof(type2)); ptr += sizeof(type2); memcpy(ptr, (unsigned char*)&m_param3, sizeof(type3)); ptr += sizeof(type3); return(true); } \
+type1 pkt ##name ::getParam1() const { return(m_param1); } \
+type2 pkt ##name ::getParam2() const { return(m_param2); } \
+type3 pkt ##name ::getParam3() const { return(m_param3); } \
+void pkt ##name ::setParam1(type1 v) { m_param1 = v; } \
+void pkt ##name ::setParam2(type2 v) { m_param2 = v; } \
+void pkt ##name ::setParam3(type3 v) { m_param3 = v; } \
+bool pkt ##name ::Decode(ucBuffer& buf) { \
+	if (!CheckID(buf)) return(false); \
+	if (buf.dataSize() < (2 + sizeof(type1) + sizeof(type2) + sizeof(type3))) return(false); \
+	buf.ignore(2); \
+	buf >> m_param1; \
+	buf >> m_param2; \
+	buf >> m_param3; \
+	return(true); \
 }
 
 /** This is for all packets that are like <packet_id>.short <id>.uint <trailing>.byte */

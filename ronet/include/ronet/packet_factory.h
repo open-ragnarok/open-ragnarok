@@ -71,7 +71,6 @@ namespace ronet {
 		DECL(GmBroad);
 		DECL(ServerTick);
 		DECL(AttackRange);
-		DECL(GuildMessage);
 		DECL(DisplayStat);
 		DECL(UpdateStatus);
 		DECL(ServerList);
@@ -94,12 +93,53 @@ namespace ronet {
 		DECL(ZenyExp);
 		DECL(StatsInfo);
 		DECL(ActorDisplay);
+		DECL(ActorSpawn);
+		DECL(ActorWalking);
 		DECL(RecvNpcTalk);
 		DECL(RecvNpcTalkNext);
 		DECL(RecvNpcTalkClose);
 		DECL(RecvNpcTalkResponses);
 		DECL(RecvNpcInputReq);
 		DECL(MapChange);
+
+		// Guild
+		//DECL(GuildAlliesEnemiesList);
+		DECL(GuildMasterMember);
+		//DECL(GuildEmblem);
+		//DECL(GuildMembersList);
+		//DECL(GuildMemberPositionChanged);
+		//DECL(GuildLeave);
+		//DECL(GuildExpulsion);
+		DECL(GuildBroken);
+		//DECL(GuildMemberSettingList);
+		//DECL(GuildSkillsList);
+		//DECL(GuildExpulsionList);
+		//DECL(GuildMembersTitleList);
+		DECL(GuildCreateResult);
+		DECL(GuildInviteResult);
+		//DECL(GuildRequest);
+		//DECL(GuildName);
+		DECL(GuildMemberOnlineStatus);
+		//DECL(GuildNotice);
+		//DECL(GuildAllyRequest);
+		DECL(GuildAlliance);
+		//DECL(GuildPositionChanged);
+		DECL(GuildMessage);
+		DECL(GuildOppositionResult);
+		DECL(GuildUnally);
+		//DECL(GuildAllianceAdded);
+		//DECL(GuildInfo);
+		DECL(GuildLocation);
+		//DECL(GuildMemberOnlineStatus2);
+
+		// Pet
+		//DECL(PetCaptureProcess);
+		DECL(PetCaptureResult);
+		DECL(PetFood);
+		//DECL(PetInfo);
+		DECL(PetInfo2);
+		DECL(PetEmotion);
+		//DECL(EggList);
 
 		void push(Packet*);
 

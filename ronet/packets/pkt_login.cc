@@ -44,8 +44,7 @@ ronet::pktLogin::pktLogin(const std::string& user, const std::string& pass, unsi
 
 bool ronet::pktLogin::PrepareData() {
 	unsigned char* ptr = buffer;
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
-	ptr += sizeof(short);
+	ptr += sizeof(short); // ID Handled by the caller
 
 	memcpy(ptr, (unsigned char*)&version, sizeof(int));
 	ptr += sizeof(int);

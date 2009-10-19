@@ -37,7 +37,7 @@ pktSendNpcResponse::pktSendNpcResponse(unsigned int npc, unsigned char number) :
 bool pktSendNpcResponse::PrepareData() {
 	unsigned char* ptr = buffer;
 
-	memcpy(ptr, (unsigned char*)&id, sizeof(short));
+	memcpy(ptr, (unsigned char*)&pktID, sizeof(short));
 	ptr += sizeof(short);
 
 	memcpy(ptr, (unsigned char*)&npc, sizeof(int));
