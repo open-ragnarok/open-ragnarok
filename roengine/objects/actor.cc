@@ -9,6 +9,18 @@ Actor::Actor() : GLObject() {
 	m_frame = 0;
 	speed = 0.2f;
 	m_dir = RO::DIR_N;
+	m_type = UnknownType;
+	id = 0;
+}
+
+Actor::Actor(Type t) : GLObject() {
+	map_x = map_y = 0;
+	dest_x = dest_y = 0;
+	m_act = 0;
+	m_frame = 0;
+	speed = 0.2f;
+	m_dir = RO::DIR_N;
+	m_type = t;
 	id = 0;
 }
 

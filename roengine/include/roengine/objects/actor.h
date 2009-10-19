@@ -10,6 +10,16 @@
  * Note: Child classes need to implement the Draw() virtual function
  */
 class Actor : public GLObject {
+public:
+	typedef enum {
+		UnknownType,
+		NpcType,
+		CharType,
+		PetType,
+		HomunculusType,
+		MercenaryType
+	} Type;
+
 protected:
 	/**
 	 * The map we are currently in.
@@ -35,6 +45,8 @@ protected:
 	/** The direction we are facing */
 	RO::CDir m_dir;
 
+	Type m_type;
+
 public:
 	/** Actor ID as assigned by the server */
 	unsigned int id;
@@ -43,6 +55,7 @@ public:
 	unsigned int type;
 
 	Actor();
+	Actor(Type);
 	virtual ~Actor();
 
 	virtual bool valid() const;

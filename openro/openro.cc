@@ -427,31 +427,75 @@ HNDL_IMPL(InventoryItems) {
 }
 
 HNDL_IMPL(ActorDisplay) {
-	if (m_npc_names.find(pkt->type) != m_npc_names.end()) {
-		NpcObj* npc = new NpcObj();
-		npc->setMap(m_map);
-		npc->open(*this, m_npc_names[pkt->type]);
-		npc->setPos((float)pkt->coord_x, (float)pkt->coord_y);
-		npc->id = pkt->id;
-		npc->type = pkt->type;
-		m_actors[pkt->id] = npc;
-		return;
-	}
+	Actor *actor = NULL;
 
 	if (m_actors.find(pkt->id) != m_actors.end()) {
-		Actor* actor = m_actors[pkt->id];
-		actor->setPos((float)pkt->coord_x, (float)pkt->coord_y);
+		// Already on the database...
+		actor = m_actors[pkt->id];
 		return;
 	}
+	else if (m_npc_names.find(pkt->type) != m_npc_names.end()) {
+		// Actor is a NPC
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[pkt->type]);
+		npc->id = pkt->id;
+		npc->type = pkt->type;
+	}
+	else if (m_job_names.find(pkt->type) != m_job_names.end()) {
+		// Actor is a player
+		CharObj *obj = new CharObj();
+		actor = obj;
+		obj->open(*this, (RO::CJob)pkt->type, (RO::CSex)pkt->sex);
+	}
+	else if (m_homunculus_names.find(pkt->type) != m_homunculus_names.end()) {
+		// Homunculus
+		HomunObj* obj = new HomunObj();
+		actor = obj;
+		obj->open(*this, m_homunculus_names[pkt->type]);
+		obj->id = pkt->id;
+		obj->type = pkt->type;
+	}
+	else if (m_mercenary_names.find(pkt->type) != m_mercenary_names.end()) {
+		// TODO: Mercenary
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[46]);
+		npc->id = pkt->id;
+		npc->type = pkt->type;
+	}
+	else if (pkt->hair_style == 0x64) {
+		// TODO: Pet
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[46]);
+		npc->id = pkt->id;
+		npc->type = pkt->type;
+	}
+	else {
+		// We're a monster!
+		// TODO: Monster
+		NpcObj* npc = new NpcObj();
+		actor = npc;
+		npc->open(*this, m_npc_names[46]);
+		npc->id = pkt->id;
+		npc->type = pkt->type;
+	}
 
-	CharObj *obj = new CharObj();
-	obj->open(*this, RO::J_NOVICE, RO::S_FEMALE);
-	obj->setPos((float)pkt->coord_x, (float)pkt->coord_y);
-	obj->setMap(m_map);
 
+	if (actor == NULL) {
+		// Should not happen. EVER.
+		_log(OPENRO__ERROR, "Invalid actor received.");
+		pkt->Dump();
+		return;
+	}
+	actor->setPos((float)pkt->coord_x, (float)pkt->coord_y);
+
+#ifdef DEBUG
 	pkt->Dump();
+#endif
 
-	m_actors[pkt->id] = obj;
+	m_actors[pkt->id] = actor;
 }
 
 HNDL_IMPL(CharLeaveScreen) {

@@ -714,6 +714,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\objects\homunobj.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\objects\npcobj.cc"
 				>
 			</File>
@@ -742,6 +746,10 @@
 				</File>
 				<File
 					RelativePath="..\include\roengine\objects\cube_object.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\objects\homunobj.h"
 					>
 				</File>
 				<File

@@ -17,6 +17,7 @@
 #include "roengine/objects/rsw_object.h"
 #include "roengine/objects/charobj.h"
 #include "roengine/objects/npcobj.h"
+#include "roengine/objects/homunobj.h"
 
 #include "ro/ro.h"
 #include "rogl/rogl.h"
@@ -106,6 +107,11 @@ protected:
 	void clearActors();
 	
 	std::map<unsigned short, std::string> m_npc_names;
+	std::map<unsigned short, std::string> m_job_names;
+	std::map<unsigned short, std::string> m_homunculus_names;
+	std::map<unsigned short, std::string> m_mercenary_names;
+
+	bool ReadTable(const char* fn, std::map<unsigned short, std::string>&);
 
 public:
 	ROEngine(const std::string& name = "");

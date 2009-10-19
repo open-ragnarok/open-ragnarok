@@ -1,19 +1,19 @@
 #include "stdafx.h"
 
-#include "roengine/objects/npcobj.h"
+#include "roengine/objects/homunobj.h"
 #include "ro/common.h"
 
-NpcObj::NpcObj() : Actor(NpcType) {
+HomunObj::HomunObj() : Actor(HomunculusType) {
 }
 
-NpcObj::~NpcObj() {
+HomunObj::~HomunObj() {
 }
 
-void NpcObj::Draw() {
+void HomunObj::Draw() {
 	if (m_map == NULL)
 		return;
 
-	if (!m_npc.valid())
+	if (!m_homun.valid())
 		return;
 
 	// Move...
@@ -53,7 +53,7 @@ void NpcObj::Draw() {
 	m_map->getWorldPosition(map_x, map_y, &wx, &wy, &wz);
 	glPopMatrix();
 
-	m_npc.setAction(m_act);
+	m_homun.setAction(m_act);
 
 	int dir = (cameraDir + m_dir) % 8;
 
@@ -61,17 +61,17 @@ void NpcObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_npc.Draw(m_tickdelay, (RO::CDir)dir); // Draw
+	m_homun.Draw(m_tickdelay, (RO::CDir)dir); // Draw
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-bool NpcObj::valid() const {
-	return(m_npc.valid());
+bool HomunObj::valid() const {
+	return(m_homun.valid());
 }
 
-bool NpcObj::open(CacheManager& cache, std::string name) {
+bool HomunObj::open(CacheManager& cache, std::string name) {
 	//Cache objects
 	ROObjectCache& objects = cache.getROObjects();
 	GLObjectCache& globjects = cache.getGLObjects();
@@ -84,7 +84,7 @@ bool NpcObj::open(CacheManager& cache, std::string name) {
 
 	char buf[256];
 	// ========== Body
-	sprintf(buf, "sprite\\npc\\%s", name.c_str());
+	sprintf(buf, "sprite\\homun\\%s", name.c_str());
 
 	// Setup filenames
 	act_n = buf;
@@ -109,8 +109,8 @@ bool NpcObj::open(CacheManager& cache, std::string name) {
 	sprgl = *cache.getSprGLObjects().get(spr_n);
 
 	// Creates an ActGL and registers it
-	m_npc.setSpr(sprgl);
-	m_npc.setAct((RO::ACT*)objects[act_n]);
+	m_homun.setSpr(sprgl);
+	m_homun.setAct((RO::ACT*)objects[act_n]);
 
 	return(true);
 }

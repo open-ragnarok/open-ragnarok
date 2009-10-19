@@ -3,7 +3,7 @@
 #include "roengine/objects/charobj.h"
 #include "ro/common.h"
 
-CharObj::CharObj() : Actor() {
+CharObj::CharObj() : Actor(CharType) {
 }
 
 CharObj::~CharObj() {
