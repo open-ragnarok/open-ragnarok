@@ -22,31 +22,27 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_INVENTORYITEMSSTACKABLE_H
+#define __RONET_PACKET_INVENTORYITEMSSTACKABLE_H
 
-#include "ronet/packets/pkt_updatestatus.h"
+#include "ronet/packet.h"
+#include "ronet/structures.h"
 
-ronet::pktUpdateStatus::pktUpdateStatus() : Packet(pktUpdateStatusID) {
+namespace ronet {
+	class RONET_DLLAPI pktInventoryItemsStackable : public Packet {
+	protected:
+		struct InventoryItem* items;
+		short item_count;
+	public:
+		pktInventoryItemsStackable();
+		virtual ~pktInventoryItemsStackable();
+
+		virtual bool Decode(ucBuffer&);
+
+		short getItemCount() const;
+		InventoryItem* getItem(short);
+	};
 }
 
-bool ronet::pktUpdateStatus::Decode(ucBuffer& buf) {
-	// Sanity Check
-	if (!CheckID(buf))
-		return(false);
+#endif /* __RONET_PACKET_INVENTORYITEMSSTACKABLE_H */
 
-	buf.ignore(2);
-
-	//Get data
-	buf >> type;
-	buf >> value;
-
-	return(true);
-}
-
-unsigned short ronet::pktUpdateStatus::getType(){
-	return type;
-}
-
-unsigned int ronet::pktUpdateStatus::getValue(){
-	return value;
-}

@@ -32,9 +32,11 @@ void DesktopService::clear() {
 void DesktopService::add(const std::string& s) {
 	slist->add(s);
 }
+
 int DesktopService::getSelected() const {
 	return (slist->getSelected());
 }
+
 void DesktopService::afterDraw(unsigned int delay) {
 	//m_ro->ProcessMouse();
 }

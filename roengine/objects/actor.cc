@@ -11,6 +11,7 @@ Actor::Actor() : GLObject() {
 	m_dir = RO::DIR_N;
 	m_type = UnknownType;
 	id = 0;
+	m_visible = true;
 }
 
 Actor::Actor(Type t) : GLObject() {
@@ -22,6 +23,7 @@ Actor::Actor(Type t) : GLObject() {
 	m_dir = RO::DIR_N;
 	m_type = t;
 	id = 0;
+	m_visible = true;
 }
 
 Actor::~Actor() {
@@ -65,4 +67,16 @@ void Actor::setPos(float x, float y) {
 void Actor::setDest(float x, float y) {
 	dest_x = x;
 	dest_y = y;
+}
+
+void Actor::setVisible(bool v) {
+	m_visible = v;
+}
+
+bool Actor::isVisible() const {
+	return(m_visible);
+}
+
+Actor::Type Actor::getType() const {
+	return(m_type);
 }

@@ -109,6 +109,17 @@ void Font::drawTextBox(float x, float y, float w, float h, const char *str, ...)
 	delete[] sbuf;
 }
 
+void Font::getSize(const char* text, int* w, int* h) const {
+	unsigned short *stext;
+	int len = strlen(text);
+	stext = new unsigned short[len];
 
+	for (int i = 0; i < len; i++) {
+		stext[i] = text[i];
+	}
+	getSize(stext, w, h);
+
+	delete[] stext;
+}
 
 }

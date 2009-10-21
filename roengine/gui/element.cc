@@ -51,65 +51,15 @@ std::string Element::createName() {
 }
 
 Element::Element() {
-	m_parent = NULL;
-	m_focusable = true;
-	m_transparent = false;
-	m_stransparent = false;
-	m_opacity = 1.0f;
-	m_visible = true;
-	m_fullscreen = false;
-	m_MouseIn = false;
-	pos_x = 0;
-	pos_y = 0;
-	w = 0;
-	h = 0;
-	m_active_child = NULL;
-	mw = mh = 0;
-	mx = my = 0;
-
-	m_elements.add(this);
+	_init();
 }
 
 Element::Element(Element* parent) {
-	m_parent = parent;
-	m_focusable = true;
-	m_transparent = false;
-	m_stransparent = false;
-	m_opacity = 1.0f;
-	m_visible = true;
-	m_fullscreen = false;
-	m_enabled = true;
-	m_MouseIn = false;
-	pos_x = 0;
-	pos_y = 0;
-	MaxLen = 0;
-	w = 0;
-	h = 0;
-	m_active_child = NULL;
-	mw = mh = 0;
-	mx = my = 0;
-
-	m_elements.add(this);
+	_init(parent);
 }
 
 Element::Element(Element* parent, const TiXmlElement* node, CacheManager& cache) {
-	m_parent = parent;
-	m_focusable = true;
-	m_transparent = false;
-	m_stransparent = false;
-	m_opacity = 1.0f;
-	m_visible = true;
-	m_fullscreen = false;
-	m_MouseIn = false;
-	pos_x = 0;
-	pos_y = 0;
-	w = 0;
-	h = 0;
-	m_active_child = NULL;
-	mw = mh = 0;
-	mx = my = 0;
-
-	m_elements.add(this);
+	_init(parent);
 
 	if (node != NULL)
 		ParseFromXml(node, cache);
@@ -119,6 +69,16 @@ Element::Element(Element* parent, const std::string& background, CacheManager& c
 	TextureManager& tm = cache.getTextureManager();
 	FileManager& fm = cache.getFileManager();
 
+	_init(parent);
+
+	sdle::Texture ptr = tm.Register(fm, background);
+	if (ptr.Valid()) {
+		texture = ptr;
+		setSize(texture.getWidth(), texture.getHeight());
+	}
+}
+
+void Element::_init(Element* parent) {
 	m_parent = parent;
 	m_focusable = true;
 	m_transparent = false;
@@ -138,12 +98,6 @@ Element::Element(Element* parent, const std::string& background, CacheManager& c
 	mx = my = 0;
 
 	m_elements.add(this);
-
-	sdle::Texture ptr = tm.Register(fm, background);
-	if (ptr.Valid()) {
-		texture = ptr;
-		setSize(texture.getWidth(), texture.getHeight());
-	}
 }
 
 Element::Cache& Element::getCache() {
@@ -638,6 +592,10 @@ bool Element::HandleMouseMove(const int& x, const int& y, const int& dx, const i
 		return(false);
 	return(m_parent->HandleMouseMove(x, y, dx ,dy));*/
 
+#ifdef DEBUG
+	//std::cout << name << "::MouseMove (" << x << ", " << y << ")" << " d(" << dx << ", " << dy << ")" << std::endl;
+#endif
+
 	std::vector<Element*>::iterator itr = m_children.begin();
 
 	while (itr != m_children.end()) {
@@ -659,6 +617,10 @@ bool Element::HandleMouseDown(int x, int y, int button) {
 	if (!m_enabled)
 		return(false);
 
+#ifdef DEBUG
+	//std::cout << name << "::MouseDown (" << x << ", " << y << ")" << std::endl;
+#endif
+
 	std::vector<Element*>::iterator itr = m_children.begin();
 
 	while (itr != m_children.end()) {
@@ -674,7 +636,9 @@ bool Element::HandleMouseDown(int x, int y, int button) {
 }
 
 bool Element::HandleMouseRelease(int x, int y, int button) {
+#ifdef DEBUG
 	//std::cout << name << "::MouseUp (" << x << ", " << y << ")" << std::endl;
+#endif
 
 	std::vector<Element*>::iterator itr = m_children.begin();
 

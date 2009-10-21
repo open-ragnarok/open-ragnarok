@@ -247,5 +247,10 @@ bool RONet::NPCResponse(unsigned int id, unsigned char num) {
 	return(true);
 }
 
+bool RONet::sendAction(int id, unsigned char flag) {
+	ronet::pktActionRequest pkt(id, flag);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
 
 }

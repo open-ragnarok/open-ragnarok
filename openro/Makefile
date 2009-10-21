@@ -4,7 +4,17 @@ RM=rm -f
 CP=cp
 MKDIR=mkdir -p
 
-CFLAGS=-Wall -g -I. -I../roint/include -I../ronet/include -I../rogl/include -I../roengine/include
+CFLAGS=-I. -I../roint/include -I../ronet/include -I../rogl/include -I../roengine/include -I../sdl_engine/include -DUNICODE
+LDFLAGS=-L../roint -L../rogl -L../ronet -L../roengine -L../sdl_engine \
+	-lroengine -lrogl.dll -lronet.dll -lroint.dll -lsdle.dll -lopengl32 -lglu32 -lwsock32 -lz -lmingw32 -lSDLmain -lSDL -mwindows 
+	
+#DEBUG
+CFLAGS+=-g -Wall
+#LOGSYS
+CFLAGS+=-DUSE_LOGSYS -I../logsys/include
+LDFLAGS+=-L../logsys -llogsys
+#RELEASE
+#CFLAGS+=-O2
 
 DEPDIR=.deps
 OBJDIR=.objs
@@ -13,15 +23,13 @@ TARGET=openro.exe
 
 SRC=main.cc openro.cc gui_act.cc \
 	gui/desktop_char.cc gui/desktop_create.cc gui/desktop_login.cc gui/desktop_service.cc \
-	gui/ro_desktop.cc
+	gui/ro_desktop.cc gui/desktop_ingame.cc
 
 OBJ=$(SRC:%.cc=$(OBJDIR)/%.o)
 DEPS=$(SRC:%.cc=$(DEPDIR)/%.P)
 
 PREFIX=/usr/local
 
-LDFLAGS=-L../roint -L../rogl -L../ronet -L../roengine \
-	-lroengine -lrogl -lronet -lroint -lopengl32 -lglu32 -lwsock32 -lz -lmingw32 -lSDLmain -lSDL -mwindows 
 
 all: $(TARGET)
 
@@ -52,15 +60,6 @@ $(DEPDIR)/%.P: $(DEPDIR)/%.d
 	    -e '/^$$/ d' -e 's/$$/ :/' < $< >> $@; \
 	$(RM) $<	
 
-# Shared objects
-$(OBJDIR)/%.lo: %.cc $(DEPDIR)/%.P
-	@if test ! -d $(OBJDIR);\
-		then mkdir $(OBJDIR);\
-		mkdir $(OBJDIR)/gui;\
-		mkdir $(OBJDIR)/objects;\
-	fi
-	$(CC) -fPIC $(CFLAGS) -c -o $@ $<
-
 # Regular objects
 $(OBJDIR)/%.o: %.cc $(DEPDIR)/%.P
 	@if test ! -d $(OBJDIR);\
@@ -68,4 +67,4 @@ $(OBJDIR)/%.o: %.cc $(DEPDIR)/%.P
 		mkdir $(OBJDIR)/gui;\
 		mkdir $(OBJDIR)/objects;\
 	fi
-	$(CC) $(CFLAGS) -DROINT_STATIC -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<

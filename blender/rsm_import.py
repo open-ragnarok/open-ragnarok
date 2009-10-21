@@ -55,9 +55,8 @@ from Blender import Texture,Image,Material
 from Blender.Window import EditMode, GetCursorPos, GetViewQuat
 
 # RO stuff
-#import ro
-from ro.rsm import *
-from ro.strings import *
+from pyroint.rsm import *
+from pyroint.strings import *
 
 import locale
 

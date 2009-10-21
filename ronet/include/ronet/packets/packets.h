@@ -56,6 +56,7 @@
 #include "pkt_servertick.h"			//[kR105]
 #include "pkt_playerequip.h"
 #include "pkt_inventoryitems.h"
+#include "pkt_inventoryitemsstackable.h"
 #include "pkt_statinfo.h"
 //#include "pkt_statinfo2.h"
 #include "pkt_hotkeylist.h"
@@ -80,5 +81,6 @@
 #include "pkt_sendnpcresponse.h"
 #include "pkt_actormove.h"
 #include "pkt_actoraction.h"
+#include "pkt_actionrequest.h"
 
 #endif /* __RONET_PACKETS_PACKETS_H */

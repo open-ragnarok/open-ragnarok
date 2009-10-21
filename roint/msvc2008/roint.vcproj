@@ -720,6 +720,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\log.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\ro\ro.h"
 				>
 			</File>

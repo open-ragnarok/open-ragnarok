@@ -47,7 +47,9 @@ bool RsmObject::loadTextures(CacheManager& cm) {
 	return(true);
 }
 
-void RsmObject::DrawBoundingBox(const RO::RSM::BoundingBox& box) {
+void RsmObject::DrawBoundingBox() const {
+	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
+
 	float vertices[8][3] = {
 		{ box.max.c.x, box.max.c.y, box.max.c.z }, // 0
 		{ box.max.c.x, box.max.c.y, box.min.c.z }, // 1
@@ -271,9 +273,22 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 }
 
 void RsmObject::Draw() {
-	if (m_frustum != NULL)
-		if (!isInFrustum(*m_frustum))
-			return;
+#if 0
+	if (m_frustum != NULL) {
+		if (!isInFrustum(*m_frustum)) {
+			float f[4];
+			glGetFloatv(GL_CURRENT_COLOR, f);
+			glColor3f(1, 0, 0);
+			DrawBoundingBox();
+			glColor4fv(f);
+			//return;
+		}
+		else {
+			DrawBoundingBox();
+		}
+	}
+#endif
+
 	if (is_static) {
 		if (glIsList(rsm_gl)) {
 			glCallList(rsm_gl);

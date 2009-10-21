@@ -52,4 +52,8 @@ bool pktActorAction::Decode(ucBuffer& buf) {
 	return(true);
 }
 
+void pktActorAction::Dump() const {
+
+}
+
 }

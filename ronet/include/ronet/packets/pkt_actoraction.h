@@ -45,10 +45,7 @@ namespace ronet {
 
 		bool Decode(ucBuffer& buf);
 
-		unsigned int getId();
-		void getStart(int*, int*) const;
-		void getDest(int*, int*) const;
-		unsigned int getTicks() const;
+		void Dump() const;
 	};
 }
 

@@ -43,6 +43,8 @@ struct InventoryItem {
 	short equipped;
 	char broken;
 	char upgrade;
+	short amount;
+	unsigned int expire;
 	char cards[12]; // Packet 0295 uses 12 bytes. All others uses 8.
 };
 
@@ -87,12 +89,11 @@ struct CharInformation {
 };
 
 struct SkillInformation {
-	int id;
-	int target_type;
-	int unknown;
+	unsigned short id;
+	unsigned int target_type;
 	unsigned short level;
-	int sp;
-	int range;
+	unsigned short sp;
+	unsigned short range;
 	char name[24];
 	char up;
 };

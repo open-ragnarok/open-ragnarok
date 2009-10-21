@@ -5,12 +5,19 @@
 #define OPENRO__ERROR 15002
 #define OPENRO__TRACE 15003
 
-#ifndef USE_LOGSYS
-#define _log(id, data, ...)
-#define _hexlog(id, data, size)
+#ifdef USE_LOGSYS
+#	include "logsys/logsys_macros.h"
+#	include "logsys/logsys.h"
 #else
-#define _log(id, data, ...) LogSys::GetSingleton()->log(id, data, __VA_ARGS__)
-#define _hexlog(id, data, size) LogSys::GetSingleton()->hexlog(id, data, size)
+#	ifdef _MSC_VER
+#		define _log(id, data, ...)
+#		define _logif(statement, id, data, ...)
+#	else
+#		define _log(id, data...)
+#		define _logif(statement, id, data...)
+#	endif
+#	define _hexlog(id, data, size)
 #endif
+
 
 #endif /* __LOG_H */

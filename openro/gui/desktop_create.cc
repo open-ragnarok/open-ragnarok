@@ -70,10 +70,6 @@ bool DesktopCreate::handleBtnStyleDown(GUI::Event&) {
 
 
 void DesktopCreate::readObjects() {
-	TextureManager& tm = m_ro->getTextureManager();
-	FileManager& fm = m_ro->getFileManager();
-	ROObjectCache& ro_objects = m_ro->getROObjects();
-
 	// body: data\sprite\<humans>\<body>\<sex>\<novice>_<sex>
 	// head: data\sprite
 	// 1 = archer

@@ -150,12 +150,14 @@ LogSys& LogSys::hexlog(t_logid identifier, const unsigned char* buf, unsigned in
 		tbuf[tbufpos++] = c;
 	}
 	int rest = 16 - (pos % 16);
-	if (rest >= 8)
-		fprintf(out, " ");
-	for (int i = 0; i < rest; i++)
-		fprintf(out, "   ");
+	if (rest < 16) {
+		if (rest >= 8)
+			fprintf(out, " ");
+		for (int i = 0; i < rest; i++)
+			fprintf(out, "   ");
+	}
 	tbuf[tbufpos] = 0;
 	fprintf(out, "| %s\n", tbuf);
-
+	fflush(out);
 	return(*this);
 }

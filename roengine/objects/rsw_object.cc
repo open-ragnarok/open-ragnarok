@@ -32,6 +32,16 @@ RswObject::~RswObject() {
 		glDeleteLists(m_watergl, 1);
 	if (glIsList(gnd_gl))
 		glDeleteLists(gnd_gl, 1);
+
+
+	for (unsigned int i = 0; i < rsw->getObjectCount(); i++) {
+		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
+		if (rswobj == NULL)
+			continue;
+		if (m_cache.getGLObjects().exists(rswobj->name)) {
+			m_cache.getGLObjects().remove(rswobj->name);
+		}
+	}
 }
 
 const RO::RSW* RswObject::getRSW() const {
@@ -180,7 +190,7 @@ bool RswObject::loadTextures(CacheManager& cache) {
 		texname += gnd->getTexture(i).path;
 		tex = tm.Register(fm, texname);
 		if (!tex.Valid()) {
-			fprintf(stderr, "Warning: Texture not found: %s\n", texname);
+			fprintf(stderr, "Warning: Texture not found: %s\n", texname.c_str());
 		}
 		textures.add(tex);
 	}
@@ -238,6 +248,10 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 	RsmObject* rsmobject;
 	char fn[128];
 	unsigned int i;
+
+	float xoffset = m_tilesize * obj->gnd->getWidth() / 2;
+	float yoffset = m_tilesize * obj->gnd->getHeight() / 2;
+
 	for (i = 0; i < rsw->getObjectCount(); i++) {
 		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
 		if (rswobj == NULL)
@@ -253,6 +267,11 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 		rsm = (RO::RSM*)cache.getROObjects()[fn];
 		rsmobject = new RsmObject(rsm, rswobj);
 		rsmobject->loadTextures(cache);
+		float x = rsmobject->getPos().getX() + xoffset;
+		float y = rsmobject->getPos().getY();
+		float z = rsmobject->getPos().getZ() + yoffset;
+
+		rsmobject->setPos(x, y, z);
 
 		cache.getGLObjects().add(rswobj->name, rsmobject);
 	}
@@ -469,7 +488,9 @@ void RswObject::DrawObjects() {
 	sizey = m_tilesize * gnd->getHeight();
 
 	glPushMatrix();
-	glTranslatef(sizex / 2, 0, sizey / 2);
+	//glTranslatef(sizex / 2, 0, sizey / 2);
+	//Frustum f;
+	//f.Calculate();
 
 	for (i = 0; i < rsw->getObjectCount(); i++) {
 		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
@@ -477,6 +498,7 @@ void RswObject::DrawObjects() {
 			continue;
 
 		if (cache.exists(rswobj->name)) {
+			//cache[rswobj->name]->Render(m_tickdelay, &f);
 			cache[rswobj->name]->Render(m_tickdelay, m_frustum);
 		}
 	}

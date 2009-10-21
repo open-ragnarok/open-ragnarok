@@ -36,6 +36,7 @@ namespace ronet {
 	RONET_GENERIC_ID_DECL(RecvNpcInputReq);
 	RONET_GENERIC_ID_DECL(RecvNpcTalkClose);
 	RONET_GENERIC_2PARAM_DECL(StatChanged, short, short);
+	RONET_GENERIC_3PARAM_DECL(ActorStop, unsigned int, unsigned short, unsigned short);
 	
 	// Guild
 	RONET_GENERIC_ID_DECL(GuildMasterMember);

@@ -142,6 +142,7 @@ void ROEngine::ReadIni(const std::string& name) {
 	ReadTable("joblist.txt", m_job_names);
 	ReadTable("homunculuslist.txt", m_homunculus_names);
 	ReadTable("mercenarylist.txt", m_mercenary_names);
+	ReadTable("moblist.txt", m_mob_names);
 }
 
 bool ROEngine::ReadTable(const char* fn, std::map<unsigned short, std::string>& list) {
@@ -289,7 +290,8 @@ void ROEngine::DrawMap() {
 	std::map<unsigned int, Actor*>::iterator itr;
 	itr = m_actors.begin();
 	while (itr != m_actors.end()) {
-		itr->second->Render(50, &m_frustum, m_cameradir);
+		if (itr->second->isVisible())
+			itr->second->Render(50, &m_frustum, m_cameradir);
 		itr++;
 	}
 
@@ -374,16 +376,23 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 				mapy = m_map->getMouseMapY();
 
 				if (m_overactor != NULL) {
-					if (m_npc_names.find(m_overactor->type) != m_npc_names.end()) {
-						if (m_overactor->type == 45) {
-							// Yeah, yeah... We click on the portal and move to it.
-							// The server handles the warp by walking into the portal location
-							// Kudos to FlavioJS.
-							clickPortal(mapx, mapy, (NpcObj*)m_overactor);
-							clickMap(mapx, mapy);
-						}
-						else {
-							clickNpc(mapx, mapy, (NpcObj*)m_overactor);
+					if (m_overactor->typeID == 45) {
+						// Yeah, yeah... We click on the portal and move to it.
+						// The server handles the warp by walking into the portal location
+						// Kudos to FlavioJS.
+						clickPortal(mapx, mapy, (NpcObj*)m_overactor);
+						clickMap(mapx, mapy);
+					}
+					else {
+						switch(m_overactor->getType()) {
+							case Actor::NpcType:
+								clickNpc(mapx, mapy, (NpcObj*)m_overactor);
+								break;
+							case Actor::MobType:
+								clickMob(mapx, mapy, (MobObj*)m_overactor);
+								break;
+							default:
+								printf("Unhandled actor click. Type %d\n", m_overactor->typeID);
 						}
 					}
 				}
@@ -417,6 +426,7 @@ bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int
 	//Save the mouse pos to draw the spr cursor
 	mousex = x;
 	mousey = y;
+	//printf("ROEngine:: Moving mouse (%d, %d), d(%d, %d)\n", x, y, dx, dy);
 
 	m_overactor = NULL;
 
@@ -455,9 +465,9 @@ void ROEngine::ProcessMouse(int xless, int yless){
 	}
 	else if (m_overactor != NULL) {
 		// TODO: Check if Another player
-		if (m_npc_names.find(m_overactor->type) != m_npc_names.end()) {
+		if (m_npc_names.find(m_overactor->typeID) != m_npc_names.end()) {
 			action = 1; // npc
-			if (m_overactor->type == 45)
+			if (m_overactor->typeID == 45)
 				action = 7; // portal
 		}
 		else {
@@ -494,7 +504,9 @@ int ROEngine::getMouseY(){return mousey;}
 
 // Placeholders
 void ROEngine::clickMap(int x, int y) {}
-void ROEngine::clickMob(int x, int y) {}
+void ROEngine::clickMob(int x, int y, MobObj* obj) {
+	printf("Clicked Mob 0x%08x at %d,%d\n", obj->id, x, y);
+}
 void ROEngine::clickItem(int x, int y) {}
 void ROEngine::clickPortal(int x, int y, NpcObj* npc) {
 	printf("Clicked Portal 0x%08x at %d,%d\n", npc->id, x, y);

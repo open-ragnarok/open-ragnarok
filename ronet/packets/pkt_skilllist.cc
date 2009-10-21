@@ -45,7 +45,6 @@ bool pktSkillList::Decode(ucBuffer& buf) {
 
 	buf.ignore(2);
 	buf >> len_list;
-	buf.ignore(2);
 
 	//Calculate number of skills received
 	nskill = (len_list - 4) / 37; // 4 = length of id + size
@@ -56,26 +55,17 @@ bool pktSkillList::Decode(ucBuffer& buf) {
 
 	//Read skill data
 	for(int i = 0; i < nskill; i++){
-		_log(RONET__DEBUG, "Skill %d:", i);
 		buf >> p_skills[i].id;
-		_log(RONET__DEBUG, "\t ID: %d", p_skills[i].id);
 		buf >> p_skills[i].target_type;
-		_log(RONET__DEBUG, "\t TARGET TYPE: %d", p_skills[i].target_type);
-		buf >> p_skills[i].unknown;
-		_log(RONET__DEBUG, "\t Unk: %d", p_skills[i].unknown);
 		buf >> p_skills[i].level;
-		_log(RONET__DEBUG, "\t Level: %d", p_skills[i].level);
 		buf >> p_skills[i].sp;
-		_log(RONET__DEBUG, "\t SP: %d", p_skills[i].sp);
 		buf >> p_skills[i].range;
-		_log(RONET__DEBUG, "\t Range: %d", p_skills[i].range);
 		buf.read((unsigned char*)p_skills[i].name, 24);
-		_log(RONET__DEBUG, "\t Name: %s", p_skills[i].name);
 		buf >> p_skills[i].up;
-		_log(RONET__DEBUG, "\t Up: %d", p_skills[i].up);
+		_log(RONET__DEBUG, "\tSkill %d: (%s)", p_skills[i].id, p_skills[i].name);
 	}
 
-	buf.ignore(6);
+	// buf.ignore(6); //?????
 	return(true);
 }
 

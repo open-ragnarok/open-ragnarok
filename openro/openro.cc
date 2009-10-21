@@ -185,9 +185,12 @@ void OpenRO::ProcessNetwork() {
 			HANDLEPKT(ActorDisplay, true);
 			HANDLEPKT(ActorSpawn, true);
 			HANDLEPKT(ActorWalking, true);
+			HANDLEPKT(ActorMove, true);
+			HANDLEPKT(ActorStop, true);
+			HANDLEPKT(ActorAction, true);
 
 			default:
-				_log(OPENRO__ERROR, "Unhandled packet id %d (length: %d)", pkt->getID(), pkt->size());
+				_log(OPENRO__ERROR, "Unhandled packet id 0x%04x (length: %d)", pkt->getID(), pkt->size());
 		}
 
 		if (delpkt)
@@ -314,7 +317,10 @@ void OpenRO::KeepAliveMap(){
 	//_log(OPENRO__DEBUG, "MapServer KeepAlive sent.");
 }
 
-unsigned int OpenRO::GetAccountID(){return m_serverlist->getAccountId();}
+unsigned int OpenRO::GetAccountID(){
+	return m_serverlist->getAccountId();
+}
+
 unsigned char OpenRO::GetAccountSex(){
 	unsigned char male = 0x01; //m
 	unsigned char female = 0x02; //f
@@ -330,6 +336,7 @@ unsigned char OpenRO::GetAccountSex(){
 		return 0;
 	}
 }
+
 unsigned int OpenRO::GetClientVersion(){
 	return(m_clientversion);
 }
@@ -340,6 +347,12 @@ void OpenRO::clickMap(int x, int y) {
 
 void OpenRO::clickNpc(int x, int y, NpcObj* npc) {
 	m_network.Talk(npc->id);
+}
+
+void OpenRO::clickMob(int x, int y, MobObj* mob) {
+	m_network.MoveCharacter(x, y); // Need this?
+	m_network.sendAction(mob->id, 7);
+	_log(OPENRO__DEBUG, "Attacking mob %d", mob->id);
 }
 
 void OpenRO::clickPortal(int x, int y, NpcObj* npc) {
@@ -416,7 +429,6 @@ void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
 		NpcObj* npc = new NpcObj();
 		actor = npc;
 		npc->open(*this, m_npc_names[info->type]);
-		npc->type = info->type;
 	}
 	else if (m_job_names.find(info->type) != m_job_names.end()) {
 		// Actor is a player
@@ -429,32 +441,27 @@ void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
 		HomunObj* obj = new HomunObj();
 		actor = obj;
 		obj->open(*this, m_homunculus_names[info->type]);
-		obj->type = info->type;
 	}
 	else if (m_mercenary_names.find(info->type) != m_mercenary_names.end()) {
 		// TODO: Mercenary
 		NpcObj* npc = new NpcObj();
 		actor = npc;
 		npc->open(*this, m_npc_names[46]);
-		npc->type = info->type;
-		_log(OPENRO__TRACE, "Warning: Unhandled actor type %d", info->type);
+		_log(OPENRO__TRACE, "Warning: Unhandled mercenary actor type %d", info->type);
 	}
 	else if (info->hair_style == 0x64) {
 		// TODO: Pet
 		NpcObj* npc = new NpcObj();
 		actor = npc;
 		npc->open(*this, m_npc_names[46]);
-		npc->type = info->type;
-		_log(OPENRO__TRACE, "Warning: Unhandled actor type %d", info->type);
+		_log(OPENRO__TRACE, "Warning: Unhandled pet actor type %d", info->type);
 	}
 	else {
 		// We're a monster!
-		// TODO: Monster
-		NpcObj* npc = new NpcObj();
-		actor = npc;
-		npc->open(*this, m_npc_names[46]);
-		npc->type = info->type;
-		_log(OPENRO__TRACE, "Warning: Unhandled actor type %d", info->type);
+		MobObj* obj = new MobObj();
+		actor = obj;
+		obj->open(*this, m_mob_names[info->type]);
+		// _log(OPENRO__TRACE, "Monster type %d (id %d)", info->type, info->id);
 	}
 
 	if (actor == NULL) {
@@ -463,13 +470,14 @@ void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
 		return;
 	}
 
+	actor->typeID = info->type;
 	actor->setMap(m_map);
 	actor->setDirection((RO::CDir)info->dir);
 	actor->id = info->id;
 	actor->setPos((float)info->coord_x, (float)info->coord_y);
 
-#ifdef DEBUG
-	_log(OPENRO__DEBUG, "Dumping pktActorDisplay");
+#if 0
+	_log(OPENRO__DEBUG, "Dumping ActorInfo");
 	_log(OPENRO__DEBUG, "\tID: %d", info->id);
 	_log(OPENRO__DEBUG, "\tWalk speed: %d", info->walk_speed);
 	_log(OPENRO__DEBUG, "\t: %d", info->opt1);
@@ -510,6 +518,61 @@ HNDL_IMPL(RecvNpcTalkResponses) {
 	unsigned int i;
 	for (i = 0; i < s; i++) {
 		dskIngame->AddNpcOption(pkt->getLine(i));
+	}
+}
+
+HNDL_IMPL(ActorMove) {
+	if (m_actors.find(pkt->getId()) == m_actors.end()) {
+		_log(OPENRO__ERROR, "Received move request for actor id %d, but not actor found in database.", pkt->getId());
+		return;
+	}
+
+	int x, y;
+	Actor* actor = m_actors[pkt->getId()];
+	pkt->getStart(&x, &y);
+	actor->setPos((float)x, (float)y);
+	pkt->getDest(&x, &y);
+	actor->setDest((float)x, (float)y);
+	actor->setVisible(true);
+}
+
+HNDL_IMPL(ActorStop) {
+	if (m_actors.find(pkt->getParam1()) == m_actors.end()) {
+		_log(OPENRO__ERROR, "Received stop request for actor id %d, but not actor found in database.", pkt->getParam1());
+		return;
+	}
+
+	Actor* actor = m_actors[pkt->getParam1()];
+	actor->setPos((float)pkt->getParam2(), (float)pkt->getParam3());
+	actor->setVisible(true);
+}
+
+HNDL_IMPL(ActorAction) {
+/* From OpenKore
+	# type=01 pick up item
+	# type=02 sit down
+	# type=03 stand up
+	# type=04 reflected/absorbed damage?
+	# type=08 double attack
+	# type=09 don't display flinch animation (endure)
+	# type=0a critical hit
+	# type=0b lucky dodge
+*/
+	switch(pkt->type) {
+		case 0:
+			printf("DAMAGE: %d->%d. Amount: %d\n", pkt->sourceID, pkt->targetID, pkt->damage);
+			break;
+		case 1:
+			_log(OPENRO__DEBUG, "User %d get item %d", pkt->sourceID, pkt->targetID);
+			break;
+		case 2:
+			_log(OPENRO__DEBUG, "User %d sits down", pkt->sourceID);
+			break;
+		case 3:
+			_log(OPENRO__DEBUG, "Damage? %d->%d, damage: %d", pkt->sourceID, pkt->targetID, pkt->damage);
+			break;
+		default:
+			_log(OPENRO__DEBUG, "Type: %d, source: %d, dest: %d, damage: %d", pkt->type, pkt->sourceID, pkt->targetID, pkt->damage);
 	}
 }
 
@@ -557,8 +620,8 @@ HNDL_IMPL(CharLeaveScreen) {
 
 	if (itr != m_actors.end()) {
 		actor = itr->second;
-		m_actors.erase(itr);
-		delete(actor);
+		actor->setVisible(false);
+		//delete(actor);
 	}
 }
 

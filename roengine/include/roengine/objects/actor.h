@@ -17,7 +17,9 @@ public:
 		CharType,
 		PetType,
 		HomunculusType,
-		MercenaryType
+		MercenaryType,
+		MobType,
+		ItemType
 	} Type;
 
 protected:
@@ -42,6 +44,8 @@ protected:
 	/** The speed */
 	float speed;
 
+	bool m_visible;
+
 	/** The direction we are facing */
 	RO::CDir m_dir;
 
@@ -52,7 +56,7 @@ public:
 	unsigned int id;
 
 	/** Actor Type as assigned by the server */
-	unsigned int type;
+	unsigned int typeID;
 
 	Actor();
 	Actor(Type);
@@ -80,6 +84,10 @@ public:
 	 * The character will move to the position with the given speed.
 	 */
 	void setDest(float x, float y);
+
+	void setVisible(bool);
+	bool isVisible() const;
+	Type getType() const;
 };
 
 #endif /* __ROENGINE_ACTOR_H */

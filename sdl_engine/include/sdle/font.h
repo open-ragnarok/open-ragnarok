@@ -7,6 +7,12 @@
 
 namespace sdle {
 
+#ifdef UNICODE
+	typedef unsigned short Char;
+#else
+	typedef char Char;
+#endif
+
 typedef struct strRect {
 	float x, y;
 	float w, h;
@@ -62,6 +68,11 @@ public:
 	 * Retrieves the size (width and height) of the given text
 	 */
 	virtual void getSize(const unsigned short* text, int* w, int* h) const = 0;
+
+	/**
+	 * Retrieves the size (width and height) of the given text
+	 */
+	void getSize(const char* text, int* w, int* h) const;
 };
 
 }

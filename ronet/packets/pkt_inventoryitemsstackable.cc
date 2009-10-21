@@ -24,29 +24,59 @@
 */
 #include "stdafx.h"
 
-#include "ronet/packets/pkt_updatestatus.h"
+#include "ronet/packets/pkt_inventoryitemsstackable.h"
 
-ronet::pktUpdateStatus::pktUpdateStatus() : Packet(pktUpdateStatusID) {
+
+namespace ronet {
+
+pktInventoryItemsStackable::pktInventoryItemsStackable() : Packet(pktInventoryItemsStackableID) {
+	items = NULL;
+	item_count = 0;
 }
 
-bool ronet::pktUpdateStatus::Decode(ucBuffer& buf) {
+pktInventoryItemsStackable::~pktInventoryItemsStackable() {
+	if (items != NULL)
+		delete[] items;
+}
+
+short pktInventoryItemsStackable::getItemCount() const {
+	return(item_count);
+}
+InventoryItem* pktInventoryItemsStackable::getItem(short idx) {
+	if (idx < 0 || idx >= item_count)
+		return(NULL);
+
+	return(&items[idx]);
+}
+
+bool pktInventoryItemsStackable::Decode(ucBuffer& buf) {
 	// Sanity Check
 	if (!CheckID(buf))
 		return(false);
 
 	buf.ignore(2);
 
-	//Get data
-	buf >> type;
-	buf >> value;
+	short pktsize;
+	buf >> pktsize;
+	pktsize -= 4;
+
+	item_count = pktsize / 18; // Each item uses 18 bytes
+
+	items = new struct InventoryItem[item_count];
+	memset((void*)items, 0, sizeof(struct InventoryItem) * item_count);
+
+	for (short x = 0; x < item_count; x++) {
+		buf >> items[x].index;
+		buf >> items[x].id;
+		buf >> items[x].type;
+		buf.ignore(3); // 3 unknown bytes
+		buf >> items[x].amount;
+		buf.read((unsigned char*)items[x].cards, 8);
+		items[x].identified = 1;
+	}
 
 	return(true);
 }
 
-unsigned short ronet::pktUpdateStatus::getType(){
-	return type;
-}
 
-unsigned int ronet::pktUpdateStatus::getValue(){
-	return value;
 }

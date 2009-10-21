@@ -24,9 +24,9 @@ namespace sdle {
  * The data (2 bytes per pixel, resulting in a buffer size of (texture_width * texture_height * 2) long.
  */
 
-GLFFont* Font_Arabia8;
-GLFFont* Font_Arial8;
-GLFFont* Font_Arial10;
+GLFFont* GLFFont::Arabia8 = NULL;
+GLFFont* GLFFont::Arial8 = NULL;
+GLFFont* GLFFont::Arial10 = NULL;
 
 GLFFont::GLFFont() : Font() {
 	m_font.Char = NULL;

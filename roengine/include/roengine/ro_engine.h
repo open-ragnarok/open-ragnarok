@@ -18,6 +18,7 @@
 #include "roengine/objects/charobj.h"
 #include "roengine/objects/npcobj.h"
 #include "roengine/objects/homunobj.h"
+#include "roengine/objects/mobobj.h"
 
 #include "ro/ro.h"
 #include "rogl/rogl.h"
@@ -110,6 +111,7 @@ protected:
 	std::map<unsigned short, std::string> m_job_names;
 	std::map<unsigned short, std::string> m_homunculus_names;
 	std::map<unsigned short, std::string> m_mercenary_names;
+	std::map<unsigned short, std::string> m_mob_names;
 
 	bool ReadTable(const char* fn, std::map<unsigned short, std::string>&);
 
@@ -123,7 +125,7 @@ public:
 
 	/** Event raised when the user left-clicks a map and there is nothing (mob, items, portals, etc) on the clicked place */
 	virtual void clickMap(int x, int y);
-	virtual void clickMob(int x, int y);
+	virtual void clickMob(int x, int y, MobObj* mob);
 	virtual void clickNpc(int x, int y, NpcObj* npc);
 	virtual void clickItem(int x, int y);
 	virtual void clickPortal(int x, int y, NpcObj* portal);

@@ -3,12 +3,15 @@
 #define __STDAFX_H
 
 #define __ROENGINE_NO_AUTOIMPORT_LIB__
-#define _CRT_SECURE_NO_WARNINGS
 
 #ifdef _MSC_VER
+#	define _CRT_SECURE_NO_WARNINGS
 #	include <windows.h>
 #	include <SDL.h>
 #	pragma warning(disable: 4251)
+#else
+#	include <SDL/SDL.h>
+#	include "sdle/sdl_engine.h"
 #endif
 
 #ifndef ROENGINE_STATIC
@@ -19,9 +22,9 @@
 #	include "rogl/rogl_static.h"
 #endif
 
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
 #ifdef _MSC_VER
+#	pragma comment(lib, "opengl32.lib")
+#	pragma comment(lib, "glu32.lib")
 #	pragma comment(lib, "sdl.lib")
 #endif
 

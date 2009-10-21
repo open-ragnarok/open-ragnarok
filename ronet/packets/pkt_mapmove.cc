@@ -59,8 +59,8 @@ bool pktMapMove::PrepareData() {
 	// Packet is like this: 8500 xxxxxxxxxxyyyyyyyyyy0000 (2+3 bytes)
 	data |= ((pos_x & 0x03FF) << 14);
 	data |= ((pos_y & 0x03FF) << 4);
-	printf("Encoding position: %d,%d\n", pos_x, pos_y);
-	printf("Data: 0x%08x\n", data);
+	//printf("Encoding position: %d,%d\n", pos_x, pos_y);
+	//printf("Data: 0x%08x\n", data);
 	unsigned char *buf = (unsigned char*)&data;
 
 	if (m_padding) {

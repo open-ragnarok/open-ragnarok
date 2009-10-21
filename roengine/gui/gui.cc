@@ -42,7 +42,7 @@ void Mode2DEnd() {
 void Gui::Init(int w, int h) {
 	setSize(w, h);
 
-	m_defaultFont = (sdle::Font*)sdle::Font_Arial10;
+	m_defaultFont = (sdle::Font*)sdle::GLFFont::Arial10;
 }
 
 Gui::Gui() : Singleton<Gui>() {
@@ -234,8 +234,13 @@ bool Gui::InjectMouseRelease(int x, int y, int buttons, int modifier)  {
 
 bool Gui::InjectMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
 	Element* e = getDesktop();
-	if (e == NULL)
+
+	//printf("GUI: Moving mouse (%d, %d), d(%d, %d)\n", x, y, dx, dy);
+
+	if (e == NULL) {
+		//printf("No Desktop!\n");
 		return(false);
+	}
 	return(e->HandleMouseMove(x, y, dx, dy));
 }
 

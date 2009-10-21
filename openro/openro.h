@@ -79,6 +79,9 @@ protected:
 	HNDL_DECL(MapChange);
 	HNDL_DECL(RecvNpcInputReq);
 	HNDL_DECL(RecvNpcTalkResponses);
+	HNDL_DECL(ActorMove);
+	HNDL_DECL(ActorStop);
+	HNDL_DECL(ActorAction);
 
 	int m_charslot;
 
@@ -147,7 +150,7 @@ public:
 	virtual void clickMap(int x, int y);
 
 	/** Event received from ROEngine */
-	//virtual void clickMob(int x, int y);
+	virtual void clickMob(int x, int y, MobObj* mob);
 
 	/** Event received from ROEngine */
 	//virtual void clickItem(int x, int y);

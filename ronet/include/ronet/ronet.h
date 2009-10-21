@@ -114,6 +114,8 @@ public:
 	bool MoveCharacter(int x, int y);
 
 	void KeepAliveMap(unsigned int acc_id);
+
+	bool sendAction(int id, unsigned char flag);
 };
 }
 

@@ -9,6 +9,11 @@ namespace sdle {
 
 /** Manages fonts in the old GLF format */
 class SDLENGINE_DLLAPI GLFFont : public Font {
+public:
+	static GLFFont* Arabia8;
+	static GLFFont* Arial8;
+	static GLFFont* Arial10;
+
 protected:
 	typedef struct 	{
 		float dx, dy;
@@ -46,11 +51,6 @@ public:
 	virtual void draw(const Rect& rect, const unsigned short* text) const;
 	virtual void getSize(const unsigned short* text, int* w, int* h) const;
 };
-
-extern GLFFont* Font_Arabia8;
-extern GLFFont* Font_Arial8;
-extern GLFFont* Font_Arial10;
-
 }
 
 #endif /* __SDLENGINE_GLF_FONT_H */

@@ -48,13 +48,13 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 
 	//Empty the fields of char information
 	setInfo(-1);
+
+	for (int i = 0; i < CHAR_SLOT_COUNT; i++) {
+		m_used[i] = false;
+	}
 }
 
 void DesktopChar::addChar(const CharInformation& info) {
-	TextureManager& tm = m_ro->getTextureManager();
-	FileManager& fm = m_ro->getFileManager();
-	ROObjectCache& ro_objects = m_ro->getROObjects();
-
 	int i = (int)info.slot;
 
 	m_used[i] = true;
@@ -91,7 +91,7 @@ void DesktopChar::setInfo(int i){
 	int x = i + (screen * 3);
 	
 	//If the selected slot is empty
-	if( m_used[x] == NULL || i == -1){
+	if( m_used[x] == false || i == -1){
 		buf[0] = 0;
 		lblStr->setText(buf);
 		lblAgi->setText(buf);

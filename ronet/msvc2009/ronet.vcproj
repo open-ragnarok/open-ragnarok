@@ -387,6 +387,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_actionrequest.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_actoraction.cc"
 					>
 				</File>
@@ -472,6 +476,10 @@
 				</File>
 				<File
 					RelativePath="..\packets\pkt_inventoryitems.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\packets\pkt_inventoryitemsstackable.cc"
 					>
 				</File>
 				<File
@@ -685,6 +693,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_actionrequest.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_actoraction.h"
 					>
 				</File>
@@ -770,6 +782,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_inventoryitems.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ronet\packets\pkt_inventoryitemsstackable.h"
 					>
 				</File>
 				<File

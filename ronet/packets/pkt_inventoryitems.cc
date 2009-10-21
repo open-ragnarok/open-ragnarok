@@ -73,6 +73,8 @@ bool pktInventoryItems::Decode(ucBuffer& buf) {
 		buf >> items[x].equipped;
 		buf >> items[x].broken;
 		buf >> items[x].upgrade;
+		items[x].amount = 1;
+		items[x].expire = 0;
 		buf.read((unsigned char*)items[x].cards, 8);
 	}
 

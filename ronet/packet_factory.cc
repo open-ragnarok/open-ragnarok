@@ -61,6 +61,7 @@ HANDLER(SkillList)
 HANDLER(MapMoveOk)
 HANDLER(PlayerEquip)
 HANDLER(InventoryItems)
+HANDLER(InventoryItemsStackable)
 HANDLER(StatInfo)
 //HANDLER(StatInfo2)
 HANDLER(HotkeyList)
@@ -77,6 +78,7 @@ HANDLER(RecvNpcTalkResponses)
 HANDLER(MapChange)
 HANDLER(ActorMove)
 HANDLER(ActorAction)
+HANDLER(ActorStop);
 
 // Guild
 //HANDLER(GuildAlliesEnemiesList)
@@ -142,6 +144,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(MapMoveOk);
 	CALLER(PlayerEquip);
 	CALLER(InventoryItems);
+	CALLER(InventoryItemsStackable);
 	CALLER(StatInfo);
 	//CALLER(StatInfo2);
 	CALLER(HotkeyList);
@@ -158,6 +161,7 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(MapChange);
 	CALLER(ActorMove);
 	CALLER(ActorAction);
+	CALLER(ActorStop);
 	
 	// Guild
 	//CALLER(GuildAlliesEnemiesList);
@@ -271,6 +275,7 @@ bool ronet::PacketFactory::Dispatcher::Call(unsigned short method, ucBuffer& buf
 	itr = m_calls.find(method);
 	if (itr == m_calls.end()) {
 		_log(RONET__ERROR, "Undefined call to method %04x", method);
+		_hexlog(RONET__ERROR, buf.getBuffer(), buf.dataSize());
 		buf.clear();
 		return(false);
 	}

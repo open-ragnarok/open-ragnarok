@@ -31,7 +31,11 @@ void JPM_init_source (j_decompress_ptr cinfo) {
   src->loaded = 0;
 }
 
+#ifndef _MSC_VER
+boolean JPM_fill_input_buffer (j_decompress_ptr cinfo) {
+#else
 unsigned char JPM_fill_input_buffer (j_decompress_ptr cinfo) {
+#endif
 	jpeg_memory_source_ptr src = (jpeg_memory_source_ptr) cinfo->src;
 
 	int btr = INPUT_BUF_SIZE;

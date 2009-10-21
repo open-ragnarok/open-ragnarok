@@ -15,7 +15,7 @@
 #define OUTFN "output.txt"
 //#define REDIRECT_OUTPUT
 
-int main(int argc, char* argv[]) {
+int main(int argc, char** argv) {
 #ifdef USE_LOGSYS
 	// Checkout logsys.h for more info.
 	struct LogSysInfo openro_logsys[] = {

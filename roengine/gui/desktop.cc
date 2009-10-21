@@ -51,8 +51,11 @@ bool Desktop::HandleMouseDown(int x, int y, int button) {
 }
 
 bool Desktop::HandleMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
+	//printf("GUI::Desktop: Moving mouse (%d, %d), d(%d, %d)\n", x, y, dx, dy);
+
 	if (!m_enabled)
 		return(false);
+
 
 	if (m_movableobj != NULL) {
 		m_movableobj->setPos(m_movableobj->getX() + dx, m_movableobj->getY() + dy);

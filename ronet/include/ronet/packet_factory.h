@@ -87,6 +87,7 @@ namespace ronet {
 		DECL(MapMoveOk);
 		DECL(PlayerEquip);
 		DECL(InventoryItems);
+		DECL(InventoryItemsStackable);
 		DECL(StatInfo);
 		//DECL(StatInfo2);
 		DECL(HotkeyList);
@@ -103,6 +104,7 @@ namespace ronet {
 		DECL(MapChange);
 		DECL(ActorMove);
 		DECL(ActorAction);
+		DECL(ActorStop);
 
 		// Guild
 		//DECL(GuildAlliesEnemiesList);

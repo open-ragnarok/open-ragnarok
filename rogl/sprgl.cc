@@ -315,5 +315,4 @@ void SprGL::Draw(const RO::ACT::Motion& cmot, unsigned int sprno, float& x, floa
 	Draw(idx, r, false, v_mirror);
 }
 
-
 }

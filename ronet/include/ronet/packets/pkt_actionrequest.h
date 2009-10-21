@@ -22,31 +22,24 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#include "stdafx.h"
+#ifndef __RONET_PACKET_ACTIONREQUEST_H
+#define __RONET_PACKET_ACTIONREQUEST_H
 
-#include "ronet/packets/pkt_updatestatus.h"
+#include "ronet/packet.h"
 
-ronet::pktUpdateStatus::pktUpdateStatus() : Packet(pktUpdateStatusID) {
+namespace ronet {
+
+class RONET_DLLAPI pktActionRequest : public Packet {
+protected:
+	virtual bool PrepareData();
+
+	int m_target;
+	unsigned char m_flag;
+public:
+	pktActionRequest(unsigned int target, unsigned char flag);
+};
+
 }
 
-bool ronet::pktUpdateStatus::Decode(ucBuffer& buf) {
-	// Sanity Check
-	if (!CheckID(buf))
-		return(false);
 
-	buf.ignore(2);
-
-	//Get data
-	buf >> type;
-	buf >> value;
-
-	return(true);
-}
-
-unsigned short ronet::pktUpdateStatus::getType(){
-	return type;
-}
-
-unsigned int ronet::pktUpdateStatus::getValue(){
-	return value;
-}
+#endif /* __RONET_PACKET_ACTIONREQUEST_H */

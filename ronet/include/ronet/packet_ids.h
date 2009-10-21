@@ -34,6 +34,9 @@ typedef enum PacketIDs{
 	pktSendNpcTextID = 0x01d5,		// S 01d5 <size>.short <npcid>.uint <message>.text <0x00>.byte
 	pktSendNpcResponseID = 0x00b8,	// (7 bytes)  S 00b8 <npcid>.uint <number>.byte
 	pktSendNpcNumberID = 0x0143,	// (10 bytes) S 0143 <npcid>.uint <number>.uint
+	
+	// Packetver 20
+	pktActionRequestID = 0x0190,	// <packet_id>,<packet_len>,actionrequest,<offset of target_id (4 bytes)>,<offset of action_type (1 byte)> -- Thanks, FlavioJS!
 
 	// Packetver 23
 	pktMapLogin23ID = 0x0436,		// (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
@@ -67,6 +70,7 @@ typedef enum PacketIDs{
 	pktServerTickID = 0x007f,		// R 007f <server tick>.l
 	pktPlayerEquipID = 0x01d7,		// (11 bytes) R 01d7 <id>.int <type>.B <id1>.short <id2>.short
 	pktInventoryItemsID = 0x00a4,	// R 00a4 <size>.short array of (<index>.short <id>.short <type>.B <identified>.B <type_equip>.short <equipped>.short <broken>.B <upgrade>.B <cards>.8B)
+	pktInventoryItemsStackableID = 0x01ee, // R 01ee <size>.short array(<index>.short <id>.short <type>.B <unk>.3B <amount>.short <cards>.8B)
 	pktStatInfoID = 0x00b0,			// R 00b0 <type>.short <value>.int
 	pktStatInfo2ID = 0x0141,		// (14 bytes) R 0141 <type>.short 0x0000 <val>.short 0x0000 <val2>.short 0x0000
 	pktZenyExpID = 0x00b1,			// R 00b1 <type>.short <value>.int
@@ -89,6 +93,7 @@ typedef enum PacketIDs{
 	pktActorSpawnID = 0x0079,		// R 0079
 	pktActorWalkingID = 0x007b,		// R 007b
 	pktActorActionID = 0x008a,		// (29 bytes) R 008a <srcid>.uint <targetid>.uint <ticks>.uint <src_speed>.uint <dst_speed>.uint <damage>.short <div>.short <type>.char <dual_wield_damage>.short
+	pktActorStopID = 0x0088,		// (10 bytes) R 0088 <id>.int <x>.short <y>.short
 	// GUILD
 	pktGuildAlliesEnemiesListID = 0x014c,
 	pktGuildMasterMemberID = 0x014e,		// R 014e <id>.int

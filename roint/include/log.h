@@ -2,7 +2,7 @@
  * log.h
  *
  *  Created on: 06/10/2009
- *      Author: n0c2
+ *      Author: Sergio
  */
 
 #ifndef LOG_H_

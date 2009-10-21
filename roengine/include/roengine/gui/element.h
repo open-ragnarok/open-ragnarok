@@ -62,6 +62,8 @@ class Element {
 private:
 	std::string name;
 
+	void _init(Element* parent = NULL);
+
 protected:
 	class Cache : public BaseCache<Element> {
 	public:

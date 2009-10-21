@@ -73,7 +73,7 @@ bool pktMapMoveOk::Decode(ucBuffer& buf) {
 	dest_x = ((v >> 10) & 0x03FF);
 	dest_y = ((v >> 0) & 0x03FF);
 
-	printf("Moving from %d,%d -> %d,%d @ %d\n", start_x, start_y, dest_x, dest_y, ticks);
+	//printf("Moving from %d,%d -> %d,%d @ %d\n", start_x, start_y, dest_x, dest_y, ticks);
 
 	buf.ignore(1);
 

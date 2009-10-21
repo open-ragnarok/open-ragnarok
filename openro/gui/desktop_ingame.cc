@@ -208,6 +208,7 @@ void DesktopIngame::AddNpcLine(std::string line) {
 	if (!chatwindow->isVisible()) {
 		chatwindow->setVisible(true);
 		chatwindow->Clear();
+		chatwindow->setActive();
 		getElement("chatwindow/btnCancel")->setVisible(false);
 		getElement("chatwindow/btnNext")->setVisible(false);
 	}
@@ -231,6 +232,7 @@ void DesktopIngame::AddNpcOption(std::string line) {
 	getElement("chatwindow/btnNext")->setVisible(false);
 	getElement("chatwindow/btnCancel")->setVisible(false);
 	list->add(line);
+	list->setActive();
 }
 
 void DesktopIngame::NpcText() {

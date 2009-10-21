@@ -20,7 +20,7 @@ protected:
 	const RO::RSW::ModelObject* model;
 	TextureCache textures;
 
-	static void DrawBoundingBox(const RO::RSM::BoundingBox& box);
+	void DrawBoundingBox() const;
 	void DrawMesh(unsigned int meshid = 0);
 	void CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) const;
 

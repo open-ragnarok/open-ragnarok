@@ -154,10 +154,10 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
     }
 #ifdef DEBUG
     if (m_supportPot) {
-        printf("We have POT!\n");
+		printf("SDLEngine: We have POT!\n");
     }
+	printf("SDLEngine:       Extensions: %s\n", data);
 #endif
-    // printf("       Extensions: %s\n", data);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -177,9 +177,9 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 	for (int i = 0; i < 1024; i++)
 		keys[i] = false;
 
-	Font_Arabia8 = new GLFFont(glf_arabia8, glf_arabia8_size);
-	Font_Arial8 = new GLFFont(glf_arial8, glf_arial8_size);
-	Font_Arial10 = new GLFFont(glf_arial10, glf_arial10_size);
+	GLFFont::Arabia8 = new GLFFont(glf_arabia8, glf_arabia8_size);
+	GLFFont::Arial8 = new GLFFont(glf_arial8, glf_arial8_size);
+	GLFFont::Arial10 = new GLFFont(glf_arial10, glf_arial10_size);
 
     return (true);
 }
@@ -190,9 +190,9 @@ bool SDLEngine::supportPot() {
 
 
 void SDLEngine::CloseDisplay() {
-	delete Font_Arabia8;
-	delete Font_Arial8;
-	delete Font_Arial10;
+	delete GLFFont::Arabia8;
+	delete GLFFont::Arial8;
+	delete GLFFont::Arial10;
     SDL_Quit();
 }
 
@@ -352,6 +352,7 @@ void SDLEngine::ProcessKeyboard() {
                 break;
             case SDL_MOUSEMOTION:
                 evtMouseMove(e.button.x, e.button.y, e.motion.xrel, e.motion.yrel);
+				//printf("SDLEngine: Mouse Motion (%d, %d) d(%d, %d)\n", e.button.x, e.button.y, e.motion.xrel, e.motion.yrel);
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 evtMouseClick(e.button.x, e.button.y, e.button.button);
