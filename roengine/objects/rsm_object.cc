@@ -13,8 +13,8 @@ RsmObject::RsmObject(const RO::RSM* o, const RO::RSW::ModelObject* mdl) : GLObje
 	m_time = 0;
 
 	is_static = true;
-	for (unsigned int i = 0; i < o->getMeshCount(); i++) {
-		if (o->getMesh(i).getFrameCount() != 0)
+	for (unsigned int i = 0; i < o->getNodeCount(); i++) {
+		if (o->getNode(i).rotKeyframes.size() != 0)
 			is_static = false;
 	}
 	model = mdl;
@@ -48,17 +48,19 @@ bool RsmObject::loadTextures(CacheManager& cm) {
 }
 
 void RsmObject::DrawBoundingBox() const {
+	// TODO
+#if 0
 	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	float vertices[8][3] = {
-		{ box.max.c.x, box.max.c.y, box.max.c.z }, // 0
-		{ box.max.c.x, box.max.c.y, box.min.c.z }, // 1
-		{ box.min.c.x, box.max.c.y, box.min.c.z }, // 2
-		{ box.min.c.x, box.max.c.y, box.max.c.z }, // 3
-		{ box.max.c.x, box.min.c.y, box.max.c.z }, // 4
-		{ box.max.c.x, box.min.c.y, box.min.c.z }, // 5
-		{ box.min.c.x, box.min.c.y, box.min.c.z }, // 6
-		{ box.min.c.x, box.min.c.y, box.max.c.z }  // 7
+		{ box.max.x, box.max.y, box.max.z }, // 0
+		{ box.max.x, box.max.y, box.min.z }, // 1
+		{ box.min.x, box.max.y, box.min.z }, // 2
+		{ box.min.x, box.max.y, box.max.z }, // 3
+		{ box.max.x, box.min.y, box.max.z }, // 4
+		{ box.max.x, box.min.y, box.min.z }, // 5
+		{ box.min.x, box.min.y, box.min.z }, // 6
+		{ box.min.x, box.min.y, box.max.z }  // 7
 	};
 
 	static unsigned short lines[12][2] = {
@@ -80,9 +82,10 @@ void RsmObject::DrawBoundingBox() const {
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glDrawElements(GL_LINES, 24, GL_UNSIGNED_SHORT, lines);
 	glDisableClientState(GL_VERTEX_ARRAY);
+#endif
 }
 
-void RsmObject::CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) const {
+void RsmObject::CalcRotFrame(const RO::RSM::Node& node, float* Ori, int& frame) const {
 	// Borrowed from RagCam (95%)
 
 	int i;
@@ -93,23 +96,23 @@ void RsmObject::CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) c
 	//float q[4], q1[4], q2[4];
 	//char buffer[1024];
 
-	for (i = 0; i < mesh.frames.getCount(); i++) {
-		if (time < mesh.frames[i].time) {
+	for (i = 0; i < (int)node.rotKeyframes.size(); i++) {
+		if (frame < node.rotKeyframes[i].frame) {
 			current = i-1;
 			break;
 		}
 	}
 
 	next = current + 1;
-	if (next == mesh.frames.getCount())
+	if (next == (int)node.rotKeyframes.size())
 		next = 0;
 
-	t = (time - mesh.frames[current].time) / (float)(mesh.frames[next].time - mesh.frames[current].time);
+	t = (frame - node.rotKeyframes[current].frame) / (float)(node.rotKeyframes[next].frame - node.rotKeyframes[current].frame);
 
-	x = mesh.frames[current].rot[0] * (1-t) + t * mesh.frames[next].rot[0];
-	y = mesh.frames[current].rot[1] * (1-t) + t * mesh.frames[next].rot[1];
-	z = mesh.frames[current].rot[2] * (1-t) + t * mesh.frames[next].rot[2];
-	w = mesh.frames[current].rot[3] * (1-t) + t * mesh.frames[next].rot[3];
+	x = node.rotKeyframes[current].qx * (1-t) + t * node.rotKeyframes[next].qx;
+	y = node.rotKeyframes[current].qy * (1-t) + t * node.rotKeyframes[next].qy;
+	z = node.rotKeyframes[current].qz * (1-t) + t * node.rotKeyframes[next].qz;
+	w = node.rotKeyframes[current].qw * (1-t) + t * node.rotKeyframes[next].qw;
 
 	float norm;
 	norm = sqrt(x*x+y*y+z*z+w*w);
@@ -147,32 +150,32 @@ void RsmObject::CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) c
 
 	//printf("time: %d\tcurframe: %d\tcframetime: %d\tnframetime: %d\r", time, current, mesh.frames[current].time, mesh.frames[next].time);
 
-	if (time >= mesh.frames[mesh.frames.getCount() - 1].time)
-		time -= mesh.frames[mesh.frames.getCount() - 1].time;
+	if (frame >= node.rotKeyframes[node.rotKeyframes.size() - 1].frame)
+		frame -= node.rotKeyframes[node.rotKeyframes.size() - 1].frame;
 }
 
 void RsmObject::DrawMesh(unsigned int meshid) {
 	int i, j, lasttex;
-	const RO::RSM::Mesh& mesh = rsm->getMesh(meshid);
+	const RO::RSM::Node& node = rsm->getNode(meshid);
 	//const RO::RSM::BoundingBox& box = mesh.getBoundingBox();
-	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
+	//const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	lasttex = -1;
 
 	float mat[16];
-	mat[0] = mesh.transf.mat33[0];
-	mat[1] = mesh.transf.mat33[1];
-	mat[2] = mesh.transf.mat33[2];
+	mat[0] = node.offsetMT[0];
+	mat[1] = node.offsetMT[1];
+	mat[2] = node.offsetMT[2];
 	mat[3] = 0;
 
-	mat[4] = mesh.transf.mat33[3];
-	mat[5] = mesh.transf.mat33[4];
-	mat[6] = mesh.transf.mat33[5];
+	mat[4] = node.offsetMT[3];
+	mat[5] = node.offsetMT[4];
+	mat[6] = node.offsetMT[5];
 	mat[7] = 0;
 
-	mat[8] = mesh.transf.mat33[6];
-	mat[9] = mesh.transf.mat33[7];
-	mat[10] = mesh.transf.mat33[8];
+	mat[8] = node.offsetMT[6];
+	mat[9] = node.offsetMT[7];
+	mat[10] = node.offsetMT[8];
 	mat[11] = 0;
 
 	mat[12] = 0;
@@ -197,40 +200,26 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 	 */
 
 	float Ori[16];
-	if (mesh.frames.getCount() > 0) {
-		CalcRotFrame(mesh, Ori, m_time);
+	if (node.rotKeyframes.size() > 0) {
+		CalcRotFrame(node, Ori, m_time);
 	}
 
-	glScalef(mesh.transf.scale.c.x, mesh.transf.scale.c.y, mesh.transf.scale.c.z);
+	glScalef(node.scale.x, node.scale.y, node.scale.z);
 
-	if (mesh.is_main) {
-		if (mesh.is_only)
-			glTranslatef(0.0, -box.max.v[1] + box.range.v[1], 0.0);
-		else
-			glTranslatef(-box.range.v[0], -box.max.v[1], -box.range.v[2]);
-	}
-	else {
-		glTranslatef(mesh.transf.translate2.c.x, mesh.transf.translate2.c.y, mesh.transf.translate2.c.z);
-	}
+	glTranslatef(node.pos.x, node.pos.y, node.pos.z);
 
-	if (mesh.frames.getCount() == 0)
-		glRotatef(mesh.transf.rot_angle * 180.0f / 3.14159f,
-			mesh.transf.rot_vector.c.x, 
-			mesh.transf.rot_vector.c.y, 
-			mesh.transf.rot_vector.c.z);
+	if (node.rotKeyframes.size() == 0)
+		glRotatef(node.rotangle * 180.0f / 3.14159f,
+			node.rotaxis.x, 
+			node.rotaxis.y, 
+			node.rotaxis.z);
 	else {
 		glMultMatrixf(Ori);
 	}
 
 	glPushMatrix();
 
-	if (mesh.is_main && mesh.is_only) {
-		//Primera diferencia
-		glTranslatef(-box.range.v[0], -box.range.v[1], -box.range.v[2]);
-	}
-	else {
-		glTranslatef(mesh.transf.translate1.c.x, mesh.transf.translate1.c.y, mesh.transf.translate1.c.z);
-	}
+	glTranslatef(node.offsetMT[9], node.offsetMT[10], node.offsetMT[11]);
 
 	glMultMatrixf(mat);
 
@@ -242,33 +231,32 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 
 	glBegin(GL_TRIANGLES);
 	// Draw each surface
-	for (i = 0; i < mesh.surfaces.getCount(); i++) {
-		const RO::RSM::Surface& surface = mesh.surfaces[i];
-		if (surface.texid != lasttex) {
+	for (i = 0; i < (int)node.faces.size(); i++) {
+		const RO::RSM::Face& face = node.faces[i];
+		if (face.texid != lasttex) {
 			glEnd();
-			lasttex = surface.texid;
+			lasttex = face.texid;
 			textures[lasttex].Activate();
 			//glBindTexture(GL_TEXTURE_2D, textures[lasttex]);
 			glBegin(GL_TRIANGLES);
 		}
 		for (j = 0; j < 3; j++) {
-			glTexCoord2f(mesh.texv[surface.tv[j]].v[1], 1.0f - mesh.texv[surface.tv[j]].v[2]);
-			glVertex3f(mesh.vecs[surface.sv[j]].c.x, mesh.vecs[surface.sv[j]].c.y, mesh.vecs[surface.sv[j]].c.z);
+			glTexCoord2f(node.tvertices[face.tvertidx[j]].u, 1.0f - node.tvertices[face.tvertidx[j]].v);
+			glVertex3fv(node.vertices[face.vertidx[j]]);
 		}
 	}
 	glEnd();
 
 	glPopMatrix();
 
-	for (unsigned int i = 0; i < rsm->getMeshCount(); i++) {
+	for (unsigned int i = 0; i < rsm->getNodeCount(); i++) {
 		if (i == meshid)
 			continue;
-		if (strcmp(rsm->getMesh(i).header.parent, mesh.header.name) == 0) {
+		if (strcmp(rsm->getNode(i).parentname, node.name) == 0) {
 			glPushMatrix();
 			DrawMesh(i);
 			glPopMatrix();
 		}
-
 	}
 }
 

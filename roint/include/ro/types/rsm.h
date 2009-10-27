@@ -32,7 +32,7 @@ namespace RO {
 	/**
 	 * Resource Model.
 	 *
-	 * Holds information about 3D objects
+	 * Holds information about a 3D object.
 	 *
 	 * \ingroup ROInterface
 	 */
@@ -40,144 +40,132 @@ namespace RO {
 	public:
 		// RSM Internal Structures
 #pragma pack(push,1)
-		typedef struct SprSize {
-		  int width;
-		  int height;
-		  int tex_w;
-		  int tex_h;
+		struct Texture {
+			char name[40];
 		};
 
-		typedef char TexName[40];
-
-		union Vec {
-			struct {
-				float x, y, z;
-			} c;
-			float v[3];
+		struct Vertex {
+			float x;
+			float y;
+			float z;
+			inline operator float* () { return &x; }
+			inline operator const float* () const { return &x; }
 		};
 
-		typedef struct Surface {
-			unsigned short sv[3];
-			unsigned short tv[3];
+		struct TVertex {
+			unsigned int color;
+			float u, v;
+			inline operator float* () { return &u; }
+			inline operator const float* () const { return &u; }
+		};
+
+		/** Triangle face */
+		struct Face {
+			unsigned short vertidx[3];
+			unsigned short tvertidx[3];
 			unsigned short texid;
-			unsigned short unk1;
-			unsigned int unk2;
-			unsigned int nsurf;
+			unsigned short __padding;
+			int twoSide;
+			int smoothGroup;
 		};
 
-		typedef struct Frame {
-			int time;
-			float orientation[4];
+		struct PosKeyframe {
+			int frame;
+			float px;
+			float py;
+			float pz;
+			inline operator float* () { return &px; }
+			inline operator const float* () const { return &px; }
 		};
 
-		typedef struct BoundingBox {
-			Vec max;
-			Vec min;
-			Vec range;
+		struct RotKeyframe {
+			int frame;
+			float qx;
+			float qy;
+			float qz;
+			float qw;
+			inline operator float* () { return &qx; }
+			inline operator const float* () const { return &qx; }
 		};
 
+		struct VolumeBox {
+			Vertex size;
+			Vertex pos;
+			Vertex rot;
+			int flag; //< if (flag != 0) size += {3,0,3};
+		};
 
-		class ROINT_DLLAPI Mesh {
+		class ROINT_DLLAPI Node {
 		public:
-			struct Header {
-			  char name[40];
-			  int unk1;
-			  char parent[40];
-			  float unk2[10];
-			};
+			char name[40];
+			char parentname[40];
+			Arr<int> textures; //< texture indexes
+			float offsetMT[12]; //< 3x4 matrix that identifies the axis and origin of this node
+			Vertex pos;
+			float rotangle; //< angle around the axis of rotation in radians
+			Vertex rotaxis; //< axis of rotation
+			Vertex scale;
+			Arr<Vertex> vertices;
+			Arr<TVertex> tvertices;
+			Arr<Face> faces;
+			Arr<PosKeyframe> posKeyframes;
+			Arr<RotKeyframe> rotKeyframes;
 
-			struct Transf {
-			  float mat33[9];
-			  Vec translate1;
-			  Vec translate2;
-			  float rot_angle;
-			  Vec rot_vector;
-			  Vec scale;
-			};
+			Node();
+			Node(const Node&);
+			~Node();
 
-			/* This happens only if there are no frames
-			  glRotatef(transf.rot_angle * 180.0 / PI,
-					transf.rot_vector.x, transf.rot_vector.y, transf.rot_vector.z);
+			Node& operator = (const Node&);
 
-			*/
-
-			struct Frame {
-			  int time;
-			  float rot[4];
-			};
-
-			bool is_main;
-			bool is_only;
-
-			Header header;
-			Transf transf;
-
-			StructIO<int> textures;
-			StructIO<Vec> vecs;
-			StructIO<Vec> texv;
-			StructIO<Surface> surfaces;
-			StructIO<Frame> frames;
-
-			const BoundingBox& getBoundingBox() const;
-
-			Mesh();
-			Mesh(const Mesh&);
-			~Mesh();
-			void Clear();
-			void Write(std::ostream& s) const;
-			bool readStream(std::istream& s, bool main = true);
-			void calcBoundingBox(const RO::RSM::Mesh::Transf&);
-
+			void reset();
+			bool readStream(std::istream& s, const RO::s_obj_ver& ver);
+			bool writeStream(std::ostream& s, const RO::s_obj_ver& ver) const;
 			void Dump(std::ostream& out, const std::string& prefix) const;
-			Mesh& operator = (const Mesh&);
-			Mesh& operator = (const Mesh*);
-
-			unsigned int getFrameCount() const;
-			const Frame& getFrame(const unsigned int&) const;
-			Frame& getFrame(const unsigned int&);
-
-		protected:
-			BoundingBox box;
 		};
 #pragma pack(pop)
-	protected:
-		/** Unknown information included in all RSM */
-		char garbage[25];
-		unsigned int meshCount;
-		StructIO<TexName> m_textures;
-		Mesh* m_meshes;
 
-		void calcBoundingBox();
-		BoundingBox box;
+	protected:
+		void reset();
+
+		int m_animLen;
+		int m_shadeType;
+		unsigned char m_alpha;
+		char m_reserved[16];
+		Arr<Texture> m_textures;
+		char m_mainNode[40];
+		Arr<Node> m_nodes;
+		Arr<VolumeBox> m_volumeBoxes;
 
 	public:
 		RSM();
 		RSM(const RSM&);
 		virtual ~RSM();
 
-		const BoundingBox& getBoundingBox() const;
+		RSM& operator = (const RSM&);
 
-		bool Write(std::ostream& s) const;
 		virtual bool readStream(std::istream&);
-		void Dump(std::ostream& out, const std::string& = "") const;
+		bool writeStream(std::ostream& s) const;
 
+		void Dump(std::ostream& out, const std::string& = "") const;
 #ifdef ROINT_USE_XML
 		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
 #endif
 
-		unsigned int getMeshCount() const;
+		int getAnimLen() const;
+		int getShadeType() const;
+		unsigned char getAlpha() const;
+		const char* getMainNode() const;
+
+		unsigned int getNodeCount() const;
+		const Node& getNode(unsigned int idx) const;
+		const Node& operator[] (unsigned int idx) const;
+		const Node* findNode(const char* name) const;
+
 		unsigned int getTextureCount() const;
+		const char* getTexture(unsigned int idx) const;
 
-		Mesh& operator[] (const unsigned int&);
-		char* getTexture(const unsigned int&);
-
-		const Mesh& operator[] (const unsigned int&) const;
-		const char* getTexture(const unsigned int&) const;
-
-		Mesh& getMesh(const unsigned int&);
-		const Mesh& getMesh(const unsigned int&) const;
-
-		RSM& operator = (const RSM&);
+		unsigned int getVolumeBoxCount() const;
+		const VolumeBox& getVolumeBox(unsigned int idx) const;
 	};
 }
 

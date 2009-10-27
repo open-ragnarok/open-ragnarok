@@ -13,17 +13,19 @@ bool rogl::draw(const RO::RSM* rsm, const unsigned int* textures, int time) {
 }
 
 bool rogl::drawBoundingBox(const RO::RSM* rsm) {
+	// TODO
+#if 0
 	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	float vertices[8][3] = {
-		{ box.max.c.x, box.max.c.y, box.max.c.z }, // 0
-		{ box.max.c.x, box.max.c.y, box.min.c.z }, // 1
-		{ box.min.c.x, box.max.c.y, box.min.c.z }, // 2
-		{ box.min.c.x, box.max.c.y, box.max.c.z }, // 3
-		{ box.max.c.x, box.min.c.y, box.max.c.z }, // 4
-		{ box.max.c.x, box.min.c.y, box.min.c.z }, // 5
-		{ box.min.c.x, box.min.c.y, box.min.c.z }, // 6
-		{ box.min.c.x, box.min.c.y, box.max.c.z }  // 7
+		{ box.max.x, box.max.y, box.max.z }, // 0
+		{ box.max.x, box.max.y, box.min.z }, // 1
+		{ box.min.x, box.max.y, box.min.z }, // 2
+		{ box.min.x, box.max.y, box.max.z }, // 3
+		{ box.max.x, box.min.y, box.max.z }, // 4
+		{ box.max.x, box.min.y, box.min.z }, // 5
+		{ box.min.x, box.min.y, box.min.z }, // 6
+		{ box.min.x, box.min.y, box.max.z }  // 7
 	};
 
 	// No push-pop needed, since de don't do any transformations, it's transparent for whoever is calling.
@@ -64,6 +66,8 @@ bool rogl::drawBoundingBox(const RO::RSM* rsm) {
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	return(true);
+#endif
+	return(false);
 }
 
 bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsigned int* textures) {
@@ -75,7 +79,7 @@ bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsig
 	if (textures != NULL)
 		glEnable(GL_TEXTURE_2D);
 
-	const RO::RSM::Mesh& mesh = rsm->getMesh(meshidx);
+	const RO::RSM::Node& node = rsm->getNode(meshidx);
 
 	lasttex = -1;
 	if (textures != NULL) {
@@ -84,13 +88,13 @@ bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsig
 	}
 	glBegin(GL_TRIANGLES);
 	// Draw each surface
-	for (i = 0; i < mesh.surfaces.getCount(); i++) {
-		const RO::RSM::Surface& surface = mesh.surfaces[i];
+	for (i = 0; i < (int)node.faces.size(); i++) {
+		const RO::RSM::Face& face = node.faces[i];
 		// Check if we have textures
 		if (textures != NULL) {
-			if (surface.texid != lasttex) {
+			if (face.texid != lasttex) {
 				glEnd();
-				lasttex = surface.texid;
+				lasttex = face.texid;
 				glBindTexture(GL_TEXTURE_2D, textures[lasttex]);
 				glBegin(GL_TRIANGLES);
 			}
@@ -98,9 +102,9 @@ bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsig
 		for (j = 0; j < 3; j++) {
 			if (textures != NULL) {
 				// This is only useful if we have textures
-				glTexCoord2f(mesh.texv[surface.tv[j]].v[1], mesh.texv[surface.tv[j]].v[2]);
+				glTexCoord2fv(node.tvertices[face.tvertidx[j]]);
 			}
-			glVertex3fv(mesh.vecs[surface.sv[j]].v);
+			glVertex3fv(node.vertices[face.vertidx[j]]);
 		}
 	}
 	glEnd();

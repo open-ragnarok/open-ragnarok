@@ -26,560 +26,652 @@
 #include "ro/types/rsm.h"
 #include "ro/ro.h"
 
-#include <vector>
-
-#ifndef MAX
-#	define MAX(x,y) (((x)>(y))?(x):(y))
-#endif
-
-#ifndef MIN
-#	define MIN(x,y) (((y)>(x))?(x):(y))
-#endif
-
-namespace RO {
-	void DumpBox(const RO::RSM::BoundingBox& box, const std::string& prefix = "", std::ostream& out = std::cout) {
-		// BOX
-		char buf[512];
-
-		out << prefix << "Box" << std::endl;
-		sprintf(buf, "\tMax %.2f %.2f %.2f", box.max.v[0], box.max.v[1], box.max.v[2]);
-		out << prefix << buf << std::endl;
-		sprintf(buf, "\tMin %.2f %.2f %.2f", box.min.v[0], box.min.v[1], box.min.v[2]);
-		out << prefix << buf << std::endl;
-		sprintf(buf, "\tRange %.2f %.2f %.2f", box.range.v[0], box.range.v[1], box.range.v[2]);
-		out << prefix << buf << std::endl;
-	}
-}
+static RO::RSM::Node g_emptyNode;
 
 RO::RSM::RSM() : Object() {
-	m_meshes = NULL;
 }
 
 RO::RSM::RSM(const RSM& rsm) : Object(rsm) {
-	memcpy(garbage, rsm.garbage, 25);
-	m_meshes = NULL;
-	meshCount = rsm.meshCount;
+	m_animLen = rsm.m_animLen;
+	m_shadeType = rsm.m_shadeType;
+	m_alpha = rsm.m_alpha;
+	memcpy(m_reserved, rsm.m_reserved, sizeof(m_reserved));
 	m_textures = rsm.m_textures;
-	if (meshCount > 1000)
-		meshCount = 0;
-
-	if (meshCount > 0) {
-		m_meshes = new Mesh[meshCount];
-		for (unsigned i = 0; i < meshCount; i++)
-			m_meshes[i] = rsm.m_meshes[i];
-	}
-
-	memcpy(&box, &rsm.box, sizeof(BoundingBox));
+	memcpy(m_mainNode, rsm.m_mainNode, sizeof(m_mainNode));
+	m_nodes = rsm.m_nodes;
+	m_volumeBoxes = rsm.m_volumeBoxes;
 }
 
 RO::RSM& RO::RSM::operator = (const RSM& rsm) {
+	reset();
 	rsm.copyHeader(this);
-	memcpy(garbage, rsm.garbage, 25);
-	if (m_meshes != NULL)
-		delete[] m_meshes;
-	m_meshes = NULL;
-	meshCount = rsm.meshCount;
+	m_animLen = rsm.m_animLen;
+	m_shadeType = rsm.m_shadeType;
+	m_alpha = rsm.m_alpha;
+	memcpy(m_reserved, rsm.m_reserved, sizeof(m_reserved));
 	m_textures = rsm.m_textures;
-	if (meshCount > 1000)
-		meshCount = 0;
-
-	if (meshCount > 0) {
-		m_meshes = new Mesh[meshCount];
-		for (unsigned i = 0; i < meshCount; i++)
-			m_meshes[i] = rsm.m_meshes[i];
-	}
-
-	memcpy(&box, &rsm.box, sizeof(BoundingBox));
-
+	memcpy(m_mainNode, rsm.m_mainNode, sizeof(m_mainNode));
+	m_nodes = rsm.m_nodes;
+	m_volumeBoxes = rsm.m_volumeBoxes;
 	return(*this);
 }
 
 RO::RSM::~RSM() {
-	if (m_meshes != NULL)
-		delete[] m_meshes;
+	reset();
 }
 
-bool RO::RSM::Write(std::ostream& s) const {
-	writeHeader(s);
-	if (m_version.cver.major == 1 && (m_version.cver.minor == 2 || m_version.cver.minor == 3))
-		s.write(garbage, 24);
-	else
-		s.write(garbage, 25);
-
-	m_textures.Write(s);
-
-	for (unsigned int i = 0; i < meshCount; i++)
-		m_meshes[i].Write(s);
-
-	return(true);
+void RO::RSM::reset(void) {
+	m_valid = false;
+	m_textures.clear();
+	m_nodes.clear();
+	m_volumeBoxes.clear();
 }
 
 bool RO::RSM::readStream(std::istream& s) {
-	readHeader(s);
+	reset();
+	if (!readHeader(s)) {
+		return(false);
+	}
 
 	if (!checkHeader(RSM_HEADER)) {
-		std::cout << "Invalid RSM header (" << magic[0] << magic[1] << magic[2] << magic[3] << ")" << std::endl;
+		_log(ROINT__DEBUG, "Invalid RSM header (%c%c%c%c)", magic[0], magic[1], magic[2], magic[3]);
 		return(false);
 	}
-	_log(ROINT__DEBUG, "RSM Header check ok.");
-	unsigned int i;
 
-	/*
-	if (m_version.cver.major > 3) {
-		std::cerr << "We can't handle RSM with major_version over 3. (we got " << (int)m_version.cver.major << ")" << std::endl;
+	if (m_version.cver.major == 1 && m_version.cver.minor >= 1 && m_version.cver.minor <= 5) {
+		// supported [1.1 1.5]
+	}
+	else {
+		_log(ROINT__DEBUG, "Unsupported RSM version (%u.%u)", m_version.cver.major, m_version.cver.minor);
 		return(false);
 	}
-	*/
 
-	// In versions 1.2 and 1.3, ignore 24 bytes. Others, 25 bytes.
-	if (m_version.cver.major == 1 && (m_version.cver.minor == 2 || m_version.cver.minor == 3))
-		s.read(garbage, 24);
-	else
-		s.read(garbage, 25);
+	int i, n;
+	s.read((char*)&m_animLen, sizeof(int));
+	s.read((char*)&m_shadeType, sizeof(int));
+	if (IsCompatibleWith(1,4)) {
+		s.read((char*)&m_alpha, sizeof(unsigned char));
+	}
+	else {
+		m_alpha = 0xFF;
+	}
+	s.read(m_reserved, sizeof(m_reserved));
 
-	// ===== Reading texture names
-	m_textures.readStream(s);
-	_log(ROINT__DEBUG, "Read %d textures.", m_textures.size());
-
-	// The old-fashioned way, just for reference...
-	//s.read((char*)&textureCount, sizeof(unsigned int));
-	//m_textures = new TexName[textureCount];
-	//s.read((char*)m_textures, sizeof(TexName) * textureCount);
-	// TODO: Convert to UTF8
-
-	// ===== Reading meshes
-	Mesh* m;
-	std::vector<Mesh*> meshes;
-	bool main = true;
-	while(!s.eof()) {
-		s.get();
-		if (s.eof()) break;
-		s.unget();
-
-		m = new Mesh;
-		if (m->readStream(s, main))
-			meshes.push_back(m);
-		else {
-			delete m;
-			break;
+	// read textures
+	s.read((char*)&n, sizeof(int));
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	if (n > 0) {
+		m_textures.resize((unsigned int)n);
+		for (i = 0; i < n; i++) {
+			Texture& tex = m_textures[i];
+			s.read((char*)&tex, sizeof(Texture));
+			tex.name[39] = 0;
 		}
-
-		main = false;
 	}
-	if (meshes.size() == 1)
-		meshes[0]->is_only = true;
 
-	m_meshes = NULL;
-	meshCount = (unsigned int)meshes.size();
-	if (meshCount == 0)
-		return(true);
-
-	m_meshes = new Mesh[meshCount];
-	for (i = 0; i < meshCount; i++) {
-		m_meshes[i] = *meshes[i];
+	// read nodes
+	s.read(m_mainNode, sizeof(m_mainNode));
+	s.read((char*)&n, sizeof(int));
+	if (s.fail()) {
+		reset();
+		return(false);
 	}
-	for (i = 0; i < meshCount; i++) {
-		delete meshes[i];
+	if (n > 0) {
+		m_nodes.resize((unsigned int)n);
+		for (i = 0; i < n; i++) {
+			Node& node = m_nodes[i];
+			if (!node.readStream(s, m_version)) {
+				reset();
+				return(false);
+			}
+		}
 	}
-	meshes.clear();
 
-	calcBoundingBox();
+	// read position animation of main node
+	if (!IsCompatibleWith(1,5)) {
+		Node* mainnode = NULL;
+		for (i = 0; i < (int)m_nodes.size(); i++) {
+			if (strcmp(m_nodes[i].name, m_mainNode) == 0) {
+				mainnode = &m_nodes[i];
+				break;
+			}
+		}
+		if (mainnode == NULL) {
+			_log(ROINT__DEBUG, "RSM main node not found (%s)", m_mainNode);
+			reset();
+			return(false);
+		}
+		s.read((char*)&n, sizeof(int));
+		if (s.fail()) {
+			reset();
+			return(false);
+		}
+		if (n > 0) {
+			mainnode->posKeyframes.resize((unsigned int)n);
+			for (i = 0; i < n; i++) {
+				PosKeyframe& frame = mainnode->posKeyframes[i];
+				s.read((char*)&frame, sizeof(PosKeyframe));
+			}
+		}
+	}
 
+	// read volume boxes
+	s.read((char*)&n, sizeof(int));
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	if (IsCompatibleWith(1,3)) {
+		for (i = 0; i < n; i++) {
+			VolumeBox& box = m_volumeBoxes[i];
+			s.read((char*)&box, sizeof(VolumeBox));
+		}
+	}
+	else {
+		for (i = 0; i < n; i++) {
+			VolumeBox& box = m_volumeBoxes[i];
+			s.read((char*)&box, sizeof(VolumeBox) - sizeof(int));
+			box.flag = 0;
+		}
+	}
+
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	m_valid = true;
 	return(true);
 }
 
-unsigned int RO::RSM::getMeshCount() const {
-	return(meshCount);
+bool RO::RSM::writeStream(std::ostream& s) const {
+	if (!isValid() || !writeHeader(s)) {
+		return(false);
+	}
+
+	int i, n;
+	s.write((char*)&m_animLen, sizeof(int));
+	s.write((char*)&m_shadeType, sizeof(int));
+	if (IsCompatibleWith(1,4)) {
+		s.write((char*)&m_alpha, sizeof(unsigned char));
+	}
+	s.write(m_reserved, sizeof(m_reserved));
+
+	// write textures
+	n = (int)m_textures.size();
+	s.write((char*)&n, sizeof(int));
+	for (i = 0; i < n; i++) {
+		const Texture& tex = m_textures[i];
+		s.write((char*)&tex, sizeof(Texture));
+	}
+
+	// write nodes
+	s.write(m_mainNode, sizeof(m_mainNode));
+	n = (int)m_nodes.size();
+	s.write((char*)&n, sizeof(int));
+	for (i = 0; i < n; i++) {
+		const Node& node = m_nodes[i];
+		if (!node.writeStream(s, m_version)) {
+			return(false);
+		}
+	}
+
+	// write position animation of main node
+	if (!IsCompatibleWith(1,5)) {
+		const Node* mainnode = findNode(m_mainNode);
+		if (mainnode == NULL) {
+			_log(ROINT__DEBUG, "RSM main node not found (%s)", m_mainNode);
+			return(false);
+		}
+		n = (int)mainnode->posKeyframes.size();
+		s.write((char*)&n, sizeof(int));
+		for (i = 0; i < n; i++) {
+			const PosKeyframe& frame = mainnode->posKeyframes[i];
+			s.write((char*)&frame, sizeof(PosKeyframe));
+		}
+	}
+
+	// write volume boxes
+	n = (int)m_volumeBoxes.size();
+	s.write((char*)&n, sizeof(int));
+	if (IsCompatibleWith(1,3)) {
+		for (i = 0; i < n; i++) {
+			const VolumeBox& box = m_volumeBoxes[i];
+			s.write((char*)&box, sizeof(VolumeBox));
+		}
+	}
+	else {
+		for (i = 0; i < n; i++) {
+			const VolumeBox& box = m_volumeBoxes[i];
+			s.write((char*)&box, sizeof(VolumeBox) - sizeof(int));
+		}
+	}
+
+	return(!s.fail());
+}
+
+void RO::RSM::Dump(std::ostream& out, const std::string& prefix) const {
+	char buf[16];
+	unsigned int i;
+
+	std::string subprefix = prefix + "\t";
+
+	out << prefix << "Version: " << (short)m_version.cver.major << "." << (short)m_version.cver.minor << std::endl;
+	out << prefix << "Anim len: " << m_animLen << std::endl;
+	out << prefix << "Shade type: " << m_shadeType << std::endl;
+	out << prefix << "Alpha: " << (short)m_alpha << std::endl;
+	out << prefix << "Reserved: ";
+	for (i = 0; i < 25; i++) {
+		sprintf(buf, "0x%x ", (unsigned char)m_reserved[i]);
+		out << buf;
+	}
+	out << std::endl;
+	out << prefix << "Main node: " << m_mainNode << std::endl;
+
+	out << prefix << "Textures: (" << m_textures.size() << ")" << std::endl;
+	for (i = 0; i < m_textures.size(); i++) {
+		const Texture& tex = m_textures[i];
+		out << subprefix << "[" << i << "]" << std::endl;
+		out << subprefix << tex.name << std::endl;
+	}
+
+	out << prefix << "Nodes: (" << m_nodes.size() << ")" << std::endl;
+	for (i = 0; i < m_nodes.size(); i++) {
+		const Node& node = m_nodes[i];
+		out << subprefix << "[" << i << "]" << std::endl;
+		node.Dump(out, subprefix);
+	}
+
+	out << prefix << "Volume boxes: (" << m_volumeBoxes.size() << ")" << std::endl;
+	for (i = 0; i < m_volumeBoxes.size(); i++) {
+		const VolumeBox& box = m_volumeBoxes[i];
+		out << subprefix << "[" << i << "]" << std::endl;
+		out << subprefix << "Size: [ " << box.size.x << " " << box.size.y << " " << box.size.z << " ]" << std::endl;
+		out << subprefix << "Pos: [ " << box.pos.x << " " << box.pos.y << " " << box.pos.z << " ]" << std::endl;
+		out << subprefix << "Rot: [ " << box.rot.x << " " << box.rot.y << " " << box.rot.z << " ]" << std::endl;
+	}
+}
+
+int RO::RSM::getAnimLen() const {
+	return(m_animLen);
+}
+
+int RO::RSM::getShadeType() const {
+	return(m_shadeType);
+}
+
+unsigned char RO::RSM::getAlpha() const {
+	return(m_alpha);
+}
+
+const char* RO::RSM::getMainNode() const {
+	return(m_mainNode);
+}
+
+unsigned int RO::RSM::getNodeCount() const {
+	return(m_nodes.size());
+}
+
+const RO::RSM::Node& RO::RSM::getNode(unsigned int idx) const {
+	if (idx < m_nodes.size())
+		return(m_nodes[idx]);
+	return(g_emptyNode);
+}
+
+const RO::RSM::Node& RO::RSM::operator[] (unsigned int idx) const {
+	return(m_nodes[idx]);
+}
+
+const RO::RSM::Node* RO::RSM::findNode(const char* name) const {
+	for (unsigned int i = 0; i < m_nodes.size(); i++) {
+		const Node& node = m_nodes[i];
+		if (strcmp(name, node.name) == 0)
+			return(&node);
+	}
+	return(NULL);
 }
 
 unsigned int RO::RSM::getTextureCount() const {
 	return(m_textures.size());
 }
 
-RO::RSM::Mesh& RO::RSM::operator[] (const unsigned int& idx) {
-	return(m_meshes[idx]);
+const char* RO::RSM::getTexture(unsigned int idx) const {
+	if (idx < m_textures.size())
+		return(m_textures[idx].name);
+	return("");
 }
 
-const RO::RSM::Mesh& RO::RSM::operator[] (const unsigned int& idx) const {
-	return(m_meshes[idx]);
+RO::RSM::Node::Node() {
 }
 
-RO::RSM::Mesh& RO::RSM::getMesh(const unsigned int& idx) {
-	return(m_meshes[idx]);
+RO::RSM::Node::Node(const RO::RSM::Node& node) {
+	*this = node;
 }
 
-const RO::RSM::Mesh& RO::RSM::getMesh(const unsigned int& idx) const {
-	return(m_meshes[idx]);
+RO::RSM::Node::~Node() {
+	reset();
 }
 
-char* RO::RSM::getTexture(const unsigned int& idx) {
-	return(m_textures[idx]);
+RO::RSM::Node& RO::RSM::Node::operator = (const RO::RSM::Node& node) {
+	memcpy((char*)&name, (char*)&node.name, sizeof(name));
+	memcpy((char*)&parentname, (char*)&node.parentname, sizeof(parentname));
+	textures = node.textures;
+    memcpy(offsetMT, node.offsetMT, sizeof(offsetMT));
+	pos = node.pos;
+	rotangle = node.rotangle;
+	rotaxis = node.rotaxis;
+	scale = node.scale;
+	vertices = node.vertices;
+	tvertices = node.tvertices;
+	faces = node.faces;
+	posKeyframes = node.posKeyframes;
+	rotKeyframes = node.rotKeyframes;
+	return(*this);
 }
 
-const char* RO::RSM::getTexture(const unsigned int& idx) const {
-	return(m_textures[idx]);
+void RO::RSM::Node::reset() {
+	memset(name, 0, sizeof(name));
+	memset(parentname, 0, sizeof(parentname));
+    textures.clear();
+    memset((char*)&offsetMT, 0, sizeof(offsetMT));
+	memset((char*)&pos, 0, sizeof(pos));
+	rotangle = 0;
+	memset((char*)&rotaxis, 0, sizeof(rotaxis));
+	scale.x = scale.y = scale.z = 1;
+    vertices.clear();
+    tvertices.clear();
+    faces.clear();
+	posKeyframes.clear();
+    rotKeyframes.clear();
 }
 
-void RO::RSM::Dump(std::ostream& out, const std::string& prefix) const {
-	unsigned int i;
+bool RO::RSM::Node::readStream(std::istream& s, const RO::s_obj_ver& ver) {
+	reset();
+	s.read(name, 40);
+	s.read(parentname, 40);
 
-	std::string mypfx = prefix + "\t";
-
-	out << prefix << "Version " << (short)m_version.cver.major << "." << (short)m_version.cver.minor << std::endl;
-	out << prefix << "Garbage ";
-	char buf[16];
-	for (i = 0; i < 25; i++) {
-		sprintf(buf, "0x%x ", (unsigned char)garbage[i]);
-		out << buf;
+	int i, n;
+	// read texture indexes
+	s.read((char*)&n, sizeof(int));
+	if (s.fail())
+		return(false);
+	if (n > 0) {
+		textures.resize((unsigned int)n);
+		for (i = 0; i < n; i++) {
+			int& index = textures[i];
+			s.read((char*)&index, sizeof(int));
+		}
 	}
-	out << std::endl;
 
-	// BOX
-	out << prefix << "Bounding Box" << std::endl;
-	DumpBox(box, prefix, out);
+	s.read((char*)&offsetMT, sizeof(offsetMT));
+	s.read((char*)&pos, sizeof(pos));
+	s.read((char*)&rotangle, sizeof(float));
+	s.read((char*)&rotaxis, sizeof(rotaxis));
+	s.read((char*)&scale, sizeof(scale));
 
-
-	out << prefix << "Textures (" << m_textures.size() << ")" << std::endl;
-	for (i = 0; i < (unsigned int)m_textures.size(); i++)
-		out << mypfx << m_textures[i] << std::endl;
-
-	out << prefix << "Meshes (" << meshCount << ")" << std::endl;
-	for (i = 0; i < meshCount; i++) {
-		m_meshes[i].Dump(out, mypfx);
+	// read vertex indexes
+	s.read((char*)&n, sizeof(int));
+	if (s.fail())
+		return(false);
+	if (n > 0) {
+		vertices.resize((unsigned int)n);
+		for (i = 0; i < n; i++) {
+			Vertex& vert = vertices[i];
+			s.read((char*)&vert, sizeof(Vertex));
+		}
 	}
-}
 
-void RO::RSM::calcBoundingBox() {
-#if 1
-	unsigned int i;
-
-	m_meshes[0].calcBoundingBox(m_meshes[0].transf);
-	for (i = 1; i < meshCount; i++)
-		if (strcmp(m_meshes[i].header.parent, m_meshes[0].header.name) == 0)
-			m_meshes[i].calcBoundingBox(m_meshes[i].transf);
-
-	for (i = 0; i < 3; i++) {
-		box.max.v[i] = m_meshes[0].getBoundingBox().max.v[i];
-		box.min.v[i] = m_meshes[0].getBoundingBox().min.v[i];
-		for (unsigned int j = 1; j < meshCount; j++) {
-			if (strcmp(m_meshes[i].header.parent, m_meshes[0].header.name) == 0){
-				box.max.v[i] = MAX(m_meshes[j].getBoundingBox().max.v[i], box.max.v[i]);
-				box.min.v[i] = MIN(m_meshes[j].getBoundingBox().min.v[i], box.min.v[i]);
+	// read texture vertex indexes
+	s.read((char*)&n, sizeof(int));
+	if (s.fail())
+		return(false);
+	if (n > 0) {
+		tvertices.resize((unsigned int)n);
+		if (ver.cver.major > 1 || (ver.cver.major == 1 && ver.cver.minor >= 2)) {
+			for (i = 0; i < n; i++) {
+				TVertex& tvert = tvertices[i];
+				s.read((char*)&tvert, sizeof(TVertex));
+			}
+		} else {
+			for (i = 0; i < n; i++) {
+				TVertex& tvert = tvertices[i];
+				tvert.color = 0xFFFFFFFF;
+				s.read((char*)&tvert.u, sizeof(float));
+				s.read((char*)&tvert.v, sizeof(float));
 			}
 		}
-		box.range.v[i] = (box.max.v[i] + box.min.v[i]) / 2.0f;
 	}
-#else
-	unsigned int i, j;
-	BoundingBox& meshbox = box;
-	box.max.c.x = -999999;
-	box.max.c.y = -999999;
-	box.max.c.z = -999999;
 
-	box.min.c.x = 999999;
-	box.min.c.y = 999999;
-	box.min.c.z = 999999;
-
-	box.range.c.x = 0;
-	box.range.c.y = 0;
-	box.range.c.z = 0;
-	for (i = 0; i < meshCount; i++) {
-		m_meshes[i].calcBoundingBox(m_meshes[0].transf);
-		meshbox = m_meshes[i].getBoundingBox();
-
-		for(j = 0; j < 3; j++) {
-			if (meshbox.max.v[j] > box.max.v[j])
-				box.max.v[j] = meshbox.max.v[j];
-			if (meshbox.min.v[j] < box.min.v[j])
-				box.min.v[j] = meshbox.min.v[j];
+	// read faces
+	s.read((char*)&n, sizeof(int));
+	if (s.fail())
+		return(false);
+	if (n > 0) {
+		faces.resize((unsigned int)n);
+		if (ver.cver.major > 1 || (ver.cver.major == 1 && ver.cver.minor >= 2)) {
+			for (i = 0; i < n; i++) {
+				Face& face = faces[i];
+				s.read((char*)&face, sizeof(Face));
+			}
+		} else {
+			for (i = 0; i < n; i++) {
+				Face& face = faces[i];
+				s.read((char*)&face, sizeof(Face) - sizeof(int));
+				face.smoothGroup = 0;
+			}
 		}
 	}
 
-	for(j = 0; j < 3; j++)
-		// box.range.v[j] = box.max.v[j] - box.min.v[j];
-		box.range.v[j] = (box.max.v[j] + box.min.v[j])/2.0f;
-#endif
-}
-
-const RO::RSM::BoundingBox& RO::RSM::getBoundingBox() const {
-	return(box);
-}
-
-RO::RSM::Mesh::Mesh() {
-    is_main = true;
-    is_only = false;
-}
-
-RO::RSM::Mesh::Mesh(const RO::RSM::Mesh& m) {
-	memcpy((char*)&header, (char*)&m.header, sizeof(Header));
-	memcpy((char*)&transf, (char*)&m.transf, sizeof(Transf));
-	textures = m.textures;
-	vecs = m.vecs;
-	texv = m.texv;
-	surfaces = m.surfaces;
-	frames = m.frames;
-
-	is_main = m.is_main;
-	is_only = m.is_only;
-
-	memcpy((char*)&box, (char*)&m.box, sizeof(BoundingBox));
-}
-
-RO::RSM::Mesh::~Mesh() {
-	Clear();
-}
-
-void RO::RSM::Mesh::Clear() {
-    memset((char*)&header, 0, sizeof(Header));
-    memset((char*)&transf, 0, sizeof(Transf));
-    textures.Clear();
-    vecs.Clear();
-    texv.Clear();
-    surfaces.Clear();
-    frames.Clear();
-}
-
-RO::RSM::Mesh& RO::RSM::Mesh::operator = (const RO::RSM::Mesh& m) {
-	memcpy((char*)&header, (char*)&m.header, sizeof(Header));
-	memcpy((char*)&transf, (char*)&m.transf, sizeof(Transf));
-	textures = m.textures;
-	vecs = m.vecs;
-	texv = m.texv;
-	surfaces = m.surfaces;
-	frames = m.frames;
-
-	is_main = m.is_main;
-	is_only = m.is_only;
-
-	memcpy((char*)&box, (char*)&m.box, sizeof(BoundingBox));
-
-	return(*this);
-}
-
-RO::RSM::Mesh& RO::RSM::Mesh::operator = (const RO::RSM::Mesh* m) {
-	memcpy((char*)&header, (char*)&m->header, sizeof(Header));
-	memcpy((char*)&transf, (char*)&m->transf, sizeof(Transf));
-	textures = m->textures;
-	vecs = m->vecs;
-	texv = m->texv;
-	surfaces = m->surfaces;
-	frames = m->frames;
-
-	is_main = m->is_main;
-	is_only = m->is_only;
-
-	memcpy((char*)&box, (char*)&m->box, sizeof(BoundingBox));
-
-	return(*this);
-}
-
-void RO::RSM::Mesh::Write(std::ostream& s) const {
-  if (is_main) {
-    s.write((char*)&header, sizeof(header));
-  }
-  else {
-    s.write((char*)header.name, 40);
-    s.write((char*)header.parent, 40);
-  }
-  textures.Write(s);
-  s.write((char*)&transf, sizeof(Transf));
-  vecs.Write(s);
-  texv.Write(s);
-  surfaces.Write(s);
-  frames.Write(s);
-}
-
-bool RO::RSM::Mesh::readStream(std::istream& s, bool main) {
-	Clear();
-
-	if (s.eof())
-	return(false);
-
-	is_main = main;
-	// if (main) printf(" M ");
-
-	if (is_main) {
-		s.read((char*)&header, sizeof(Header));
-	}
-	else {
-		s.read((char*)header.name, 40);
-		s.read((char*)header.parent, 40);
-	}
-
-	if (!textures.readStream(s))
-		return(false);
-	if (textures.size() == 0)
-		return(false);
-
-	s.read((char*)&transf, sizeof(Transf));
-
-	if (s.eof()) {
-		Clear();
-		return(false);
-	}
-	vecs.readStream(s);
-	if (s.eof()) {
-		Clear();
-		return(false);
-	}
-	texv.readStream(s);
-	if (s.eof()) {
-		Clear();
-		return(false);
-	}
-	surfaces.readStream(s);
-	if (s.eof()) {
-		Clear();
-		return(false);
-	}
-	frames.readStream(s);
-
-	return(true);
-}
-
-namespace RO {
-void MatrixMultVect(const float* M, const RSM::Vec& Vin, RSM::Vec& Vout) {
-	Vout.v[0] = Vin.v[0]*M[0] + Vin.v[1]*M[4] + Vin.v[2]*M[8] + 1.0f * M[12];
-	Vout.v[1] = Vin.v[0]*M[1] + Vin.v[1]*M[5] + Vin.v[2]*M[9] + 1.0f * M[13];
-	Vout.v[2] = Vin.v[0]*M[2] + Vin.v[1]*M[6] + Vin.v[2]*M[10] + 1.0f * M[14];
-}
-}
-
-
-void RO::RSM::Mesh::calcBoundingBox(const RO::RSM::Mesh::Transf& t) {
-	box.max.v[0] = box.max.v[1] = box.max.v[2] = -999999.0;
-	box.min.v[0] = box.min.v[1] = box.min.v[2] = 999999.0;
-
-	float transf[15];
-	transf[0] = t.mat33[0];
-	transf[1] = t.mat33[1];
-	transf[2] = t.mat33[2];
-	transf[3] = 0;
-
-	transf[4] = t.mat33[3];
-	transf[5] = t.mat33[4];
-	transf[6] = t.mat33[5];
-	transf[7] = 0;
-
-	transf[8] = t.mat33[6];
-	transf[9] = t.mat33[7];
-	transf[10] = t.mat33[8];
-	transf[11] = 0;
-
-	transf[12] = 0;
-	transf[13] = 0;
-	transf[14] = 0;
-	transf[15] = 1;
-
-	int i, j;
-	Vec vi, v;
-
-	for (i = 0; i < vecs.size(); i++) {
-		vi.c.x = vecs[i].c.x;
-		vi.c.y = vecs[i].c.y;
-		vi.c.z = vecs[i].c.z;
-
-		MatrixMultVect(transf, vi, v);
-
-
-		for (j = 0; j < 3; j++) {
-			if (!is_only) v.v[j] += t.translate1.v[j] + t.translate2.v[j];
-
-			box.min.v[j] = MIN(v.v[j], box.min.v[j]);
-			box.max.v[j] = MAX(v.v[j], box.max.v[j]);
+	// read position keyframes
+	if (ver.cver.major > 1 || (ver.cver.major == 1 && ver.cver.minor >= 5)) {
+		s.read((char*)&n, sizeof(int));
+		if (s.fail())
+			return(false);
+		if (n > 0) {
+			posKeyframes.resize((unsigned int)n);
+			for (i = 0; i < n; i++) {
+				PosKeyframe& frame = posKeyframes[i];
+				s.read((char*)&frame, sizeof(PosKeyframe));
+			}
 		}
 	}
 
-	for (i = 0; i < 3; i++)
-		box.range.v[i] = (box.max.v[i] + box.min.v[i]) / 2.0f;
+	// read rotation keyframes
+	s.read((char*)&n, sizeof(int));
+	if (s.fail())
+		return(false);
+	if (n > 0) {
+		rotKeyframes.resize((unsigned int)n);
+		for (i = 0; i < n; i++) {
+			RotKeyframe& frame = rotKeyframes[i];
+			s.read((char*)&frame, sizeof(RotKeyframe));
+		}
+	}
+
+	return(!s.fail());
 }
 
-const RO::RSM::BoundingBox& RO::RSM::Mesh::getBoundingBox() const {
-	return(box);
+bool RO::RSM::Node::writeStream(std::ostream& s, const RO::s_obj_ver& ver) const {
+	s.write(name, 40);
+	s.write(parentname, 40);
+
+	int i, n;
+	// write texture indexes
+	n = (int)textures.size();
+	s.write((char*)&n, sizeof(int));
+	for (i = 0; i < n; i++) {
+		const int& index = textures[i];
+		s.write((char*)&index, sizeof(int));
+	}
+
+	s.write((char*)&offsetMT, sizeof(offsetMT));
+	s.write((char*)&pos, sizeof(pos));
+	s.write((char*)&rotangle, sizeof(float));
+	s.write((char*)&rotaxis, sizeof(rotaxis));
+	s.write((char*)&scale, sizeof(scale));
+
+	// write vertex indexes
+	n = (int)vertices.size();
+	s.write((char*)&n, sizeof(int));
+	for (i = 0; i < n; i++) {
+		const Vertex& vert = vertices[i];
+		s.write((char*)&vert, sizeof(Vertex));
+	}
+
+	// write texture vertex indexes
+	n = (int)tvertices.size();
+	s.write((char*)&n, sizeof(int));
+	if (ver.cver.major > 1 || (ver.cver.major == 1 && ver.cver.minor >= 2)) {
+		for (i = 0; i < n; i++) {
+			const TVertex& tvert = tvertices[i];
+			s.write((char*)&tvert, sizeof(TVertex));
+		}
+	} else {
+		for (i = 0; i < n; i++) {
+			const TVertex& tvert = tvertices[i];
+			s.write((char*)&tvert.u, sizeof(float));
+			s.write((char*)&tvert.v, sizeof(float));
+		}
+	}
+
+	// write faces
+	n = (int)faces.size();
+	s.write((char*)&n, sizeof(int));
+	if (ver.cver.major > 1 || (ver.cver.major == 1 && ver.cver.minor >= 2)) {
+		for (i = 0; i < n; i++) {
+			const Face& face = faces[i];
+			s.write((char*)&face, sizeof(Face));
+		}
+	} else {
+		for (i = 0; i < n; i++) {
+			const Face& face = faces[i];
+			s.write((char*)&face, sizeof(Face) - sizeof(int));
+		}
+	}
+
+	// write position keyframes
+	if (ver.cver.major > 1 || (ver.cver.major == 1 && ver.cver.minor >= 5)) {
+		n = (int)posKeyframes.size();
+		s.write((char*)&n, sizeof(int));
+		for (i = 0; i < n; i++) {
+			const PosKeyframe& frame = posKeyframes[i];
+			s.write((char*)&frame, sizeof(PosKeyframe));
+		}
+	}
+
+	// write rotation keyframes
+	n = (int)rotKeyframes.size();
+	s.write((char*)&n, sizeof(int));
+	for (i = 0; i < n; i++) {
+		const RotKeyframe& frame = rotKeyframes[i];
+		s.write((char*)&frame, sizeof(RotKeyframe));
+	}
+
+	return(!s.fail());
 }
 
-void RO::RSM::Mesh::Dump(std::ostream& out, const std::string& prefix) const {
+void RO::RSM::Node::Dump(std::ostream& out, const std::string& prefix) const {
 	char buf[512];
+	unsigned int i;
 
-	out << prefix << "Mesh " << header.name << std::endl;
-	out << prefix << "Parent " << header.parent << std::endl;
+	std::string subprefix = prefix + "\t";
 
-	out << prefix << "TransformMatrix" << std::endl;
-	sprintf(buf, "\t%.5f\t%.5f\t%.5f", transf.mat33[0], transf.mat33[1], transf.mat33[2]);
-	out << prefix << buf << std::endl;
-	sprintf(buf, "\t%.5f\t%.5f\t%.5f", transf.mat33[3], transf.mat33[4], transf.mat33[5]);
-	out << prefix << buf << std::endl;
-	sprintf(buf, "\t%.5f\t%.5f\t%.5f", transf.mat33[6], transf.mat33[7], transf.mat33[8]);
-	out << prefix << buf << std::endl;
+	out << prefix << "Name: " << name << std::endl;
+	out << prefix << "Parent name: " << parentname << std::endl;
 
-	out << prefix;
-	sprintf(buf, "Pos1 (%.2f, %.2f, %.2f)\t", transf.translate1.c.x, transf.translate1.c.y, transf.translate1.c.z);
-	out << buf;
-	sprintf(buf, "Pos2 (%.2f, %.2f, %.2f)", transf.translate2.c.x, transf.translate2.c.y, transf.translate2.c.z);
+	out << prefix << "Offset matrix: (3x4)" << std::endl;
+	sprintf(buf, "[ %.5f %.5f %.5f ]", offsetMT[0], offsetMT[1], offsetMT[2]);
+	out << subprefix << buf << std::endl;
+	sprintf(buf, "[ %.5f %.5f %.5f ]", offsetMT[3], offsetMT[4], offsetMT[5]);
+	out << subprefix << buf << std::endl;
+	sprintf(buf, "[ %.5f %.5f %.5f ]", offsetMT[6], offsetMT[7], offsetMT[8]);
+	out << subprefix << buf << std::endl;
+	sprintf(buf, "[ %.5f %.5f %.5f ]", offsetMT[9], offsetMT[10], offsetMT[11]);
+	out << subprefix << buf << std::endl;
+
+	sprintf(buf, "Pos: [ %.2f %.2f %.2f ]", pos.x, pos.y, pos.z);
 	out << buf << std::endl;
 
-	sprintf(buf, "Rotation %.2f (%.2f %.2f %.2f)", transf.rot_angle, transf.rot_vector.c.x, transf.rot_vector.c.y, transf.rot_vector.c.z);
+	sprintf(buf, "Rotation: %.2f [ %.2f %.2f %.2f ]", rotangle, rotaxis.x, rotaxis.y, rotaxis.z);
 	out << prefix << buf << std::endl;
-	sprintf(buf, "Scale (%.2f, %.2f, %.2f)", transf.scale.c.x, transf.scale.c.y, transf.scale.c.z);
+	sprintf(buf, "Scale: [ %.2f %.2f %.2f ]", scale.x, scale.y, scale.z);
 	out << prefix << buf << std::endl;
 
-	// BOX
-	DumpBox(box, prefix, out);
-
-	int v[3], t[3];
-	for (int i = 0; i < surfaces.size(); i++) {
-		v[0] = surfaces[i].sv[0];
-		v[1] = surfaces[i].sv[2];
-		v[2] = surfaces[i].sv[1];
-
-		t[0] = surfaces[i].tv[0];
-		t[1] = surfaces[i].tv[2];
-		t[2] = surfaces[i].tv[1];
-
-		out << prefix << i << "\tv ";
-		sprintf(buf, "(%.2f, %.2f, %.2f),", vecs[v[0]].c.x, vecs[v[0]].c.y, vecs[v[0]].c.z);
-		out << buf << " ";
-		sprintf(buf, "(%.2f, %.2f, %.2f),", vecs[v[1]].c.x, vecs[v[1]].c.y, vecs[v[1]].c.z);
-		out << buf << " ";
-		sprintf(buf, "(%.2f, %.2f, %.2f)", vecs[v[2]].c.x, vecs[v[2]].c.y, vecs[v[2]].c.z);
-		out << buf << std::endl;
-
-		out << prefix << "\tt ";
-		sprintf(buf, "(%.2f, %.2f, %.2f),", texv[t[0]].c.x, texv[t[0]].c.y, texv[t[0]].c.z);
-		out << buf << " ";
-		sprintf(buf, "(%.2f, %.2f, %.2f),", texv[t[1]].c.x, texv[t[1]].c.y, texv[t[1]].c.z);
-		out << buf << " ";
-		sprintf(buf, "(%.2f, %.2f, %.2f)", texv[t[2]].c.x, texv[t[2]].c.y, texv[t[2]].c.z);
-		out << buf << std::endl;
+	out << prefix << "Textures: (" << textures.size() << ")" << std::endl;
+	for (i = 0; i < textures.size(); i++) {
+		const int& texidx = textures[i];
+		out << subprefix << texidx << std::endl;
 	}
-}
 
-unsigned int RO::RSM::Mesh::getFrameCount() const {
-	return(frames.size());
-}
+	out << prefix << "Vertices: (" << vertices.size() << ")" << std::endl;
+	for (i = 0; i < vertices.size(); i++) {
+		const Vertex& vert = vertices[i];
+		sprintf(buf, "[ %.2f %.2f %.2f ]", vert.x, vert.y, vert.z);
+		out << subprefix << buf << std::endl;
+	}
 
-const RO::RSM::Mesh::Frame& RO::RSM::Mesh::getFrame(const unsigned int& i) const {
-	return(frames[i]);
-}
+	out << prefix << "Texture vertices: (" << tvertices.size() << ")" << std::endl;
+	for (i = 0; i < tvertices.size(); i++) {
+		const TVertex& tvert = tvertices[i];
+		sprintf(buf, "[ 0x%8x %.2f %.2f ]", tvert.color, tvert.u, tvert.v);
+		out << subprefix << buf << std::endl;
+	}
 
-RO::RSM::Mesh::Frame& RO::RSM::Mesh::getFrame(const unsigned int& i) {
-	return(frames[i]);
+	out << prefix << "Faces: (" << faces.size() << ")" << std::endl;
+	for (i = 0; i < faces.size(); i++) {
+		const Face& face = faces[i];
+		out << subprefix << "[" << i << "]" << std::endl;
+		out << subprefix << "Vert indexes: " << face.vertidx[0] << ", " << face.vertidx[1] << ", " << face.vertidx[2] << std::endl;
+		out << subprefix << "Texture vert indexes: " << face.tvertidx[0] << ", " << face.tvertidx[1] << ", " << face.tvertidx[2] << std::endl;
+		out << subprefix << "Texture id: " << face.texid << std::endl;
+		out << subprefix << "Two side: " << face.twoSide << std::endl;
+		out << subprefix << "Smooth group: " << face.smoothGroup << std::endl;
+	}
+
+	out << prefix << "Position Keyframes: (" << posKeyframes.size() << ")" << std::endl;
+	for (i = 0; i < posKeyframes.size(); i++) {
+		const PosKeyframe& frame = posKeyframes[i];
+		sprintf(buf, "%d [ %.2f %.2f %.2f ]", frame.frame, frame.px, frame.py, frame.pz);
+		out << subprefix << buf << std::endl;
+	}
+
+	out << prefix << "Rotation Keyframes: (" << rotKeyframes.size() << ")" << std::endl;
+	for (i = 0; i < rotKeyframes.size(); i++) {
+		const RotKeyframe& frame = rotKeyframes[i];
+		sprintf(buf, "%d [ %.2f %.2f %.2f %.2f ]", frame.frame, frame.qx, frame.qy, frame.qz, frame.qw);
+		out << subprefix << buf << std::endl;
+	}
+
 }
 
 #ifdef ROINT_USE_XML
 
 TiXmlElement* RO::RSM::GenerateXML(const std::string& name, bool utf) const {
-	TiXmlElement *root = new TiXmlElement("RSM");
-	char buf[16];
+	char buf[256];
+	unsigned int i, k, m;
+	TiXmlElement* root = new TiXmlElement("RSM");
+	TiXmlElement* child = NULL;
+
 	sprintf(buf,"%d.%d", m_version.cver.major , m_version.cver.minor);
 	root->SetAttribute("version", buf);
 	if (name != "") {
 		root->SetAttribute("name", name);
 	}
-	
-	// Textures
-	for (int i = 0 ; i < m_textures.size(); i++) {
-		std::string texname = m_textures[i];
+
+	root->SetAttribute("animlen", m_animLen);
+	root->SetAttribute("shadetype", m_shadeType);
+	root->SetAttribute("alpha", (int)m_alpha);
+	sprintf(buf, "%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
+		m_reserved[0], m_reserved[1], m_reserved[ 2], m_reserved[ 3], m_reserved[ 4], m_reserved[ 5], m_reserved[ 6], m_reserved[ 7],
+		m_reserved[8], m_reserved[9], m_reserved[10], m_reserved[11], m_reserved[12], m_reserved[13], m_reserved[14], m_reserved[15]);
+	root->SetAttribute("reserved", buf);
+	root->SetAttribute("mainnode", m_mainNode);
+
+	// textures
+	for (i = 0 ; i < m_textures.size(); i++) {
+		std::string texname = m_textures[i].name;
 		if (utf) {
 			texname = euc2utf8(texname);
 		}
@@ -589,122 +681,159 @@ TiXmlElement* RO::RSM::GenerateXML(const std::string& name, bool utf) const {
 		root->LinkEndChild(texture);
 	}
 
-	// Meshes
-	for(unsigned int i = 0; i < meshCount; i++) {
+	// nodes
+	for(i = 0; i < m_nodes.size(); i++) {
+		const Node& node = m_nodes[i];
 		char buf[16];
-		TiXmlElement *mesh = new TiXmlElement("mesh");
-		mesh->SetAttribute("name", m_meshes[i].header.name);
-		if (strlen(m_meshes[i].header.parent) > 0) {
-			mesh->SetAttribute("parent", m_meshes[i].header.parent);
+		TiXmlElement* nodexml = new TiXmlElement("node");
+		nodexml->SetAttribute("id", i);
+		nodexml->SetAttribute("name", node.name);
+		if (strlen(node.parentname) > 0) {
+			nodexml->SetAttribute("parentname", node.parentname);
 		}
-		TiXmlElement *matrix = new TiXmlElement("transformation");
-		TiXmlElement *row = new TiXmlElement("row");
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[0]);
-		row->SetAttribute("a", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[1]);
-		row->SetAttribute("b", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[2]);
-		row->SetAttribute("c", buf);
-		matrix->LinkEndChild(row);
+		TiXmlElement* matrixxml = new TiXmlElement("offsetmatrix");
+		TiXmlElement* childxml = new TiXmlElement("col");
+		sprintf(buf, "%f", node.offsetMT[0]);
+		childxml->SetAttribute("x", buf);
+		sprintf(buf, "%f", node.offsetMT[1]);
+		childxml->SetAttribute("y", buf);
+		sprintf(buf, "%f", node.offsetMT[2]);
+		childxml->SetAttribute("z", buf);
+		matrixxml->LinkEndChild(childxml);
 
-		row = new TiXmlElement("row");
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[4]);
-		row->SetAttribute("a", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[5]);
-		row->SetAttribute("b", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[6]);
-		row->SetAttribute("c", buf);
-		matrix->LinkEndChild(row);
+		childxml = new TiXmlElement("col");
+		sprintf(buf, "%f", node.offsetMT[3]);
+		childxml->SetAttribute("x", buf);
+		sprintf(buf, "%f", node.offsetMT[4]);
+		childxml->SetAttribute("y", buf);
+		sprintf(buf, "%f", node.offsetMT[5]);
+		childxml->SetAttribute("z", buf);
+		matrixxml->LinkEndChild(childxml);
 
-		row = new TiXmlElement("row");
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[7]);
-		row->SetAttribute("a", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[8]);
-		row->SetAttribute("b", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.mat33[9]);
-		row->SetAttribute("c", buf);
-		matrix->LinkEndChild(row);
+		childxml = new TiXmlElement("col");
+		sprintf(buf, "%f", node.offsetMT[6]);
+		childxml->SetAttribute("x", buf);
+		sprintf(buf, "%f", node.offsetMT[7]);
+		childxml->SetAttribute("y", buf);
+		sprintf(buf, "%f", node.offsetMT[8]);
+		childxml->SetAttribute("z", buf);
+		matrixxml->LinkEndChild(childxml);
 
-		mesh->LinkEndChild(matrix);
+		childxml = new TiXmlElement("col");
+		sprintf(buf, "%f", node.offsetMT[9]);
+		childxml->SetAttribute("x", buf);
+		sprintf(buf, "%f", node.offsetMT[10]);
+		childxml->SetAttribute("y", buf);
+		sprintf(buf, "%f", node.offsetMT[11]);
+		childxml->SetAttribute("z", buf);
+		matrixxml->LinkEndChild(childxml);
 
-
-		row = new TiXmlElement("translation1");
-		sprintf(buf, "%f", m_meshes[i].transf.translate1.c.x);
-		row->SetAttribute("x", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.translate1.c.y);
-		row->SetAttribute("y", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.translate1.c.z);
-		row->SetAttribute("z", buf);
-		mesh->LinkEndChild(row);
-
-		row = new TiXmlElement("translation2");
-		sprintf(buf, "%f", m_meshes[i].transf.translate2.c.x);
-		row->SetAttribute("x", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.translate2.c.y);
-		row->SetAttribute("y", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.translate2.c.z);
-		row->SetAttribute("z", buf);
-		mesh->LinkEndChild(row);
-
-		row = new TiXmlElement("rotation");
-		sprintf(buf, "%f", m_meshes[i].transf.rot_angle);
-		row->SetAttribute("angle", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.rot_vector.c.x);
-		row->SetAttribute("x", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.rot_vector.c.y);
-		row->SetAttribute("y", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.rot_vector.c.z);
-		row->SetAttribute("z", buf);
-		mesh->LinkEndChild(row);
-
-		row = new TiXmlElement("scale");
-		sprintf(buf, "%f", m_meshes[i].transf.scale.c.x);
-		row->SetAttribute("x", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.scale.c.y);
-		row->SetAttribute("y", buf);
-		sprintf(buf, "%f", m_meshes[i].transf.scale.c.z);
-		row->SetAttribute("z", buf);
-		mesh->LinkEndChild(row);
+		nodexml->LinkEndChild(matrixxml);
 
 
-		// Surfaces
-		for (int j = 0; j < m_meshes[i].surfaces.size(); j++) {
-			TiXmlElement *surface = new TiXmlElement("surface");
+		childxml = new TiXmlElement("pos");
+		sprintf(buf, "%f", node.pos.x);
+		childxml->SetAttribute("x", buf);
+		sprintf(buf, "%f", node.pos.y);
+		childxml->SetAttribute("y", buf);
+		sprintf(buf, "%f", node.pos.z);
+		childxml->SetAttribute("z", buf);
+		nodexml->LinkEndChild(childxml);
+
+		childxml = new TiXmlElement("rotation");
+		sprintf(buf, "%f", node.rotangle);
+		childxml->SetAttribute("angle", buf);
+		sprintf(buf, "%f", node.rotaxis.x);
+		childxml->SetAttribute("x", buf);
+		sprintf(buf, "%f", node.rotaxis.y);
+		childxml->SetAttribute("y", buf);
+		sprintf(buf, "%f", node.rotaxis.z);
+		childxml->SetAttribute("z", buf);
+		nodexml->LinkEndChild(childxml);
+
+		childxml = new TiXmlElement("scale");
+		sprintf(buf, "%f", node.scale.x);
+		childxml->SetAttribute("x", buf);
+		sprintf(buf, "%f", node.scale.y);
+		childxml->SetAttribute("y", buf);
+		sprintf(buf, "%f", node.scale.z);
+		childxml->SetAttribute("z", buf);
+		nodexml->LinkEndChild(childxml);
+
+		// vertices
+		for (k = 0; k < node.vertices.size(); k++) {
+			const Vertex& vert = node.vertices[k];
+			TiXmlElement* vertxml = new TiXmlElement("vertice");
+			sprintf(buf, "%f", vert.x);
+			vertxml->SetAttribute("x", buf);
+			sprintf(buf, "%f", vert.y);
+			vertxml->SetAttribute("y", buf);
+			sprintf(buf, "%f", vert.z);
+			vertxml->SetAttribute("z", buf);
+			nodexml->LinkEndChild(vertxml);
+		}
+
+		// texture vertices
+		for (k = 0; k < node.tvertices.size(); k++) {
+			const TVertex& tvert = node.tvertices[k];
+			TiXmlElement* tvertxml = new TiXmlElement("vertice");
+			sprintf(buf, "0x%08x", tvert.color);
+			tvertxml->SetAttribute("color", buf);
+			sprintf(buf, "%f", tvert.u);
+			tvertxml->SetAttribute("u", buf);
+			sprintf(buf, "%f", tvert.v);
+			tvertxml->SetAttribute("v", buf);
+			nodexml->LinkEndChild(tvertxml);
+		}
+
+		// faces
+		for (k = 0; k < node.faces.size(); k++) {
+			const Face& face = node.faces[k];
+			TiXmlElement* facexml = new TiXmlElement("face");
 			
-			for (int k = 0; k < 3; k++) {
-				TiXmlElement *vertice = new TiXmlElement("vertice");
-				sprintf(buf, "%d", m_meshes[i].surfaces[j].sv[k]);
-				vertice->SetAttribute("posv", buf);
-				sprintf(buf, "%d", m_meshes[i].surfaces[j].tv[k]);
-				vertice->SetAttribute("texv", buf);
-				surface->LinkEndChild(vertice);
+			for (m = 0; m < 3; m++) {
+				TiXmlElement* vertxml = new TiXmlElement("vertice");
+				vertxml->SetAttribute("vertidx", (int)face.vertidx[m]);
+				vertxml->SetAttribute("tvertidx", (int)face.tvertidx[m]);
+				facexml->LinkEndChild(vertxml);
 			}
-			mesh->LinkEndChild(surface);
+			facexml->SetAttribute("texid", (int)face.texid);
+			facexml->SetAttribute("twoside", (int)face.twoSide);
+			facexml->SetAttribute("smoothgroup", (int)face.smoothGroup);
+			nodexml->LinkEndChild(facexml);
 		}
 
-		for (int j = 0; j < m_meshes[i].vecs.size(); j++) {
-			TiXmlElement *vertice = new TiXmlElement("vertice");
-			sprintf(buf, "%f", m_meshes[i].vecs[j].c.x);
-			vertice->SetAttribute("x", buf);
-			sprintf(buf, "%f", m_meshes[i].vecs[j].c.y);
-			vertice->SetAttribute("y", buf);
-			sprintf(buf, "%f", m_meshes[i].vecs[j].c.z);
-			vertice->SetAttribute("z", buf);
-			mesh->LinkEndChild(vertice);
+		// position keyframes
+		for (k = 0; k < node.posKeyframes.size(); k++) {
+			const PosKeyframe& frame = node.posKeyframes[k];
+			TiXmlElement* framexml = new TiXmlElement("poskeyframe");
+			framexml->SetAttribute("frame", frame.frame);
+			sprintf(buf, "%f", frame.px);
+			framexml->SetAttribute("px", buf);
+			sprintf(buf, "%f", frame.py);
+			framexml->SetAttribute("py", buf);
+			sprintf(buf, "%f", frame.pz);
+			framexml->SetAttribute("pz", buf);
+			nodexml->LinkEndChild(framexml);
 		}
 
-		for (int j = 0; j < m_meshes[i].texv.size(); j++) {
-			TiXmlElement *vertice = new TiXmlElement("texv");
-			sprintf(buf, "%f", m_meshes[i].texv[j].c.x);
-			vertice->SetAttribute("x", buf);
-			sprintf(buf, "%f", m_meshes[i].texv[j].c.y);
-			vertice->SetAttribute("y", buf);
-			sprintf(buf, "%f", m_meshes[i].texv[j].c.z);
-			vertice->SetAttribute("z", buf);
-			mesh->LinkEndChild(vertice);
+		// rotation keyframes
+		for (k = 0; k < node.rotKeyframes.size(); k++) {
+			const RotKeyframe& frame = node.rotKeyframes[k];
+			TiXmlElement* framexml = new TiXmlElement("rotkeyframe");
+			framexml->SetAttribute("frame", frame.frame);
+			sprintf(buf, "%f", frame.qx);
+			framexml->SetAttribute("qx", buf);
+			sprintf(buf, "%f", frame.qy);
+			framexml->SetAttribute("qy", buf);
+			sprintf(buf, "%f", frame.qz);
+			framexml->SetAttribute("qz", buf);
+			sprintf(buf, "%f", frame.qw);
+			framexml->SetAttribute("qw", buf);
+			nodexml->LinkEndChild(framexml);
 		}
 
-		root->LinkEndChild(mesh);
+		root->LinkEndChild(nodexml);
 	}
 
 	return(root);

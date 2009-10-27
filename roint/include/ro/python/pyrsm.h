@@ -41,18 +41,20 @@ extern "C" {
 	ROINT_DLLAPI int getTextureCount_RSM(const RSM* rsm);
 
 	// RSM::MESH interfaces
-	ROINT_DLLAPI const RSM::Mesh::Header* getHeader_Mesh_RSM(const RSM*, int idx);
-	ROINT_DLLAPI const RSM::Mesh::Transf* getTransf_Mesh_RSM(const RSM*, int idx);
+	/*
+	ROINT_DLLAPI const RSM::Node::Header* getHeader_Mesh_RSM(const RSM*, int idx);
+	ROINT_DLLAPI const RSM::Node::Transf* getTransf_Mesh_RSM(const RSM*, int idx);
+	*/
 
 	ROINT_DLLAPI int getMeshVecCount_RSM(const RSM*, int mesh_id);
 	ROINT_DLLAPI int getMeshTexCount_RSM(const RSM*, int mesh_id);
 	ROINT_DLLAPI int getMeshTexvCount_RSM(const RSM*, int mesh_id);
 	ROINT_DLLAPI int getMeshSurfCount_RSM(const RSM*, int mesh_id);
 
-	ROINT_DLLAPI const RSM::Surface* getMeshSurf_RSM(const RSM*, int mesh_id, int surf_id);
-	ROINT_DLLAPI const RSM::Vec* getMeshVec_RSM(const RSM*, int mesh_id, int vec_id);
+	ROINT_DLLAPI const RSM::Face* getMeshSurf_RSM(const RSM*, int mesh_id, int surf_id);
+	ROINT_DLLAPI const RSM::Vertex* getMeshVec_RSM(const RSM*, int mesh_id, int vec_id);
 	ROINT_DLLAPI int getMeshTex_RSM(const RSM*, int mesh_id, int tex_id);
-	ROINT_DLLAPI const RSM::Vec*  getMeshTexv_RSM(const RSM*, int mesh_id, int texv_id);
+	ROINT_DLLAPI const RSM::TVertex*  getMeshTexv_RSM(const RSM*, int mesh_id, int texv_id);
 
 }
 }

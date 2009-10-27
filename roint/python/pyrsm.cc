@@ -46,7 +46,7 @@ namespace RO {
 
 	bool write_RSM(const RSM* rsm, const char* fn) {
 		std::ofstream fp(fn, std::ios_base::binary);
-		bool ret = rsm->Write(fp);
+		bool ret = rsm->writeStream(fp);
 		fp.close();
 		return(ret);
 	}
@@ -56,51 +56,53 @@ namespace RO {
 	}
 
 	int getMeshCount_RSM(const RSM* rsm) {
-		return(rsm->getMeshCount());
+		return(rsm->getNodeCount());
 	}
 
 	int getTextureCount_RSM(const RSM* rsm) {
 		return(rsm->getTextureCount());
 	}
 
-	const RSM::Mesh::Header* getHeader_Mesh_RSM(const RSM* rsm, int idx) {
-		return(&rsm->getMesh(idx).header);
+	/*
+	const RSM::Node::Header* getHeader_Mesh_RSM(const RSM* rsm, int idx) {
+		return(&rsm->getNode(idx).header);
 	}
 
-	const RSM::Mesh::Transf* getTransf_Mesh_RSM(const RSM* rsm, int idx) {
-		return(&rsm->getMesh(idx).transf);
+	const RSM::Node::Transf* getTransf_Mesh_RSM(const RSM* rsm, int idx) {
+		return(&rsm->getNode(idx).transf);
 	}
+	*/
 
 	int getMeshVecCount_RSM(const RSM* rsm, int mesh_id) {
-		return(rsm->getMesh(mesh_id).vecs.size());
+		return(rsm->getNode(mesh_id).vertices.size());
 	}
 
 	int getMeshTexCount_RSM(const RSM* rsm, int mesh_id) {
-		return(rsm->getMesh(mesh_id).textures.size());
+		return(rsm->getNode(mesh_id).textures.size());
 	}
 
 	int getMeshTexvCount_RSM(const RSM* rsm, int mesh_id) {
-		return(rsm->getMesh(mesh_id).texv.size());
+		return(rsm->getNode(mesh_id).tvertices.size());
 	}
 
 	int getMeshSurfCount_RSM(const RSM* rsm, int mesh_id) {
-		return(rsm->getMesh(mesh_id).surfaces.size());
+		return(rsm->getNode(mesh_id).faces.size());
 	}
 
-	const RSM::Surface* getMeshSurf_RSM(const RSM* rsm, int mesh_id, int surf_id) {
-		return(&rsm->getMesh(mesh_id).surfaces[surf_id]);
+	const RSM::Face* getMeshSurf_RSM(const RSM* rsm, int mesh_id, int surf_id) {
+		return(&rsm->getNode(mesh_id).faces[surf_id]);
 	}
 
-	const RSM::Vec* getMeshVec_RSM(const RSM* rsm, int mesh_id, int vec_id) {
-		return(&rsm->getMesh(mesh_id).vecs[vec_id]);
+	const RSM::Vertex* getMeshVec_RSM(const RSM* rsm, int mesh_id, int vec_id) {
+		return(&rsm->getNode(mesh_id).vertices[vec_id]);
 	}
 
 	int getMeshTex_RSM(const RSM* rsm, int mesh_id, int tex_id) {
-		return(rsm->getMesh(mesh_id).textures[tex_id]);
+		return(rsm->getNode(mesh_id).textures[tex_id]);
 	}
 
-	const RSM::Vec* getMeshTexv_RSM(const RSM* rsm, int mesh_id, int texv_id) {
-		return(&rsm->getMesh(mesh_id).texv[texv_id]);
+	const RSM::TVertex* getMeshTexv_RSM(const RSM* rsm, int mesh_id, int texv_id) {
+		return(&rsm->getNode(mesh_id).tvertices[texv_id]);
 	}
 }
 

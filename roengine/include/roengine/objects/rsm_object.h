@@ -22,7 +22,7 @@ protected:
 
 	void DrawBoundingBox() const;
 	void DrawMesh(unsigned int meshid = 0);
-	void CalcRotFrame(const RO::RSM::Mesh& mesh, float* Ori, int& time) const;
+	void CalcRotFrame(const RO::RSM::Node& node, float* Ori, int& frame) const;
 
 	int m_time;
 	bool is_static;
