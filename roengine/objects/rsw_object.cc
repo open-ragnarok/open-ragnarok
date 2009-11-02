@@ -70,8 +70,8 @@ void RswObject::getWorldPosition(float mapx, float mapy, float *rx, float *ry, f
 	sizex = tile * gat->getWidth();
 	sizey = tile * gat->getHeight();
 
-	int coordx = (int)mapx;
-	int coordy = (int)mapy;
+	unsigned int coordx = (unsigned int)mapx;
+	unsigned int coordy = (unsigned int)mapy;
 
 
 	int mx, my;		// The integer part of the map position
@@ -86,36 +86,31 @@ void RswObject::getWorldPosition(float mapx, float mapy, float *rx, float *ry, f
 	dy -= my;
 
 	if (dx < 0.005f && dy < 0.005f) {
-		const RO::GAT::strBlock& block = gat->getBlock(coordx, coordy);
 		*rx = tile * mx + tile / 2 - sizex / 2;
 		*rz = tile * my + tile / 2 - sizey / 2;
-		*ry = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+		*ry = -gat->getAltitude(coordx, coordy);
 	}
 	else {
 		float positions[4][3]; // Coordinates (0, 0), (1, 0), (1, 1), (0, 1)
 
 		{
-			const RO::GAT::strBlock& block = gat->getBlock(coordx, coordy);
 			positions[0][0] = tile * mx + tile / 2 - sizex / 2;
-			positions[0][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[0][1] = -gat->getAltitude(coordx, coordy);
 			positions[0][2] = tile * my + tile / 2 - sizey / 2;
 		}
 		{
-			const RO::GAT::strBlock& block = gat->getBlock(coordx+1, coordy);
 			positions[1][0] = tile * (mx + 1) + tile / 2 - sizex / 2;
-			positions[1][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[1][1] = -gat->getAltitude(coordx+1, coordy);
 			positions[1][2] = tile * my + tile / 2 - sizey / 2;
 		}
 		{
-			const RO::GAT::strBlock& block = gat->getBlock(coordx+1, coordy+1);
 			positions[2][0] = tile * (mx + 1) + tile / 2 - sizex / 2;
-			positions[2][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[2][1] = -gat->getAltitude(coordx+1, coordy+1);
 			positions[2][2] = tile * (my + 1) + tile / 2 - sizey / 2;
 		}
 		{
-			const RO::GAT::strBlock& block = gat->getBlock(coordx, coordy+1);
 			positions[3][0] = tile * mx + tile / 2 - sizex / 2;
-			positions[3][1] = -(block.height[0] + block.height[1] + block.height[2] + block.height[3]) / 4;
+			positions[3][1] = -gat->getAltitude(coordx, coordy+1);
 			positions[3][2] = tile * (my + 1) + tile / 2 - sizey / 2;
 		}
 		if (dx < 0.005f) {
@@ -461,13 +456,13 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 	glMultMatrixf(rot);
 
 	//const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
-	const RO::GAT::strBlock& block = gat->getBlock(mapx, mapy);
+	const RO::GAT::Cell& cell = gat->getCell(mapx, mapy);
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,	0.0f); glVertex3f(tile * mapx,			-block.height[0] + HOFFSET, tile * mapy);
-	glTexCoord2f(1.0f,	0.0f); glVertex3f(tile * (mapx + 1),	-block.height[1] + HOFFSET, tile * mapy);
-	glTexCoord2f(1.0f,	1.0f); glVertex3f(tile * (mapx + 1),	-block.height[3] + HOFFSET, tile * (mapy + 1));
-	glTexCoord2f(0.0f,	1.0f); glVertex3f(tile * mapx,			-block.height[2] + HOFFSET, tile * (mapy + 1));
+	glTexCoord2f(0.0f,	0.0f); glVertex3f(tile * mapx,			-cell.height[0] + HOFFSET, tile * mapy);
+	glTexCoord2f(1.0f,	0.0f); glVertex3f(tile * (mapx + 1),	-cell.height[1] + HOFFSET, tile * mapy);
+	glTexCoord2f(1.0f,	1.0f); glVertex3f(tile * (mapx + 1),	-cell.height[3] + HOFFSET, tile * (mapy + 1));
+	glTexCoord2f(0.0f,	1.0f); glVertex3f(tile * mapx,			-cell.height[2] + HOFFSET, tile * (mapy + 1));
 	glEnd();
 
 	glPopMatrix();

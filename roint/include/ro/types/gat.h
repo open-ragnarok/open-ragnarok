@@ -36,8 +36,8 @@ namespace RO {
 	class ROINT_DLLAPI GAT : public Object {
 	public:
 #pragma pack(push,1)
-		typedef struct strBlock {
-			float height[4];
+		struct Cell {
+			float height[4]; //< west->east, south->north ordering; the lower the number, the higher the ground
 			/**
 			 * The type of the block
 			 * <pre>
@@ -51,31 +51,39 @@ namespace RO {
 			 * Everything else = unknown
 			 * </pre>
 			 */ 
-			unsigned char type;
-			unsigned char unk[3];
+			int type;
 		};
 #pragma pack(pop)
+
 	protected:
+		void reset();
+
 		unsigned int m_width, m_height;
-		strBlock* m_blocks;
+		/// west->east, south->north ordering
+		Arr<Cell> m_cells;
+
 	public:
 		GAT();
 		~GAT();
 
-		virtual bool readStream(std::istream&);
-		bool writeStream(std::ostream&) const;
+		virtual bool readStream(std::istream& s);
+		bool writeStream(std::ostream& s) const;
 
 		unsigned int getWidth() const;
 		unsigned int getHeight() const;
 
-		const strBlock& getBlock(const unsigned int& idx) const;
-		strBlock& getBlock(const unsigned int& idx);
+		unsigned int getCellCount() const;
+		const Cell& operator[] (unsigned int idx) const;
+		const Cell& getCell(unsigned int idx) const;
+		const Cell& getCell(unsigned int cellx, unsigned int celly) const;
 
-		const strBlock& getBlock(const unsigned int& x, const unsigned int& y) const;
-		strBlock& getBlock(const unsigned int& x, const unsigned int& y);
+		/// Gets the altitude at any cell location.
+		/// (0.5 0.5) is the center of cell (0 0)
+		float getAltitude(float cellx, float celly) const;
+		/// Gets the altitude at the center of a cell.
+		float getAltitude(unsigned int cellx, unsigned int celly) const;
+		int getType(unsigned int cellx, unsigned int celly) const;
 
-		const strBlock& operator[] (const unsigned int& idx) const;
-		strBlock& operator[] (const unsigned int& idx);
 	};
 }
 
