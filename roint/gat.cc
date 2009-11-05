@@ -120,6 +120,8 @@ const RO::GAT::Cell& RO::GAT::getCell(unsigned int cellx, unsigned int celly) co
 }
 
 float RO::GAT::getAltitude(float cellx, float celly) const {
+	cellx += 0.5f;
+	celly += 0.5f;
 	if (cellx >= 0.0f && cellx < m_width && celly >= 0.0f && celly < m_height) {
 		unsigned int x = (unsigned int)cellx;
 		unsigned int y = (unsigned int)celly;

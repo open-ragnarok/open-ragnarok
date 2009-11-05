@@ -78,7 +78,7 @@ namespace RO {
 		const Cell& getCell(unsigned int cellx, unsigned int celly) const;
 
 		/// Gets the altitude at any cell location.
-		/// (0.5 0.5) is the center of cell (0 0)
+		/// for cell (0,0): center=(0,0) x=[-0.5,0.5[ y=[-0.5,0.5[
 		float getAltitude(float cellx, float celly) const;
 		/// Gets the altitude at the center of a cell.
 		float getAltitude(unsigned int cellx, unsigned int celly) const;
