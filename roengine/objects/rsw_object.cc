@@ -182,7 +182,7 @@ bool RswObject::loadTextures(CacheManager& cache) {
 
 	for (i = 0; i < gnd->getTextureCount(); i++) {
 		texname = "texture\\";
-		texname += gnd->getTexture(i).path;
+		texname += gnd->getTexture(i);
 		tex = tm.Register(fm, texname);
 		if (!tex.Valid()) {
 			fprintf(stderr, "Warning: Texture not found: %s\n", texname.c_str());
@@ -319,72 +319,71 @@ void RswObject::DrawGND() {
 	glEnable(GL_ALPHA_TEST);
 	for (j = 0; j < gnd->getHeight(); j++) {
 		for (i = 0; i < gnd->getWidth(); i++) {
-			const RO::GND::strCube& cube = gnd->getCube(i, j);
-			//cube = gnd->getCube(i, j);
+			const RO::GND::Cell& cell = gnd->getCell(i, j);
 
 			/* TILE UP */
-			if (cube.tile_up != -1) {
-				const RO::GND::strTile& tile = gnd->getTile(cube.tile_up);
-				tex = textures[tile.texture_index];
+			if (cell.topSurfaceId != -1) {
+				const RO::GND::Surface& surface = gnd->getSurface(cell.topSurfaceId);
+				tex = textures[surface.textureId];
 				if (tex.Valid()) {
 					tex.Activate();
 					float texcoords[4][2] = {
-						{ tile.texture_start[0], 1.0f - tile.texture_end[0]},
-						{ tile.texture_start[1], 1.0f - tile.texture_end[1]},
-						{ tile.texture_start[3], 1.0f - tile.texture_end[3]},
-						{ tile.texture_start[2], 1.0f - tile.texture_end[2]}
+						{ surface.u[0], 1.0f - surface.v[0]},
+						{ surface.u[1], 1.0f - surface.v[1]},
+						{ surface.u[3], 1.0f - surface.v[3]},
+						{ surface.u[2], 1.0f - surface.v[2]}
 					};
 					glBegin(GL_QUADS);
-					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cube.height[0], m_tilesize * j);
-					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cube.height[1], m_tilesize * j);
-					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cube.height[3], m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cube.height[2], m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cell.height[0], m_tilesize * j);
+					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cell.height[1], m_tilesize * j);
+					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cell.height[3], m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cell.height[2], m_tilesize * (j + 1));
 					glEnd();
 				}
 			}
 
 			/* TILE SIDE */
-			if (cube.tile_side != -1) {
-				const RO::GND::strTile& tile = gnd->getTile(cube.tile_side);
-				const RO::GND::strCube& cube2 = gnd->getCube(i, j+1);
+			if (cell.frontSurfaceId != -1) {
+				const RO::GND::Surface& surface = gnd->getSurface(cell.frontSurfaceId);
+				const RO::GND::Cell& cell2 = gnd->getCell(i, j+1);
 				
-				tex = textures[tile.texture_index];
+				tex = textures[surface.textureId];
 				if (tex.Valid()) {
 					tex.Activate();
 					float texcoords[4][2] = {
-						{ tile.texture_start[2], tile.texture_end[2]},
-						{ tile.texture_start[3], tile.texture_end[3]},
-						{ tile.texture_start[1], tile.texture_end[1]},
-						{ tile.texture_start[0], tile.texture_end[0]}
+						{ surface.u[2], surface.v[2]},
+						{ surface.u[3], surface.v[3]},
+						{ surface.u[1], surface.v[1]},
+						{ surface.u[0], surface.v[0]}
 					};
 					glBegin(GL_QUADS);
-					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cube.height[2],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cube.height[3],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cube2.height[1],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cube2.height[0],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cell.height[2],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cell.height[3],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cell2.height[1],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cell2.height[0],	m_tilesize * (j + 1));
 					glEnd();
 				}
 			}
 
 			/* TILE ASIDE */
-			if (cube.tile_aside != -1) {
-				const RO::GND::strTile& tile = gnd->getTile(cube.tile_aside);
-				const RO::GND::strCube& cube2 = gnd->getCube(i+1, j);
-				tex = textures[tile.texture_index];
+			if (cell.rightSurfaceId != -1) {
+				const RO::GND::Surface& surface = gnd->getSurface(cell.rightSurfaceId);
+				const RO::GND::Cell& cell2 = gnd->getCell(i+1, j);
+				tex = textures[surface.textureId];
 				if (tex.Valid()) {
 					tex.Activate();
 					float texcoords[4][2] = {
-						{ tile.texture_start[2], tile.texture_end[2]},
-						{ tile.texture_start[3], tile.texture_end[3]},
-						{ tile.texture_start[1], tile.texture_end[1]},
-						{ tile.texture_start[0], tile.texture_end[0]}
+						{ surface.u[2], surface.v[2]},
+						{ surface.u[3], surface.v[3]},
+						{ surface.u[1], surface.v[1]},
+						{ surface.u[0], surface.v[0]}
 					};
 
 					glBegin(GL_QUADS);
-					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * (i + 1),	-cube.height[3],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cube.height[1],	m_tilesize * j);
-					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cube2.height[0],	m_tilesize * j);
-					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * (i + 1),	-cube2.height[2],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * (i + 1),	-cell.height[3],	m_tilesize * (j + 1));
+					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cell.height[1],	m_tilesize * j);
+					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cell2.height[0],	m_tilesize * j);
+					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * (i + 1),	-cell2.height[2],	m_tilesize * (j + 1));
 					glEnd();
 				}
 			}

@@ -27,135 +27,368 @@
 #include "ro/types/gnd.h"
 #include "ro/ro.h"
 
+// TODO use proper default values
+static RO::GND::Lightmap g_emptyLightmap = {
+	{
+		{ 0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,0,0 }
+	},{
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} },
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} },
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} },
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} },
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} },
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} },
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} },
+		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} }
+	}
+};
+static RO::GND::Surface g_emptySurface = {
+	0,0,0,0,
+	0,0,0,0,
+	-1,
+	0xFFFF,
+	0,0,0,0
+};
+static RO::GND::Cell g_emptyCell = {
+	0,0,0,0,
+	-1,
+	-1,
+	-1
+};
+
 RO::GND::GND() {
+	m_width = 0;
+	m_height = 0;
+	m_zoom = 10.0f;
+	m_nTextures = 0;
+	m_textureSize = 0;
 	m_textures = NULL;
-	m_cubes = NULL;
-	m_lightmaps = NULL;
 }
 
 RO::GND::~GND() {
-	Clear();
+	reset();
 }
 
-void RO::GND::Clear() {
-	m_version.sver = 0;
-	memset(magic, 0, 4);
-
-	memset((char*)&m_gndheader, 0, sizeof(strGndHeader));
-	memset((char*)&m_grid, 0, sizeof(strGridInfo));
-
-	if (m_textures != NULL)
+void RO::GND::reset() {
+	m_valid = false;
+	m_width = 0;
+	m_height = 0;
+	m_zoom = 10.0f;
+	m_nTextures = 0;
+	m_textureSize = 0;
+	if (m_textures != NULL) {
 		delete[] m_textures;
-	m_textures = NULL;
-
-	if (m_cubes != NULL)
-		delete[] m_cubes;
-	m_cubes = NULL;
-
-	if (m_lightmaps != NULL)
-		delete[] m_lightmaps;
-	m_lightmaps = NULL;
-
-	m_tiles.Clear();
+		m_textures = NULL;
+	}
+	m_lightmaps.clear();
+	m_surfaces.clear();
+	m_cells.clear();
 }
 
 bool RO::GND::readStream(std::istream& s) {
-	readHeader(s);
-
-	if (!checkHeader(GND_HEADER)) {
-		std::cerr << "Invalid header for GND file " << magic[0] << magic[1] << magic[2] << magic[3] << std::endl;
+	reset();
+	if (!readHeader(s)) {
 		return(false);
 	}
 
-	s.read((char*)&m_gndheader, sizeof(strGndHeader));
+	if (!checkHeader(GND_HEADER)) {
+		_log(ROINT__DEBUG, "Invalid GND header (%c%c%c%c)", magic[0], magic[1], magic[2], magic[3]);
+		return(false);
+	}
 
-	m_textures = new strTexture[m_gndheader.texture_count];
-	s.read((char*)m_textures, sizeof(strTexture) * m_gndheader.texture_count);
+	if (m_version.cver.major == 1 && m_version.cver.minor == 7) {
+		// supported [1.7]
+	}
+	else {
+		_log(ROINT__DEBUG, "Unsupported GND version (%u.%u)", m_version.cver.major, m_version.cver.minor);
+		return(false);
+	}
 
-	s.read((char*)&m_lightmapcount, sizeof(int));
-	s.read((char*)&m_grid, sizeof(strGridInfo));
-	m_lightmaps = new strLightmap[m_lightmapcount];
-	s.read((char*)m_lightmaps, sizeof(strLightmap) * m_lightmapcount);
+	int i;
+	int width, height;
+	int nTextures, textureSize;
 
-	m_tiles.readStream(s);
+	s.read((char*)&width, sizeof(int));
+	s.read((char*)&height, sizeof(int));
+	s.read((char*)&m_zoom, sizeof(float));
+	s.read((char*)&nTextures, sizeof(int));
+	s.read((char*)&textureSize, sizeof(int));
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	// size
+	if (width < 0 || height < 0) {
+		_log(ROINT__DEBUG, "Invalid GND size (width=%d height=%d)", width, height);
+		reset();
+		return(false);
+	}
+	m_width = (unsigned int)width;
+	m_height = (unsigned int)height;
 
-	m_cubecount = m_gndheader.size_x * m_gndheader.size_y;
-	m_cubes = new strCube[m_cubecount];
-	s.read((char*)m_cubes, sizeof(strCube) * m_cubecount);
+	// textures
+	if (nTextures < 0 || textureSize < 0) {
+		_log(ROINT__DEBUG, "Invalid GND texture size (nTextures=%d textureSize=%d)", nTextures, textureSize);
+		reset();
+		return(false);
+	}
+	m_nTextures = (unsigned int)nTextures;
+	m_textureSize = (unsigned int)textureSize;
+	m_textures = new char[m_nTextures * m_textureSize];
+	s.read(m_textures, m_nTextures * m_textureSize);
+	for (i = 0; i < nTextures; i++) {
+		char* texture = &m_textures[i * m_textureSize];
+		texture[m_textureSize - 1] = '\0';
+	}
 
+	// read lightmaps
+	int nLightmaps, lmapWidth, lmapHeight, lmapCells;
+	s.read((char*)&nLightmaps, sizeof(int));
+	s.read((char*)&lmapWidth, sizeof(int));
+	s.read((char*)&lmapHeight, sizeof(int));
+	s.read((char*)&lmapCells, sizeof(int));
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	if (nLightmaps < 0 || lmapWidth != 8 || lmapHeight != 8 || lmapCells != 1) {
+		_log(ROINT__DEBUG, "Invalid GND lightmap size (nLightmaps=%d lmapWidth=%d lmapHeight=%d lmapCells=%d)", nLightmaps, lmapWidth, lmapHeight, lmapCells);
+		reset();
+		return(false);
+	}
+	m_lightmaps.resize((unsigned int)nLightmaps);
+	for (i = 0; i < nLightmaps; i++) {
+		Lightmap& lightmap = m_lightmaps[i];
+		s.read((char*)&lightmap, sizeof(Lightmap));
+	}
+
+	// read surfaces
+	int nSurfaces;
+	s.read((char*)&nSurfaces, sizeof(int));
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	if (nSurfaces < 0) {
+		_log(ROINT__DEBUG, "Invalid GND surface size (nSurfaces=%d)", nSurfaces);
+		reset();
+		return(false);
+	}
+	m_surfaces.resize((unsigned int)nSurfaces);
+	for (i = 0; i < nSurfaces; i++) {
+		Surface& surface = m_surfaces[i];
+		s.read((char*)&surface, sizeof(Surface));
+	}
+
+	// read cells
+	int nCells = m_width * m_height;
+	m_cells.resize((unsigned int)nCells);
+	for (i = 0; i < nCells; i++) {
+		Cell& cell = m_cells[i];
+		s.read((char*)&cell, sizeof(Cell));
+	}
+
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	m_valid = true;
 	return(true);
 }
 
-void RO::GND::Dump(std::ostream& o) const {
-	o << "Magic: " << magic[0] << magic[1] << magic[2] << magic[3] << std::endl;
-	o << "Version: " << (int)m_version.cver.major << "." << (int)m_version.cver.minor << std::endl;
-	o << "Size: " << m_gndheader.size_x << " x " << m_gndheader.size_y << std::endl;
-	o << "Tiles: " << m_tiles.getCount() << std::endl;
-	o << "Cubes: " << m_cubecount << std::endl;
-	o << "Textures (" << m_gndheader.texture_count << ")" << std::endl;
-	for (unsigned i = 0; i < m_gndheader.texture_count; i++)
-		o << "\t" << m_textures[i].path << std::endl;
-}
+bool RO::GND::writeStream(std::ostream& s) const {
+	if (!isValid() || !writeHeader(s)) {
+		return(false);
+	}
+	int width = (int)m_width;
+	int height = (int)m_height;
+	int nTextures = (int)m_nTextures;
+	int textureSize = (int)m_textureSize;
 
-const RO::GND::strTile& RO::GND::getTile(const unsigned int& idx) const {
-	return(m_tiles[idx]);
-}
-RO::GND::strTile& RO::GND::getTile(const unsigned int& idx) {
-	return(m_tiles[idx]);
-}
+	// write size
+	s.write((char*)&width, sizeof(int));
+	s.write((char*)&height, sizeof(int));
+	s.write((char*)&m_zoom, sizeof(float));
 
-const RO::GND::strCube& RO::GND::getCube(const unsigned int& x, const unsigned int& y) const {
-	return(getCube(x + y * m_gndheader.size_x));
-}
+	// write textures
+	s.write((char*)&nTextures, sizeof(int));
+	s.write((char*)&textureSize, sizeof(int));
+	s.write(m_textures, m_nTextures * m_textureSize);
 
-RO::GND::strCube& RO::GND::getCube(const unsigned int& x, const unsigned int& y) {
-	return(getCube(x + y * m_gndheader.size_x));
-}
+	// write lightmaps
+	int nLightmaps = (int)m_lightmaps.size();
+	int lmapWidth = 8;
+	int lmapHeight = 8;
+	int lmapCells = 1;
+	s.write((char*)&nLightmaps, sizeof(int));
+	s.write((char*)&lmapWidth, sizeof(int));
+	s.write((char*)&lmapHeight, sizeof(int));
+	s.write((char*)&lmapCells, sizeof(int));
+	for (unsigned int i = 0; i < m_lightmaps.size(); i++) {
+		const Lightmap& lightmap = m_lightmaps[i];
+		s.write((char*)&lightmap, sizeof(Lightmap));
+	}
 
-const RO::GND::strCube& RO::GND::getCube(const unsigned int& idx) const {
-	return(m_cubes[idx]);
-}
+	// write surfaces
+	int nSurfaces = (int)m_surfaces.size();
+	for (unsigned int i = 0; i < m_surfaces.size(); i++) {
+		const Surface& surface = m_surfaces[i];
+		s.write((char*)&surface, sizeof(Surface));
+	}
 
-RO::GND::strCube& RO::GND::getCube(const unsigned int& idx) {
-	return(m_cubes[idx]);
-}
+	// write cells
+	for (unsigned i = 0; i < m_cells.size(); i++) {
+		const Cell& cell = m_cells[i];
+		s.write((char*)&cell, sizeof(Cell));
+	}
 
-const RO::GND::strTexture& RO::GND::getTexture(const unsigned int& idx) const {
-	return(m_textures[idx]);
-}
-
-unsigned int RO::GND::getTextureCount() const {
-	return(m_gndheader.texture_count);
-}
-
-unsigned int RO::GND::getTileCount() const {
-	return(m_tiles.size());
-}
-
-unsigned int RO::GND::getCubeCount() const {
-	return(m_cubecount);
-}
-
-RO::GND::strTexture& RO::GND::getTexture(const unsigned int& idx) {
-	return(m_textures[idx]);
-}
-
-const char* RO::GND::getTextureName(const unsigned int& idx) const {
-	return(m_textures[idx].path);
+	return(!s.fail());
 }
 
 unsigned int RO::GND::getWidth() const {
-	return(m_gndheader.size_x);
+	return(m_width);
 }
 
 unsigned int RO::GND::getHeight() const {
-	return(m_gndheader.size_y);
+	return(m_height);
+}
+
+float RO::GND::getZoom() const {
+	return(m_zoom);
+}
+
+unsigned int RO::GND::getTextureCount() const {
+	return(m_nTextures);
+}
+
+const char* RO::GND::getTexture(unsigned int idx) const {
+	if (idx < m_nTextures)
+		return(&m_textures[idx * m_textureSize]);
+	return("");
+}
+
+unsigned int RO::GND::getSurfaceCount() const {
+	return(m_surfaces.size());
+}
+
+const RO::GND::Surface& RO::GND::getSurface(unsigned int idx) const {
+	if (idx < m_surfaces.size())
+		return(m_surfaces[idx]);
+	return(g_emptySurface);
+}
+
+unsigned int RO::GND::getLightmapCount() const {
+	return(m_lightmaps.size());
+}
+
+const RO::GND::Lightmap& RO::GND::getLightmap(unsigned int idx) const {
+	if (idx < m_lightmaps.size())
+		return(m_lightmaps[idx]);
+	return(g_emptyLightmap);
+}
+
+unsigned int RO::GND::getCellCount() const {
+	return(m_cells.size());
+}
+
+const RO::GND::Cell& RO::GND::operator [] (unsigned int idx) const {
+	if (idx < m_cells.size())
+		return(m_cells[idx]);
+	return(g_emptyCell);
+}
+
+const RO::GND::Cell& RO::GND::getCell(unsigned int idx) const {
+	if (idx < m_cells.size())
+		return(m_cells[idx]);
+	return(g_emptyCell);
+}
+
+const RO::GND::Cell& RO::GND::getCell(unsigned int cellx, unsigned int celly) const {
+	if (cellx < m_width && celly < m_height)
+		return(m_cells[cellx + celly * m_width]);
+	return(g_emptyCell);
+}
+
+void RO::GND::Dump(std::ostream& o) const {
+	char buf[512];
+	unsigned int i;
+	o << "Magic: " << magic[0] << magic[1] << magic[2] << magic[3] << std::endl;
+	o << "Version: " << (int)m_version.cver.major << "." << (int)m_version.cver.minor << std::endl;
+	sprintf(buf, "%f", m_zoom);
+	o << "Size: width=" << m_width << " height=" << m_height << " zoom=" << buf << std::endl;
+
+	o << "Textures: (" << getTextureCount() << ")" << std::endl;
+	for (i = 0; i < getTextureCount(); i++) {
+		const char* texture = getTexture(i);
+		o << "\t" << texture << std::endl;
+	}
+
+	o << "Lightmaps: (" << m_lightmaps.size() << ")" << std::endl;
+	for (i = 0; i < m_lightmaps.size(); i++) {
+		const Lightmap& lightmap = m_lightmaps[i];
+		unsigned int k, m;
+
+		o << "\t{" << std::endl;
+		for (k = 0; k < 8; k++) {
+			o << "\t\t{ ";
+			for (m = 0; m < 8; m++) {
+				o << lightmap.brightness[k][m];
+				if (m != 8) o << ",";
+			}
+			o << " }";
+			if (k != 8) o << ",";
+			o << std::endl;
+		}
+		o << "\t},{" << std::endl;
+		for (k = 0; k < 8; k++) {
+			o << "\t\t{ ";
+			for (m = 0; m < 8; m++) {
+				o << "{" << (int)lightmap.color[k][m][0] << "," << (int)lightmap.color[k][m][1] << "," << (int)lightmap.color[k][m][2];
+				if (m != 8) o << ",";
+			}
+			o << " }";
+			if (k != 8) o << ",";
+			o << std::endl;
+		}
+		o << "\t}" << std::endl;
+	}
+
+	o << "Surfaces: " << m_surfaces.size() << std::endl;
+	for (i = 0; i < m_surfaces.size(); i++) {
+		unsigned int k;
+		const Surface& surface = m_surfaces[i];
+		for (k = 0; k < 4; k++) {
+			sprintf(buf, "Texture coord: u=%f v=%f", surface.u[i], surface.v[i]);
+			o << "\t" << buf << std::endl;
+		}
+		o << "\tTexture id: " << surface.textureId;
+		o << "\tLightmap id: " << surface.lightmapId;
+		o << "\tColor: b=" << (int)surface.color.b << " g=" << (int)surface.color.g << " r=" << (int)surface.color.r << " a=" << (int)surface.color.a << std::endl;
+	}
+
+	o << "Cells: " << m_cells.size() << std::endl;
+	for (i = 0; i < m_cells.size(); i++) {
+		const Cell& cell = m_cells[i];
+		o << "[" << i << "] x=" << (i%8) << " y=" << (i/8) << std::endl;
+		sprintf(buf, "Height: {%f %f %f %f}", cell.height[0], cell.height[1], cell.height[2], cell.height[3]);
+		o << "\t" << buf << std::endl;
+		o << "\tTop surface id: " << cell.topSurfaceId;
+		o << "\tFront surface id: " << cell.frontSurfaceId;
+		o << "\tRight surface id: " << cell.rightSurfaceId;
+	}
 }
 
 #ifdef ROINT_USE_XML
 TiXmlElement* RO::GND::GenerateXML(const std::string& name, bool utf) const {
-	TiXmlElement *root = new TiXmlElement("GND");
-	char buf[16];
+	TiXmlElement* root = new TiXmlElement("GND");
+	char buf[512];
 	unsigned int i;
 	sprintf(buf,"%d.%d", m_version.cver.major , m_version.cver.minor);
 	root->SetAttribute("version", buf);
@@ -163,86 +396,86 @@ TiXmlElement* RO::GND::GenerateXML(const std::string& name, bool utf) const {
 		root->SetAttribute("name", name);
 	}
 
-	// Size
-	sprintf(buf, "%d", m_gndheader.size_x);
-	root->SetAttribute("size_x", buf);
-	sprintf(buf, "%d", m_gndheader.size_y);
-	root->SetAttribute("size_y", buf);
+	// size
+	sprintf(buf, "%u", m_width);
+	root->SetAttribute("width", buf);
+	sprintf(buf, "%u", m_height);
+	root->SetAttribute("height", buf);
+	sprintf(buf, "%f", m_zoom);
+	root->SetAttribute("zoom", buf);
 
-	TiXmlElement* tiles = new TiXmlElement("tiles");
-	root->LinkEndChild(tiles);
-	for (i = 0; i < (unsigned int)m_tiles.getCount(); i++) {
-		TiXmlElement* tile = new TiXmlElement("tile");
-		tiles->LinkEndChild(tile);
-		for (unsigned int j = 0; j < 4; j++) {
-			TiXmlElement* texture = new TiXmlElement("texture");
-			tile->LinkEndChild(texture);
-			sprintf(buf, "%f", m_tiles[i].texture_start[j]);
-			texture->SetAttribute("u", buf);
-			sprintf(buf, "%f", m_tiles[i].texture_end[j]);
-			texture->SetAttribute("v", buf);
-		}
-		sprintf(buf, "%d", m_tiles[i].texture_index);
-		tile->SetAttribute("texture_index", buf);
-		sprintf(buf, "%d", m_tiles[i].lightmap);
-		tile->SetAttribute("lightmap", buf);
-		TiXmlElement* color = new TiXmlElement("color");
-		tile->LinkEndChild(color);
-		
-		// Red
-		sprintf(buf, "%d", m_tiles[i].color[2]);
-		color->SetAttribute("r", buf);
-
-		// Green
-		sprintf(buf, "%d", m_tiles[i].color[1]);
-		color->SetAttribute("g", buf);
-		
-		// Blue
-		sprintf(buf, "%d", m_tiles[i].color[0]);
-		color->SetAttribute("b", buf);
-
-		// Alpha
-		sprintf(buf, "%d", m_tiles[i].color[3]);
-		color->SetAttribute("a", buf);
-	}
-
-	// CUBES
-	TiXmlElement* cubes = new TiXmlElement("cubes");
-	root->LinkEndChild(cubes);
-	for (i = 0; i < m_cubecount; i++) {
-		TiXmlElement* cube = new TiXmlElement("cube");
-		cubes->LinkEndChild(cube);
-		sprintf(buf, "%f", m_cubes[i].height[0]);
-		cube->SetAttribute("height_1", buf);
-		sprintf(buf, "%f", m_cubes[i].height[1]);
-		cube->SetAttribute("height_2", buf);
-		sprintf(buf, "%f", m_cubes[i].height[2]);
-		cube->SetAttribute("height_3", buf);
-		sprintf(buf, "%f", m_cubes[i].height[3]);
-		cube->SetAttribute("height_4", buf);
-
-		sprintf(buf, "%d", m_cubes[i].tile_up);
-		cube->SetAttribute("tile_up", buf);
-		sprintf(buf, "%d", m_cubes[i].tile_side);
-		cube->SetAttribute("tile_side", buf);
-		sprintf(buf, "%d", m_cubes[i].tile_aside);
-		cube->SetAttribute("tile_aside", buf);
-	}
-
-	// TEXTURES
-	TiXmlElement* textures = new TiXmlElement("textures");
-	root->LinkEndChild(textures);
-	for (i = 0; i < m_gndheader.texture_count; i++) {
-		TiXmlElement* texture = new TiXmlElement("texture");
-		textures->LinkEndChild(texture);
-		std::string n = m_textures[i].path;
+	// textures
+	TiXmlElement* texturesxml = new TiXmlElement("textures");
+	root->LinkEndChild(texturesxml);
+	for (i = 0; i < m_nTextures; i++) {
+		const char* texture = getTexture(i);
+		TiXmlElement* texturexml = new TiXmlElement("texture");
+		texturesxml->LinkEndChild(texturexml);
 		if (utf)
-			n = euc2utf8(n);
-
-		texture->SetAttribute("name", n);
-		texture->SetAttribute("unk", m_textures[i].unk);
+			texturexml->SetValue(euc2utf8(texture));
+		else
+			texturexml->SetValue(texture);
 	}
 
+	// lightmaps
+	TiXmlElement* lightmapsxml = new TiXmlElement("lightmaps");
+	root->LinkEndChild(lightmapsxml);
+	for (i = 0; i < m_lightmaps.size(); i++) {
+		unsigned int k, m;
+		const Lightmap& lightmap = m_lightmaps[i];
+		TiXmlElement* lightmapxml = new TiXmlElement("lightmap");
+		lightmapsxml->LinkEndChild(lightmapxml);
+		for (k = 0; k < 8; k++) {
+			for (m = 0; m < 8; m++) {
+				TiXmlElement* pixelxml = new TiXmlElement("pixel");
+				lightmapxml->LinkEndChild(pixelxml);
+				pixelxml->SetAttribute("brightness", (int)lightmap.brightness[k][m]);
+				pixelxml->SetAttribute("red", (int)lightmap.color[k][m].r);
+				pixelxml->SetAttribute("green", (int)lightmap.color[k][m].g);
+				pixelxml->SetAttribute("blue", (int)lightmap.color[k][m].b);
+			}
+		}
+	}
+
+	// surfaces
+	TiXmlElement* surfacesxml = new TiXmlElement("surfaces");
+	root->LinkEndChild(surfacesxml);
+	for (i = 0; i < m_surfaces.size(); i++) {
+		unsigned int k;
+		const Surface& surface = m_surfaces[i];
+		TiXmlElement* surfacexml = new TiXmlElement("surface");
+		surfacesxml->LinkEndChild(surfacexml);
+		for (k = 0; k < 4; k++) {
+			TiXmlElement* verticexml = new TiXmlElement("tvertex");
+			surfacexml->LinkEndChild(verticexml);
+			sprintf(buf, "%f", surface.u[k]);
+			surfacexml->SetAttribute("u", buf);
+			sprintf(buf, "%f", surface.v[k]);
+			surfacexml->SetAttribute("v", buf);
+		}
+		surfacexml->SetAttribute("textureid", (int)surface.textureId);
+		surfacexml->SetAttribute("lightmapid", (int)surface.lightmapId);
+	}
+
+	// cells
+	TiXmlElement* cellsxml = new TiXmlElement("cells");
+	root->LinkEndChild(cellsxml);
+	for (i = 0; i < m_cells.size(); i++) {
+		unsigned int k;
+		const Cell& cell = m_cells[i];
+		TiXmlElement* cellxml = new TiXmlElement("cell");
+		cellsxml->LinkEndChild(cellxml);
+
+		for (k = 0; k < 4; k++) {
+			TiXmlElement* heightxml = new TiXmlElement("height");
+			cellxml->LinkEndChild(heightxml);
+			sprintf(buf, "%f", cell.height[k]);
+			heightxml->SetValue(buf);
+		}
+		cellxml->SetAttribute("topsurfaceid", cell.topSurfaceId);
+		cellxml->SetAttribute("frontsurfaceid", cell.frontSurfaceId);
+		cellxml->SetAttribute("rightsurfaceid", cell.rightSurfaceId);
+	}
 	return(root);
 }
 #endif

@@ -37,112 +37,109 @@ namespace RO {
 	class ROINT_DLLAPI GND : public Object {
 	public:
 #pragma pack(push,1)
-		// Structure definitions
-		struct strTexture {
-			char path[40];
-			char unk[40];
+		/// Lightmap, represents the shadow projected on a surface.
+		struct Lightmap {
+			unsigned char brightness[8][8];
+			struct {
+				unsigned char r;
+				unsigned char g;
+				unsigned char b;
+				inline operator unsigned char* () { return &r; }
+				inline operator const unsigned char* () const { return &r; }
+			} color[8][8];
 		};
 
-		struct strLightmap {
-			unsigned char brightness[64];
-			unsigned char colorrbg[192];
+		/// Surface, represents the visual aspect of a quad.
+		/// The vertices to use depend on which side of the cell is using the surface.
+		/// top = T0->T1->T2->T3
+		/// front = T2->T3->F0->F1
+		/// right = T3->T1->R2->R0
+		/// 2---3
+		/// | F | (cell y+1)
+		/// 0---1
+		/// 2---3 2---3
+		/// | T | | R | (cell x+1)
+		/// 0---1 0---1
+		struct Surface {
+			float u[4]; //< west->east, south->north ordering; 0=left 1=right
+			float v[4]; //< west->east, south->north ordering; 0=up 1=down
+			short textureId; //< -1 for none
+			unsigned short lightmapId; //< -1 for none?
+			struct {
+				unsigned char b;
+				unsigned char g;
+				unsigned char r;
+				unsigned char a;
+				inline operator unsigned char* () { return &b; }
+				inline operator const unsigned char* () const { return &b; }
+			} color;//< BGRA -- "A" seems to be ignored by the official client
 		};
 
-		struct strTile {
-			/** This is the "u" coordinate of the texture */
-			float texture_start[4];
-			/** This is the "v" coordinate of the texture */
-			float texture_end[4];
-			unsigned short texture_index;
-			unsigned short lightmap;
-			unsigned char color[4]; // BGRA -- "A" seems to be ignored by the official client
-		};
-
-		struct strCube {
-			float height[4];
-			int tile_up;
-			int tile_side;
-			int tile_aside;
-		};
-
-		struct strGndHeader {
-			unsigned int size_x, size_y;
-			unsigned int ratio;
-			unsigned int texture_count;
-			unsigned int texture_size;
-		};
-
-		struct strGridInfo {
-			unsigned int x;
-			unsigned int y;
-			unsigned int cell;
+		struct Cell {
+			float height[4]; //< west->east, south->north ordering
+			int topSurfaceId; //< -1 for none
+			int frontSurfaceId; //< -1 for none
+			int rightSurfaceId; //< -1 for none
 		};
 #pragma pack(pop)
 
 	protected:
-		strGndHeader m_gndheader;
-		strGridInfo m_grid;
-		
-		strTexture* m_textures;
-		strLightmap* m_lightmaps;
-		StructIO<strTile> m_tiles;
-		strCube* m_cubes;
+		void reset();
 
-		unsigned int m_lightmapcount;
-		unsigned int m_cubecount;
+		unsigned int m_width;
+		unsigned int m_height;
+		float m_zoom;
+
+		unsigned int m_nTextures;
+		unsigned int m_textureSize;
+		char* m_textures;
+
+		Arr<Lightmap> m_lightmaps;
+		Arr<Surface> m_surfaces;
+		Arr<Cell> m_cells; //< west->east, south->north ordering
+
 	public:
 		GND();
 		virtual ~GND();
 
-		void Clear();
-
-		virtual bool readStream(std::istream&);
-		void Dump(std::ostream&) const;
+		virtual bool readStream(std::istream& s);
+		bool writeStream(std::ostream& s) const;
+		void Dump(std::ostream& s) const;
 
 #ifdef ROINT_USE_XML
 		virtual TiXmlElement *GenerateXML(const std::string& name = "", bool utf = true) const;
 #endif
 
+		unsigned int getWidth() const;
+		unsigned int getHeight() const;
+		float getZoom() const;
+
 		/** Returns the number of textures used in this object */
 		unsigned int getTextureCount() const;
 
-		/** Returns the number of tiles in this object */
-		unsigned int getTileCount() const;
-
-		/** Returns the number of cubes in this object */
-		unsigned int getCubeCount() const;
-
-		/** Returns the full texture structure */
-		const strTexture& getTexture(const unsigned int& idx) const;
-		
-		/** Returns the full texture structure */
-		strTexture& getTexture(const unsigned int& idx);
-
 		/** Gets the texture name */
-		const char* getTextureName(const unsigned int& idx) const;
+		const char* getTexture(unsigned int idx) const;
 
-		/**
-		 * Retrieves the tile structure.
-		 * @param idx index of the texture to retrieve
-		 * @return strTile reference
-		 */
-		const strTile& getTile(const unsigned int& idx) const;
+		/** Returns the number of lightmaps in this object */
+		unsigned int getLightmapCount() const;
 
-		/**
-		 * Retrieves the tile structure.
-		 * @param idx index of the texture to retrieve
-		 * @return strTile reference
-		 */
-		strTile& getTile(const unsigned int& idx);
+		/** Gets the lightmap. */
+		const Lightmap& getLightmap(unsigned int idx) const;
 
-		const strCube& getCube(const unsigned int& x, const unsigned int& y) const;
-		strCube& getCube(const unsigned int& x, const unsigned int& y);
+		/** Number of surfaces. */
+		unsigned int getSurfaceCount() const;
 
-		const strCube& getCube(const unsigned int& idx) const;
-		strCube& getCube(const unsigned int& idx);
+		/** Gets the surface. */
+		const Surface& getSurface(unsigned int idx) const;
 
-		unsigned int getWidth() const;
-		unsigned int getHeight() const;
+		/** Number of cells. */
+		unsigned int getCellCount() const;
+
+		/** Gets the cell. */
+		const Cell& operator [] (unsigned int idx) const;
+		const Cell& getCell(unsigned int idx) const;
+		const Cell& getCell(unsigned int cellx, unsigned int celly) const;
+
 	};
 }
 
