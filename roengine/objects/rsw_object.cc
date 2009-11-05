@@ -301,96 +301,94 @@ void RswObject::getRot(float sizex, float sizey, float rot[16]) {
 	rot[15] = 1.0;
 }
 
+void RswObject::DrawSurface(const RO::GND::Surface& surface, const float* vertices) {
+	// TODO lightmap (use multi-texture extension?)
+	// TODO what should happen with the color? should glEnable(GL_COLOR_MATERIAL) be used?
+	glColor4ub(surface.color.r, surface.color.g, surface.color.b, surface.color.a);
+	if (surface.textureId != -1 && textures[surface.textureId].Valid())
+	{
+		const sdle::Texture texture = textures[surface.textureId];
+		float tvertices[4 * 2] = {
+			surface.u[0] * texture.getMaxU(), (1.0f - surface.v[0]) * texture.getMaxV(),
+			surface.u[1] * texture.getMaxU(), (1.0f - surface.v[1]) * texture.getMaxV(),
+			surface.u[2] * texture.getMaxU(), (1.0f - surface.v[2]) * texture.getMaxV(),
+			surface.u[3] * texture.getMaxU(), (1.0f - surface.v[3]) * texture.getMaxV()
+		};
+		glEnable(GL_TEXTURE_2D);
+		texture.Activate();
+		glBegin(GL_TRIANGLE_STRIP);
+		glTexCoord2fv(tvertices + 0); glVertex3fv(vertices + 0);
+		glTexCoord2fv(tvertices + 2); glVertex3fv(vertices + 3);
+		glTexCoord2fv(tvertices + 4); glVertex3fv(vertices + 6);
+		glTexCoord2fv(tvertices + 6); glVertex3fv(vertices + 9);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+	}
+	else
+	{
+		glBegin(GL_TRIANGLE_STRIP);
+		glVertex3fv(vertices + 0);
+		glVertex3fv(vertices + 3);
+		glVertex3fv(vertices + 6);
+		glVertex3fv(vertices + 9);
+		glEnd();
+	}
+}
+
 void RswObject::DrawGND() {
-	float sizex = 0, sizey = 0;
-	unsigned int i, j;
-	
-	sizex = m_tilesize * gnd->getWidth();
-	sizey = m_tilesize * gnd->getHeight();
+	unsigned int cellx, celly;
 
 	float rot[16];
+	float sizex = gnd->getZoom() * gnd->getWidth();
+	float sizey = gnd->getZoom() * gnd->getHeight();
 	getRot(sizex, sizey, rot);
+	glMultMatrixf(rot);// TODO should this really be here?
 
-	glMultMatrixf(rot);
-
-	sdle::Texture tex;
-
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_ALPHA_TEST);
-	for (j = 0; j < gnd->getHeight(); j++) {
-		for (i = 0; i < gnd->getWidth(); i++) {
-			const RO::GND::Cell& cell = gnd->getCell(i, j);
-
-			/* TILE UP */
-			if (cell.topSurfaceId != -1) {
+	glPushMatrix();
+	glScalef(gnd->getZoom(), -1, gnd->getZoom());
+	glEnable(GL_ALPHA_TEST); // TODO why is this needed?
+	for (celly = 0; celly < gnd->getHeight(); celly++) {
+		for (cellx = 0; cellx < gnd->getWidth(); cellx++) {
+			const RO::GND::Cell& cell = gnd->getCell(cellx, celly);
+			if( cell.topSurfaceId != -1 )
+			{
 				const RO::GND::Surface& surface = gnd->getSurface(cell.topSurfaceId);
-				tex = textures[surface.textureId];
-				if (tex.Valid()) {
-					tex.Activate();
-					float texcoords[4][2] = {
-						{ surface.u[0], 1.0f - surface.v[0]},
-						{ surface.u[1], 1.0f - surface.v[1]},
-						{ surface.u[3], 1.0f - surface.v[3]},
-						{ surface.u[2], 1.0f - surface.v[2]}
-					};
-					glBegin(GL_QUADS);
-					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cell.height[0], m_tilesize * j);
-					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cell.height[1], m_tilesize * j);
-					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cell.height[3], m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cell.height[2], m_tilesize * (j + 1));
-					glEnd();
-				}
+				float vertices[4 * 3] = {
+					(float)(cellx    ), cell.height[0], (float)(celly    ),
+					(float)(cellx + 1), cell.height[1], (float)(celly    ),
+					(float)(cellx    ), cell.height[2], (float)(celly + 1),
+					(float)(cellx + 1), cell.height[3], (float)(celly + 1)
+				};
+				DrawSurface(surface, vertices);
 			}
-
-			/* TILE SIDE */
-			if (cell.frontSurfaceId != -1) {
+			if( cell.frontSurfaceId != -1 )
+			{
 				const RO::GND::Surface& surface = gnd->getSurface(cell.frontSurfaceId);
-				const RO::GND::Cell& cell2 = gnd->getCell(i, j+1);
-				
-				tex = textures[surface.textureId];
-				if (tex.Valid()) {
-					tex.Activate();
-					float texcoords[4][2] = {
-						{ surface.u[2], surface.v[2]},
-						{ surface.u[3], surface.v[3]},
-						{ surface.u[1], surface.v[1]},
-						{ surface.u[0], surface.v[0]}
-					};
-					glBegin(GL_QUADS);
-					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * i,			-cell.height[2],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cell.height[3],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cell2.height[1],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * i,			-cell2.height[0],	m_tilesize * (j + 1));
-					glEnd();
-				}
+				const RO::GND::Cell& cell2 = gnd->getCell(cellx, celly + 1);// north
+				float vertices[4 * 3] = {
+					(float)(cellx    ), cell.height[2] , (float)(celly + 1),
+					(float)(cellx + 1), cell.height[3] , (float)(celly + 1),
+					(float)(cellx    ), cell2.height[0], (float)(celly + 1),
+					(float)(cellx + 1), cell2.height[1], (float)(celly + 1)
+				};
+				DrawSurface(surface, vertices);
 			}
-
-			/* TILE ASIDE */
-			if (cell.rightSurfaceId != -1) {
+			if( cell.rightSurfaceId != -1 )
+			{
 				const RO::GND::Surface& surface = gnd->getSurface(cell.rightSurfaceId);
-				const RO::GND::Cell& cell2 = gnd->getCell(i+1, j);
-				tex = textures[surface.textureId];
-				if (tex.Valid()) {
-					tex.Activate();
-					float texcoords[4][2] = {
-						{ surface.u[2], surface.v[2]},
-						{ surface.u[3], surface.v[3]},
-						{ surface.u[1], surface.v[1]},
-						{ surface.u[0], surface.v[0]}
-					};
-
-					glBegin(GL_QUADS);
-					glTexCoord2fv(texcoords[0]); glVertex3f(m_tilesize * (i + 1),	-cell.height[3],	m_tilesize * (j + 1));
-					glTexCoord2fv(texcoords[1]); glVertex3f(m_tilesize * (i + 1),	-cell.height[1],	m_tilesize * j);
-					glTexCoord2fv(texcoords[2]); glVertex3f(m_tilesize * (i + 1),	-cell2.height[0],	m_tilesize * j);
-					glTexCoord2fv(texcoords[3]); glVertex3f(m_tilesize * (i + 1),	-cell2.height[2],	m_tilesize * (j + 1));
-					glEnd();
-				}
+				const RO::GND::Cell& cell2 = gnd->getCell(cellx + 1, celly);// east
+				float vertices[4 * 3] = {
+					(float)(cellx + 1), cell.height[3] , (float)(celly + 1),
+					(float)(cellx + 1), cell.height[1] , (float)(celly    ),
+					(float)(cellx + 1), cell2.height[2], (float)(celly + 1),
+					(float)(cellx + 1), cell2.height[0], (float)(celly    )
+				};
+				DrawSurface(surface, vertices);
 			}
 		}
 	}
 	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 }
 
 void RswObject::DrawWater() {

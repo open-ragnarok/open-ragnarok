@@ -28,6 +28,9 @@ protected:
 	/** Water textures */
 	TextureCache water_tex;
 
+	/** Draws a GND surface */
+	void DrawSurface(const RO::GND::Surface& surface, const float* vertices);
+
 	/** Draws the Ground */
 	void DrawGND();
 
