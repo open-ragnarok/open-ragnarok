@@ -53,123 +53,16 @@ const RO::GND* RswObject::getGND() const {
 }
 
 void RswObject::getWorldPosition(float mapx, float mapy, float *rx, float *ry, float *rz) {
-	float sizex = 0, sizey = 0;
-
-	float tile = m_tilesize / 2;
-	
 	if (gat == NULL)
 		return;
 
-	if (mapx < 0 || mapx >= (int)gat->getWidth())
-		return;
+	float centerx = gat->getWidth() * 0.5f;
+	float centery = gat->getHeight() * 0.5f;
+	float zoom = m_tilesize * 0.5f;// zoom factor of a gat file?
 
-	if (mapy < 0 || mapy >= (int)gat->getHeight())
-		return;
-
-	
-	sizex = tile * gat->getWidth();
-	sizey = tile * gat->getHeight();
-
-	unsigned int coordx = (unsigned int)mapx;
-	unsigned int coordy = (unsigned int)mapy;
-
-
-	int mx, my;		// The integer part of the map position
-	float dx, dy;	// The decimal part of the map position
-	dx = mapx;
-	dy = (float)gat->getHeight() - mapy - 1;
-
-	mx = (int)dx;
-	my = (int)dy;
-
-	dx -= mx;
-	dy -= my;
-
-	if (dx < 0.005f && dy < 0.005f) {
-		*rx = tile * mx + tile / 2 - sizex / 2;
-		*rz = tile * my + tile / 2 - sizey / 2;
-		*ry = -gat->getAltitude(coordx, coordy);
-	}
-	else {
-		float positions[4][3]; // Coordinates (0, 0), (1, 0), (1, 1), (0, 1)
-
-		{
-			positions[0][0] = tile * mx + tile / 2 - sizex / 2;
-			positions[0][1] = -gat->getAltitude(coordx, coordy);
-			positions[0][2] = tile * my + tile / 2 - sizey / 2;
-		}
-		{
-			positions[1][0] = tile * (mx + 1) + tile / 2 - sizex / 2;
-			positions[1][1] = -gat->getAltitude(coordx+1, coordy);
-			positions[1][2] = tile * my + tile / 2 - sizey / 2;
-		}
-		{
-			positions[2][0] = tile * (mx + 1) + tile / 2 - sizex / 2;
-			positions[2][1] = -gat->getAltitude(coordx+1, coordy+1);
-			positions[2][2] = tile * (my + 1) + tile / 2 - sizey / 2;
-		}
-		{
-			positions[3][0] = tile * mx + tile / 2 - sizex / 2;
-			positions[3][1] = -gat->getAltitude(coordx, coordy+1);
-			positions[3][2] = tile * (my + 1) + tile / 2 - sizey / 2;
-		}
-		if (dx < 0.005f) {
-			// Moving only along the "y"
-			*rx = positions[0][0];
-			*ry = positions[0][1] * (1 - dy) + positions[3][1] * dy;
-			*rz = positions[0][2] * (1 - dy) + positions[3][2] * dy;
-		}
-		else if (dy < 0.005f) {
-			// Moving only along the "x"
-			*rx = positions[0][0] * (1 - dx) + positions[1][0] * dx;
-			*ry = positions[0][1] * (1 - dx) + positions[1][1] * dx;
-			*rz = positions[0][2];
-		}
-		else {
-			*rx = positions[0][0] * (1 - dx) + positions[1][0] * dx;
-			*rz = positions[0][2] * (1 - dy) + positions[3][2] * dy;
-			/*                     2   3
-			 *                     +---+
-			 * upper triangle -->> |  /|
-			 *                     | / |
-			 *                     |/  | <<-- lower triangle
-			 *                     +---+
-			 *                     1   0
-			 */
-
-			int idx[4] = { 1, 0, 3, 2 };
-			if (dx < (1 - dy)) {
-				// Lower triangle
-				// The height on (0, y)
-				float hy = positions[idx[0]][1] + dy * (positions[idx[1]][1] - positions[idx[0]][1]);
-				// The height on the diagonal in the coordinate y (1-y, y)
-				float hp = positions[idx[3]][1] + dy * (positions[idx[1]][1] - positions[idx[3]][1]);
-				// Proportion constant
-				float maxx = 1 - dy;
-				// The height
-				float h = hy + (dx / maxx) * (hp - hy);
-
-				*ry = h;
-			}
-			else {
-				// Upper triangle
-				// The height on (0, y)
-				float hy = positions[idx[3]][1] + dy * (positions[idx[2]][1] - positions[idx[3]][1]);
-				// The height on the diagonal in the coordinate y (1-y, y)
-				float hp = positions[idx[3]][1] + dy * (positions[idx[1]][1] - positions[idx[3]][1]);
-				// Proportion constant
-				float minx = 1 - dy;
-
-				float k = dx - minx;
-				float j = k / dy;
-
-				// The height
-				float h = hy + j * (hp - hy);
-
-				*ry = h;
-			}
-		}
-	}
+	if (rx != NULL) *rx = zoom * (mapx - centerx + 0.5f);
+	if (ry != NULL) *ry = -gat->getAltitude(mapx, mapy);
+	if (rz != NULL) *rz = zoom * (gat->getHeight() - mapy - 1 - centery + 0.5f);
 }
 
 bool RswObject::loadTextures(CacheManager& cache) {
@@ -304,7 +197,7 @@ void RswObject::getRot(float sizex, float sizey, float rot[16]) {
 void RswObject::DrawSurface(const RO::GND::Surface& surface, const float* vertices) {
 	// TODO lightmap (use multi-texture extension?)
 	// TODO what should happen with the color? should glEnable(GL_COLOR_MATERIAL) be used?
-	glColor4ub(surface.color.r, surface.color.g, surface.color.b, surface.color.a);
+	//glColor4ub(surface.color.r, surface.color.g, surface.color.b, surface.color.a);
 	if (surface.textureId != -1 && textures[surface.textureId].Valid())
 	{
 		const sdle::Texture texture = textures[surface.textureId];
