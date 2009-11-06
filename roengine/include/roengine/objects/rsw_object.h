@@ -42,14 +42,14 @@ protected:
 
 	unsigned int gnd_gl;
 
-	/** The GLList used to draw the water */
-	unsigned int m_watergl;
-
 	/** The current water frame to draw */
 	unsigned int m_waterframe;
 
 	/** The ticks passed since last frame changed */
 	unsigned int m_waterdelay;
+
+	/** Wave offset in degrees [-180, 180[ */
+	float m_waveOffset;
 
 	float world_x;
 	float world_y;

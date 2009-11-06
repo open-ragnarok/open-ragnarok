@@ -8,6 +8,10 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832795
+#endif
+
 float RswObject::m_tilesize = 10.0f;
 
 RswObject::RswObject(const RO::RSW* rsw, CacheManager& c) : GLObject(), m_cache(c) {
@@ -20,16 +24,14 @@ RswObject::RswObject(const RO::RSW* rsw, CacheManager& c) : GLObject(), m_cache(
 	this->gnd = (RO::GND*)cache[gnd_fn];
 	this->gat = (RO::GAT*)cache[gat_fn];
 
-	m_watergl = 0;
 	gnd_gl = 0;
 
 	m_waterframe = 0;
 	m_waterdelay = 0;
+	m_waveOffset = 0;
 }
 
 RswObject::~RswObject() {
-	if (glIsList(m_watergl))
-		glDeleteLists(m_watergl, 1);
 	if (glIsList(gnd_gl))
 		glDeleteLists(gnd_gl, 1);
 
@@ -285,41 +287,54 @@ void RswObject::DrawGND() {
 }
 
 void RswObject::DrawWater() {
-#define WATER_MULTIPLIER 4
-	m_waterdelay += m_tickdelay;
-	unsigned int cycle = rsw->getWater().animSpeed * 100;
-	while (m_waterdelay > cycle) {
-		m_waterdelay -= cycle;
-		m_waterframe++;
-		if (m_waterframe > 31) {
-			m_waterframe = 0;
-		}
-	}
-	water_tex[m_waterframe].Activate();
+#define WATERFPS 45 // TODO check how the speed works in original
+	const RO::RSW::Water& water = rsw->getWater();
+	unsigned int cycle = water.animSpeed * 1000 / WATERFPS;
+	m_waterdelay = (m_waterdelay + m_tickdelay) % (cycle * 32);
+	m_waterframe = m_waterdelay / cycle;
+	m_waveOffset += m_tickdelay * water.waveSpeed * WATERFPS / 1000;
+	while (m_waveOffset > 180.0)
+		m_waveOffset -= 360;
 
-	if (glIsList(m_watergl)) {
-		glCallList(m_watergl);
-		return;
-	}
+	glPushMatrix();
+	glScalef(gnd->getZoom(), -1, gnd->getZoom());
 
-	m_watergl = glGenLists(1);
-	glNewList(m_watergl, GL_COMPILE_AND_EXECUTE);
-
-	float waterh = (float)rsw->getWater().level;
-
+	// TODO set water opacity/alpha to 0x90
 	glEnable(GL_TEXTURE_2D);
-	glBegin(GL_QUADS);
-	for (unsigned int i = 0; i < gnd->getWidth() / WATER_MULTIPLIER; i++) {
-		for (unsigned int j = 0; j < gnd->getHeight() / WATER_MULTIPLIER; j++) {
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			-waterh, WATER_MULTIPLIER * m_tilesize * j);
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	-waterh, WATER_MULTIPLIER * m_tilesize * j);
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * (i + 1),	-waterh, WATER_MULTIPLIER * m_tilesize * (j + 1));
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(WATER_MULTIPLIER * m_tilesize * i,			-waterh, WATER_MULTIPLIER * m_tilesize * (j + 1));
+	water_tex[m_waterframe].Activate();
+	for (unsigned int y = 0; y < gnd->getHeight(); y++) {
+		for (unsigned int x = 0; x < gnd->getWidth(); x++) {
+			float height[3];
+			if( water.waveHeight == 0.0 )
+			{
+				height[0] = height[1] = height[2] = water.level;
+			}
+			else
+			{
+				height[0] = (float)sin(((x + y    ) * water.wavePitch + m_waveOffset) * M_PI / 180.0) * water.waveHeight + water.level;
+				height[1] = (float)sin(((x + y - 1) * water.wavePitch + m_waveOffset) * M_PI / 180.0) * water.waveHeight + water.level;
+				height[2] = (float)sin(((x + y + 1) * water.wavePitch + m_waveOffset) * M_PI / 180.0) * water.waveHeight + water.level;
+			}
+			const RO::GND::Cell& cell = gnd->getCell(x, y);
+			if (cell.height[0] <= height[0] && cell.height[1] <= height[0] && cell.height[2] <= height[0] && cell.height[3] <= height[0])
+				continue;// water is below the ground
+			// TODO exclude tiles based on camera frustum?
+			// TODO check texture orientation in original
+			float u1 = (x % 4    ) * 0.25f;
+			float u2 = (x % 4 + 1) * 0.25f;
+			float v1 = (y % 4    ) * 0.25f;
+			float v2 = (y % 4 + 1) * 0.25f;
+			glBegin(GL_TRIANGLE_STRIP);
+			glTexCoord2f(u1, v1); glVertex3f((float)(x    ), height[1], (float)(y    ));
+			glTexCoord2f(u2, v1); glVertex3f((float)(x + 1), height[0], (float)(y    ));
+			glTexCoord2f(u1, v2); glVertex3f((float)(x    ), height[0], (float)(y + 1));
+			glTexCoord2f(u2, v2); glVertex3f((float)(x + 1), height[2], (float)(y + 1));
+			glEnd();
 		}
 	}
-	glEnd();
 	glDisable(GL_TEXTURE_2D);
-	glEndList();
+
+	glPopMatrix();
 }
 
 void RswObject::DrawSelection(int mapx, int mapy) const {
