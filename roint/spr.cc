@@ -56,8 +56,6 @@ struct bmpHeader {
 
 SPR::SPR() : Object() {
 	magicSize = 2;
-	m_imagesPal = NULL;
-	m_imagesRgba = NULL;
 	m_pal = NULL;
 }
 
@@ -67,12 +65,17 @@ SPR::~SPR() {
 
 bool SPR::readStream(std::istream& s) {
 	reset();
-	readHeader(s);
-	if (!checkHeader("SP"))
+	if (!readHeader(s)) {
 		return(false);
+	}
+	if (!checkHeader("SP")) {
+		_log(ROINT__DEBUG, "Invalid SPR header (%c%c)", magic[0], magic[1]);
+		return(false);
+	}
 
 	switch (m_version.sver) {
 		default:
+			_log(ROINT__DEBUG, "Unsupported SPR version (%u.%u)", (m_version.sver >> 8) & 0xFF, m_version.sver & 0xFF);
 			return(false);
 		case 0x100:
 		case 0x101:
@@ -82,195 +85,181 @@ bool SPR::readStream(std::istream& s) {
 	}
 
 	unsigned short i;
+	unsigned short imgCountPal, imgCountRgba;
 
-	s.read((char*)&m_imgCountPal, sizeof(unsigned short));
+	s.read((char*)&imgCountPal, sizeof(unsigned short));
 	if (m_version.sver >= 0x200)
-		s.read((char*)&m_imgCountRgba, sizeof(unsigned short));
+		s.read((char*)&imgCountRgba, sizeof(unsigned short));
 	else
-		m_imgCountRgba = 0;
-
-	if (m_imgCountPal > 0)
-	{
-		m_imagesPal = new Image[m_imgCountPal];
-		for (i = 0; i < m_imgCountPal; i++)
-			readImagePal(s, i);
+		imgCountRgba = 0;
+	if (s.fail()) {
+		return(false);
 	}
-	if (m_imgCountRgba > 0)
+
+	if (imgCountPal > 0)
 	{
-		m_imagesRgba = new Image[m_imgCountRgba];
-		for (i = 0; i < m_imgCountRgba; i++)
-			readImageRgba(s, i);
+		Image empty = {0,0,NULL};
+		m_imagesPal.resize(imgCountPal, empty);
+		for (i = 0; i < imgCountPal; i++) {
+			if (!readImagePal(s, i)) {
+				reset();
+				return(false);
+			}
+		}
+	}
+	if (imgCountRgba > 0)
+	{
+		Image empty = {0,0,NULL};
+		m_imagesRgba.resize(imgCountRgba, empty);
+		for (i = 0; i < imgCountRgba; i++) {
+			if (!readImageRgba(s, i)) {
+				reset();
+				return(false);
+			}
+		}
 	}
 
 	if (m_version.sver >= 0x101) {
 		m_pal = new RO::PAL();
 		m_pal->readStream(s);
 	}
-	if (s.eof()) {
-		fprintf(stderr, "ERROR: Unexpected end of stream\n");
+	if (s.fail()) {
 		reset();
 		return(false);
 	}
-
+	m_valid = true;
 	return(true);
 }
 
-unsigned short SPR::getImgCount(const ImageType type) const {
+unsigned int SPR::getImageCount(ImageType type) const {
 	switch (type) {
 		case IT_PAL:
-			return(m_imgCountPal);
+			return(m_imagesPal.size());
 		case IT_RGBA:
-			return(m_imgCountRgba);
+			return(m_imagesRgba.size());
 	}
 	return(0);
 }
 
-void SPR::readImagePal(std::istream& s, const unsigned short idx) {
-	Image* img = &m_imagesPal[idx];
+bool SPR::readImagePal(std::istream& s, unsigned int idx) {
+	Image& image = m_imagesPal[idx];
 
-	char *dPtr;
-	dPtr = (char*)&img->w;
-	s.read(dPtr, 2);
-	dPtr = (char*)&img->h;
-	s.read(dPtr, 2);
-	if (s.eof()) {
-		img->w = 0;
-		img->h = 0;
-		img->data = NULL;
-		return;
+	s.read((char*)&image.width, sizeof(unsigned short));
+	s.read((char*)&image.height, sizeof(unsigned short));
+	if (s.fail()) {
+		return(false);
 	}
+	unsigned int imageSize = (unsigned int)image.width * image.height;
 
 	if (m_version.sver >= 0x201) {
 		// rle encoded
 		unsigned char c;
-		unsigned short length;
+		unsigned short encodedSize;
 
-		s.read((char*)&length, 2);
-		if (s.eof()) {
-			img->w = 0;
-			img->h = 0;
-			img->data = NULL;
-			return;
+		s.read((char*)&encodedSize, sizeof(unsigned short));
+		if (s.fail()) {
+			return(false);
 		}
-		//printf("%u x %u (size: %u)\n", img->w, img->h, length);
 
 		unsigned short pos;
-		unsigned char* data = new unsigned char[length];
-		s.read((char*)data, length);
-		if (s.eof()) {
+		unsigned char* data = new unsigned char[encodedSize];
+		s.read((char*)data, encodedSize);
+		if (s.fail()) {
 			delete[] data;
-			img->w = 0;
-			img->h = 0;
-			img->data = NULL;
-			return;
+			return(false);
 		}
 		std::stringstream out;
 		int written = 0;
 
-		for (pos = 0; pos < length; pos++) {
+		for (pos = 0; pos < encodedSize; pos++) {
 			c = data[pos];
 
 			if (c == 0) {
-				unsigned char len;
-				len = data[pos+1];
+				// rle-encoded (invisible/background palette index)
 				pos++;
-				if (len != 0) {
-					//pos++;
-					for (unsigned char j = 0; j < len; j++) {
-						out.write("\0", 1);
-						written++;
-					}
+				if (pos >= encodedSize) {
+					_log(ROINT__DEBUG, "invalid encoded data for SPR pal image (idx=%u width=%u height=%u encodedSize=%u)", idx, image.width, image.height, encodedSize);
+					delete[] data;
+					return(false);
+				}
+				unsigned char len = data[pos];
+				if (len == 0)
+					len = 1;
+				for (unsigned char i = 0; i < len; i++) {
+					out.put('\0');
 				}
 			}
 			else {
-				out.write((char*)&c, 1);
-//				out.write((char*)data + pos, 1);
-				written++;
+				out.put(c);
 			}
 		}
 
 		delete[] data;
 
-		unsigned int size = (unsigned int)out.tellp();
-		img->data = new unsigned char[size];
-		//printf(" bytes decoded: %u", size);
-		//printf(" expected size: %u", img->w * img->h);
-		//printf("\n");
-		out.read((char*)img->data, size);
+		unsigned int decodedSize = (unsigned int)out.tellp();
+		if (decodedSize != imageSize) {
+			_log(ROINT__DEBUG, "invalid decoded size for SPR pal image (idx=%u width=%u height=%u decodedSize=%u)", idx, image.width, image.height, decodedSize);
+			return(false);
+		}
+		image.data.pal = new unsigned char[imageSize];
+		out.read((char*)image.data.pal, imageSize);
 	}
 	else {
 		// raw
-		unsigned int length = (unsigned int)img->w * img->h;
-		img->data = new unsigned char[length];
-		s.read((char*)img->data, length);
-		if (s.eof()) {
-			delete[] img->data;
-			img->w = 0;
-			img->h = 0;
-			img->data = NULL;
-		}
+		image.data.pal = new unsigned char[imageSize];
+		s.read((char*)image.data.pal, imageSize);
 	}
+	return(!s.fail());
 }
 
-void SPR::readImageRgba(std::istream& s, const unsigned short idx) {
-	Image* img = &m_imagesRgba[idx];
+bool SPR::readImageRgba(std::istream& s, unsigned int idx) {
+	Image& image = m_imagesRgba[idx];
 
-	char *dPtr;
-	dPtr = (char*)&img->w;
-	s.read(dPtr, 2);
-	dPtr = (char*)&img->h;
-	s.read(dPtr, 2);
-	if (s.eof()) {
-		img->w = 0;
-		img->h = 0;
-		img->data = NULL;
-		return;
+	s.read((char*)&image.width, sizeof(unsigned short));
+	s.read((char*)&image.height, sizeof(unsigned short));
+	if (s.fail()) {
+		return(false);
 	}
 
-	unsigned int length = (unsigned int)4 * img->w * img->h;
-	img->data = new unsigned char[length];
-	s.read((char*)img->data, length);
-	if (s.eof()) {
-		delete[] img->data;
-		img->w = 0;
-		img->h = 0;
-		img->data = NULL;
-	}
+	unsigned int length = (unsigned int)image.width * image.height;
+	image.data.rgba = new Color[length];
+	s.read((char*)image.data.rgba, length * sizeof(Color));
+	return(!s.fail());
 }
 
 void SPR::reset() {
-	if (m_imagesPal != NULL) {
-		for (unsigned short i = 0; i < m_imgCountPal; i++)
-			if (m_imagesPal[i].data != NULL)
-				delete[] m_imagesPal[i].data;
-
-		delete[] m_imagesPal;
-		m_imagesPal = NULL;
+	unsigned int i;
+	m_valid = false;
+	for (i = 0; i < m_imagesPal.size(); i++) {
+		Image& image = m_imagesPal[i];
+		if (image.data.pal != NULL) {
+			delete[] image.data.pal;
+			image.data.pal = NULL;
+		}
 	}
-	m_imgCountPal = 0;
-	if (m_imagesRgba != NULL) {
-		for (unsigned short i = 0; i < m_imgCountRgba; i++)
-			if (m_imagesRgba[i].data != NULL )
-				delete[] m_imagesRgba[i].data;
-
-		delete[] m_imagesRgba;
-		m_imagesRgba = NULL;
+	m_imagesPal.clear();
+	for (i = 0; i < m_imagesRgba.size(); i++) {
+		Image& image = m_imagesRgba[i];
+		if (image.data.rgba != NULL) {
+			delete[] image.data.rgba;
+			image.data.rgba = NULL;
+		}
 	}
-	m_imgCountRgba = 0;
+	m_imagesRgba.clear();
 	if (m_pal != NULL) {
 		delete m_pal;
 		m_pal = NULL;
 	}
 }
 
-const RO::SPR::Image* RO::SPR::getImage(const unsigned short idx, const ImageType type) const {
+const RO::SPR::Image* RO::SPR::getImage(unsigned int idx, ImageType type) const {
 	switch (type) {
 		case IT_PAL:
-			if (idx < m_imgCountPal)
+			if (idx < m_imagesPal.size())
 				return(&m_imagesPal[idx]);
 			break;
 		case IT_RGBA:
-			if (idx < m_imgCountRgba)
+			if (idx < m_imagesRgba.size())
 				return(&m_imagesRgba[idx]);
 			break;
 	}
@@ -281,12 +270,10 @@ const PAL* RO::SPR::getPal() const {
 	return(m_pal);
 }
 
-bool SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostream& s, const RO::PAL* pal) const {
+bool SPR::saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::PAL* pal) const {
 	const Image* img = getImage(idx, type);
 	if (img == NULL)
 		return(false);
-	if (pal == NULL)
-		pal = m_pal;
 
 	bmpHeader header;
 
@@ -297,15 +284,17 @@ bool SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostream& 
 	header.dib.compression = 0;
 	header.dib.vres = 1;
 	header.dib.hres = 1;
-	header.dib.w = img->w;
-	header.dib.h = img->h;
+	header.dib.w = img->width;
+	header.dib.h = img->height;
 
 	if (type == IT_PAL) {
+		if (pal == NULL)
+			pal = m_pal;
 		if (pal == NULL)
 			return(false);// no palette
 
 		unsigned int k;
-		int wscan = img->w;
+		int wscan = img->width;
 
 		while (wscan % 4 != 0)
 			wscan++;
@@ -313,7 +302,7 @@ bool SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostream& 
 		header.dib.bpp = 8;
 		header.dib.colorcount = 256;
 		header.dib.importantcolors = 0;
-		header.dib.datasize = wscan * img->h;
+		header.dib.datasize = wscan * img->height;
 		header.bmp.offset = sizeof(bmpHeader) + 256 * 4;
 		header.bmp.size = header.bmp.offset + header.dib.datasize;
 
@@ -326,15 +315,15 @@ bool SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostream& 
 		memset(dbuf, 0, wscan);
 
 		// left to right, top to bottom -> left to right, bottom to top
-		for (int ii = img->h - 1; ii >= 0; ii--) {
-			memcpy(dbuf, &img->data[ii * img->w], img->w);
+		for (int ii = img->height - 1; ii >= 0; ii--) {
+			memcpy(dbuf, &img->data.pal[ii * img->width], img->width);
 			s.write(dbuf, wscan);
 		}
 
 		delete[] dbuf;
 	}
-	else {
-		unsigned int length = (unsigned int)img->w * img->h;
+	else if (type == IT_RGBA) {
+		unsigned int length = (unsigned int)img->width * img->height;
 
 		header.dib.bpp = 32;
 		header.dib.colorcount = 0;
@@ -348,125 +337,54 @@ bool SPR::saveBMP(const unsigned short idx, const ImageType type, std::ostream& 
 		// left to right, bottom to top
 		for (unsigned int i = 0; i < length; i++) {
 			// RGBA -> ARGB
-			char* dPtr = (char*)&img->data[4 * i];
-			s.put(dPtr[1]);// B
-			s.put(dPtr[2]);// G
-			s.put(dPtr[3]);// R
-			s.put(dPtr[0]);// A
+			const Color& pixel = img->data.rgba[i];
+			s.put(pixel.b);// B
+			s.put(pixel.g);// G
+			s.put(pixel.r);// R
+			s.put(pixel.a);// A
 		}
+	}
+	else {
+		_log(ROINT__DEBUG, "invalid SPR image type %d", type);
+		return(false);
 	}
 
 	return(!s.fail());
 }
 
-bool SPR::saveBMP(const unsigned short idx, const ImageType type, const std::string& fn, const RO::PAL* pal) const {
+bool SPR::saveBMP(unsigned int idx, ImageType type, const std::string& fn, const RO::PAL* pal) const {
 	std::ofstream fp(fn.c_str(), std::ios_base::binary);
 	bool ret = saveBMP(idx, type, fp, pal);
 	fp.close();
 	return(ret);
 }
 
-bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pallete) const {
+bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pal) const {
 	unsigned int imageWidth = 512;
-	unsigned int imageHeight = 16;
-	unsigned int neededHeight = 0;
+	unsigned int imageHeight = 0;
+	unsigned int i;
 
+	// calculate image size
 	unsigned int linespace = imageWidth;
 	unsigned int lineheight = 0;
-
-	unsigned int i;
-	int pos;
-
-	const RO::SPR::Image* img;
-	unsigned char *image;
-
-	const RO::PAL* pal = pallete;
-	if (pal == NULL)
-		pal = m_pal;
-
-	const RO::PAL::Pal* color;
-
-	// Check our image size
-	for (i = 0; i < getImgCount(type); i++) {
-		img = getImage(i, type);
-		if (img->w > imageWidth) {
-			_log(ROINT__ERROR, "SPR frame too big!");
+	for (i = 0; i < getImageCount(type); i++) {
+		const Image* img = getImage(i, type);
+		if (imageWidth < img->width) {
+			_log(ROINT__DEBUG, "SPR frame too big!");
 			return(false);
 		}
-		if (img->w > linespace) {
+		if (linespace < img->width) {
 			// Too big to fit this line. Increase one line.
+			imageHeight += lineheight;
 			linespace = imageWidth;
-			neededHeight += lineheight;
 			lineheight = 0;
 		}
-		if (img->h > lineheight) {
-			lineheight = img->h;
-		}
-		linespace -= img->w;
+		if (lineheight < img->height)
+			lineheight = img->height;
+		linespace -= img->width;
 	}
-	neededHeight += lineheight;
+	imageHeight += lineheight;
 
-	// Get the next power-of-two size
-	//while (imageHeight < neededHeight)
-	//	imageHeight <<= 1;
-	// ...or not.
-	imageHeight = neededHeight;
-
-	// Creates the Image
-	// Corner coordinates for the current image coordinates inside the texture
-	int ix = 0;
-	int iy = 0;
-	// Actual Coordinates of the pixel in the texture
-	int px, py;
-
-	// Pallete position
-	unsigned char palpos;
-	lineheight = 0;
-	linespace = imageWidth;
-	image = new unsigned char[imageWidth * imageHeight * 4];
-	memset(image, 0, imageWidth * imageHeight * 4);
-
-	for (i = 0; i < getImgCount(type); i++) {
-		img = getImage(i, type);
-		// Checks our position
-		if (img->w > linespace) {
-			// Too big to fit this line. Increase one line.
-			linespace = imageWidth;
-			iy += lineheight;
-			ix = 0;
-			lineheight = 0;
-		}
-		if (img->h > lineheight) {
-			lineheight = img->h;
-		}
-
-		// Copy data to image
-		for (unsigned int x = 0; x < img->w; x++) {
-			for (unsigned int y = 0; y < img->h; y++) {
-				px = ix + x;
-				py = iy + img->h - y - 1;
-				pos = y * img->w + x;
-				palpos = img->data[pos];
-				color = pal->getPal(palpos);
-				// Write data to image
-				image[4 * (px + py * imageWidth)] = color->r;
-				image[4 * (px + py * imageWidth) + 1] = color->g;
-				image[4 * (px + py * imageWidth) + 2] = color->b;
-
-				if (palpos == 0) {
-					image[4 * (px + py * imageWidth) + 3] = 0;
-				}
-				else {
-					image[4 * (px + py * imageWidth) + 3] = (unsigned char)0xff;
-				}
-			}
-		}
-
-		ix += img->w;
-		linespace -= img->w;
-	}
-
-	// Save to the file
 	bmpHeader header;
 
 	memset((char*)&header, 0, sizeof(bmpHeader));
@@ -476,26 +394,109 @@ bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pallete) const
 	header.dib.compression = 0;
 	header.dib.vres = 1;
 	header.dib.hres = 1;
-	header.dib.w = imageWidth;
-	header.dib.h = imageHeight;
 
-	header.dib.bpp = 32;
-	header.dib.colorcount = 0;
-	header.dib.importantcolors = 0;
-	header.dib.datasize = 4 * imageWidth * imageHeight;
-	header.bmp.offset = sizeof(bmpHeader);
-	header.bmp.size = header.bmp.offset + header.dib.datasize;
+	if (type == IT_PAL) {
+		// palette images
+		if (pal == NULL)
+			pal = m_pal;
+		if (pal == NULL)
+			return(false);// no palette
 
-	s.write((char*)&header, sizeof(bmpHeader));
-	s.write((char*)image, header.dib.datasize);
+		while (imageWidth % 4 != 0)
+			imageWidth++;
 
-	_log(ROINT__DEBUG, "Successfuly written the spr data to a bitmap");
+		header.dib.w = imageWidth;
+		header.dib.h = imageHeight;
+		header.dib.bpp = 8;
+		header.dib.colorcount = 256;
+		header.dib.importantcolors = 0;
+		header.dib.datasize = imageWidth * imageHeight;
+		header.bmp.offset = sizeof(bmpHeader) + 256 * 4;
+		header.bmp.size = header.bmp.offset + header.dib.datasize;
 
-	// Free memory
-	delete[] image;
+		s.write((char*)&header, sizeof(bmpHeader));
+		for (i = 0; i < 256; i++) {
+			s.write((char*)pal->getPal(i), 4);
+		}
 
-	return(true);
+		unsigned char* dbuf = new unsigned char[header.dib.datasize];
+		memset(dbuf, 0, header.dib.datasize);
 
+		unsigned int offx = 0;
+		unsigned int offy = 0;
+		lineheight = 0;
+		for (i = 0; i < getImageCount(type); i++) {
+			const Image* img = getImage(i, type);
+			if (imageWidth < offx + img->width) {
+				// Too big to fit this line. Increase one line.
+				offy += lineheight;
+				offx = 0;
+				lineheight = 0;
+			}
+			if (lineheight < img->height)
+				lineheight = img->height;
+			// left to right, top to bottom -> left to right, bottom to top
+			for (unsigned int y = 0; y < img->height; y++) {
+				memcpy(&dbuf[offx + (offy + y) * imageWidth], &img->data.pal[(img->height - y - 1) * img->width], img->width);
+			}
+			offx += img->width;
+		}
+
+		s.write((char*)dbuf, header.dib.datasize);
+		delete[] dbuf;
+	}
+	else if (type == IT_RGBA) {
+		// rgba images
+		unsigned int length = (unsigned int)imageWidth * imageHeight;
+
+		header.dib.bpp = 32;
+		header.dib.colorcount = 0;
+		header.dib.importantcolors = 0;
+		header.dib.datasize = 4 * length;
+		header.bmp.offset = sizeof(bmpHeader);
+		header.bmp.size = header.bmp.offset + header.dib.datasize;
+
+		s.write((char*)&header, sizeof(bmpHeader));
+
+		unsigned char* dbuf = new unsigned char[header.dib.datasize];
+		memset(dbuf, 0, header.dib.datasize);
+
+		unsigned int offx = 0;
+		unsigned int offy = 0;
+		lineheight = 0;
+		for (i = 0; i < getImageCount(type); i++) {
+			const Image* img = getImage(i, type);
+			if (imageWidth < offx + img->width) {
+				// Too big to fit this line. Increase one line.
+				offy += lineheight;
+				offx = 0;
+				lineheight = 0;
+			}
+			if (lineheight < img->height)
+				lineheight = img->height;
+			// left to right, bottom to top
+			for (unsigned int x = 0; x < img->width; x++) {
+				for (unsigned int y = 0; y < img->height; y++) {
+					// RGBA -> ARGB
+					const Color& pixel = img->data.rgba[x + y * img->width];
+					unsigned char* p = &dbuf[4 * (offx + x + (offy + y) * imageWidth)];
+					p[0] = pixel.b;// B
+					p[1] = pixel.g;// G
+					p[2] = pixel.r;// R
+					p[3] = pixel.a;// A
+				}
+			}
+			offx += img->width;
+		}
+
+		s.write((char*)dbuf, header.dib.datasize);
+		delete[] dbuf;
+	}
+	else {
+		_log(ROINT__DEBUG, "invalid SPR image type %d", type);
+		return(false);
+	}
+	return(!s.fail());
 }
 
 }

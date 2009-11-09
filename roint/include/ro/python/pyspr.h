@@ -22,8 +22,8 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __PYSPR_H
-#define __PYSPR_H
+#ifndef __RO_PYTHON_PYSPR_H
+#define __RO_PYTHON_PYSPR_H
 
 #include "../types/spr.h"
 
@@ -32,12 +32,12 @@ extern "C" {
 	ROINT_DLLAPI SPR* new_SPR();
 	ROINT_DLLAPI void del_SPR(SPR*);
 	ROINT_DLLAPI bool read_SPR(SPR*, const char*);
-	ROINT_DLLAPI unsigned int getImgCount_SPR(const SPR*);
-	ROINT_DLLAPI bool saveBMP_SPR(const SPR*, int idx, const char* fn);
-	ROINT_DLLAPI const SPR::Pal* getPal_SPR(const SPR*, int idx);
-	ROINT_DLLAPI const SPR::Image* getFrame_SPR(const SPR*, int idx);
+	ROINT_DLLAPI unsigned int getImageCount_SPR(const SPR*, int type);
+	ROINT_DLLAPI const SPR::Image* getImage_SPR(const SPR*, int idx, int type);
+	ROINT_DLLAPI const PAL* getPal_SPR(const SPR*);
+	ROINT_DLLAPI bool saveBMP_SPR(const SPR* spr, int idx, int type, const char* fn, const PAL* pal);
 }
 }
 
-#endif /* __PYSPR_H */
+#endif /* __RO_PYTHON_PYSPR_H */
 

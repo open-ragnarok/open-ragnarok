@@ -63,6 +63,26 @@ public:
 		_data = newData;
 	}
 
+	void resize(unsigned int n, const T& value) {
+		T* newData = 0;
+		if (n > 0) {
+			unsigned int i = 0;
+			newData = new T[n];
+			if (_size > 0) {
+				unsigned int end = (_size < n? _size: n);
+				for (; i < end; i++) {
+					newData[i] = _data[i];
+				}
+				delete[] _data;
+			}
+			for (; i < n; i++) {
+				newData[i] = value;
+			}
+		}
+		_size = n;
+		_data = newData;
+	}
+
 	unsigned int size() const {
 		return(_size);
 	}

@@ -91,28 +91,28 @@ bool SprGL::open(const RO::SPR* spr) {
 
 
 	const RO::SPR::Image* img;
-	const RO::SPR::Pal* pal;
+	const RO::PAL::Pal* pal;
 
-	m_info = new sprInfo[spr->getImgCount()];
-	m_framecount = spr->getImgCount();
+	m_info = new sprInfo[spr->getImageCount(RO::SPR::IT_PAL)];
+	m_framecount = spr->getImageCount(RO::SPR::IT_PAL);
 
 	// Check our image size
 	for (i = 0; i < m_framecount; i++) {
-		img = spr->getFrame(i);
-		if (img->w > imageWidth) {
+		img = spr->getImage(i, RO::SPR::IT_PAL);
+		if (img->width > imageWidth) {
 			fprintf(stderr, "SPR frame too big!\n");
 			return(false);
 		}
-		if (img->w > linespace) {
+		if (img->width > linespace) {
 			// Too big to fit this line. Increase one line.
 			linespace = imageWidth;
 			neededHeight += lineheight;
 			lineheight = 0;
 		}
-		if (img->h > lineheight) {
-			lineheight = img->h;
+		if (img->height > lineheight) {
+			lineheight = img->height;
 		}
-		linespace -= img->w;
+		linespace -= img->width;
 	}
 	neededHeight += lineheight;
 	unsigned int imageHeight = 16;
@@ -134,27 +134,27 @@ bool SprGL::open(const RO::SPR* spr) {
 	sdle::Image image(NULL, imageWidth, imageHeight, 32);
 
 	for (i = 0; i < m_framecount; i++) {
-		img = spr->getFrame(i);
+		img = spr->getImage(i, RO::SPR::IT_PAL);
 		// Checks our position
-		if (img->w > linespace) {
+		if (img->width > linespace) {
 			// Too big to fit this line. Increase one line.
 			linespace = imageWidth;
 			iy += lineheight;
 			ix = 0;
 			lineheight = 0;
 		}
-		if (img->h > lineheight) {
-			lineheight = img->h;
+		if (img->height > lineheight) {
+			lineheight = img->height;
 		}
 
 		// Copy data to image
-		for (unsigned int x = 0; x < img->w; x++) {
-			for (unsigned int y = 0; y < img->h; y++) {
+		for (unsigned int x = 0; x < img->width; x++) {
+			for (unsigned int y = 0; y < img->height; y++) {
 				px = ix + x;
 				py = iy + y;
-				pos = y * img->w + x;
-				palpos = img->data[pos];
-				pal = spr->getPal(palpos);
+				pos = y * img->width + x;
+				palpos = img->data.pal[pos];
+				pal = spr->getPal()->getPal(palpos);// XXX DANGER, the spr might not have a palette
 				// Write data to image
 				image[4 * (px + py * imageWidth)] = pal->r;
 				image[4 * (px + py * imageWidth) + 1] = pal->g;
@@ -168,12 +168,12 @@ bool SprGL::open(const RO::SPR* spr) {
 			}
 		}
 		// Setup info
-		m_info[i].w = img->w;
-		m_info[i].h = img->h;
+		m_info[i].w = img->width;
+		m_info[i].h = img->height;
 		m_info[i].su = ((float)ix) / imageWidth;
-		m_info[i].eu = ((float)(ix + img->w)) / imageWidth;
+		m_info[i].eu = ((float)(ix + img->width)) / imageWidth;
 		m_info[i].sv = ((float)iy) / imageHeight;
-		m_info[i].ev = ((float)(iy + img->h)) / imageHeight;
+		m_info[i].ev = ((float)(iy + img->height)) / imageHeight;
 
 		/*
 		printf("SPR Index %d\t size: (%d,%d)\t", i, m_info[i].w, m_info[i].h);
@@ -182,8 +182,8 @@ bool SprGL::open(const RO::SPR* spr) {
 		printf("\n");
 		*/
 
-		ix += img->w;
-		linespace -= img->w;
+		ix += img->width;
+		linespace -= img->width;
 	}
 
     // generate the OpenGL texture from the byte array

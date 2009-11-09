@@ -22,10 +22,11 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __SPR_H
-#define __SPR_H
+#ifndef __RO_TYPES_SPR_H
+#define __RO_TYPES_SPR_H
 
 #include "../ro_object.h"
+#include "../ro_arr.h"
 #include "pal.h"
 
 #include <vector>
@@ -45,27 +46,36 @@ namespace RO {
 			IT_PAL = 0,
 			IT_RGBA = 1,
 		} ImageType;
+
 #pragma pack(push,1)
-		/**
-		 * Image data.
-		 * For palette images, data is an array of palette indexes (left to right, top to bottom ordering).
-		 * For RGBA images, data is an array of raw colors {uchar a,b,g,r} (left to right, bottom to top ordering).
-		 */
-		typedef struct Image {
-			unsigned short w, h;
-			unsigned char* data;
+		/** RGBA pixel. */
+		struct Color {
+			unsigned char a;
+			unsigned char b;
+			unsigned char g;
+			unsigned char r;
+			inline operator unsigned char* () { return(&a); }
+			inline operator const unsigned char* () const { return(&a); }
+		};
+
+		/** Image data. */
+		struct Image {
+			unsigned short width;
+			unsigned short height;
+			union Data {
+				unsigned char* pal; //< palette indexes; left to right, top to bottom ordering
+				Color* rgba; //< color pixels; left to right, bottom to top ordering
+			} data;
 		};
 #pragma pack(pop)
 
 	protected:
-		void readImagePal(std::istream& s, const unsigned short idx);
-		void readImageRgba(std::istream& s, const unsigned short idx);
+		bool readImagePal(std::istream& s, unsigned int idx);
+		bool readImageRgba(std::istream& s, unsigned int idx);
 		void reset();
 
-		unsigned short m_imgCountPal;
-		unsigned short m_imgCountRgba;
-		Image* m_imagesPal;
-		Image* m_imagesRgba;
+		Arr<Image> m_imagesPal;
+		Arr<Image> m_imagesRgba;
 		RO::PAL* m_pal;
 
 	public:
@@ -75,40 +85,20 @@ namespace RO {
 		virtual bool readStream(std::istream& s);
 
 		/** Returns the number of images */
-		unsigned short getImgCount(const ImageType type) const;
+		unsigned int getImageCount(ImageType type) const;
 
 		/** Returns the image data or NULL if not found */
-		const Image* getImage(const unsigned short idx, const ImageType type) const;
+		const Image* getImage(unsigned int idx, ImageType type) const;
 
 		/** Returns the palette or NULL if not found */
 		const RO::PAL* getPal() const;
 
-		bool saveBMP(const unsigned short idx, const ImageType type, std::ostream& s, const RO::PAL* pal=NULL) const;
-		bool saveBMP(const unsigned short idx, const ImageType type, const std::string& fn, const RO::PAL* pal=NULL) const;
-		/** Saves all BMPs in a single file */
+		bool saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::PAL* pal=NULL) const;
+		bool saveBMP(unsigned int idx, ImageType type, const std::string& fn, const RO::PAL* pal=NULL) const;
+		/** Saves all images of the same type in a single file */
 		bool saveBMP(std::ostream& s, ImageType type = IT_PAL, const RO::PAL* pal=NULL) const;
-
-		// deprecated, backward compatible functions:
-		unsigned int getImgCount() const {
-			return getImgCount(IT_PAL);
-		}
-		bool saveBMP(const unsigned int& idx, std::ostream& s) const {
-			return saveBMP(idx, IT_PAL, s);
-		}
-		bool saveBMP(const unsigned int& idx, const std::string& fn) const {
-			return saveBMP(idx, IT_PAL, fn);
-		}
-		const Image* getFrame(const unsigned int& idx) const {
-			return getImage(idx, IT_PAL);
-		}
-		typedef RO::PAL::Pal Pal;
-		const Pal* getPal(const unsigned char& idx) const {
-			if (m_pal != NULL)
-				return(m_pal->getPal(idx));
-			return(NULL);
-		}
 	};
 }
 
-#endif /* __SPR_H */
+#endif /* __RO_TYPES_SPR_H */
 

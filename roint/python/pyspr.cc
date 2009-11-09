@@ -39,20 +39,20 @@ namespace RO {
 		return(spr->read(fn));
 	}
 
-	unsigned int getImgCount_SPR(const SPR* spr) {
-		return(spr->getImgCount());
+	unsigned int getImageCount_SPR(const SPR* spr, int type) {
+		return(spr->getImageCount((SPR::ImageType)type));
 	}
 
-	bool saveBMP_SPR(const SPR* spr, int idx, const char* fn) {
-		return(spr->saveBMP(idx, fn));
+	const SPR::Image* getImage_SPR(const SPR* spr, int idx, int type) {
+		return(spr->getImage(idx, (SPR::ImageType)type));
 	}
 
-	const SPR::Pal* getPal_SPR(const SPR* spr, int idx) {
-		return(spr->getPal(idx));
+	const PAL* getPal_SPR(const SPR* spr) {
+		return(spr->getPal());
 	}
 
-	const SPR::Image* getFrame_SPR(const SPR* spr, int idx) {
-		return(spr->getFrame(idx));
+	bool saveBMP_SPR(const SPR* spr, int idx, int type, const char* fn, const PAL* pal) {
+		return(spr->saveBMP(idx, (SPR::ImageType)type, fn, pal));
 	}
 }
 

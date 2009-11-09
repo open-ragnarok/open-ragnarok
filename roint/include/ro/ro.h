@@ -76,6 +76,7 @@ extern "C" {
 
 // the file types
 #include "types/grf.h"
+#include "types/pal.h"
 #include "types/spr.h"
 #include "types/act.h"
 #include "types/rsm.h"
