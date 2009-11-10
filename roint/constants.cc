@@ -27,7 +27,6 @@
 #include "ro/constants.h"
 
 namespace RO {
-
 	namespace EUC {
 		char user_interface[] =  "\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba";
 
@@ -75,6 +74,8 @@ namespace RO {
 		char gm[] = "\x9D\xC4\xBF\xB5\xC0\xDA";
 		char mercenary[] = "";
 
+#define CLASSNAME_COUNT 24
+
 		char *classname[] = {
 			novice,
 			swordsman,
@@ -100,35 +101,59 @@ namespace RO {
 			crusader_mounted,
 			gm,
 			mercenary,
+			NULL
 		};
 
-		char *classname_en[] = {
-			"Novice",
-			"Swordsman",
-			"Magician",
-			"Archer",
-			"Acolyte",
-			"Merchant",
-			"Thief",
-			"Knight",
-			"Priest",
-			"Wizard",
-			"Blacksmith",
-			"Hunter",
-			"Assassin",
-			"Knight", //Mounted
-			"Crusader",
-			"Monk",
-			"Sage",
-			"Rogue",
-			"Alchemist",
-			"Bard",
-			"Dancer",
-			"Crusader", //Mounted
-			"GM",
-			"Mercenary",
-		};
+		const char* getClassName(unsigned int id) {
+			static char unkname[64];
+			if (id >= CLASSNAME_COUNT) {
+				sprintf(unkname, "UknownClass%d", id);
+				return (unkname);
+			}
+
+			return(classname[id]);
+		}
+
 	}
+
+	char *classname_en[] = {
+		"Novice",
+		"Swordsman",
+		"Magician",
+		"Archer",
+		"Acolyte",
+		"Merchant",
+		"Thief",
+		"Knight",
+		"Priest",
+		"Wizard",
+		"Blacksmith",
+		"Hunter",
+		"Assassin",
+		"Knight", // Mounted
+		"Crusader",
+		"Monk",
+		"Sage",
+		"Rogue",
+		"Alchemist",
+		"Bard",
+		"Dancer",
+		"Crusader", // Mounted
+		"GM",
+		"Mercenary",
+		NULL
+	};
+
+	const char* getClassNameEN(unsigned int id) {
+		static char unkname[64];
+		if (id >= CLASSNAME_COUNT) {
+			sprintf(unkname, "UknownClass%d", id);
+			return (unkname);
+		}
+
+		return(classname_en[id]);
+	}
+
 
 	char *dnames[] = {
 		"Speed",

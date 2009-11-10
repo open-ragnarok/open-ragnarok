@@ -2446,13 +2446,32 @@ namespace RO {
 		SP_UNSTRIPABLE_WEAPON,SP_UNSTRIPABLE_ARMOR,SP_UNSTRIPABLE_HELM,SP_UNSTRIPABLE_SHIELD,  // 2034-2037
 		SP_INTRAVISION, SP_ADD_MONSTER_DROP_ITEMGROUP, SP_SP_LOSS_RATE, // 2038-2040
 		SP_ADD_SKILL_BLOW, SP_SP_VANISH_RATE, SP_MAGIC_SP_GAIN_VALUE, SP_MAGIC_HP_GAIN_VALUE //2041-2044
-};
+	};
+
+	/**
+	 * List of class names translated to english in plain ASCII (no characters over 127).
+	 * Careful when using this vector. You could end up reading from random memory if you
+	 * read more than the available amount of classes.
+	 * The last index is always NULL.
+	 */
+	ROINT_DLLAPI extern char *classname_en[];
+
+	/**
+	 * Safely returns the classname in english language.
+	 * This will return a string "UnknownClass<ID>" when the parameter id is not valid
+	 */
+	ROINT_DLLAPI const char* getClassNameEN(unsigned int id);
 
 	// How to find sprs?
 	// Classes: data\sprite\<humans>\<body>\<sex(male/female)>\<class>_<sex>.(spr/act)
 	// Novice: data\sprite\<humans>\<body>\<sex>\<novice>_<sex>...
-
 	namespace EUC {
+		/**
+		 * Safely returns the classname encoded in EUC-KR.
+		 * This will return a string "UnknownClass<ID>" when the parameter id is not valid
+		 */
+		ROINT_DLLAPI const char* getClassName(unsigned int id);
+
 		ROINT_DLLAPI extern char user_interface[];
 
 		ROINT_DLLAPI extern char body[];
@@ -2470,8 +2489,13 @@ namespace RO {
 		ROINT_DLLAPI extern char male[];
 
 		// classes
+		/**
+		 * List of class names encoded in EUC-KR (native format used on GRF files).
+		 * Careful when using this vector. You could end up reading from random memory if you
+		 * read more than the available amount of classes.
+		 * The last index is always NULL.
+		 */
 		ROINT_DLLAPI extern char *classname[];
-		ROINT_DLLAPI extern char *classname_en[];
 
 		ROINT_DLLAPI extern char acolyte[];
 		ROINT_DLLAPI extern char alchemist[];
