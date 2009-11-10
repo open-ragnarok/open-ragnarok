@@ -6,10 +6,9 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
-//#include <GL/glext.h>
 
 namespace rogl {
-
+	unsigned short ROGL_DLLAPI Version();
 }
 
 #include "rogl/rsmgl.h"

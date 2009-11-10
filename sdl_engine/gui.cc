@@ -7,3 +7,6 @@
 #include "stdafx.h"
 #include "sdle/gui.h"
 
+namespace sdle {
+	Gui::Gui() {}
+}

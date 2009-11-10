@@ -38,7 +38,7 @@ unsigned char JPM_fill_input_buffer (j_decompress_ptr cinfo) {
 #endif
 	jpeg_memory_source_ptr src = (jpeg_memory_source_ptr) cinfo->src;
 
-	int btr = INPUT_BUF_SIZE;
+	unsigned int btr = INPUT_BUF_SIZE;
 	if (btr > (src->datasize - src->loaded)) {
 		btr = src->datasize - src->loaded;
 	}

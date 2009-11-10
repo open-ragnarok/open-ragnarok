@@ -274,7 +274,7 @@ bool pkt ##name ::Decode(ucBuffer& buf) { \
 	};
 
 #define RONET_GENERIC_2PARAM_IMPL(name, type1, type2) \
-pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { m_param1 = m_param2 = 0; setSize(2 + sizeof(type1) + sizeof(type2)); } \
+pkt ##name ::pkt ##name () : Packet(pkt ##name ##ID) { m_param1 = 0; m_param2 = 0; setSize(2 + sizeof(type1) + sizeof(type2)); } \
 pkt ##name ::pkt ##name (type1 v1, type2 v2) : Packet(pkt ##name ##ID) { m_param1 = v1; m_param2 = v2; setSize(2 + sizeof(type1) + sizeof(type2)); } \
 bool pkt ##name ::PrepareData() { unsigned char* ptr = buffer; ptr += sizeof(short); memcpy(ptr, (unsigned char*)&m_param1, sizeof(type1)); ptr += sizeof(type1); memcpy(ptr, (unsigned char*)&m_param2, sizeof(type2)); ptr += sizeof(type2); return(true); } \
 type1 pkt ##name ::getParam1() const { return(m_param1); } \

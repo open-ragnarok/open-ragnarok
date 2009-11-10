@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/NODEFAULTLIB:MSVCRT"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;$(SDL)\lib&quot;;$(SolutionDir)\freetype2"
 				GenerateDebugInformation="true"

@@ -85,7 +85,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)\"
 			IntermediateDirectory="$(OutDir)$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
-			CharacterSet="0"
+			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -108,6 +108,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
 				EnableFiberSafeOptimizations="true"
+				WholeProgramOptimization="false"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

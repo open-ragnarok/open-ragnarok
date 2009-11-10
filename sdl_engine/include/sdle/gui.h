@@ -10,4 +10,11 @@
 
 #include "engine.h"
 
+namespace sdle {
+class SDLENGINE_DLLAPI Gui {
+private:
+	Gui();
+};
+}
+
 #endif /* GUI_H_ */

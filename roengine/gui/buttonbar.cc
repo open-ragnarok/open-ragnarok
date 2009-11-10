@@ -112,7 +112,7 @@ void ButtonBar::Draw(unsigned int delay) {
 	while(itr != m_children.end()) {
 		if ((*itr)->isVisible()) {
 			used_x += (*itr)->getW() + 5.0f;
-			(*itr)->setPos(w - used_x, 1.0f);
+			(*itr)->setPos((int)(w - used_x), 1);
 		}
 		itr++;
 	}
