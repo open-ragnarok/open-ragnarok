@@ -91,7 +91,6 @@ bool SprGL::open(const RO::SPR* spr) {
 
 
 	const RO::SPR::Image* img;
-	const RO::PAL::Pal* pal;
 
 	m_info = new sprInfo[spr->getImageCount(RO::SPR::IT_PAL)];
 	m_framecount = spr->getImageCount(RO::SPR::IT_PAL);
@@ -154,11 +153,11 @@ bool SprGL::open(const RO::SPR* spr) {
 				py = iy + y;
 				pos = y * img->width + x;
 				palpos = img->data.pal[pos];
-				pal = spr->getPal()->getPal(palpos);// XXX DANGER, the spr might not have a palette
+				const RO::PAL::Color& color = spr->getPal()->getColor(palpos);// XXX DANGER, the spr might not have a palette
 				// Write data to image
-				image[4 * (px + py * imageWidth)] = pal->r;
-				image[4 * (px + py * imageWidth) + 1] = pal->g;
-				image[4 * (px + py * imageWidth) + 2] = pal->b;
+				image[4 * (px + py * imageWidth)] = color.r;
+				image[4 * (px + py * imageWidth) + 1] = color.g;
+				image[4 * (px + py * imageWidth) + 2] = color.b;
 				if (palpos == 0) {
 					image[4 * (px + py * imageWidth) + 3] = 0;
 				}

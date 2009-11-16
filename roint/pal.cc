@@ -30,14 +30,24 @@ RO::PAL::PAL() : Object() {
 }
 
 RO::PAL::~PAL() {
+	reset();
+}
+void RO::PAL::reset() {
+	m_valid = false;
+	memset(m_pal, 0, sizeof(m_pal));
 }
 
 bool RO::PAL::readStream(std::istream& s) {
 	s.read((char*)&m_pal, sizeof(m_pal));
-	return(!s.fail());
+	if (s.fail()) {
+		reset();
+		return(false);
+	}
+	m_valid = true;
+	return(true);
 }
 
-const RO::PAL::Pal* RO::PAL::getPal(const unsigned char idx) const {
-	return(&m_pal[idx]);
+const RO::PAL::Color& RO::PAL::getColor(unsigned char idx) const {
+	return(m_pal[idx]);
 }
 

@@ -308,7 +308,7 @@ bool SPR::saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::P
 
 		s.write((char*)&header, sizeof(bmpHeader));
 		for (k = 0; k < 256; k++) {
-			s.write((char*)pal->getPal(k), 4);
+			s.write((char*)&pal->getColor(k), 4);
 		}
 
 		char* dbuf = new char[wscan];
@@ -416,7 +416,7 @@ bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pal) const {
 
 		s.write((char*)&header, sizeof(bmpHeader));
 		for (i = 0; i < 256; i++) {
-			s.write((char*)pal->getPal(i), 4);
+			s.write((char*)&pal->getColor(i), 4);
 		}
 
 		unsigned char* dbuf = new unsigned char[header.dib.datasize];

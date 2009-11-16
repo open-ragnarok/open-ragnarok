@@ -42,13 +42,17 @@ namespace RO {
 		 * Palette entry.
 		 * Represents a color with red, green and blue components.
 		 */
-		struct Pal {
+		struct Color {
 			unsigned char r, g, b, reserved;
+			inline operator unsigned char* () { return(&r); }
+			inline operator const unsigned char* () const { return(&r); }
 		};
 #pragma pack(pop)
 
 	protected:
-		Pal m_pal[256];
+		void reset();
+
+		Color m_pal[256];
 
 	public:
 		PAL();
@@ -57,7 +61,7 @@ namespace RO {
 		virtual bool readStream(std::istream&);
 
 		/** Returns the palette entry */
-		const Pal* getPal(const unsigned char idx) const;
+		const Color& getColor(unsigned char idx) const;
 	};
 }
 
