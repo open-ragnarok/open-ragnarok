@@ -24,26 +24,29 @@ typedef struct sprInfo {
 class ROGL_DLLAPI SprGL : public GLObject {
 protected:
 	sdle::Texture m_texture;
-	unsigned int m_framecount;
-	sprInfo* m_info;
+	unsigned int m_palCount;
+	unsigned int m_rgbaCount;
+	RO::Arr<sprInfo> m_info;
 
 public:
 	SprGL();
 	SprGL(const SprGL&);
 	virtual ~SprGL();
 
-	bool open(const RO::SPR*);
+	bool open(const RO::SPR* spr, const RO::PAL* pal=NULL);
 
 	void Draw() const;
 	void Draw(unsigned int idx, bool xmirror = false) const;
 	void Draw(unsigned int idx, float width, float height, bool xmirror = false, bool ymirror = false) const;
 	void Draw(unsigned int idx, struct Rect rect, bool xmirror = false, bool ymirror = false) const;
-	void Draw(const RO::ACT::Motion& cmot, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const;
+	void Draw(const RO::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const;
 
 	// Deletes all info
 	void release();
 
 	unsigned int getFrameCount() const;
+	/** Returns the index of an image or -1 if not valid (pal images, then rgba images) */
+	unsigned int getIndex(int num, int type) const;
 
 	SprGL& operator = (const SprGL&);
 	bool operator == (const SprGL&) const;

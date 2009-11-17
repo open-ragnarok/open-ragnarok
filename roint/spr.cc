@@ -98,7 +98,7 @@ bool SPR::readStream(std::istream& s) {
 
 	if (imgCountPal > 0)
 	{
-		Image empty = {0,0,NULL};
+		Image empty = {PalType,0,0,NULL};
 		m_imagesPal.resize(imgCountPal, empty);
 		for (i = 0; i < imgCountPal; i++) {
 			if (!readImagePal(s, i)) {
@@ -109,7 +109,7 @@ bool SPR::readStream(std::istream& s) {
 	}
 	if (imgCountRgba > 0)
 	{
-		Image empty = {0,0,NULL};
+		Image empty = {RgbaType,0,0,NULL};
 		m_imagesRgba.resize(imgCountRgba, empty);
 		for (i = 0; i < imgCountRgba; i++) {
 			if (!readImageRgba(s, i)) {
@@ -133,12 +133,16 @@ bool SPR::readStream(std::istream& s) {
 
 unsigned int SPR::getImageCount(ImageType type) const {
 	switch (type) {
-		case IT_PAL:
+		case PalType:
 			return(m_imagesPal.size());
-		case IT_RGBA:
+		case RgbaType:
 			return(m_imagesRgba.size());
 	}
 	return(0);
+}
+
+unsigned int SPR::getImageCount() const {
+	return(m_imagesPal.size() + m_imagesRgba.size());
 }
 
 bool SPR::readImagePal(std::istream& s, unsigned int idx) {
@@ -254,11 +258,11 @@ void SPR::reset() {
 
 const RO::SPR::Image* RO::SPR::getImage(unsigned int idx, ImageType type) const {
 	switch (type) {
-		case IT_PAL:
+		case PalType:
 			if (idx < m_imagesPal.size())
 				return(&m_imagesPal[idx]);
 			break;
-		case IT_RGBA:
+		case RgbaType:
 			if (idx < m_imagesRgba.size())
 				return(&m_imagesRgba[idx]);
 			break;
@@ -266,11 +270,34 @@ const RO::SPR::Image* RO::SPR::getImage(unsigned int idx, ImageType type) const 
 	return(NULL);
 }
 
+const RO::SPR::Image* RO::SPR::getImage(unsigned int idx) const {
+	if (idx < m_imagesPal.size())
+		return(&m_imagesPal[idx]);
+	idx -= m_imagesPal.size();
+	if (idx < m_imagesRgba.size())
+		return(&m_imagesRgba[idx]);
+	return(NULL);
+}
+
+unsigned int RO::SPR::getIndex(unsigned int idx, ImageType type) const {
+	switch (type) {
+		case PalType:
+			if (idx < m_imagesPal.size())
+				return(idx);
+			break;
+		case RgbaType:
+			if (idx < m_imagesRgba.size())
+				return(m_imagesPal.size() + idx);
+			break;
+	}
+	return((unsigned int)-1);
+}
+
 const PAL* RO::SPR::getPal() const {
 	return(m_pal);
 }
 
-bool SPR::saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::PAL* pal) const {
+bool SPR::saveBMP(unsigned int idx, std::ostream& s, ImageType type, const RO::PAL* pal) const {
 	const Image* img = getImage(idx, type);
 	if (img == NULL)
 		return(false);
@@ -287,7 +314,7 @@ bool SPR::saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::P
 	header.dib.w = img->width;
 	header.dib.h = img->height;
 
-	if (type == IT_PAL) {
+	if (type == PalType) {
 		if (pal == NULL)
 			pal = m_pal;
 		if (pal == NULL)
@@ -322,7 +349,7 @@ bool SPR::saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::P
 
 		delete[] dbuf;
 	}
-	else if (type == IT_RGBA) {
+	else if (type == RgbaType) {
 		unsigned int length = (unsigned int)img->width * img->height;
 
 		header.dib.bpp = 32;
@@ -352,9 +379,9 @@ bool SPR::saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::P
 	return(!s.fail());
 }
 
-bool SPR::saveBMP(unsigned int idx, ImageType type, const std::string& fn, const RO::PAL* pal) const {
+bool SPR::saveBMP(unsigned int idx, const std::string& fn, ImageType type, const RO::PAL* pal) const {
 	std::ofstream fp(fn.c_str(), std::ios_base::binary);
-	bool ret = saveBMP(idx, type, fp, pal);
+	bool ret = saveBMP(idx, fp, type, pal);
 	fp.close();
 	return(ret);
 }
@@ -395,7 +422,7 @@ bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pal) const {
 	header.dib.vres = 1;
 	header.dib.hres = 1;
 
-	if (type == IT_PAL) {
+	if (type == PalType) {
 		// palette images
 		if (pal == NULL)
 			pal = m_pal;
@@ -445,7 +472,7 @@ bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pal) const {
 		s.write((char*)dbuf, header.dib.datasize);
 		delete[] dbuf;
 	}
-	else if (type == IT_RGBA) {
+	else if (type == RgbaType) {
 		// rgba images
 		unsigned int length = (unsigned int)imageWidth * imageHeight;
 

@@ -6,42 +6,49 @@
 
 namespace rogl {
 
+static const sprInfo g_emptyInfo = {0,0,0,0,0,0};
+
 SprGL::SprGL() {
-	m_info = NULL;
-	m_framecount = 0;
+	m_palCount = 0;
+	m_rgbaCount = 0;
 }
 
 SprGL::SprGL(const SprGL& s) {
 	m_texture = s.m_texture;
-	m_framecount = s.m_framecount;
-	if (m_framecount > 0) {
-		m_info = new sprInfo[m_framecount];
-		for (unsigned int i = 0 ; i < m_framecount; i++) {
-			m_info[i].su = s.m_info[i].su;
-			m_info[i].eu = s.m_info[i].eu;
-			m_info[i].sv = s.m_info[i].sv;
-			m_info[i].ev = s.m_info[i].ev;
-			m_info[i].w = s.m_info[i].w;
-			m_info[i].h = s.m_info[i].h;
-		}
-	}
+	m_palCount = s.m_palCount;
+	m_rgbaCount = s.m_rgbaCount;
+	m_info = s.m_info;
 }
 
 SprGL::~SprGL() {
-	if (m_info != NULL)
-		delete[] m_info;
+	release();
 }
 
 unsigned int SprGL::getFrameCount() const {
-	return(m_framecount);
+	return(m_info.size());
+}
+
+unsigned int SprGL::getIndex(int num, int type) const {
+	switch (type) {
+		case 0:
+			// pal image
+			if (num >= 0 && (unsigned int)num < m_palCount)
+				return((unsigned int)num);
+			break;
+		case 1:
+			// rgba image
+			if (num >= 0 && (unsigned int)num < m_rgbaCount)
+				return((unsigned int)num + m_palCount);
+			break;
+	}
+	return((unsigned int)-1);
 }
 
 void SprGL::release() {
-	if (m_info != NULL)
-		delete[] m_info;
-	m_info = NULL;
-	m_framecount = 0;
 	m_texture = sdle::Texture();
+	m_palCount = 0;
+	m_rgbaCount = 0;
+	m_info.clear();
 }
 
 sdle::Texture& SprGL::getTexture() {
@@ -53,25 +60,17 @@ const sdle::Texture& SprGL::getTexture() const {
 }
 
 const sprInfo& SprGL::getFrameInfo(unsigned int frame) const {
-	return(m_info[frame]);
+	if (frame < m_info.size())
+		return(m_info[frame]);
+	return(g_emptyInfo);
 }
 
 SprGL& SprGL::operator = (const SprGL& s) {
 	release();
-
 	m_texture = s.m_texture;
-	m_framecount = s.m_framecount;
-	if (m_framecount > 0) {
-		m_info = new sprInfo[m_framecount];
-		for (unsigned int i = 0 ; i < m_framecount; i++) {
-			m_info[i].su = s.m_info[i].su;
-			m_info[i].eu = s.m_info[i].eu;
-			m_info[i].sv = s.m_info[i].sv;
-			m_info[i].ev = s.m_info[i].ev;
-			m_info[i].w = s.m_info[i].w;
-			m_info[i].h = s.m_info[i].h;
-		}
-	}
+	m_palCount = s.m_palCount;
+	m_rgbaCount = s.m_rgbaCount;
+	m_info = s.m_info;
 	return(*this);
 }
 
@@ -79,100 +78,126 @@ bool SprGL::operator == (const SprGL& s) const {
 	return(m_texture == s.m_texture);
 }
 
-bool SprGL::open(const RO::SPR* spr) {
-	unsigned int imageWidth = 256;
-	unsigned int neededHeight = 0;
-
-	unsigned int linespace = imageWidth;
-	unsigned int lineheight = 0;
-
+bool SprGL::open(const RO::SPR* spr, const RO::PAL* pal) {
 	unsigned int i;
-	int pos;
 
-
-	const RO::SPR::Image* img;
-
-	m_info = new sprInfo[spr->getImageCount(RO::SPR::IT_PAL)];
-	m_framecount = spr->getImageCount(RO::SPR::IT_PAL);
-
-	// Check our image size
-	for (i = 0; i < m_framecount; i++) {
-		img = spr->getImage(i, RO::SPR::IT_PAL);
-		if (img->width > imageWidth) {
-			fprintf(stderr, "SPR frame too big!\n");
-			return(false);
-		}
-		if (img->width > linespace) {
-			// Too big to fit this line. Increase one line.
-			linespace = imageWidth;
-			neededHeight += lineheight;
-			lineheight = 0;
-		}
-		if (img->height > lineheight) {
-			lineheight = img->height;
-		}
-		linespace -= img->width;
+	release();
+	if (pal == NULL) {
+		pal = spr->getPal();
 	}
-	neededHeight += lineheight;
-	unsigned int imageHeight = 16;
-	// Get the next power-of-two size
-	while (imageHeight < neededHeight)
-		imageHeight <<= 1;
+	if (pal == NULL && spr->getImageCount(RO::SPR::PalType) > 0){
+		fprintf(stderr, "SprGL::open - pal is NULL (%u SPR pal images)\n", spr->getImageCount(RO::SPR::PalType));
+		return(false);
+	}
 
-	// Creates the Image
+	m_palCount = spr->getImageCount(RO::SPR::PalType);
+	m_rgbaCount = spr->getImageCount(RO::SPR::RgbaType);
+	m_info.resize(spr->getImageCount(), g_emptyInfo);
 
-	// Corner coordinates for the current image coordinates inside the texture
-	int ix = 0;
-	int iy = 0;
-	// Actual Coordinates of the pixel in the texture
-	int px, py;
-	// Pallete position
-	unsigned char palpos;
-	lineheight = 0;
-	linespace = imageWidth;
-	sdle::Image image(NULL, imageWidth, imageHeight, 32);
+	// calculate needed area
+	unsigned int neededArea = 0;
+	for (i = 0; i < m_info.size(); i++) {
+		const RO::SPR::Image* img = spr->getImage(i);
+		neededArea += img->width * img->height;
+	}
+	// calculate texture size (power of two)
+	unsigned int textureSize;
+	for (textureSize = 1; ; textureSize *= 2) {
+		if (textureSize * textureSize < neededArea) {
+			// too small
+			continue;
+		}
 
-	for (i = 0; i < m_framecount; i++) {
-		img = spr->getImage(i, RO::SPR::IT_PAL);
-		// Checks our position
-		if (img->width > linespace) {
-			// Too big to fit this line. Increase one line.
-			linespace = imageWidth;
-			iy += lineheight;
-			ix = 0;
+		bool tooSmall = false;
+		unsigned int neededHeight = 0;
+		unsigned int linespace = textureSize;
+		unsigned int lineheight = 0;
+		for (i = 0; i < m_info.size(); i++) {
+			const RO::SPR::Image* img = spr->getImage(i);
+			if (img->width > textureSize || neededHeight > textureSize) {
+				tooSmall = true;
+				break;
+			}
+			if (img->width > linespace) {
+				// next line
+				neededHeight += lineheight;
+				linespace = textureSize;
+				lineheight = 0;
+			}
+			if (lineheight < img->height) {
+				lineheight = img->height;
+			}
+			linespace -= img->width;
+		}
+		neededHeight += lineheight;
+		if (neededHeight > textureSize || tooSmall) {
+			// too small
+			continue;
+		}
+		// all images fit
+		break;
+	}
+
+	// create texture image
+	sdle::Image teximage(NULL, textureSize, textureSize, 32);
+	unsigned int offx = 0;
+	unsigned int offy = 0;
+	unsigned int lineheight = 0;
+	for (i = 0; i < m_info.size(); i++) {
+		const RO::SPR::Image* img = spr->getImage(i);
+		if (offx + img->width > textureSize) {
+			// next line
+			offx = 0;
+			offy += lineheight;
 			lineheight = 0;
 		}
-		if (img->height > lineheight) {
+		if (lineheight < img->height) {
 			lineheight = img->height;
 		}
 
-		// Copy data to image
-		for (unsigned int x = 0; x < img->width; x++) {
-			for (unsigned int y = 0; y < img->height; y++) {
-				px = ix + x;
-				py = iy + y;
-				pos = y * img->width + x;
-				palpos = img->data.pal[pos];
-				const RO::PAL::Color& color = spr->getPal()->getColor(palpos);// XXX DANGER, the spr might not have a palette
-				// Write data to image
-				image[4 * (px + py * imageWidth)] = color.r;
-				image[4 * (px + py * imageWidth) + 1] = color.g;
-				image[4 * (px + py * imageWidth) + 2] = color.b;
-				if (palpos == 0) {
-					image[4 * (px + py * imageWidth) + 3] = 0;
+		// write data to image
+		// TODO shouldn't this be using: left to right, bottom to top? [flaviojs]
+		if (img->type == RO::SPR::PalType) {
+			// left to right, top to bottom
+			for (unsigned int x = 0; x < img->width; x++) {
+				for (unsigned int y = 0; y < img->height; y++) {
+					unsigned char palpos = img->data.pal[x + y * img->width];
+					const RO::PAL::Color& color = pal->getColor(palpos);
+					unsigned char* p = (unsigned char*)&teximage[4 * ((offx + x) + (offy + y) * textureSize)];
+					p[0] = color.r;
+					p[1] = color.g;
+					p[2] = color.b;
+					if (palpos == 0) {
+						// invisible background index
+						p[3] = 0;
+					}
+					else {
+						p[3] = 0xff;
+					}
 				}
-				else {
-					image[4 * (px + py * imageWidth) + 3] = (unsigned char)0xff;
+			}
+		}
+		else if (img->type == RO::SPR::RgbaType) {
+			// left to right, bottom to top -> left to right, top to bottom
+			for (unsigned int x = 0; x < img->width; x++) {
+				for (unsigned int y = 0; y < img->height; y++) {
+					const RO::SPR::Color& color = img->data.rgba[x + (img->height - y - 1) * img->width];
+					unsigned char* p = (unsigned char*)&teximage[4 * ((offx + x) + (offy + y) * textureSize)];
+					p[0] = color.r;
+					p[1] = color.g;
+					p[2] = color.b;
+					p[3] = color.a;
 				}
 			}
 		}
 		// Setup info
-		m_info[i].w = img->width;
-		m_info[i].h = img->height;
-		m_info[i].su = ((float)ix) / imageWidth;
-		m_info[i].eu = ((float)(ix + img->width)) / imageWidth;
-		m_info[i].sv = ((float)iy) / imageHeight;
-		m_info[i].ev = ((float)(iy + img->height)) / imageHeight;
+		sprInfo& info = m_info[i];
+		info.w = img->width;
+		info.h = img->height;
+		info.su = (float)(offx) / textureSize;
+		info.eu = (float)(offx + img->width) / textureSize;
+		info.sv = (float)(offy) / textureSize;
+		info.ev = (float)(offy + img->height) / textureSize;
 
 		/*
 		printf("SPR Index %d\t size: (%d,%d)\t", i, m_info[i].w, m_info[i].h);
@@ -181,19 +206,16 @@ bool SprGL::open(const RO::SPR* spr) {
 		printf("\n");
 		*/
 
-		ix += img->width;
-		linespace -= img->width;
+		offx += img->width;
 	}
 
-    // generate the OpenGL texture from the byte array
+	// generate the OpenGL texture
 	sdle::Texture::Root* root = new sdle::Texture::Root();
-    if (!root->Create(&image)) {
+	if (!root->Create(&teximage)) {
 		release();
-    	return(false);
-    }
-    m_texture = root;
-
-
+		return(false);
+	}
+	m_texture = root;
 	return(true);
 }
 
@@ -202,7 +224,7 @@ void SprGL::Draw() const {
 }
 
 void SprGL::Draw(unsigned int idx, struct Rect rect, bool xmirror, bool ymirror) const {
-	if (idx >= m_framecount)
+	if (idx >= m_info.size())
 		return;
 
 	float width = rect.dim.w;
@@ -253,7 +275,7 @@ void SprGL::Draw(unsigned int idx, float width, float height, bool xmirror, bool
 }
 
 void SprGL::Draw(unsigned int idx, bool xmirror) const {
-	if (idx >= m_framecount)
+	if (idx >= m_info.size())
 		return;
 
 	struct Rect r;
@@ -266,15 +288,11 @@ void SprGL::Draw(unsigned int idx, bool xmirror) const {
 	Draw(idx, r, xmirror);
 }
 
-void SprGL::Draw(const RO::ACT::Motion& cmot, unsigned int sprno, float& x, float& y, bool v_mirror, bool ext) const {
-	if (cmot[sprno].sprNo < 0)
-		return;
+void SprGL::Draw(const RO::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const {
+	const RO::ACT::SprClip& cspr = cmot.getClip(clpno);
+	unsigned int idx = getIndex(cspr.sprNo, cspr.sprType);
 
-	const RO::ACT::SprClip& cspr = cmot[sprno];
-
-	unsigned int idx = cspr.sprNo;
-
-	if (idx >= m_framecount)
+	if (idx >= m_info.size())
 		return;
 
 	float w, h;

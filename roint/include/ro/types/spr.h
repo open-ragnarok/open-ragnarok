@@ -42,10 +42,10 @@ namespace RO {
 	class ROINT_DLLAPI SPR : public Object {
 	public:
 		/** Type of image */
-		typedef enum {
-			IT_PAL = 0,
-			IT_RGBA = 1,
-		} ImageType;
+		enum ImageType {
+			PalType = 0,
+			RgbaType = 1,
+		};
 
 #pragma pack(push,1)
 		/** RGBA pixel. */
@@ -60,6 +60,7 @@ namespace RO {
 
 		/** Image data. */
 		struct Image {
+			ImageType type;
 			unsigned short width;
 			unsigned short height;
 			union Data {
@@ -86,17 +87,24 @@ namespace RO {
 
 		/** Returns the number of images */
 		unsigned int getImageCount(ImageType type) const;
+		/** Returns the total number of images */
+		unsigned int getImageCount() const;
 
 		/** Returns the image data or NULL if not found */
 		const Image* getImage(unsigned int idx, ImageType type) const;
+		/** Returns the image data or NULL if not found */
+		const Image* getImage(unsigned int idx) const;
+
+		/** Returns the index of an image or -1 if not valid (pal images, then rgba images) */
+		unsigned int getIndex(unsigned int idx, ImageType type) const;
 
 		/** Returns the palette or NULL if not found */
 		const RO::PAL* getPal() const;
 
-		bool saveBMP(unsigned int idx, ImageType type, std::ostream& s, const RO::PAL* pal=NULL) const;
-		bool saveBMP(unsigned int idx, ImageType type, const std::string& fn, const RO::PAL* pal=NULL) const;
+		bool saveBMP(unsigned int idx, std::ostream& s, ImageType type=PalType, const RO::PAL* pal=NULL) const;
+		bool saveBMP(unsigned int idx, const std::string& fn, ImageType type=PalType, const RO::PAL* pal=NULL) const;
 		/** Saves all images of the same type in a single file */
-		bool saveBMP(std::ostream& s, ImageType type = IT_PAL, const RO::PAL* pal=NULL) const;
+		bool saveBMP(std::ostream& s, ImageType type=PalType, const RO::PAL* pal=NULL) const;
 	};
 }
 

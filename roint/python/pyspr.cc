@@ -51,8 +51,8 @@ namespace RO {
 		return(spr->getPal());
 	}
 
-	bool saveBMP_SPR(const SPR* spr, int idx, int type, const char* fn, const PAL* pal) {
-		return(spr->saveBMP(idx, (SPR::ImageType)type, fn, pal));
+	bool saveBMP_SPR(const SPR* spr, int idx, const char* fn, int type, const PAL* pal) {
+		return(spr->saveBMP(idx, fn, (SPR::ImageType)type, pal));
 	}
 }
 

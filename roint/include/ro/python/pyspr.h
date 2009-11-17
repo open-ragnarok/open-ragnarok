@@ -35,7 +35,7 @@ extern "C" {
 	ROINT_DLLAPI unsigned int getImageCount_SPR(const SPR*, int type);
 	ROINT_DLLAPI const SPR::Image* getImage_SPR(const SPR*, int idx, int type);
 	ROINT_DLLAPI const PAL* getPal_SPR(const SPR*);
-	ROINT_DLLAPI bool saveBMP_SPR(const SPR* spr, int idx, int type, const char* fn, const PAL* pal);
+	ROINT_DLLAPI bool saveBMP_SPR(const SPR* spr, int idx, const char* fn, int type, const PAL* pal);
 }
 }
 

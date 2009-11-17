@@ -77,7 +77,7 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 		w = s.w;
 		h = s.h;
 
-		const rogl::sprInfo& info = spr.getFrameInfo(s.sprNo);
+		const rogl::sprInfo& info = spr.getFrameInfo(spr.getIndex(s.sprNo, s.sprType));
 		if (w == 0)
 			w = info.w;
 		if (h == 0)
