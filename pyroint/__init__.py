@@ -13,6 +13,7 @@ You should put all these files inside a folder called RO and use 'import ro' or 
 __version__ = "0.1"
 
 __all__ = [
+  "pal",
   "spr",
   "ro",
   "rsm",
@@ -20,6 +21,7 @@ __all__ = [
   "grf"
   ]
   
+import pal
 import spr
 import ro
 import rsm

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="roint"
 	ProjectGUID="{D9193DAC-5699-422E-98B0-51FC86E55D39}"
 	RootNamespace="roint"
@@ -818,6 +818,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\python\pypal.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\python\pyrsm.cc"
 				>
 			</File>
@@ -842,6 +846,10 @@
 				</File>
 				<File
 					RelativePath="..\include\ro\python\pygrf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\ro\python\pypal.h"
 					>
 				</File>
 				<File

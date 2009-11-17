@@ -20,7 +20,7 @@ TARGET=lib$(PROJECTNAME)
 HOST_PLATFORM = ${shell $(CPP) -dumpmachine}
 
 SRC=python/pyspr.cc python/pyrsm.cc python/pyact.cc python/pygrf.cc \
-	python/pyrsw.cc python/pystrings.cc \
+	python/pyrsw.cc python/pystrings.cc python/pypal.cc \
 	act.cc gat.cc grf.cc ro.cc rsm.cc spr.cc gnd.cc pal.cc constants.cc \
 	ro_strings.cc rsw.cc common.cc ro_object.cc rsw_objects.cc log.cc \
 	tinyxml/tinyxml.cc tinyxml/tinyxmlerror.cc tinyxml/tinyxmlparser.cc
