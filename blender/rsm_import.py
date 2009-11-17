@@ -13,7 +13,7 @@ __bpydoc__= '''\
 No documentation yet
 '''
 
-"""$id$"""
+"""$Id$"""
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
 # Script copyright (C) Bob Holcomb 
