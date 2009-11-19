@@ -37,6 +37,10 @@ namespace RO {
 		delete(pal);
 	}
 
+	void PAL_copy(PAL* pal, const PAL* other) {
+		*pal = *other;
+	}
+
 	unsigned char PAL_read(PAL* pal, const char* fn) {
 		return(pal->read(fn));
 	}

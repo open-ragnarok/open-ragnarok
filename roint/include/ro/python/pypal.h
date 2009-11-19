@@ -31,6 +31,7 @@ namespace RO {
 extern "C" {
 	ROINT_DLLAPI PAL* PAL_new();
 	ROINT_DLLAPI void PAL_del(PAL* pal);
+	ROINT_DLLAPI void PAL_copy(PAL* pal, const PAL* other);
 
 	ROINT_DLLAPI unsigned char PAL_read(PAL* pal, const char* fn);
 	ROINT_DLLAPI unsigned char PAL_isValid(const PAL* pal);
