@@ -2,6 +2,13 @@
 from ctypes import *
 from ro import *
 
+
+__all__ = [
+  "PAL_Color",
+  "PAL"
+  ]
+
+
 class PAL_Color(Structure):
   """Palette color"""
   _pack_ = 1
@@ -12,10 +19,26 @@ class PAL_Color(Structure):
     ("reserved", c_ubyte)
   ]
 
+  def __ne__(self, other):
+    """Inequality operator."""
+    return(not(self == other))
+
+  def __eq__(self, other):
+    """Equality operator."""
+    return(isinstance(other, PAL_Color) and
+           self.r == other.r and
+           self.g == other.g and
+           self.b == other.b and
+           self.reserved == other.reserved)
+
+
 class PAL:
-  """Palette class"""
+  """Palette class.  Contains 256 colors."""
+
+  Color = PAL_Color
 
   def __init__(self, pal=None):
+    """Constructor."""
     roint = cdll.roint
 
     self._new = roint.PAL_new
@@ -42,54 +65,88 @@ class PAL:
     self._getColor.argtypes = [c_void_p, c_ubyte]
     self._getColor.restype = POINTER(PAL_Color)
 
+    self._base = self._new()
     from types import IntType
-    if type(pal) == IntType:
-      self._base = pal # address
-    else:
-      self._base = self._new()
-      if pal != None:
-        assert(isinstance(pal, PAL))
-        self._copy(self._base, pal._base)
+    if isinstance(pal, IntType):
+      self._copy(self._base, pal) # copy from address
+    elif pal is not None:
+      assert isinstance(pal, PAL)
+      self._copy(self._base, pal._base) # copy from PAL
 
   def __del__(self):
+    """Destructor."""
     self._del(self._base)
 
+  def __ne__(self, other):
+    """Inequality operator."""
+    return not (self == other)
+
+  def __eq__(self, other):
+    """Equality operator."""
+    if not isinstance(other, PAL):
+      return False
+    if self.isValid() != other.isValid():
+      return False
+    colors = self._getColor(self._base, 0)
+    colors2 = other._getColor(other._base, 0)
+    if colors[:256] != colors2[:256]:
+      return False
+    return True
+
   def read(self, fn):
-    """Reads a palette from file"""
-    return(bool(self._read(self._base, fn)))
+    """Reads a palette from file."""
+    return bool(self._read(self._base, fn))
 
   def isValid(self):
-    """Checks if the palette is valid"""
-    return(bool(self._isValid(self._base)))
+    """Checks if the palette is valid."""
+    return bool(self._isValid(self._base))
 
   def getColor(self, idx):
-    """Returns a palette color"""
-    from copy import copy
-    return(copy(self._getColor(self._base, idx)[0]))
+    """Returns a palette color."""
+    from copy import deepcopy
+    return deepcopy(self._getColor(self._base, idx)[0])
+
+  def getColors(self):
+    """Returns an array with all palette colors."""
+    p = self._getColor(self._base, 0)
+    colors = (PAL_Color * 256)()
+    colors[:] = p[:256]
+    return colors
+
 
 if __name__ == "__main__":
-  # test - read a palette
   pal = PAL()
-  print "Read:", pal.read("../test.pal")
-  print "Valid:", pal.isValid()
-  for i in range(256):
-    color = pal.getColor(i)
-    print "Color #%d:" % i, color.r, color.g, color.b, color.reserved
-  # test - can't change color inside PAL
-  color = pal.getColor(0)
-  r = color.r
-  color.r = 255 - r
-  color = pal.getColor(0)
-  assert(r == color.r);
-  # test - copy of a palette
-  pal2 = PAL(pal)
-  assert(pal.isValid() == pal2.isValid());
-  for i in range(256):
-    color = pal.getColor(i)
-    color2 = pal2.getColor(i)
-    assert(color.r == color2.r)
-    assert(color.g == color2.g)
-    assert(color.b == color2.b)
-    assert(color.reserved == color2.reserved)
-  del(pal2)
-  del(pal)
+  if 1:# test - read a palette file
+    print "Read:", pal.read("../test.pal")
+    print "Valid:", pal.isValid()
+  if 2:# test - match color array and individual colors
+    colors = pal.getColors()
+    for i in range(256):
+      assert pal.getColor(i) == colors[i]
+  if 3:# test - can't change a color inside PAL
+    colors = pal.getColors()
+    r = colors[0].r
+    colors[0].r = 255 - r
+    colors = pal.getColors()
+    assert colors[0].r == r
+    color = pal.getColor(0)
+    r = color.r
+    color.r = 255 - r
+    color = pal.getColor(0)
+    assert color.r == r
+  if 4:# test - copy from address
+    pal2 = PAL(pal._base)
+    assert pal._base != pal2._base
+    assert pal == pal2
+    del pal2
+  if 5:# test - copy from PAL
+    pal2 = PAL(pal)
+    assert pal._base != pal2._base
+    assert pal == pal2
+    del pal2
+  if 6:# test - print colors
+    colors = pal.getColors()
+    for i in range(256):
+      color = colors[i]
+      print "Color #%d:" % i, color.r, color.g, color.b, color.reserved
+  del pal
