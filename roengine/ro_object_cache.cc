@@ -15,7 +15,7 @@ bool ROObjectCache::ReadRSM(const std::string& name, FileManager& fm) {
 	if (data.blobSize() == 0)
 		return(false);
 	
-	RO::RSM* rsm = new RO::RSM();
+	ro::RSM* rsm = new ro::RSM();
 	std::stringstream ss;
 	data.write(ss);
 	if (!rsm->readStream(ss)) {
@@ -34,7 +34,7 @@ bool ROObjectCache::ReadRSW(const std::string& name, FileManager& fm, bool deped
 	if (data.blobSize() == 0)
 		return(false);
 
-	RO::RSW* rsw = new RO::RSW();
+	ro::RSW* rsw = new ro::RSW();
 	std::stringstream ss;
 	data.write(ss);
 	if (!rsw->readStream(ss)) {
@@ -54,7 +54,7 @@ bool ROObjectCache::ReadRSW(const std::string& name, FileManager& fm, bool deped
 		std::string model_pfx = "model\\";
 		unsigned int i;
 		for (i = 0; i < rsw->getObjectCount(); i++) {
-			const RO::RSW::ModelObject* obj = rsw->getModelObject(i);
+			const ro::RSW::ModelObject* obj = rsw->getModelObject(i);
 			if (obj != NULL) {
 				fn = model_pfx + obj->modelName;
 				if (!exists(fn))
@@ -75,7 +75,7 @@ bool ROObjectCache::ReadGND(const std::string& name, FileManager& fm) {
 	if (data.blobSize() == 0)
 		return(false);
 
-	RO::GND* rsw = new RO::GND();
+	ro::GND* rsw = new ro::GND();
 	std::stringstream ss;
 	data.write(ss);
 	if (!rsw->readStream(ss)) {
@@ -94,7 +94,7 @@ bool ROObjectCache::ReadGAT(const std::string& name, FileManager& fm) {
 	if (data.blobSize() == 0)
 		return(false);
 
-	RO::GAT* obj = new RO::GAT();
+	ro::GAT* obj = new ro::GAT();
 	std::stringstream ss;
 	data.write(ss);
 	if (!obj->readStream(ss)) {
@@ -113,7 +113,7 @@ bool ROObjectCache::ReadACT(const std::string& name, FileManager& fm) {
 	if (data.blobSize() == 0)
 		return(false);
 
-	RO::ACT* act = new RO::ACT();
+	ro::ACT* act = new ro::ACT();
 	std::stringstream ss;
 	data.write(ss);
 	if (!act->readStream(ss)) {
@@ -132,7 +132,7 @@ bool ROObjectCache::ReadSPR(const std::string& name, FileManager& fm) {
 	if (data.blobSize() == 0)
 		return(false);
 
-	RO::SPR* spr = new RO::SPR();
+	ro::SPR* spr = new ro::SPR();
 	std::stringstream ss;
 	data.write(ss);
 	if (!spr->readStream(ss)) {

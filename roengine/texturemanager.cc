@@ -146,12 +146,12 @@ sdle::Texture TextureManager::operator [](const std::string& name) const {
 
 /*
 rogl::Texture::PointerCache TextureManager::RegisterSPR(FileManager& fm, ROObjectCache& cache, const std::string& name) {
-	const RO::SPR* spr;
+	const ro::SPR* spr;
 	rogl::Texture::PointerCache ret;
 
 	if (!cache.ReadSPR(name,fm))
 		return(ret);
-	spr = (const RO::SPR*)cache[name];
+	spr = (const ro::SPR*)cache[name];
 
 	for (unsigned int i = 0; i < spr->getImgCount(); i++) {
 		char buf[256];

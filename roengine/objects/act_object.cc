@@ -25,7 +25,7 @@ ActObject::ActObject(const ActObject& o) : FullAct(o) {
 	curaction = o.curaction;
 }
 
-ActObject::ActObject(const RO::ACT* a, const rogl::SprGL& t) : FullAct(a, t) {
+ActObject::ActObject(const ro::ACT* a, const rogl::SprGL& t) : FullAct(a, t) {
 	curframe = 0;
 	curaction = 0;
 }
@@ -103,7 +103,7 @@ void ActObject::Window(float x, float y, const sdle::Texture& tex, bool mirrorX,
 	glDisable(GL_TEXTURE_2D);
 }
 
-void ActObject::DrawAct(const RO::ACT::Motion& mot, sdle::Texture& t) {
+void ActObject::DrawAct(const ro::ACT::Motion& mot, sdle::Texture& t) {
 	Billboard();
 	Window((float)mot.getClip(0).x, (float)mot.getClip(0).y, t, (mot.getClip(0).mirrorOn == 1));
 }
@@ -118,7 +118,7 @@ void ActObject::Draw() {
 	xact += offset;
 	// std::cout << "\t\t" << angle << " (" << offset << ")\r";
 
-	const RO::ACT::Action& cur_act = m_act->getAction(xact);
+	const ro::ACT::Action& cur_act = m_act->getAction(xact);
 	int texidx = 0;
 	bool mirror;
 
@@ -130,7 +130,7 @@ void ActObject::Draw() {
 			curframe = 0;
 	}
 
-	const RO::ACT::Motion& cmot = cur_act.getMotion(curframe);
+	const ro::ACT::Motion& cmot = cur_act.getMotion(curframe);
 
 	texidx = cmot.getClip(0).sprNo;
 	mirror = (cmot.getClip(0).mirrorOn == 1)?true:false;

@@ -5,7 +5,7 @@
 
 #define L 10.0f
 
-bool rogl::draw(const RO::GND* gnd, const unsigned int* textures) {
+bool rogl::draw(const ro::GND* gnd, const unsigned int* textures) {
 	if(textures != NULL) {
 		printf("Yes! Textures!\n");
 		glEnable(GL_TEXTURE_2D);
@@ -38,7 +38,7 @@ bool rogl::draw(const RO::GND* gnd, const unsigned int* textures) {
 
 	for (x = 0; x < w; x++) {
 		for (y = 0; y < h; y++) {
-			const RO::GND::Cell& cell = gnd->getCell(x, y);
+			const ro::GND::Cell& cell = gnd->getCell(x, y);
 			
 #if 0
 			vertsv[0][0] = (float)x;
@@ -67,7 +67,7 @@ bool rogl::draw(const RO::GND* gnd, const unsigned int* textures) {
 
 #if 1 /* TILE_UP */
 			if (cell.topSurfaceId != -1) {
-				const RO::GND::Surface& surface = gnd->getSurface(cell.topSurfaceId);
+				const ro::GND::Surface& surface = gnd->getSurface(cell.topSurfaceId);
 				
 				if (textures != NULL) {
 					int texidx = surface.textureId;
@@ -122,8 +122,8 @@ bool rogl::draw(const RO::GND* gnd, const unsigned int* textures) {
 
 #if 1 /* TILE_SIDE */
 			if (cell.frontSurfaceId != -1) {
-				const RO::GND::Cell& cell2 = gnd->getCell(x, y + 1);
-				const RO::GND::Surface& surface = gnd->getSurface(cell.frontSurfaceId);
+				const ro::GND::Cell& cell2 = gnd->getCell(x, y + 1);
+				const ro::GND::Surface& surface = gnd->getSurface(cell.frontSurfaceId);
 				
 				if (textures != NULL) {
 					int texidx = surface.textureId;
@@ -178,8 +178,8 @@ bool rogl::draw(const RO::GND* gnd, const unsigned int* textures) {
 
 #if 1 /* TILE_ASIDE */
 			if (cell.rightSurfaceId != -1) {
-				const RO::GND::Cell& cell2 = gnd->getCell(x + 1, y);
-				const RO::GND::Surface& surface = gnd->getSurface(cell.rightSurfaceId);
+				const ro::GND::Cell& cell2 = gnd->getCell(x + 1, y);
+				const ro::GND::Surface& surface = gnd->getSurface(cell.rightSurfaceId);
 				
 				if (textures != NULL) {
 					int texidx = surface.textureId;
@@ -242,7 +242,7 @@ bool rogl::draw(const RO::GND* gnd, const unsigned int* textures) {
 	return(true);
 }
 
-bool rogl::draw(const RO::RSW* rsw, const RO::GND* gnd, const unsigned int* textures) {
+bool rogl::draw(const ro::RSW* rsw, const ro::GND* gnd, const unsigned int* textures) {
 	if (rsw == NULL) {
 #ifdef _DEBUG
 		std::cerr << "ROGL::draw() ERROR: rsw pointer is null" << std::endl;

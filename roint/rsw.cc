@@ -26,17 +26,19 @@
 #include "ro/types/rsw.h"
 #include "ro/ro.h"
 
+namespace ro {
+
 /*
-RO::RSW::OT_Model = 1;
-RO::RSW::OT_Light = 2;
-RO::RSW::OT_Sound = 3;
-RO::RSW::OT_Effect = 4;
+RSW::OT_Model = 1;
+RSW::OT_Light = 2;
+RSW::OT_Sound = 3;
+RSW::OT_Effect = 4;
 */
 
-RO::RSW::RSW() : RO::Object() {
+RSW::RSW() : ro::Object() {
 }
 
-RO::RSW::RSW(const RSW& rsw) : RO::Object(rsw) {
+RSW::RSW(const RSW& rsw) : ro::Object(rsw) {
 	strcpy(m_iniFile, rsw.m_iniFile);
 	strcpy(m_gndFile, rsw.m_gndFile);
 	strcpy(m_gatFile, rsw.m_gatFile);
@@ -54,11 +56,11 @@ RO::RSW::RSW(const RSW& rsw) : RO::Object(rsw) {
 	}
 }
 
-RO::RSW::~RSW() {
+RSW::~RSW() {
 	reset();
 }
 
-bool RO::RSW::readStream(std::istream& s) {
+bool RSW::readStream(std::istream& s) {
 	reset();
 	if (!readHeader(s)) {
 		return(false);
@@ -172,7 +174,7 @@ bool RO::RSW::readStream(std::istream& s) {
 	return(true);
 }
 
-void RO::RSW::readQuadTree(std::istream& s, unsigned int level, unsigned int& i) {
+void RSW::readQuadTree(std::istream& s, unsigned int level, unsigned int& i) {
 	QuadTreeNode& node = m_quadTree[i];
 	s.read((char*)&node.max, sizeof(float) * 3);
 	s.read((char*)&node.min, sizeof(float) * 3);
@@ -197,7 +199,7 @@ void RO::RSW::readQuadTree(std::istream& s, unsigned int level, unsigned int& i)
 	}
 }
 
-bool RO::RSW::writeStream(std::ostream& s) const {
+bool RSW::writeStream(std::ostream& s) const {
 	if (!isValid()) {
 		return(false);
 	}
@@ -267,7 +269,7 @@ bool RO::RSW::writeStream(std::ostream& s) const {
 	return(!s.fail());
 }
 
-void RO::RSW::Dump(std::ostream& o, const std::string& pfx) const {
+void RSW::Dump(std::ostream& o, const std::string& pfx) const {
 	char buf[1024];
 	sprintf(buf,"Magic: %c%c%c%c", magic[0], magic[1], magic[2], magic[3]);
 	o << pfx << buf << std::endl;
@@ -326,7 +328,7 @@ void RO::RSW::Dump(std::ostream& o, const std::string& pfx) const {
 	}
 }
 
-void RO::RSW::reset() {
+void RSW::reset() {
 	m_valid = false;
 	memset(m_iniFile, 0, 40);
 	memset(m_gndFile, 0, 40);
@@ -340,77 +342,77 @@ void RO::RSW::reset() {
 	m_quadTree.clear();
 }
 
-const char* RO::RSW::getIniFile() const {
+const char* RSW::getIniFile() const {
 	return(this->m_iniFile);
 }
 
-const char* RO::RSW::getGndFile() const {
+const char* RSW::getGndFile() const {
 	return(this->m_gndFile);
 }
 
-const char* RO::RSW::getGatFile() const {
+const char* RSW::getGatFile() const {
 	return(this->m_gatFile);
 }
 
-const char* RO::RSW::getScrFile() const {
+const char* RSW::getScrFile() const {
 	return(this->m_scrFile);
 }
 
-const RO::RSW::Water& RO::RSW::getWater() const {
+const RSW::Water& RSW::getWater() const {
 	return(this->m_water);
 }
 
-const RO::RSW::Light& RO::RSW::getLight() const {
+const RSW::Light& RSW::getLight() const {
 	return(this->m_light);
 }
 
-const RO::RSW::Ground& RO::RSW::getGround() const {
+const RSW::Ground& RSW::getGround() const {
 	return(this->m_ground);
 }
 
-unsigned int RO::RSW::getObjectCount() const {
+unsigned int RSW::getObjectCount() const {
 	return(m_objects.size());
 }
 
-const RO::RSW::Object* RO::RSW::getObject(unsigned int obj) const {
+const RSW::Object* RSW::getObject(unsigned int obj) const {
 	return(m_objects[obj]);
 }
 
-const RO::RSW::Object* RO::RSW::operator[] (unsigned int obj) const {
+const RSW::Object* RSW::operator[] (unsigned int obj) const {
 	return(m_objects[obj]);
 }
 
-const RO::RSW::ModelObject* RO::RSW::getModelObject(unsigned int obj) const {
+const RSW::ModelObject* RSW::getModelObject(unsigned int obj) const {
 	if (m_objects[obj]->isType(ModelType))
-		return((RO::RSW::ModelObject*)m_objects[obj]);
+		return((RSW::ModelObject*)m_objects[obj]);
 	return(NULL);
 }
 
-const RO::RSW::LightObject* RO::RSW::getLightObject(unsigned int obj) const {
+const RSW::LightObject* RSW::getLightObject(unsigned int obj) const {
 	if (m_objects[obj]->isType(LightType))
-		return((RO::RSW::LightObject*)m_objects[obj]);
+		return((RSW::LightObject*)m_objects[obj]);
 	return(NULL);
 }
 
-const RO::RSW::SoundObject* RO::RSW::getSoundObject(unsigned int obj) const {
+const RSW::SoundObject* RSW::getSoundObject(unsigned int obj) const {
 	if (m_objects[obj]->isType(SoundType))
-		return((RO::RSW::SoundObject*)m_objects[obj]);
+		return((RSW::SoundObject*)m_objects[obj]);
 	return(NULL);
 }
 
-const RO::RSW::EffectObject* RO::RSW::getEffectObject(unsigned int obj) const {
+const RSW::EffectObject* RSW::getEffectObject(unsigned int obj) const {
 	if (m_objects[obj]->isType(EffectType))
-		return((RO::RSW::EffectObject*)m_objects[obj]);
+		return((RSW::EffectObject*)m_objects[obj]);
 	return(NULL);
 }
 
-bool RO::RSW::isType(unsigned int obj, ObjectType t) const {
+bool RSW::isType(unsigned int obj, ObjectType t) const {
 	if (obj < m_objects.size())
 		return(m_objects[obj]->isType(t));
 	return(false);
 }
 
-RO::RSW& RO::RSW::operator = (const RO::RSW& rsw) {
+RSW& RSW::operator = (const RSW& rsw) {
 	reset();
 	rsw.copyHeader(this);
 	strcpy(m_iniFile, rsw.m_iniFile);
@@ -433,7 +435,7 @@ RO::RSW& RO::RSW::operator = (const RO::RSW& rsw) {
 
 #include <fstream>
 
-TiXmlElement *RO::RSW::GenerateXML(const std::string& name, bool utf) const {
+TiXmlElement *RSW::GenerateXML(const std::string& name, bool utf) const {
 	TiXmlElement *root = new TiXmlElement("RSW");
 
 	char buf[16];
@@ -635,7 +637,7 @@ TiXmlElement *RO::RSW::GenerateXML(const std::string& name, bool utf) const {
 	return(root);
 }
 
-TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM> rsm, const std::string& name, bool utf) const {
+TiXmlElement *RSW::GenerateFullXML(const std::map<std::string, RSM> rsm, const std::string& name, bool utf) const {
 	TiXmlElement *root = GenerateXML(name, utf);
 
 	// populate RSM
@@ -644,7 +646,7 @@ TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM> rsm, con
 	bool found = false;
 	std::string fname;
 	for (unsigned int i = 0; i < getObjectCount(); i++) {
-		const RO::RSW::ModelObject* mdl = getModelObject(i);
+		const RSW::ModelObject* mdl = getModelObject(i);
 		if (mdl == NULL)
 			continue;
 
@@ -672,7 +674,7 @@ TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM> rsm, con
 }
 
 
-TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM*> rsm, const std::string& name, bool utf) const {
+TiXmlElement *RSW::GenerateFullXML(const std::map<std::string, RSM*> rsm, const std::string& name, bool utf) const {
 	TiXmlElement *root = GenerateXML(name, utf);
 
 	// populate RSM
@@ -683,7 +685,7 @@ TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM*> rsm, co
 	bool found = false;
 	std::string fname;
 	for (unsigned int i = 0; i < getObjectCount(); i++) {
-		const RO::RSW::ModelObject* mdl = getModelObject(i);
+		const RSW::ModelObject* mdl = getModelObject(i);
 		if (mdl == NULL)
 			continue;
 
@@ -710,7 +712,7 @@ TiXmlElement *RO::RSW::GenerateFullXML(const std::map<std::string, RSM*> rsm, co
 	return(root);
 }
 
-TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM*> rsm, const std::string& name, bool utf) const {
+TiXmlDocument RSW::GenerateFullXMLDoc(const std::map<std::string, RSM*> rsm, const std::string& name, bool utf) const {
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
 	doc.LinkEndChild(decl);
@@ -721,7 +723,7 @@ TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM*> rsm,
 	return(doc);
 }
 
-TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM> rsm, const std::string& name, bool utf) const {
+TiXmlDocument RSW::GenerateFullXMLDoc(const std::map<std::string, RSM> rsm, const std::string& name, bool utf) const {
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
 	doc.LinkEndChild(decl);
@@ -732,28 +734,30 @@ TiXmlDocument RO::RSW::GenerateFullXMLDoc(const std::map<std::string, RSM> rsm, 
 	return(doc);
 }
 
-bool RO::RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, std::ostream& out, const std::string& name, bool utf) const {
+bool RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, std::ostream& out, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
 	out << doc;
 	return(true);
 }
 
-bool RO::RSW::SaveFullXML(const std::map<std::string, RSM> rsm, std::ostream& out, const std::string& name, bool utf) const {
+bool RSW::SaveFullXML(const std::map<std::string, RSM> rsm, std::ostream& out, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
 	out << doc;
 	return(true);
 }
 
-bool RO::RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, const std::string& fn, const std::string& name, bool utf) const {
+bool RSW::SaveFullXML(const std::map<std::string, RSM*> rsm, const std::string& fn, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
 	doc.SaveFile(fn);
 	return(true);
 }
 
-bool RO::RSW::SaveFullXML(const std::map<std::string, RSM> rsm, const std::string& fn, const std::string& name, bool utf) const {
+bool RSW::SaveFullXML(const std::map<std::string, RSM> rsm, const std::string& fn, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateFullXMLDoc(rsm, name, utf);
 	doc.SaveFile(fn);
 	return(true);
 }
 
 #endif
+
+} /* namespace ro */

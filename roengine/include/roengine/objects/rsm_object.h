@@ -16,20 +16,20 @@
 
 class RsmObject : public GLObject {
 protected:
-	const RO::RSM* rsm;
-	const RO::RSW::ModelObject* model;
+	const ro::RSM* rsm;
+	const ro::RSW::ModelObject* model;
 	TextureCache textures;
 
 	void DrawBoundingBox() const;
 	void DrawMesh(unsigned int meshid = 0);
-	void CalcRotFrame(const RO::RSM::Node& node, float* Ori, int& frame) const;
+	void CalcRotFrame(const ro::RSM::Node& node, float* Ori, int& frame) const;
 
 	int m_time;
 	bool is_static;
 	unsigned int rsm_gl;
 
 public:
-	RsmObject(const RO::RSM*, const RO::RSW::ModelObject* mdl = NULL);
+	RsmObject(const ro::RSM*, const ro::RSW::ModelObject* mdl = NULL);
 	virtual ~RsmObject();
 
 	bool loadTextures(CacheManager&);

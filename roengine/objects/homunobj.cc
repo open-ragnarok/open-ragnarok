@@ -25,7 +25,7 @@ void HomunObj::Draw() {
 		float dy = dest_y - map_y;
 		float size = sqrt(dx * dx + dy * dy);
 
-		m_dir = RO::dir2Cdir(dx, dy);
+		m_dir = ro::dir2Cdir(dx, dy);
 
 		if (size < speed) {
 			map_x = dest_x;
@@ -61,7 +61,7 @@ void HomunObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_homun.Draw(m_tickdelay, (RO::CDir)dir); // Draw
+	m_homun.Draw(m_tickdelay, (ro::CDir)dir); // Draw
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -110,7 +110,7 @@ bool HomunObj::open(CacheManager& cache, std::string name) {
 
 	// Creates an ActGL and registers it
 	m_homun.setSpr(sprgl);
-	m_homun.setAct((RO::ACT*)objects[act_n]);
+	m_homun.setAct((ro::ACT*)objects[act_n]);
 
 	return(true);
 }

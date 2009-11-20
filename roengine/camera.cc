@@ -76,7 +76,7 @@ Vector3f& Camera::getDest() { return(dest); }
 const Vector3f& Camera::getEye() const { return(eye); }
 const Vector3f& Camera::getDest() const  { return(dest); }
 
-RO::CDir Camera::getDirection() const {
+ro::CDir Camera::getDirection() const {
 	Vector3f dir = dest - eye;
 	dir[1] = 0;
 	dir /= dir.size();
@@ -94,23 +94,23 @@ RO::CDir Camera::getDirection() const {
 	*/
 
 	if (angle <= 22.5)
-		return(RO::DIR_N);
+		return(ro::DIR_N);
 	else if (angle <= 67.5)
-		return(RO::DIR_NE);
+		return(ro::DIR_NE);
 	else if (angle <= 112.5)
-		return(RO::DIR_E);
+		return(ro::DIR_E);
 	else if (angle <= 157.5)
-		return(RO::DIR_SE);
+		return(ro::DIR_SE);
 	else if (angle <= 202.5)
-		return(RO::DIR_S);
+		return(ro::DIR_S);
 	else if (angle <= 247.5)
-		return(RO::DIR_SW);
+		return(ro::DIR_SW);
 	else if (angle <= 292.5)
-		return(RO::DIR_W);
+		return(ro::DIR_W);
 	else if (angle <= 337.5)
-		return(RO::DIR_NW);
+		return(ro::DIR_NW);
 
-	return(RO::DIR_N);
+	return(ro::DIR_N);
 }
 
 

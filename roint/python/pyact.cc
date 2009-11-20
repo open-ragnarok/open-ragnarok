@@ -27,7 +27,7 @@
 #include "ro/python/pyact.h"
 #include <fstream>
 
-namespace RO {
+namespace ro {
 
 ACT* ACT_new() {
 	return(new ACT());
@@ -49,4 +49,4 @@ unsigned int ACT_count(const ACT* act) {
 	return(act->getActionCount());
 }
 
-}
+} /* namespace ro */

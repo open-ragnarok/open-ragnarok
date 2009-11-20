@@ -8,7 +8,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-RsmObject::RsmObject(const RO::RSM* o, const RO::RSW::ModelObject* mdl) : GLObject() {
+RsmObject::RsmObject(const ro::RSM* o, const ro::RSW::ModelObject* mdl) : GLObject() {
 	rsm = o;
 	m_time = 0;
 
@@ -50,7 +50,7 @@ bool RsmObject::loadTextures(CacheManager& cm) {
 void RsmObject::DrawBoundingBox() const {
 	// TODO
 #if 0
-	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
+	const ro::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	float vertices[8][3] = {
 		{ box.max.x, box.max.y, box.max.z }, // 0
@@ -85,7 +85,7 @@ void RsmObject::DrawBoundingBox() const {
 #endif
 }
 
-void RsmObject::CalcRotFrame(const RO::RSM::Node& node, float* Ori, int& frame) const {
+void RsmObject::CalcRotFrame(const ro::RSM::Node& node, float* Ori, int& frame) const {
 	// Borrowed from RagCam (95%)
 
 	int i;
@@ -156,9 +156,9 @@ void RsmObject::CalcRotFrame(const RO::RSM::Node& node, float* Ori, int& frame) 
 
 void RsmObject::DrawMesh(unsigned int meshid) {
 	int i, j, lasttex;
-	const RO::RSM::Node& node = rsm->getNode(meshid);
-	//const RO::RSM::BoundingBox& box = mesh.getBoundingBox();
-	//const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
+	const ro::RSM::Node& node = rsm->getNode(meshid);
+	//const ro::RSM::BoundingBox& box = mesh.getBoundingBox();
+	//const ro::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	lasttex = -1;
 
@@ -232,7 +232,7 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 	glBegin(GL_TRIANGLES);
 	// Draw each surface
 	for (i = 0; i < (int)node.faces.size(); i++) {
-		const RO::RSM::Face& face = node.faces[i];
+		const ro::RSM::Face& face = node.faces[i];
 		if (face.texid != lasttex) {
 			glEnd();
 			lasttex = face.texid;

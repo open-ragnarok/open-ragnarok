@@ -3,7 +3,7 @@
 
 #include "rogl/rsmgl.h"
 
-bool rogl::draw(const RO::RSM* rsm, const unsigned int* textures, int time) {
+bool rogl::draw(const ro::RSM* rsm, const unsigned int* textures, int time) {
 	if (rsm == NULL)
 		return(false);
 
@@ -12,10 +12,10 @@ bool rogl::draw(const RO::RSM* rsm, const unsigned int* textures, int time) {
 	return(true);
 }
 
-bool rogl::drawBoundingBox(const RO::RSM* rsm) {
+bool rogl::drawBoundingBox(const ro::RSM* rsm) {
 	// TODO
 #if 0
-	const RO::RSM::BoundingBox& box = rsm->getBoundingBox();
+	const ro::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	float vertices[8][3] = {
 		{ box.max.x, box.max.y, box.max.z }, // 0
@@ -70,7 +70,7 @@ bool rogl::drawBoundingBox(const RO::RSM* rsm) {
 	return(false);
 }
 
-bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsigned int* textures) {
+bool rogl::drawMesh(const unsigned int& meshidx, const ro::RSM* rsm, const unsigned int* textures) {
 	if (rsm == NULL)
 		return(false);
 
@@ -79,7 +79,7 @@ bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsig
 	if (textures != NULL)
 		glEnable(GL_TEXTURE_2D);
 
-	const RO::RSM::Node& node = rsm->getNode(meshidx);
+	const ro::RSM::Node& node = rsm->getNode(meshidx);
 
 	lasttex = -1;
 	if (textures != NULL) {
@@ -89,7 +89,7 @@ bool rogl::drawMesh(const unsigned int& meshidx, const RO::RSM* rsm, const unsig
 	glBegin(GL_TRIANGLES);
 	// Draw each surface
 	for (i = 0; i < (int)node.faces.size(); i++) {
-		const RO::RSM::Face& face = node.faces[i];
+		const ro::RSM::Face& face = node.faces[i];
 		// Check if we have textures
 		if (textures != NULL) {
 			if (face.texid != lasttex) {

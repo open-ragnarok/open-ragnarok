@@ -22,21 +22,23 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __PYACT_H
-#define __PYACT_H
+#ifndef __RO_PYTHON_PYACT_H
+#define __RO_PYTHON_PYACT_H
 
 #include "../types/act.h"
 
-namespace RO {
+namespace ro {
 extern "C" {
-	ROINT_DLLAPI ACT* ACT_new();
-	ROINT_DLLAPI void ACT_del(ACT*);
 
-	ROINT_DLLAPI bool ACT_read(ACT*, const char*);
+ROINT_DLLAPI ACT* ACT_new();
+ROINT_DLLAPI void ACT_del(ACT*);
 
-	ROINT_DLLAPI void ACT_dump(const ACT*, const char*);
-	ROINT_DLLAPI unsigned int ACT_count(const ACT*);
-}
-}
+ROINT_DLLAPI bool ACT_read(ACT*, const char*);
 
-#endif /* __PYACT_H */
+ROINT_DLLAPI void ACT_dump(const ACT*, const char*);
+ROINT_DLLAPI unsigned int ACT_count(const ACT*);
+
+} /* extern "C" */
+} /* namespace ro */
+
+#endif /* __RO_PYTHON_PYACT_H */

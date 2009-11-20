@@ -34,7 +34,7 @@ void ActGL::Draw() const {
 }
 
 
-void ActGL::Draw(unsigned long delay, RO::CDir direction) {
+void ActGL::Draw(unsigned long delay, ro::CDir direction) {
 	m_delay += delay;
 	while (m_delay > 200) {
 		m_delay -= 200;
@@ -59,18 +59,18 @@ void ActGL::Draw(unsigned long delay, RO::CDir direction) {
 
 
 	spr.getTexture().Activate();
-	const RO::ACT::Action& a = act->getAction(m_action * 8 + direction);
+	const ro::ACT::Action& a = act->getAction(m_action * 8 + direction);
 	if(m_frame >= a.getMotionCount()) {
 		m_frame = m_frame % a.getMotionCount();
 	}
-	const RO::ACT::Motion& p = a.getMotion(m_frame);
+	const ro::ACT::Motion& p = a.getMotion(m_frame);
 	float u[2], v[2];
 	//float aux;
 	int sprcount = p.getClipCount();
 	int w, h;
 
 	for (int i = 0; i < sprcount; i++) {
-		const RO::ACT::SprClip& s = p.getClip(i);
+		const ro::ACT::SprClip& s = p.getClip(i);
 		if (s.sprNo < 0) {
 			continue;
 		}
@@ -142,7 +142,7 @@ void ActGL::setExt(ActGL* e) {
 	ext = e;
 }
 
-void ActGL::setAct(RO::ACT* a) {
+void ActGL::setAct(ro::ACT* a) {
 	act = a;
 }
 
@@ -154,7 +154,7 @@ ActGL* ActGL::getExt() {
 	return(ext);
 }
 
-RO::ACT* ActGL::getAct() {
+ro::ACT* ActGL::getAct() {
 	return(act);
 }
 

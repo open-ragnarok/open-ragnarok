@@ -14,15 +14,15 @@
 
 float RswObject::m_tilesize = 10.0f;
 
-RswObject::RswObject(const RO::RSW* rsw, CacheManager& c) : GLObject(), m_cache(c) {
+RswObject::RswObject(const ro::RSW* rsw, CacheManager& c) : GLObject(), m_cache(c) {
 
 	ROObjectCache& cache = m_cache.getROObjects();
 
 	this->rsw = rsw;
 	std::string gnd_fn = rsw->getGndFile();
 	std::string gat_fn = rsw->getGatFile();
-	this->gnd = (RO::GND*)cache[gnd_fn];
-	this->gat = (RO::GAT*)cache[gat_fn];
+	this->gnd = (ro::GND*)cache[gnd_fn];
+	this->gat = (ro::GAT*)cache[gat_fn];
 
 	gnd_gl = 0;
 
@@ -37,7 +37,7 @@ RswObject::~RswObject() {
 
 
 	for (unsigned int i = 0; i < rsw->getObjectCount(); i++) {
-		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
+		const ro::RSW::ModelObject* rswobj = rsw->getModelObject(i);
 		if (rswobj == NULL)
 			continue;
 		if (m_cache.getGLObjects().exists(rswobj->name)) {
@@ -46,11 +46,11 @@ RswObject::~RswObject() {
 	}
 }
 
-const RO::RSW* RswObject::getRSW() const {
+const ro::RSW* RswObject::getRSW() const {
 	return(rsw);
 }
 
-const RO::GND* RswObject::getGND() const {
+const ro::GND* RswObject::getGND() const {
 	return(gnd);
 }
 
@@ -88,7 +88,7 @@ bool RswObject::loadTextures(CacheManager& cache) {
 	// Load water
 	char waterfn[128];
 	for (i = 0; i <= 31; i++) {
-		sprintf(waterfn, "texture\\%s\\water%d%02d.jpg", RO::EUC::water, rsw->getWater().type, i);
+		sprintf(waterfn, "texture\\%s\\water%d%02d.jpg", ro::EUC::water, rsw->getWater().type, i);
 		tex = tm.RegisterJPEG(fm, waterfn);
 		water_tex.add(tex);
 	}
@@ -97,7 +97,7 @@ bool RswObject::loadTextures(CacheManager& cache) {
 }
 
 RswObject* RswObject::open(CacheManager& cache, const char* map) {
-	RO::RSW* rsw;
+	ro::RSW* rsw;
 
 	// TODO: Show loading screen
 	printf("Loading map %s\n",map);
@@ -114,7 +114,7 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 			return(NULL);
 		}
 	}
-	rsw = (RO::RSW*)cache.getROObjects().get(rsw_fn);
+	rsw = (ro::RSW*)cache.getROObjects().get(rsw_fn);
 
 	if (!cache.getROObjects().exists(rsw->getGndFile())) {
 		if (!cache.getROObjects().ReadGND(rsw->getGndFile(), cache.getFileManager())) {
@@ -134,7 +134,7 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 	obj->loadTextures(cache);
 
 	// Load objects
-	RO::RSM* rsm;
+	ro::RSM* rsm;
 	RsmObject* rsmobject;
 	char fn[128];
 	unsigned int i;
@@ -143,7 +143,7 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 	float yoffset = m_tilesize * obj->gnd->getHeight() / 2;
 
 	for (i = 0; i < rsw->getObjectCount(); i++) {
-		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
+		const ro::RSW::ModelObject* rswobj = rsw->getModelObject(i);
 		if (rswobj == NULL)
 			continue;
 
@@ -154,7 +154,7 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 				continue;
 			}
 		}
-		rsm = (RO::RSM*)cache.getROObjects()[fn];
+		rsm = (ro::RSM*)cache.getROObjects()[fn];
 		rsmobject = new RsmObject(rsm, rswobj);
 		rsmobject->loadTextures(cache);
 		float x = rsmobject->getPos().getX() + xoffset;
@@ -196,7 +196,7 @@ void RswObject::getRot(float sizex, float sizey, float rot[16]) {
 	rot[15] = 1.0;
 }
 
-void RswObject::DrawSurface(const RO::GND::Surface& surface, const float* vertices) {
+void RswObject::DrawSurface(const ro::GND::Surface& surface, const float* vertices) {
 	// TODO lightmap (use multi-texture extension?)
 	// TODO what should happen with the color? should glEnable(GL_COLOR_MATERIAL) be used?
 	//glColor4ub(surface.color.r, surface.color.g, surface.color.b, surface.color.a);
@@ -244,10 +244,10 @@ void RswObject::DrawGND() {
 	glEnable(GL_ALPHA_TEST); // TODO why is this needed?
 	for (celly = 0; celly < gnd->getHeight(); celly++) {
 		for (cellx = 0; cellx < gnd->getWidth(); cellx++) {
-			const RO::GND::Cell& cell = gnd->getCell(cellx, celly);
+			const ro::GND::Cell& cell = gnd->getCell(cellx, celly);
 			if( cell.topSurfaceId != -1 )
 			{
-				const RO::GND::Surface& surface = gnd->getSurface(cell.topSurfaceId);
+				const ro::GND::Surface& surface = gnd->getSurface(cell.topSurfaceId);
 				float vertices[4 * 3] = {
 					(float)(cellx    ), cell.height[0], (float)(celly    ),
 					(float)(cellx + 1), cell.height[1], (float)(celly    ),
@@ -258,8 +258,8 @@ void RswObject::DrawGND() {
 			}
 			if( cell.frontSurfaceId != -1 )
 			{
-				const RO::GND::Surface& surface = gnd->getSurface(cell.frontSurfaceId);
-				const RO::GND::Cell& cell2 = gnd->getCell(cellx, celly + 1);// north
+				const ro::GND::Surface& surface = gnd->getSurface(cell.frontSurfaceId);
+				const ro::GND::Cell& cell2 = gnd->getCell(cellx, celly + 1);// north
 				float vertices[4 * 3] = {
 					(float)(cellx    ), cell.height[2] , (float)(celly + 1),
 					(float)(cellx + 1), cell.height[3] , (float)(celly + 1),
@@ -270,8 +270,8 @@ void RswObject::DrawGND() {
 			}
 			if( cell.rightSurfaceId != -1 )
 			{
-				const RO::GND::Surface& surface = gnd->getSurface(cell.rightSurfaceId);
-				const RO::GND::Cell& cell2 = gnd->getCell(cellx + 1, celly);// east
+				const ro::GND::Surface& surface = gnd->getSurface(cell.rightSurfaceId);
+				const ro::GND::Cell& cell2 = gnd->getCell(cellx + 1, celly);// east
 				float vertices[4 * 3] = {
 					(float)(cellx + 1), cell.height[3] , (float)(celly + 1),
 					(float)(cellx + 1), cell.height[1] , (float)(celly    ),
@@ -288,7 +288,7 @@ void RswObject::DrawGND() {
 
 void RswObject::DrawWater() {
 #define WATERFPS 45 // TODO check how the speed works in original
-	const RO::RSW::Water& water = rsw->getWater();
+	const ro::RSW::Water& water = rsw->getWater();
 	unsigned int cycle = water.animSpeed * 1000 / WATERFPS;
 	m_waterdelay = (m_waterdelay + m_tickdelay) % (cycle * 32);
 	m_waterframe = m_waterdelay / cycle;
@@ -315,7 +315,7 @@ void RswObject::DrawWater() {
 				height[1] = (float)sin(((x + y - 1) * water.wavePitch + m_waveOffset) * M_PI / 180.0) * water.waveHeight + water.level;
 				height[2] = (float)sin(((x + y + 1) * water.wavePitch + m_waveOffset) * M_PI / 180.0) * water.waveHeight + water.level;
 			}
-			const RO::GND::Cell& cell = gnd->getCell(x, y);
+			const ro::GND::Cell& cell = gnd->getCell(x, y);
 			if (cell.height[0] <= height[0] && cell.height[1] <= height[0] && cell.height[2] <= height[0] && cell.height[3] <= height[0])
 				continue;// water is below the ground
 			// TODO exclude tiles based on camera frustum?
@@ -360,8 +360,8 @@ void RswObject::DrawSelection(int mapx, int mapy) const {
 	glPushMatrix();
 	glMultMatrixf(rot);
 
-	//const RO::GND::strCube& cube = gnd->getCube(mapx, mapy);
-	const RO::GAT::Cell& cell = gat->getCell(mapx, mapy);
+	//const ro::GND::strCube& cube = gnd->getCube(mapx, mapy);
+	const ro::GAT::Cell& cell = gat->getCell(mapx, mapy);
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0f,	0.0f); glVertex3f(tile * mapx,			-cell.height[0] + HOFFSET, tile * mapy);
@@ -393,7 +393,7 @@ void RswObject::DrawObjects() {
 	//f.Calculate();
 
 	for (i = 0; i < rsw->getObjectCount(); i++) {
-		const RO::RSW::ModelObject* rswobj = rsw->getModelObject(i);
+		const ro::RSW::ModelObject* rswobj = rsw->getModelObject(i);
 		if (rswobj == NULL)
 			continue;
 

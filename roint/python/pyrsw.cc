@@ -26,44 +26,45 @@
 
 #include "ro/python/pyrsw.h"
 
-namespace RO {
+namespace ro {
 
-	RSW* new_RSW() {
-		return(new RSW());
-	}
+RSW* new_RSW() {
+	return(new RSW());
+}
 
-	void del_RSW(RSW* rsw) {
-		delete(rsw);
-	}
+void del_RSW(RSW* rsw) {
+	delete(rsw);
+}
 
-	bool read_RSW(RSW* rsw, const char* filename) {
-		return(rsw->read(filename));
-	}
+bool read_RSW(RSW* rsw, const char* filename) {
+	return(rsw->read(filename));
+}
 
-	void dump_RSW(const RSW* rsw, const char* pfx) {
-		rsw->Dump(std::cout, pfx);
-	}
+void dump_RSW(const RSW* rsw, const char* pfx) {
+	rsw->Dump(std::cout, pfx);
+}
 
-	bool write_RSW(const RSW* rsw, const char* filename) {
-		std::ofstream fp(filename, std::ios_base::binary);
-		bool ret = rsw->writeStream(fp);
-		fp.close();
-		return(ret);
-	}
+bool write_RSW(const RSW* rsw, const char* filename) {
+	std::ofstream fp(filename, std::ios_base::binary);
+	bool ret = rsw->writeStream(fp);
+	fp.close();
+	return(ret);
+}
 
-	const char* get_RSW_ini(RSW* rsw) {
-		return(rsw->getIniFile());
-	}
+const char* get_RSW_ini(RSW* rsw) {
+	return(rsw->getIniFile());
+}
 
-	const char* get_RSW_gnd(RSW* rsw) {
-		return(rsw->getGndFile());
-	}
+const char* get_RSW_gnd(RSW* rsw) {
+	return(rsw->getGndFile());
+}
 
-	const char* get_RSW_gat(RSW* rsw) {
-		return(rsw->getGatFile());
-	}
+const char* get_RSW_gat(RSW* rsw) {
+	return(rsw->getGatFile());
+}
 
-	const char* get_RSW_scr(RSW* rsw) {
-		return(rsw->getScrFile());
-	}
-} // namespace RO
+const char* get_RSW_scr(RSW* rsw) {
+	return(rsw->getScrFile());
+}
+
+} /* namespace ro */

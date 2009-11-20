@@ -22,48 +22,50 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __PAL_H
-#define __PAL_H
+#ifndef __RO_TYPES_PAL_H
+#define __RO_TYPES_PAL_H
 
 #include "../ro_object.h"
 
-namespace RO {
-	/**
-	 * Palette class.
-	 * Contains an array of 256 palette entries.
-	 * The first index is sometimes considered invisible.
-	 *
-	 * \ingroup ROInterface
-	 */
-	class ROINT_DLLAPI PAL : public Object {
-	public:
+namespace ro {
+
+/**
+ * Palette class.
+ * Contains an array of 256 palette entries.
+ * The first index is sometimes considered invisible.
+ *
+ * \ingroup ROInterface
+ */
+class ROINT_DLLAPI PAL : public Object {
+public:
 #pragma pack(push,1)
-		/**
-		 * Palette entry.
-		 * Represents a color with red, green and blue components.
-		 */
-		struct Color {
-			unsigned char r, g, b, reserved;
-			inline operator unsigned char* () { return(&r); }
-			inline operator const unsigned char* () const { return(&r); }
-		};
+	/**
+	 * Palette entry.
+	 * Represents a color with red, green and blue components.
+	 */
+	struct Color {
+		unsigned char r, g, b, reserved;
+		inline operator unsigned char* () { return(&r); }
+		inline operator const unsigned char* () const { return(&r); }
+	};
 #pragma pack(pop)
 
-	protected:
-		void reset();
+protected:
+	void reset();
 
-		Color m_pal[256];
+	Color m_pal[256];
 
-	public:
-		PAL();
-		virtual ~PAL();
+public:
+	PAL();
+	virtual ~PAL();
 
-		virtual bool readStream(std::istream&);
+	virtual bool readStream(std::istream&);
 
-		/** Returns the palette entry */
-		const Color& getColor(unsigned char idx) const;
-	};
-}
+	/** Returns the palette entry */
+	const Color& getColor(unsigned char idx) const;
+};
 
-#endif /* __PAL_H */
+} /* namespace ro */
+
+#endif /* __RO_TYPES_PAL_H */
 

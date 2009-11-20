@@ -65,15 +65,15 @@ void DesktopChar::addChar(const CharInformation& info) {
 	char novice_head[256];
 	int accsex = m_ro->GetAccountSex();
 	unsigned int classid = m_chars[i].Class;
-	// RO::EUC::classname_en and RO::EUC::classname only have 25 indexes.
+	// ro::EUC::classname_en and ro::EUC::classname only have 25 indexes.
 	// TODO: Make this a function on roint.
 	if (classid > 24) {
 		classid = 0;
 	}
-	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::sex[accsex], RO::EUC::getClassName(m_chars[i].Class), RO::EUC::sex[accsex]);
-	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[accsex], m_chars[i].hair, RO::EUC::sex[accsex]);
-	printf("Loading %s (%d) body in slot %d: %s\n", RO::getClassNameEN(m_chars[i].Class), m_chars[i].Class, i, novice_body);
-	printf("Loading %s (%d) head in slot %d: %s\n", RO::getClassNameEN(m_chars[i].Class), m_chars[i].Class, i, novice_head);
+	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", ro::EUC::humans, ro::EUC::body, ro::EUC::sex[accsex], ro::EUC::getClassName(m_chars[i].Class), ro::EUC::sex[accsex]);
+	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", ro::EUC::humans, ro::EUC::head, ro::EUC::sex[accsex], m_chars[i].hair, ro::EUC::sex[accsex]);
+	printf("Loading %s (%d) body in slot %d: %s\n", ro::getClassNameEN(m_chars[i].Class), m_chars[i].Class, i, novice_body);
+	printf("Loading %s (%d) head in slot %d: %s\n", ro::getClassNameEN(m_chars[i].Class), m_chars[i].Class, i, novice_head);
 
 	bodies[i].Load(novice_body, *m_ro);
 	heads[i].Load(novice_head, *m_ro);
@@ -135,7 +135,7 @@ void DesktopChar::setInfo(int i){
 	sprintf(buf, "%s", m_chars[x].name);
 	lblNam->setText(buf);
 	
-	sprintf(buf, "%s", RO::getClassNameEN(m_chars[x].Class));
+	sprintf(buf, "%s", ro::getClassNameEN(m_chars[x].Class));
 	lblJob->setText(buf);
 	
 	sprintf(buf, "%d", m_chars[x].base_lv);

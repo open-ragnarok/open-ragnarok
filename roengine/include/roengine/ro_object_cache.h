@@ -11,7 +11,7 @@
 /**
  * Reads and stores in memory basic interface objects
  */
-class ROObjectCache : public BaseCache<RO::Object> {
+class ROObjectCache : public BaseCache<ro::Object> {
 public:
 	/** Reads an RSM Format from the FileManager and stores it in cache (if loade is successful) */
 	bool ReadRSM(const std::string& name, FileManager& fm);

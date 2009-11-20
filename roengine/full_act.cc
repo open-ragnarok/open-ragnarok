@@ -26,7 +26,7 @@ void FullAct::Clear() {
 	m_spr.release();
 }
 
-FullAct::FullAct(const RO::ACT* a, const rogl::SprGL& spr) {
+FullAct::FullAct(const ro::ACT* a, const rogl::SprGL& spr) {
 	m_act = a;
 	m_spr = spr;
 }
@@ -52,14 +52,14 @@ bool FullAct::Load(const std::string& name, CacheManager& cache) {
 	}
 
 	m_spr = *cache.getSprGLObjects().get(spr_n);
-	m_act = (RO::ACT*)objects[act_n];
+	m_act = (ro::ACT*)objects[act_n];
 
 	return(true);
 }
 
 
-const RO::ACT* FullAct::getAct() const { return(m_act); }
-const RO::ACT* FullAct::operator -> () const { return(m_act); }
+const ro::ACT* FullAct::getAct() const { return(m_act); }
+const ro::ACT* FullAct::operator -> () const { return(m_act); }
 const sdle::Texture& FullAct::getTextures() const { return(m_spr.getTexture()); }
 
 void DrawActCross(float x, float y, float size) {
@@ -86,8 +86,8 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	
 	if (parent != NULL) {
 		if (parent->getAct() != NULL) {
-			const RO::ACT::Action& pact = parent->getAct()->getAction(act_no);
-			const RO::ACT::Motion& pmot = parent->getAct()->getMotion(act_no, pat_no);
+			const ro::ACT::Action& pact = parent->getAct()->getAction(act_no);
+			const ro::ACT::Motion& pmot = parent->getAct()->getMotion(act_no, pat_no);
 
 			if (pmot.attachPoints.size() > 0) {
 				x = x + pmot.attachPoints[0].x;
@@ -105,7 +105,7 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	if (act.getAct() == NULL)
 		return;
 
-	const RO::ACT::Motion& cmot = act->getMotion(act_no, pat_no);
+	const ro::ACT::Motion& cmot = act->getMotion(act_no, pat_no);
 
 	for (spr = 0; spr < cmot.getClipCount(); spr++) {
 		act.getSpr().Draw(cmot, spr, x, y, v_mirror, ext);
@@ -113,7 +113,7 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 /*
 		if (cpat[spr].sprNo < 0)
 			continue;
-		const RO::ACT::Spr& cspr = cpat[cpat[spr].sprNo];
+		const ro::ACT::Spr& cspr = cpat[cpat[spr].sprNo];
 
 		tp = act.getTextures()[cpat[spr].sprNo];
 

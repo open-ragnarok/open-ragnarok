@@ -25,7 +25,7 @@ void MobObj::Draw() {
 		float dy = dest_y - map_y;
 		float size = sqrt(dx * dx + dy * dy);
 
-		m_dir = RO::dir2Cdir(dx, dy);
+		m_dir = ro::dir2Cdir(dx, dy);
 
 		if (size < speed) {
 			map_x = dest_x;
@@ -61,7 +61,7 @@ void MobObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_mob.Draw(m_tickdelay, (RO::CDir)dir); // Draw
+	m_mob.Draw(m_tickdelay, (ro::CDir)dir); // Draw
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -84,7 +84,7 @@ bool MobObj::open(CacheManager& cache, std::string name) {
 
 	char buf[256];
 	// ========== Body
-	sprintf(buf, "sprite\\%s\\%s", RO::EUC::monsters, name.c_str());
+	sprintf(buf, "sprite\\%s\\%s", ro::EUC::monsters, name.c_str());
 
 	// Setup filenames
 	act_n = buf;
@@ -110,7 +110,7 @@ bool MobObj::open(CacheManager& cache, std::string name) {
 
 	// Creates an ActGL and registers it
 	m_mob.setSpr(sprgl);
-	m_mob.setAct((RO::ACT*)objects[act_n]);
+	m_mob.setAct((ro::ACT*)objects[act_n]);
 
 	return(true);
 }

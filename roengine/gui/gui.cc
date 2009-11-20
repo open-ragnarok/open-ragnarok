@@ -62,7 +62,7 @@ Gui::~Gui() {
 
 std::string Gui::getMsgboxBg() {
 	std::string aux = "texture\\";
-	aux += RO::EUC::user_interface;
+	aux += ro::EUC::user_interface;
 	aux += "\\";
 	aux += m_msgbox_bg;
 	return(aux);
@@ -70,7 +70,7 @@ std::string Gui::getMsgboxBg() {
 
 std::string Gui::getMsgboxOk() {
 	std::string aux = "texture\\";
-	aux += RO::EUC::user_interface;
+	aux += ro::EUC::user_interface;
 	aux += "\\";
 	aux += m_msgbox_btnok;
 	return(aux);
@@ -78,7 +78,7 @@ std::string Gui::getMsgboxOk() {
 
 std::string Gui::getMsgboxCancel() {
 	std::string aux = "texture\\";
-	aux += RO::EUC::user_interface;
+	aux += ro::EUC::user_interface;
 	aux += "\\";
 	aux += m_msgbox_btncancel;
 	return(aux);
@@ -86,7 +86,7 @@ std::string Gui::getMsgboxCancel() {
 
 std::string Gui::getMsgboxExit() {
 	std::string aux = "texture\\";
-	aux += RO::EUC::user_interface;
+	aux += ro::EUC::user_interface;
 	aux += "\\";
 	aux += m_msgbox_btnexit;
 	return(aux);

@@ -404,7 +404,7 @@ sdle::Texture Element::LoadTexture(std::string name, CacheManager& cache) {
 	std::string tn = name;
 	if (tn[0] != '\\') {
 		std::string aux = "texture\\";
-		aux += RO::EUC::user_interface;
+		aux += ro::EUC::user_interface;
 		aux += "\\";
 		tn = aux + tn;
 	}

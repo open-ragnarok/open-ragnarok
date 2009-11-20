@@ -22,70 +22,72 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __GAT_H
-#define __GAT_H
+#ifndef __RO_TYPES_GAT_H
+#define __RO_TYPES_GAT_H
 
 #include "../ro_object.h"
 
-namespace RO {
-	/**
-	 * Ground Altitude File
-	 *
-	 * \ingroup ROInterface
-	 */
-	class ROINT_DLLAPI GAT : public Object {
-	public:
+namespace ro {
+
+/**
+ * Ground Altitude File
+ *
+ * \ingroup ROInterface
+ */
+class ROINT_DLLAPI GAT : public Object {
+public:
 #pragma pack(push,1)
-		struct Cell {
-			float height[4]; //< west->east, south->north ordering; the lower the number, the higher the ground
-			/**
-			 * The type of the block
-			 * <pre>
-			 * 0 = walkable block
-			 * 1 = non-walkable block
-			 * 2 = non-walkable water (not snipable)
-			 * 3 = walkable water
-			 * 4 = non-walkable water (snipable)
-			 * 5 = cliff (snipable)
-			 * 6 = cliff (not snipable)
-			 * Everything else = unknown
-			 * </pre>
-			 */ 
-			int type;
-		};
+	struct Cell {
+		float height[4]; //< west->east, south->north ordering; the lower the number, the higher the ground
+		/**
+		 * The type of the block
+		 * <pre>
+		 * 0 = walkable block
+		 * 1 = non-walkable block
+		 * 2 = non-walkable water (not snipable)
+		 * 3 = walkable water
+		 * 4 = non-walkable water (snipable)
+		 * 5 = cliff (snipable)
+		 * 6 = cliff (not snipable)
+		 * Everything else = unknown
+		 * </pre>
+		 */ 
+		int type;
+	};
 #pragma pack(pop)
 
-	protected:
-		void reset();
+protected:
+	void reset();
 
-		unsigned int m_width, m_height;
-		/// west->east, south->north ordering
-		Arr<Cell> m_cells;
+	unsigned int m_width, m_height;
+	/// west->east, south->north ordering
+	Arr<Cell> m_cells;
 
-	public:
-		GAT();
-		~GAT();
+public:
+	GAT();
+	~GAT();
 
-		virtual bool readStream(std::istream& s);
-		bool writeStream(std::ostream& s) const;
+	virtual bool readStream(std::istream& s);
+	bool writeStream(std::ostream& s) const;
 
-		unsigned int getWidth() const;
-		unsigned int getHeight() const;
+	unsigned int getWidth() const;
+	unsigned int getHeight() const;
 
-		unsigned int getCellCount() const;
-		const Cell& operator[] (unsigned int idx) const;
-		const Cell& getCell(unsigned int idx) const;
-		const Cell& getCell(unsigned int cellx, unsigned int celly) const;
+	unsigned int getCellCount() const;
+	const Cell& operator[] (unsigned int idx) const;
+	const Cell& getCell(unsigned int idx) const;
+	const Cell& getCell(unsigned int cellx, unsigned int celly) const;
 
-		/// Gets the altitude at any cell location.
-		/// for cell (0,0): center=(0,0) x=[-0.5,0.5[ y=[-0.5,0.5[
-		float getAltitude(float cellx, float celly) const;
-		/// Gets the altitude at the center of a cell.
-		float getAltitude(unsigned int cellx, unsigned int celly) const;
-		int getType(unsigned int cellx, unsigned int celly) const;
+	/// Gets the altitude at any cell location.
+	/// for cell (0,0): center=(0,0) x=[-0.5,0.5[ y=[-0.5,0.5[
+	float getAltitude(float cellx, float celly) const;
+	/// Gets the altitude at the center of a cell.
+	float getAltitude(unsigned int cellx, unsigned int celly) const;
+	int getType(unsigned int cellx, unsigned int celly) const;
 
-	};
-}
+};
 
-#endif /* __GAT_H */
+} /* namespace ro */
+
+#endif /* __RO_TYPES_GAT_H */
 

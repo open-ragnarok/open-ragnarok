@@ -28,7 +28,7 @@
 
 #include <fstream>
 
-namespace RO {
+namespace ro {
 
 GRF* GRF_new() {
 	return(new GRF());
@@ -66,4 +66,4 @@ unsigned int GRF_getCount(const GRF* grf) {
 	return(grf->getCount());
 }
 
-}
+} /* namespace ro */

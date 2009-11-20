@@ -26,12 +26,14 @@
 #include "ro/types/rsm.h"
 #include "ro/ro.h"
 
-static RO::RSM::Node g_emptyNode;
+namespace ro {
 
-RO::RSM::RSM() : Object() {
+static RSM::Node g_emptyNode;
+
+RSM::RSM() : Object() {
 }
 
-RO::RSM::RSM(const RSM& rsm) : Object(rsm) {
+RSM::RSM(const RSM& rsm) : Object(rsm) {
 	m_animLen = rsm.m_animLen;
 	m_shadeType = rsm.m_shadeType;
 	m_alpha = rsm.m_alpha;
@@ -42,7 +44,7 @@ RO::RSM::RSM(const RSM& rsm) : Object(rsm) {
 	m_volumeBoxes = rsm.m_volumeBoxes;
 }
 
-RO::RSM& RO::RSM::operator = (const RSM& rsm) {
+RSM& RSM::operator = (const RSM& rsm) {
 	reset();
 	rsm.copyHeader(this);
 	m_animLen = rsm.m_animLen;
@@ -56,18 +58,18 @@ RO::RSM& RO::RSM::operator = (const RSM& rsm) {
 	return(*this);
 }
 
-RO::RSM::~RSM() {
+RSM::~RSM() {
 	reset();
 }
 
-void RO::RSM::reset(void) {
+void RSM::reset(void) {
 	m_valid = false;
 	m_textures.clear();
 	m_nodes.clear();
 	m_volumeBoxes.clear();
 }
 
-bool RO::RSM::readStream(std::istream& s) {
+bool RSM::readStream(std::istream& s) {
 	reset();
 	if (!readHeader(s)) {
 		return(false);
@@ -186,7 +188,7 @@ bool RO::RSM::readStream(std::istream& s) {
 	return(true);
 }
 
-bool RO::RSM::writeStream(std::ostream& s) const {
+bool RSM::writeStream(std::ostream& s) const {
 	if (!isValid() || !writeHeader(s)) {
 		return(false);
 	}
@@ -252,7 +254,7 @@ bool RO::RSM::writeStream(std::ostream& s) const {
 	return(!s.fail());
 }
 
-void RO::RSM::Dump(std::ostream& out, const std::string& prefix) const {
+void RSM::Dump(std::ostream& out, const std::string& prefix) const {
 	char buf[16];
 	unsigned int i;
 
@@ -294,37 +296,37 @@ void RO::RSM::Dump(std::ostream& out, const std::string& prefix) const {
 	}
 }
 
-int RO::RSM::getAnimLen() const {
+int RSM::getAnimLen() const {
 	return(m_animLen);
 }
 
-int RO::RSM::getShadeType() const {
+int RSM::getShadeType() const {
 	return(m_shadeType);
 }
 
-unsigned char RO::RSM::getAlpha() const {
+unsigned char RSM::getAlpha() const {
 	return(m_alpha);
 }
 
-const char* RO::RSM::getMainNode() const {
+const char* RSM::getMainNode() const {
 	return(m_mainNode);
 }
 
-unsigned int RO::RSM::getNodeCount() const {
+unsigned int RSM::getNodeCount() const {
 	return(m_nodes.size());
 }
 
-const RO::RSM::Node& RO::RSM::getNode(unsigned int idx) const {
+const RSM::Node& RSM::getNode(unsigned int idx) const {
 	if (idx < m_nodes.size())
 		return(m_nodes[idx]);
 	return(g_emptyNode);
 }
 
-const RO::RSM::Node& RO::RSM::operator[] (unsigned int idx) const {
+const RSM::Node& RSM::operator[] (unsigned int idx) const {
 	return(m_nodes[idx]);
 }
 
-const RO::RSM::Node* RO::RSM::findNode(const char* name) const {
+const RSM::Node* RSM::findNode(const char* name) const {
 	for (unsigned int i = 0; i < m_nodes.size(); i++) {
 		const Node& node = m_nodes[i];
 		if (strcmp(name, node.name) == 0)
@@ -333,28 +335,28 @@ const RO::RSM::Node* RO::RSM::findNode(const char* name) const {
 	return(NULL);
 }
 
-unsigned int RO::RSM::getTextureCount() const {
+unsigned int RSM::getTextureCount() const {
 	return(m_textures.size());
 }
 
-const char* RO::RSM::getTexture(unsigned int idx) const {
+const char* RSM::getTexture(unsigned int idx) const {
 	if (idx < m_textures.size())
 		return(m_textures[idx].name);
 	return("");
 }
 
-RO::RSM::Node::Node() {
+RSM::Node::Node() {
 }
 
-RO::RSM::Node::Node(const RO::RSM::Node& node) {
+RSM::Node::Node(const RSM::Node& node) {
 	*this = node;
 }
 
-RO::RSM::Node::~Node() {
+RSM::Node::~Node() {
 	reset();
 }
 
-RO::RSM::Node& RO::RSM::Node::operator = (const RO::RSM::Node& node) {
+RSM::Node& RSM::Node::operator = (const RSM::Node& node) {
 	memcpy((char*)&name, (char*)&node.name, sizeof(name));
 	memcpy((char*)&parentname, (char*)&node.parentname, sizeof(parentname));
 	textures = node.textures;
@@ -371,7 +373,7 @@ RO::RSM::Node& RO::RSM::Node::operator = (const RO::RSM::Node& node) {
 	return(*this);
 }
 
-void RO::RSM::Node::reset() {
+void RSM::Node::reset() {
 	memset(name, 0, sizeof(name));
 	memset(parentname, 0, sizeof(parentname));
     textures.clear();
@@ -387,7 +389,7 @@ void RO::RSM::Node::reset() {
     rotKeyframes.clear();
 }
 
-bool RO::RSM::Node::readStream(std::istream& s, const RO::s_obj_ver& ver) {
+bool RSM::Node::readStream(std::istream& s, const s_obj_ver& ver) {
 	reset();
 	s.read(name, 40);
 	s.read(parentname, 40);
@@ -493,7 +495,7 @@ bool RO::RSM::Node::readStream(std::istream& s, const RO::s_obj_ver& ver) {
 	return(!s.fail());
 }
 
-bool RO::RSM::Node::writeStream(std::ostream& s, const RO::s_obj_ver& ver) const {
+bool RSM::Node::writeStream(std::ostream& s, const s_obj_ver& ver) const {
 	s.write(name, 40);
 	s.write(parentname, 40);
 
@@ -572,7 +574,7 @@ bool RO::RSM::Node::writeStream(std::ostream& s, const RO::s_obj_ver& ver) const
 	return(!s.fail());
 }
 
-void RO::RSM::Node::Dump(std::ostream& out, const std::string& prefix) const {
+void RSM::Node::Dump(std::ostream& out, const std::string& prefix) const {
 	char buf[512];
 	unsigned int i;
 
@@ -648,7 +650,7 @@ void RO::RSM::Node::Dump(std::ostream& out, const std::string& prefix) const {
 
 #ifdef ROINT_USE_XML
 
-TiXmlElement* RO::RSM::GenerateXML(const std::string& name, bool utf) const {
+TiXmlElement* RSM::GenerateXML(const std::string& name, bool utf) const {
 	char buf[256];
 	unsigned int i, k, m;
 	TiXmlElement* root = new TiXmlElement("RSM");
@@ -840,3 +842,5 @@ TiXmlElement* RO::RSM::GenerateXML(const std::string& name, bool utf) const {
 }
 
 #endif
+
+} /* namespace ro */

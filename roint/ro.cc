@@ -26,24 +26,26 @@
 
 #include "ro/ro.h"
 
+namespace ro {
+
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 7
 #define VERSION_S ((VERSION_MAJOR << 8) | VERSION_MINOR)
 
-namespace RO {
-	char __strVer[32];
-}
+char __strVer[32];
 
-unsigned short RO::Version() {
+unsigned short Version() {
 	return(VERSION_S);
 }
 
-void RO::printVersion() {
+void printVersion() {
 	printf("0x%04x", Version());
 }
 
-const char* RO::strVersion() {
+const char* strVersion() {
 	//sprintf(__strVer, "%d", VERSION_S);
 	sprintf(__strVer, "%d.%d.svn", VERSION_MAJOR, VERSION_MINOR);
 	return(__strVer);
 }
+
+} /* namespace ro */

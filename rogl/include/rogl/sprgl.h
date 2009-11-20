@@ -26,20 +26,20 @@ protected:
 	sdle::Texture m_texture;
 	unsigned int m_palCount;
 	unsigned int m_rgbaCount;
-	RO::Arr<sprInfo> m_info;
+	ro::Arr<sprInfo> m_info;
 
 public:
 	SprGL();
 	SprGL(const SprGL&);
 	virtual ~SprGL();
 
-	bool open(const RO::SPR* spr, const RO::PAL* pal=NULL);
+	bool open(const ro::SPR* spr, const ro::PAL* pal=NULL);
 
 	void Draw() const;
 	void Draw(unsigned int idx, bool xmirror = false) const;
 	void Draw(unsigned int idx, float width, float height, bool xmirror = false, bool ymirror = false) const;
 	void Draw(unsigned int idx, struct Rect rect, bool xmirror = false, bool ymirror = false) const;
-	void Draw(const RO::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const;
+	void Draw(const ro::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const;
 
 	// Deletes all info
 	void release();

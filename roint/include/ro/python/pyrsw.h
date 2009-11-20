@@ -22,25 +22,27 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __PYRSW_H
-#define __PYRSW_H
+#ifndef __RO_PYTHON_PYRSW_H
+#define __RO_PYTHON_PYRSW_H
 
 #include "../types/rsw.h"
 
-namespace RO {
+namespace ro {
 extern "C" {
-	ROINT_DLLAPI RSW* new_RSW();
-	ROINT_DLLAPI void del_RSW(RSW*);
 
-	ROINT_DLLAPI bool read_RSW(RSW*, const char*);
-	ROINT_DLLAPI void dump_RSW(const RSW*, const char*);
-	ROINT_DLLAPI bool write_RSW(const RSW*, const char*);
+ROINT_DLLAPI RSW* new_RSW();
+ROINT_DLLAPI void del_RSW(RSW*);
 
-	ROINT_DLLAPI const char* get_RSW_ini(RSW*);
-	ROINT_DLLAPI const char* get_RSW_gnd(RSW*);
-	ROINT_DLLAPI const char* get_RSW_gat(RSW*);
-	ROINT_DLLAPI const char* get_RSW_scr(RSW*);
-} // Extern "C"
-} // namespace RO
+ROINT_DLLAPI bool read_RSW(RSW*, const char*);
+ROINT_DLLAPI void dump_RSW(const RSW*, const char*);
+ROINT_DLLAPI bool write_RSW(const RSW*, const char*);
 
-#endif /* __PYRSW_H */
+ROINT_DLLAPI const char* get_RSW_ini(RSW*);
+ROINT_DLLAPI const char* get_RSW_gnd(RSW*);
+ROINT_DLLAPI const char* get_RSW_gat(RSW*);
+ROINT_DLLAPI const char* get_RSW_scr(RSW*);
+
+} /* extern "C" */
+} /* namespace ro */
+
+#endif /* __RO_PYTHON_PYRSW_H */

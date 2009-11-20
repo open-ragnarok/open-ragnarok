@@ -27,8 +27,10 @@
 #include "ro/types/gnd.h"
 #include "ro/ro.h"
 
+namespace ro {
+
 // TODO use proper default values
-static RO::GND::Lightmap g_emptyLightmap = {
+static GND::Lightmap g_emptyLightmap = {
 	{
 		{ 0,0,0,0,0,0,0,0 },
 		{ 0,0,0,0,0,0,0,0 },
@@ -49,21 +51,21 @@ static RO::GND::Lightmap g_emptyLightmap = {
 		{ {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0} }
 	}
 };
-static RO::GND::Surface g_emptySurface = {
+static GND::Surface g_emptySurface = {
 	0,0,0,0,
 	0,0,0,0,
 	-1,
 	0xFFFF,
 	0,0,0,0
 };
-static RO::GND::Cell g_emptyCell = {
+static GND::Cell g_emptyCell = {
 	0,0,0,0,
 	-1,
 	-1,
 	-1
 };
 
-RO::GND::GND() {
+GND::GND() {
 	m_width = 0;
 	m_height = 0;
 	m_zoom = 10.0f;
@@ -72,11 +74,11 @@ RO::GND::GND() {
 	m_textures = NULL;
 }
 
-RO::GND::~GND() {
+GND::~GND() {
 	reset();
 }
 
-void RO::GND::reset() {
+void GND::reset() {
 	m_valid = false;
 	m_width = 0;
 	m_height = 0;
@@ -92,7 +94,7 @@ void RO::GND::reset() {
 	m_cells.clear();
 }
 
-bool RO::GND::readStream(std::istream& s) {
+bool GND::readStream(std::istream& s) {
 	reset();
 	if (!readHeader(s)) {
 		return(false);
@@ -203,7 +205,7 @@ bool RO::GND::readStream(std::istream& s) {
 	return(true);
 }
 
-bool RO::GND::writeStream(std::ostream& s) const {
+bool GND::writeStream(std::ostream& s) const {
 	if (!isValid() || !writeHeader(s)) {
 		return(false);
 	}
@@ -252,71 +254,71 @@ bool RO::GND::writeStream(std::ostream& s) const {
 	return(!s.fail());
 }
 
-unsigned int RO::GND::getWidth() const {
+unsigned int GND::getWidth() const {
 	return(m_width);
 }
 
-unsigned int RO::GND::getHeight() const {
+unsigned int GND::getHeight() const {
 	return(m_height);
 }
 
-float RO::GND::getZoom() const {
+float GND::getZoom() const {
 	return(m_zoom);
 }
 
-unsigned int RO::GND::getTextureCount() const {
+unsigned int GND::getTextureCount() const {
 	return(m_nTextures);
 }
 
-const char* RO::GND::getTexture(unsigned int idx) const {
+const char* GND::getTexture(unsigned int idx) const {
 	if (idx < m_nTextures)
 		return(&m_textures[idx * m_textureSize]);
 	return("");
 }
 
-unsigned int RO::GND::getSurfaceCount() const {
+unsigned int GND::getSurfaceCount() const {
 	return(m_surfaces.size());
 }
 
-const RO::GND::Surface& RO::GND::getSurface(unsigned int idx) const {
+const GND::Surface& GND::getSurface(unsigned int idx) const {
 	if (idx < m_surfaces.size())
 		return(m_surfaces[idx]);
 	return(g_emptySurface);
 }
 
-unsigned int RO::GND::getLightmapCount() const {
+unsigned int GND::getLightmapCount() const {
 	return(m_lightmaps.size());
 }
 
-const RO::GND::Lightmap& RO::GND::getLightmap(unsigned int idx) const {
+const GND::Lightmap& GND::getLightmap(unsigned int idx) const {
 	if (idx < m_lightmaps.size())
 		return(m_lightmaps[idx]);
 	return(g_emptyLightmap);
 }
 
-unsigned int RO::GND::getCellCount() const {
+unsigned int GND::getCellCount() const {
 	return(m_cells.size());
 }
 
-const RO::GND::Cell& RO::GND::operator [] (unsigned int idx) const {
+const GND::Cell& GND::operator [] (unsigned int idx) const {
 	if (idx < m_cells.size())
 		return(m_cells[idx]);
 	return(g_emptyCell);
 }
 
-const RO::GND::Cell& RO::GND::getCell(unsigned int idx) const {
+const GND::Cell& GND::getCell(unsigned int idx) const {
 	if (idx < m_cells.size())
 		return(m_cells[idx]);
 	return(g_emptyCell);
 }
 
-const RO::GND::Cell& RO::GND::getCell(unsigned int cellx, unsigned int celly) const {
+const GND::Cell& GND::getCell(unsigned int cellx, unsigned int celly) const {
 	if (cellx < m_width && celly < m_height)
 		return(m_cells[cellx + celly * m_width]);
 	return(g_emptyCell);
 }
 
-void RO::GND::Dump(std::ostream& o) const {
+void GND::Dump(std::ostream& o) const {
 	char buf[512];
 	unsigned int i;
 	o << "Magic: " << magic[0] << magic[1] << magic[2] << magic[3] << std::endl;
@@ -386,7 +388,7 @@ void RO::GND::Dump(std::ostream& o) const {
 }
 
 #ifdef ROINT_USE_XML
-TiXmlElement* RO::GND::GenerateXML(const std::string& name, bool utf) const {
+TiXmlElement* GND::GenerateXML(const std::string& name, bool utf) const {
 	TiXmlElement* root = new TiXmlElement("GND");
 	char buf[512];
 	unsigned int i;
@@ -479,3 +481,5 @@ TiXmlElement* RO::GND::GenerateXML(const std::string& name, bool utf) const {
 	return(root);
 }
 #endif
+
+} /* namespace ro */

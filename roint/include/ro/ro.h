@@ -62,13 +62,15 @@
 /** \namespace RO Main namespace for the Interface.
  * 
  */
-namespace RO {
+namespace ro {
 extern "C" {
-	ROINT_DLLAPI unsigned short Version();
-	ROINT_DLLAPI void printVersion();
-	ROINT_DLLAPI const char* strVersion();
-}
-}
+
+ROINT_DLLAPI unsigned short Version();
+ROINT_DLLAPI void printVersion();
+ROINT_DLLAPI const char* strVersion();
+
+} /* extern "C" */
+} /* namespace ro */
 
 #include "ro_strings.h"
 #include "constants.h"

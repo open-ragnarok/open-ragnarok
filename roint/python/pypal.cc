@@ -27,30 +27,30 @@
 #include "ro/python/pypal.h"
 #include <fstream>
 
-namespace RO {
+namespace ro {
 
-	PAL* PAL_new() {
-		return(new PAL());
-	}
-
-	void PAL_del(PAL* pal) {
-		delete(pal);
-	}
-
-	void PAL_copy(PAL* pal, const PAL* other) {
-		*pal = *other;
-	}
-
-	unsigned char PAL_read(PAL* pal, const char* fn) {
-		return(pal->read(fn));
-	}
-
-	unsigned char PAL_isValid(const PAL* pal) {
-		return(pal->isValid());
-	}
-
-	const PAL::Color* PAL_getColor(const PAL* pal, unsigned char idx) {
-		return(&pal->getColor(idx));
-	}
-
+PAL* PAL_new() {
+	return(new PAL());
 }
+
+void PAL_del(PAL* pal) {
+	delete(pal);
+}
+
+void PAL_copy(PAL* pal, const PAL* other) {
+	*pal = *other;
+}
+
+unsigned char PAL_read(PAL* pal, const char* fn) {
+	return(pal->read(fn));
+}
+
+unsigned char PAL_isValid(const PAL* pal) {
+	return(pal->isValid());
+}
+
+const PAL::Color* PAL_getColor(const PAL* pal, unsigned char idx) {
+	return(&pal->getColor(idx));
+}
+
+} /* namespace ro */

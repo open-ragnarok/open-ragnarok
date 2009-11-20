@@ -30,7 +30,8 @@
 #include <sstream>
 #include <zlib.h>
 
-namespace RO {
+namespace ro {
+
 namespace DES {
 // Borrowed from eAthena
 	
@@ -180,21 +181,19 @@ void decode(unsigned char* buf, size_t len, int cycle) {
 	}
 }
 
+} /* namespace DES */
 
-}
-}
-
-RO::GRF::GRF() {
+GRF::GRF() {
 	m_opened = false;
 	memset((char*)&m_header, 0, sizeof(Header));
 }
 
-RO::GRF::~GRF() {
+GRF::~GRF() {
 	if (m_opened)
 		close();
 }
 
-bool RO::GRF::open(const std::string& fn) {
+bool GRF::open(const std::string& fn) {
 	if (m_opened) {
 		std::cerr << "Can't open GRF file. Object already in use. Close it first." << std::endl;
 		return(false);
@@ -253,7 +252,7 @@ bool RO::GRF::open(const std::string& fn) {
 	return(true);
 }
 
-void RO::GRF::close() {
+void GRF::close() {
 	if (!m_opened) {
 		_log(ROINT__ERROR, "GRF already closed");
 		return;
@@ -268,11 +267,11 @@ void RO::GRF::close() {
 	m_opened = false;
 }
 
-bool RO::GRF::isOpen() const {
+bool GRF::isOpen() const {
 	return(m_opened);
 }
 
-bool RO::GRF::write(const std::string& s, std::ostream& out) {
+bool GRF::write(const std::string& s, std::ostream& out) {
 	if (!m_opened)
 		return(false);
 
@@ -330,7 +329,7 @@ bool RO::GRF::write(const std::string& s, std::ostream& out) {
 	return(false);
 }
 
-bool RO::GRF::save(const std::string& s, const std::string& filename) {
+bool GRF::save(const std::string& s, const std::string& filename) {
 	if (!m_opened)
 		return(false);
 
@@ -340,7 +339,7 @@ bool RO::GRF::save(const std::string& s, const std::string& filename) {
 	return(r);
 }
 
-std::string RO::GRF::getFilename(const unsigned int& i) const {
+std::string GRF::getFilename(const unsigned int& i) const {
 	if (!m_opened)
 		return("");
 
@@ -350,29 +349,29 @@ std::string RO::GRF::getFilename(const unsigned int& i) const {
 	return(m_items[i].filename);
 }
 
-unsigned int RO::GRF::getCount() const {
+unsigned int GRF::getCount() const {
 	if (!m_opened)
 		return(0);
 
 	return(m_filecount);
 }
 
-bool RO::GRF::fileExists(const std::string& fn) const {
+bool GRF::fileExists(const std::string& fn) const {
 	for (int i = 0; i < m_filecount; i++)
 		if (!strcmp(m_items[i].filename, fn.c_str()))
 			return(true);
 	return(false);
 }
 
-const RO::GRF::FileTableItem& RO::GRF::operator[] (const unsigned int& i) const {
+const GRF::FileTableItem& GRF::operator[] (const unsigned int& i) const {
 	return(m_items[i]);
 }
 
-const RO::GRF::FileTableItem& RO::GRF::getItem(const unsigned int& i) const {
+const GRF::FileTableItem& GRF::getItem(const unsigned int& i) const {
 	return(m_items[i]);
 }
 
-RO::GRF::FileTableItem::FileTableItem() {
+GRF::FileTableItem::FileTableItem() {
 	filename = NULL;
 	compressedLength = 0;
 	compressedLengthAligned = 0;
@@ -382,7 +381,7 @@ RO::GRF::FileTableItem::FileTableItem() {
 	cycle = 0;
 }
 
-RO::GRF::FileTableItem::FileTableItem(const FileTableItem& f) {
+GRF::FileTableItem::FileTableItem(const FileTableItem& f) {
 	if (f.filename != NULL) {
 		filename = new char[strlen(f.filename) + 1];
 		strcpy(filename, f.filename);
@@ -398,12 +397,12 @@ RO::GRF::FileTableItem::FileTableItem(const FileTableItem& f) {
 	cycle = f.cycle;
 }
 
-RO::GRF::FileTableItem::~FileTableItem() {
+GRF::FileTableItem::~FileTableItem() {
 	if (filename != NULL)
 		delete[] filename;
 }
 
-bool RO::GRF::FileTableItem::readStream(std::istream& ss) {
+bool GRF::FileTableItem::readStream(std::istream& ss) {
 	char buf[256];
 	int idx;
 	char c;
@@ -438,7 +437,7 @@ bool RO::GRF::FileTableItem::readStream(std::istream& ss) {
 	return(true);
 }
 
-RO::GRF::FileTableItem& RO::GRF::FileTableItem::operator = (const FileTableItem& f) {
+GRF::FileTableItem& GRF::FileTableItem::operator = (const FileTableItem& f) {
 	if (filename != NULL)
 		delete[] filename;
 
@@ -460,3 +459,5 @@ RO::GRF::FileTableItem& RO::GRF::FileTableItem::operator = (const FileTableItem&
 
 	return(*this);
 }
+
+} /* namespace ro */

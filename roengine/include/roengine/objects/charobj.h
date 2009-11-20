@@ -9,8 +9,8 @@ protected:
 	rogl::ActGL m_bodyact;
 	rogl::ActGL m_headact;
 
-	RO::CJob m_job;
-	RO::CSex m_sex;
+	ro::CJob m_job;
+	ro::CSex m_sex;
 	unsigned short m_hair;
 
 public:
@@ -21,7 +21,7 @@ public:
 
 	virtual bool valid() const;
 
-	bool open(CacheManager& cache, RO::CJob job, RO::CSex sex = RO::S_MALE);
+	bool open(CacheManager& cache, ro::CJob job, ro::CSex sex = ro::S_MALE);
 };
 
 #endif /* __ROENGINE_CHAROBJ_H */

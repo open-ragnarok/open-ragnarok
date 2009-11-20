@@ -42,4 +42,4 @@ void SetupLogs() {
 #endif
 }
 
-}
+} /* namespace ro */

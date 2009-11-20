@@ -27,22 +27,24 @@
 #include "ro/types/gat.h"
 #include "ro/ro.h"
 
-static RO::GAT::Cell g_emptyCell = {0,0,0,0,1};
+namespace ro {
 
-RO::GAT::GAT() {
+static GAT::Cell g_emptyCell = {0,0,0,0,1};
+
+GAT::GAT() {
 }
 
-RO::GAT::~GAT() {
+GAT::~GAT() {
 	reset();
 }
 
-void RO::GAT::reset(void) {
+void GAT::reset(void) {
 	m_valid = false;
 	m_width = m_height = 0;
 	m_cells.clear();
 }
 
-bool RO::GAT::readStream(std::istream& s) {
+bool GAT::readStream(std::istream& s) {
 	reset();
 	if (!readHeader(s)) {
 		return(false);
@@ -78,7 +80,7 @@ bool RO::GAT::readStream(std::istream& s) {
 	return(true);
 }
 
-bool RO::GAT::writeStream(std::ostream& s) const {
+bool GAT::writeStream(std::ostream& s) const {
 	if (!isValid() || !writeHeader(s))
 		return(false);
 
@@ -91,35 +93,35 @@ bool RO::GAT::writeStream(std::ostream& s) const {
 	return(!s.fail());
 }
 
-unsigned int RO::GAT::getWidth() const {
+unsigned int GAT::getWidth() const {
 	return(m_width);
 }
 
-unsigned int RO::GAT::getHeight() const {
+unsigned int GAT::getHeight() const {
 	return(m_height);
 }
 
-unsigned int RO::GAT::getCellCount(void) const {
+unsigned int GAT::getCellCount(void) const {
 	return(m_cells.size());
 }
 
-const RO::GAT::Cell& RO::GAT::operator[] (unsigned int idx) const {
+const GAT::Cell& GAT::operator[] (unsigned int idx) const {
 	return(m_cells[idx]);
 }
 
-const RO::GAT::Cell& RO::GAT::getCell(unsigned int idx) const {
+const GAT::Cell& GAT::getCell(unsigned int idx) const {
 	if (idx < m_cells.size())
 		return(m_cells[idx]);
 	return(g_emptyCell);
 }
 
-const RO::GAT::Cell& RO::GAT::getCell(unsigned int cellx, unsigned int celly) const {
+const GAT::Cell& GAT::getCell(unsigned int cellx, unsigned int celly) const {
 	if (cellx < m_width && celly < m_height)
 		return(m_cells[cellx + celly * m_width]);
 	return(g_emptyCell);
 }
 
-float RO::GAT::getAltitude(float cellx, float celly) const {
+float GAT::getAltitude(float cellx, float celly) const {
 	cellx += 0.5f;
 	celly += 0.5f;
 	if (cellx >= 0.0f && cellx < m_width && celly >= 0.0f && celly < m_height) {
@@ -135,7 +137,7 @@ float RO::GAT::getAltitude(float cellx, float celly) const {
 	return(0.0f);
 }
 
-float RO::GAT::getAltitude(unsigned int cellx, unsigned int celly) const {
+float GAT::getAltitude(unsigned int cellx, unsigned int celly) const {
 	if (cellx < m_width && celly < m_height) {
 		const Cell& cell = m_cells[cellx + celly * m_width];
 		return((cell.height[0] + cell.height[1] + cell.height[2] + cell.height[3]) * 0.25f);
@@ -143,8 +145,10 @@ float RO::GAT::getAltitude(unsigned int cellx, unsigned int celly) const {
 	return(0.0f);
 }
 
-int RO::GAT::getType(unsigned int cellx, unsigned int celly) const {
+int GAT::getType(unsigned int cellx, unsigned int celly) const {
 	if (cellx < m_width && celly < m_height)
 		return(m_cells[cellx + celly * m_width].type);
 	return(1);// non-walkable
 }
+
+} /* namespace ro */

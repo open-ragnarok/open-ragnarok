@@ -77,8 +77,8 @@ void DesktopCreate::readObjects() {
 	char novice_body[256];
 	char novice_head[256];
 	int accsex = m_ro->GetAccountSex();
-	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::sex[accsex], RO::EUC::novice, RO::EUC::sex[accsex]);
-	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[accsex], m_headnum, RO::EUC::sex[accsex]);
+	sprintf(novice_body, "sprite\\%s\\%s\\%s\\%s_%s", ro::EUC::humans, ro::EUC::body, ro::EUC::sex[accsex], ro::EUC::novice, ro::EUC::sex[accsex]);
+	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", ro::EUC::humans, ro::EUC::head, ro::EUC::sex[accsex], m_headnum, ro::EUC::sex[accsex]);
 	printf("Novice body: %s\n", novice_body);
 	printf("Novice head: %s\n", novice_head);
 
@@ -87,7 +87,7 @@ void DesktopCreate::readObjects() {
 
 	if (!head.Load(novice_head, *m_ro)) {
 		m_headnum = 2;
-		sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[accsex], m_headnum,RO::EUC::sex[accsex]);
+		sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", ro::EUC::humans, ro::EUC::head, ro::EUC::sex[accsex], m_headnum,ro::EUC::sex[accsex]);
 		head.Load(novice_head, *m_ro);
 	}
 }
@@ -246,7 +246,7 @@ void DesktopCreate::drawChar() {
 
 	while (elapsed > 100) {
 		m_act = m_action * 8 + m_dir;
-		const RO::ACT::Action& cact = obj->getAction(m_act);
+		const ro::ACT::Action& cact = obj->getAction(m_act);
 		elapsed -= 100;
 		m_pat++;
 		if (m_pat >= cact.getMotionCount()) {
@@ -258,8 +258,8 @@ void DesktopCreate::drawChar() {
 	}
 
 	m_act = m_action * 8 + m_dir;
-	const RO::ACT::Motion& cmot = obj->getMotion(m_act, m_pat);
-	const RO::ACT::Motion& cmot2 = head->getMotion(m_act, m_pat);
+	const ro::ACT::Motion& cmot = obj->getMotion(m_act, m_pat);
+	const ro::ACT::Motion& cmot2 = head->getMotion(m_act, m_pat);
 
 	drawAct(x, y, obj, m_pat);
 
@@ -290,7 +290,7 @@ void DesktopCreate::drawChar() {
 }
 
 void DesktopCreate::drawAct(float x, float y, GuiAct& o, int pat, bool ext) {
-	const RO::ACT::Motion& cmot = o->getMotion(m_act, pat);
+	const ro::ACT::Motion& cmot = o->getMotion(m_act, pat);
 	
 	unsigned int i;
 
@@ -301,7 +301,7 @@ void DesktopCreate::drawAct(float x, float y, GuiAct& o, int pat, bool ext) {
 void DesktopCreate::drawSpr(float x, float y, GuiAct& o, int pat, int spr, bool ext) {
 	//float w, h;
 	//float u[2], v[2];
-	const RO::ACT::Motion& cmot = o->getMotion(m_act, pat);
+	const ro::ACT::Motion& cmot = o->getMotion(m_act, pat);
 	//sdle::Texture tp;
 
 	o.getSpr().Draw(cmot, spr, x, y, false, ext);
@@ -309,7 +309,7 @@ void DesktopCreate::drawSpr(float x, float y, GuiAct& o, int pat, int spr, bool 
 	/*
 	if (cpat[spr].sprNo < 0)
 		return;
-	const RO::ACT::Spr& cspr = cpat[cpat[spr].sprNo];
+	const ro::ACT::Spr& cspr = cpat[cpat[spr].sprNo];
 	tp = o.getTextures()[cpat[spr].sprNo];
 	if (!tp.Valid())
 		return;

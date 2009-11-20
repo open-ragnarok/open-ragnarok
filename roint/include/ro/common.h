@@ -27,18 +27,20 @@
 
 #include "constants.h"
 
-namespace RO {
-	/**
-	 * Converts a XY direction vector to a RO::CDir value
-	 * @param x the X coordinate
-	 * @param y the Y coordinate
-	 * @return the equivalent CDir value
-	 */
-	CDir dir2Cdir(float x, float y);
+namespace ro {
 
-	CDir nextDirection(CDir);
+/**
+ * Converts a XY direction vector to a ro::CDir value
+ * @param x the X coordinate
+ * @param y the Y coordinate
+ * @return the equivalent CDir value
+ */
+CDir dir2Cdir(float x, float y);
 
-	CDir prevDirection(CDir);
-}
+CDir nextDirection(CDir);
+
+CDir prevDirection(CDir);
+
+} /* namespace ro */
 
 #endif /* __RO_COMMON_H */

@@ -8,8 +8,8 @@
 #include "ro/types/gnd.h"
 
 namespace rogl {
-	ROGL_DLLAPI bool draw(const RO::GND*, const unsigned int* textures = NULL);
-	ROGL_DLLAPI bool draw(const RO::RSW*, const RO::GND*, const unsigned int* textures = NULL);
+	ROGL_DLLAPI bool draw(const ro::GND*, const unsigned int* textures = NULL);
+	ROGL_DLLAPI bool draw(const ro::RSW*, const ro::GND*, const unsigned int* textures = NULL);
 }
 
 #endif /* __RSMGL_H */

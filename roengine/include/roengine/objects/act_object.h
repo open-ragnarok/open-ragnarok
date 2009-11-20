@@ -10,16 +10,16 @@ protected:
 	unsigned int curframe;
 	int m_time;
 	int curaction;
-	RO::CDir direction;
+	ro::CDir direction;
 
 	void Billboard();
 	void Window(float x, float y, const sdle::Texture& tex, bool mirrorX = false, bool mirrorY = false);
-	virtual void DrawAct(const RO::ACT::Motion& mot, sdle::Texture& t);
+	virtual void DrawAct(const ro::ACT::Motion& mot, sdle::Texture& t);
 
 public:
 	ActObject();
 	ActObject(const ActObject&);
-	ActObject(const RO::ACT*, const rogl::SprGL&);
+	ActObject(const ro::ACT*, const rogl::SprGL&);
 	virtual ~ActObject();
 
 	virtual void Draw();

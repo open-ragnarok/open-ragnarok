@@ -18,9 +18,9 @@ protected:
 	/** The size of the tile (default: 10.0f) */
 	static float m_tilesize;
 
-	const RO::RSW* rsw;
-	const RO::GND* gnd;
-	const RO::GAT* gat;
+	const ro::RSW* rsw;
+	const ro::GND* gnd;
+	const ro::GAT* gat;
 
 	/** Textures used by the ground */
 	TextureCache textures;
@@ -29,7 +29,7 @@ protected:
 	TextureCache water_tex;
 
 	/** Draws a GND surface */
-	void DrawSurface(const RO::GND::Surface& surface, const float* vertices);
+	void DrawSurface(const ro::GND::Surface& surface, const float* vertices);
 
 	/** Draws the Ground */
 	void DrawGND();
@@ -62,7 +62,7 @@ protected:
 	CacheManager& m_cache;
 
 public:
-	RswObject(const RO::RSW*, CacheManager&);
+	RswObject(const ro::RSW*, CacheManager&);
 	virtual ~RswObject();
 
 	/**
@@ -93,12 +93,12 @@ public:
 	/**
 	 * Retrieves the RSW file used to draw this map
 	 */
-	const RO::RSW* getRSW() const;
+	const ro::RSW* getRSW() const;
 
 	/**
 	 * Retrieves the GND file used to draw this map
 	 */
-	const RO::GND* getGND() const;
+	const ro::GND* getGND() const;
 
 	bool valid() const;
 

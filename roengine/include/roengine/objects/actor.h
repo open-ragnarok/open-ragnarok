@@ -47,7 +47,7 @@ protected:
 	bool m_visible;
 
 	/** The direction we are facing */
-	RO::CDir m_dir;
+	ro::CDir m_dir;
 
 	Type m_type;
 
@@ -71,7 +71,7 @@ public:
 	float getDestinationX() const;
 	float getDestinationY() const;
 
-	void setDirection(RO::CDir);
+	void setDirection(ro::CDir);
 
 	/**
 	 * Setup the current position.

@@ -27,16 +27,18 @@
 
 #include "../types/pal.h"
 
-namespace RO {
+namespace ro {
 extern "C" {
-	ROINT_DLLAPI PAL* PAL_new();
-	ROINT_DLLAPI void PAL_del(PAL* pal);
-	ROINT_DLLAPI void PAL_copy(PAL* pal, const PAL* other);
 
-	ROINT_DLLAPI unsigned char PAL_read(PAL* pal, const char* fn);
-	ROINT_DLLAPI unsigned char PAL_isValid(const PAL* pal);
-	ROINT_DLLAPI const PAL::Color* PAL_getColor(const PAL* pal, unsigned char idx);
-}
-}
+ROINT_DLLAPI PAL* PAL_new();
+ROINT_DLLAPI void PAL_del(PAL* pal);
+ROINT_DLLAPI void PAL_copy(PAL* pal, const PAL* other);
+
+ROINT_DLLAPI unsigned char PAL_read(PAL* pal, const char* fn);
+ROINT_DLLAPI unsigned char PAL_isValid(const PAL* pal);
+ROINT_DLLAPI const PAL::Color* PAL_getColor(const PAL* pal, unsigned char idx);
+
+} /* extern "C" */
+} /* namespace ro */
 
 #endif /* __RO_PYTHON_PYPAL_H */

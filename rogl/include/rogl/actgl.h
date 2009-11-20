@@ -19,7 +19,7 @@ namespace rogl {
  */
 class ROGL_DLLAPI ActGL : public GLObject {
 protected:
-	RO::ACT *act;
+	ro::ACT *act;
 	SprGL spr;
 
 	/** External entity */
@@ -56,8 +56,8 @@ public:
 	void setExt(ActGL*);
 	ActGL* getExt();
 
-	void setAct(RO::ACT*);
-	RO::ACT* getAct();
+	void setAct(ro::ACT*);
+	ro::ACT* getAct();
 
 	void setSpr(const SprGL&);
 	SprGL& getSpr();
@@ -70,7 +70,7 @@ public:
 	 * 
 	 * @param delay milliseconds passed since last Draw() was called (to calculate animations)
 	 */
-	void Draw(unsigned long delay, RO::CDir direction = RO::DIR_N);
+	void Draw(unsigned long delay, ro::CDir direction = ro::DIR_N);
 
 	void Draw() const;
 };

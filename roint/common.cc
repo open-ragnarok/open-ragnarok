@@ -28,7 +28,7 @@
 
 #include <math.h>
 
-namespace RO {
+namespace ro {
 
 CDir dir2Cdir(float x, float y) {
 	float size = sqrt(x*x + y*y);
@@ -43,23 +43,23 @@ CDir dir2Cdir(float x, float y) {
 		angle = 360 - angle;
 
 	if (angle <= 22.5)
-		return(RO::DIR_N);
+		return(DIR_N);
 	else if (angle <= 67.5)
-		return(RO::DIR_NE);
+		return(DIR_NE);
 	else if (angle <= 112.5)
-		return(RO::DIR_E);
+		return(DIR_E);
 	else if (angle <= 157.5)
-		return(RO::DIR_SE);
+		return(DIR_SE);
 	else if (angle <= 202.5)
-		return(RO::DIR_S);
+		return(DIR_S);
 	else if (angle <= 247.5)
-		return(RO::DIR_SW);
+		return(DIR_SW);
 	else if (angle <= 292.5)
-		return(RO::DIR_W);
+		return(DIR_W);
 	else if (angle <= 337.5)
-		return(RO::DIR_NW);
+		return(DIR_NW);
 
-	return(RO::DIR_N);
+	return(DIR_N);
 }
 
 CDir nextDirection(CDir dir) {
@@ -108,4 +108,4 @@ CDir prevDirection(CDir dir) {
 	return(DIR_S);
 }
 
-}
+} /* namespace ro */

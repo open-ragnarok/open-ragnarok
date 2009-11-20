@@ -22,16 +22,18 @@
     http://www.gnu.org/copyleft/lesser.txt.
     ------------------------------------------------------------------------------------
 */
-#ifndef __PYSTRINGS_H
-#define __PYSTRINGS_H
+#ifndef __RO_PYTHON_PYSTRINGS_H
+#define __RO_PYTHON_PYSTRINGS_H
 
 #include "../ro_strings.h"
 
-namespace RO {
+namespace ro {
 extern "C" {
-	ROINT_DLLAPI const char* euc2utf8(const char* euc);
-	ROINT_DLLAPI const char* utf82euc(const char* utf);
-}
-}
 
-#endif /* __PYSTRINGS_H */
+ROINT_DLLAPI const char* euc2utf8(const char* euc);
+ROINT_DLLAPI const char* utf82euc(const char* utf);
+
+} /* extern "C" */
+} /* namespace ro */
+
+#endif /* __RO_PYTHON_PYSTRINGS_H */

@@ -78,7 +78,7 @@ protected:
 	Camera cam;
 
 	/** The Direction that the camera is pointing */
-	RO::CDir m_cameradir;
+	ro::CDir m_cameradir;
 
 	int mousex;
 	int mousey;

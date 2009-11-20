@@ -111,7 +111,7 @@ void OpenRO::AfterDraw() {
 			strcat(minimap_fn, "bmp");
 
 			aux = "texture\\";
-			aux += RO::EUC::user_interface;
+			aux += ro::EUC::user_interface;
 			aux += "\\map\\";
 			aux += minimap_fn;
 			strcpy(minimap_fn, aux.c_str());
@@ -434,7 +434,7 @@ void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
 		// Actor is a player
 		CharObj *obj = new CharObj();
 		actor = obj;
-		obj->open(*this, (RO::CJob)info->type, (RO::CSex)info->sex);
+		obj->open(*this, (ro::CJob)info->type, (ro::CSex)info->sex);
 	}
 	else if (m_homunculus_names.find(info->type) != m_homunculus_names.end()) {
 		// Homunculus
@@ -472,7 +472,7 @@ void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
 
 	actor->typeID = info->type;
 	actor->setMap(m_map);
-	actor->setDirection((RO::CDir)info->dir);
+	actor->setDirection((ro::CDir)info->dir);
 	actor->id = info->id;
 	actor->setPos((float)info->coord_x, (float)info->coord_y);
 
@@ -669,7 +669,7 @@ HNDL_IMPL(DisplayStat) {
 	unsigned int base = pkt->getBase();
 	unsigned int bonus = pkt->getBonus();
 
-	_log(OPENRO__TRACE, "Stat %s: %d + %d", RO::dnames[type], base, bonus);
+	_log(OPENRO__TRACE, "Stat %s: %d + %d", ro::dnames[type], base, bonus);
 }
 
 HNDL_IMPL(UpdateStatus) {
@@ -699,7 +699,7 @@ HNDL_IMPL(UpdateStatus) {
 			dskIngame->setMaxWeight((float)value/10.0f);
 			break;
 		default:
-			_log(OPENRO__TRACE, "Unhandled update status \"%s\" (%d), with value %d", RO::dnames[type], type, value);
+			_log(OPENRO__TRACE, "Unhandled update status \"%s\" (%d), with value %d", ro::dnames[type], type, value);
 	}
 }
 
@@ -867,7 +867,7 @@ HNDL_IMPL(MapLoginSuccess) {
 
 	m_maploaded = false;
 	
-	me.open(*this, RO::J_ALCHEMIST, RO::S_MALE);
+	me.open(*this, ro::J_ALCHEMIST, ro::S_MALE);
 	me.setPos(pos_x, pos_y);
 
 	m_tickoffset = SDL_GetTicks() - pkt->getServerTick();

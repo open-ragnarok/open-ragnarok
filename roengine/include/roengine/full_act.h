@@ -8,23 +8,23 @@
 
 class FullAct {
 protected:
-	const RO::ACT* m_act;
+	const ro::ACT* m_act;
 	rogl::SprGL m_spr;
 
 public:
 	FullAct();
 	FullAct(const FullAct&);
-	FullAct(const RO::ACT*, const rogl::SprGL&);
+	FullAct(const ro::ACT*, const rogl::SprGL&);
 
 	FullAct& operator = (const FullAct&);
 
 	bool Load(const std::string& act, CacheManager& cache);
 	void Clear();
 
-	const RO::ACT* getAct() const;
+	const ro::ACT* getAct() const;
 	const sdle::Texture& getTextures() const;
 	const rogl::SprGL& getSpr() const;
-	const RO::ACT* operator -> () const;
+	const ro::ACT* operator -> () const;
 };
 
 void DrawFullAct(const FullAct&, float x, float y, int act_no = 0, int pat_no = 0, bool ext = false, const FullAct* parent = NULL, bool v_mirror = false, bool cross = false);

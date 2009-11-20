@@ -28,7 +28,7 @@
 #include <fstream>
 #include <sstream>
 
-namespace RO {
+namespace ro {
 
 #pragma pack(push,1)
 struct bmpHeader {
@@ -120,7 +120,7 @@ bool SPR::readStream(std::istream& s) {
 	}
 
 	if (m_version.sver >= 0x101) {
-		m_pal = new RO::PAL();
+		m_pal = new PAL();
 		m_pal->readStream(s);
 	}
 	if (s.fail()) {
@@ -256,7 +256,7 @@ void SPR::reset() {
 	}
 }
 
-const RO::SPR::Image* RO::SPR::getImage(unsigned int idx, ImageType type) const {
+const SPR::Image* SPR::getImage(unsigned int idx, ImageType type) const {
 	switch (type) {
 		case PalType:
 			if (idx < m_imagesPal.size())
@@ -270,7 +270,7 @@ const RO::SPR::Image* RO::SPR::getImage(unsigned int idx, ImageType type) const 
 	return(NULL);
 }
 
-const RO::SPR::Image* RO::SPR::getImage(unsigned int idx) const {
+const SPR::Image* SPR::getImage(unsigned int idx) const {
 	if (idx < m_imagesPal.size())
 		return(&m_imagesPal[idx]);
 	idx -= m_imagesPal.size();
@@ -279,7 +279,7 @@ const RO::SPR::Image* RO::SPR::getImage(unsigned int idx) const {
 	return(NULL);
 }
 
-unsigned int RO::SPR::getIndex(unsigned int idx, ImageType type) const {
+unsigned int SPR::getIndex(unsigned int idx, ImageType type) const {
 	switch (type) {
 		case PalType:
 			if (idx < m_imagesPal.size())
@@ -293,11 +293,11 @@ unsigned int RO::SPR::getIndex(unsigned int idx, ImageType type) const {
 	return((unsigned int)-1);
 }
 
-const PAL* RO::SPR::getPal() const {
+const PAL* SPR::getPal() const {
 	return(m_pal);
 }
 
-bool SPR::saveBMP(unsigned int idx, std::ostream& s, ImageType type, const RO::PAL* pal) const {
+bool SPR::saveBMP(unsigned int idx, std::ostream& s, ImageType type, const PAL* pal) const {
 	const Image* img = getImage(idx, type);
 	if (img == NULL)
 		return(false);
@@ -379,14 +379,14 @@ bool SPR::saveBMP(unsigned int idx, std::ostream& s, ImageType type, const RO::P
 	return(!s.fail());
 }
 
-bool SPR::saveBMP(unsigned int idx, const std::string& fn, ImageType type, const RO::PAL* pal) const {
+bool SPR::saveBMP(unsigned int idx, const std::string& fn, ImageType type, const PAL* pal) const {
 	std::ofstream fp(fn.c_str(), std::ios_base::binary);
 	bool ret = saveBMP(idx, fp, type, pal);
 	fp.close();
 	return(ret);
 }
 
-bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pal) const {
+bool SPR::saveBMP(std::ostream& s, ImageType type, const PAL* pal) const {
 	unsigned int imageWidth = 512;
 	unsigned int imageHeight = 0;
 	unsigned int i;
@@ -526,4 +526,4 @@ bool SPR::saveBMP(std::ostream& s, ImageType type, const RO::PAL* pal) const {
 	return(!s.fail());
 }
 
-}
+} /* namespace ro */

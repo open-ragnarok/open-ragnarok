@@ -12,7 +12,7 @@ GLObject::GLObject() {
 	m_useTexture = false; 
 	m_visible = true;
 	m_frustum_check = true;
-	cameraDir = RO::DIR_N;
+	cameraDir = ro::DIR_N;
 }
 
 GLObject::~GLObject() {}
@@ -47,7 +47,7 @@ void GLObject::BeforeDraw() {
 	}
 }
 
-void GLObject::Render(long tickdelay, const Frustum* f, RO::CDir CameraLook) {
+void GLObject::Render(long tickdelay, const Frustum* f, ro::CDir CameraLook) {
 	m_tickdelay = tickdelay;
 	cameraDir = CameraLook;
 	m_frustum = f;

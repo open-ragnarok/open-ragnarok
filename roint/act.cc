@@ -26,25 +26,27 @@
 #include "ro/types/act.h"
 #include "ro/ro.h"
 
-static RO::ACT::Action g_emptyAction;
-static RO::ACT::Motion g_emptyMotion;
-static RO::ACT::SprClip g_emptySprClip;
+namespace ro {
 
-RO::ACT::ACT() : Object() {
+static ACT::Action g_emptyAction;
+static ACT::Motion g_emptyMotion;
+static ACT::SprClip g_emptySprClip;
+
+ACT::ACT() : Object() {
 	magicSize = 2;
 	m_version.sver = 0x205;
 
 	memset(m_reserved, 0, sizeof(m_reserved));
 }
 
-RO::ACT::ACT(const ACT& a) : Object(a) {
+ACT::ACT(const ACT& a) : Object(a) {
 	memcpy(m_reserved, a.m_reserved, sizeof(m_reserved));
 	m_actions = a.m_actions;
 	m_events = a.m_events;
 	m_delays = a.m_delays;
 }
 
-void RO::ACT::reset() {
+void ACT::reset() {
 	m_valid = false;
 	memset(m_reserved, 0, sizeof(m_reserved));
 	m_actions.clear();
@@ -52,7 +54,7 @@ void RO::ACT::reset() {
 	m_delays.clear();
 }
 
-RO::ACT& RO::ACT::operator = (const ACT& a) {
+ACT& ACT::operator = (const ACT& a) {
 	reset();
 	a.copyHeader(this);
 
@@ -63,11 +65,11 @@ RO::ACT& RO::ACT::operator = (const ACT& a) {
 	return(*this);
 }
 
-RO::ACT::~ACT() {
+ACT::~ACT() {
 	reset();
 }
 
-bool RO::ACT::readStream(std::istream &s) {
+bool ACT::readStream(std::istream &s) {
 	reset();
 	if (!readHeader(s)) {
 		return(false);
@@ -142,7 +144,7 @@ bool RO::ACT::readStream(std::istream &s) {
 	return(true);
 }
 
-bool RO::ACT::writeStream(std::ostream& o) const {
+bool ACT::writeStream(std::ostream& o) const {
 	if (!isValid()) {
 		return(false);
 	}
@@ -179,45 +181,45 @@ bool RO::ACT::writeStream(std::ostream& o) const {
 	return(!o.fail());
 }
 
-const RO::ACT::Action& RO::ACT::operator[] (unsigned int act) const {
+const ACT::Action& ACT::operator[] (unsigned int act) const {
 	return(m_actions[act]);
 }
 
-unsigned int RO::ACT::getActionCount() const {
+unsigned int ACT::getActionCount() const {
 	return(m_actions.size());
 }
 
-const RO::ACT::Action& RO::ACT::getAction(unsigned int act) const {
+const ACT::Action& ACT::getAction(unsigned int act) const {
 	if (act < m_actions.size())
 		return(m_actions[act]);
 	return(g_emptyAction);
 }
 
-unsigned int RO::ACT::getMotionCount(unsigned int act) const {
+unsigned int ACT::getMotionCount(unsigned int act) const {
 	if (act < m_actions.size())
 		return(m_actions[act].motions.size());
 	return(0);
 }
 
-const RO::ACT::Motion& RO::ACT::getMotion(unsigned int act, unsigned int mot) const {
+const ACT::Motion& ACT::getMotion(unsigned int act, unsigned int mot) const {
 	if (act < m_actions.size())
 		return(m_actions[act].getMotion(mot));
 	return(g_emptyMotion);
 }
 
-const char* RO::ACT::getEventName(unsigned int evt) const {
+const char* ACT::getEventName(unsigned int evt) const {
 	if (evt < m_events.size())
 		return(m_events[evt].name);
 	return "";
 }
 
-float RO::ACT::getDelay(unsigned int act) const {
+float ACT::getDelay(unsigned int act) const {
 	if (act < m_delays.size())
 		return(m_delays[act]);
 	return(4.0f);
 }
 
-void RO::ACT::Dump(std::ostream& o, const std::string& pfx) const {
+void ACT::Dump(std::ostream& o, const std::string& pfx) const {
 	char buf[256];
 	sprintf(buf,"%d.%d", (m_version.sver >> 8) & 0xFF, m_version.sver & 0xFF);
 	o << pfx << "Version " << buf << std::endl;
@@ -272,7 +274,7 @@ void RO::ACT::Dump(std::ostream& o, const std::string& pfx) const {
 }
 
 #ifdef ROINT_USE_XML
-TiXmlElement *RO::ACT::GenerateXML(const std::string& name, bool utf) const {
+TiXmlElement *ACT::GenerateXML(const std::string& name, bool utf) const {
 	TiXmlElement *root = new TiXmlElement("ACT");
 	char buf[32];
 	sprintf(buf,"%d.%d", (m_version.sver >> 8) & 0xFF, m_version.sver & 0xFF);
@@ -303,7 +305,7 @@ TiXmlElement *RO::ACT::GenerateXML(const std::string& name, bool utf) const {
 }
 #endif
 
-RO::ACT::SprClip::SprClip() {
+ACT::SprClip::SprClip() {
 	x = y = 0;
 	sprNo = -1;
 	mirrorOn = 0;
@@ -314,14 +316,14 @@ RO::ACT::SprClip::SprClip() {
 	w = h = 0;
 }
 
-RO::ACT::SprClip::SprClip(const SprClip& s) {
+ACT::SprClip::SprClip(const SprClip& s) {
 	copyFrom(s);
 }
 
-RO::ACT::SprClip::~SprClip() {
+ACT::SprClip::~SprClip() {
 }
 
-void RO::ACT::SprClip::copyFrom(const SprClip& s) {
+void ACT::SprClip::copyFrom(const SprClip& s) {
 	x = s.x;
 	y = s.y;
 	sprNo = s.sprNo;
@@ -335,13 +337,13 @@ void RO::ACT::SprClip::copyFrom(const SprClip& s) {
 	h = s.h;
 }
 
-RO::ACT::SprClip& RO::ACT::SprClip::operator = (const SprClip& s) {
+ACT::SprClip& ACT::SprClip::operator = (const SprClip& s) {
 	copyFrom(s);
 	return(*this);
 }
 
 
-bool RO::ACT::SprClip::readStream(std::istream& s, const s_obj_ver& v) {
+bool ACT::SprClip::readStream(std::istream& s, const s_obj_ver& v) {
 	s.read((char*)&x, sizeof(int));
 	s.read((char*)&y, sizeof(int));
 	s.read((char*)&sprNo, sizeof(int));
@@ -376,7 +378,7 @@ bool RO::ACT::SprClip::readStream(std::istream& s, const s_obj_ver& v) {
 	return(!s.fail());
 }
 
-bool RO::ACT::SprClip::writeStream(std::ostream& s, const s_obj_ver& v) const {
+bool ACT::SprClip::writeStream(std::ostream& s, const s_obj_ver& v) const {
 	s.write((char*)&x, sizeof(int));
 	s.write((char*)&y, sizeof(int));
 	s.write((char*)&sprNo, sizeof(int));
@@ -403,7 +405,7 @@ bool RO::ACT::SprClip::writeStream(std::ostream& s, const s_obj_ver& v) const {
 }
 
 #ifdef ROINT_USE_XML
-TiXmlElement* RO::ACT::SprClip::GenerateXML(const s_obj_ver& v) const {
+TiXmlElement* ACT::SprClip::GenerateXML(const s_obj_ver& v) const {
 	TiXmlElement *e = new TiXmlElement("sprclip");
 
 	char buf[32];
@@ -438,7 +440,7 @@ TiXmlElement* RO::ACT::SprClip::GenerateXML(const s_obj_ver& v) const {
 #endif
 
 
-RO::ACT::Motion::Motion() {
+ACT::Motion::Motion() {
 	range1[0] = 0;
 	range1[1] = 0;
 	range1[2] = 0;
@@ -450,14 +452,14 @@ RO::ACT::Motion::Motion() {
 	eventId = -1;
 }
 
-RO::ACT::Motion::Motion(const Motion& p) {
+ACT::Motion::Motion(const Motion& p) {
 	copyFrom(p);
 }
 
-RO::ACT::Motion::~Motion() {
+ACT::Motion::~Motion() {
 }
 
-bool RO::ACT::Motion::readStream(std::istream& s, const s_obj_ver& v) {
+bool ACT::Motion::readStream(std::istream& s, const s_obj_ver& v) {
 	sprClips.clear();
 	attachPoints.clear();
 
@@ -501,7 +503,7 @@ bool RO::ACT::Motion::readStream(std::istream& s, const s_obj_ver& v) {
 	return(!s.fail());
 }
 
-bool RO::ACT::Motion::writeStream(std::ostream& s, const s_obj_ver& v) const {
+bool ACT::Motion::writeStream(std::ostream& s, const s_obj_ver& v) const {
 	s.write((char*)range1, sizeof(range1));
 	s.write((char*)range2, sizeof(range2));
 
@@ -532,30 +534,30 @@ bool RO::ACT::Motion::writeStream(std::ostream& s, const s_obj_ver& v) const {
 	return(!s.fail());
 }
 
-RO::ACT::SprClip& RO::ACT::Motion::operator[] (unsigned int i) {
+ACT::SprClip& ACT::Motion::operator[] (unsigned int i) {
 	return(sprClips[i]);
 }
 
-const RO::ACT::SprClip& RO::ACT::Motion::operator[] (unsigned int i) const {
+const ACT::SprClip& ACT::Motion::operator[] (unsigned int i) const {
 	return(sprClips[i]);
 }
 
-unsigned int RO::ACT::Motion::getClipCount() const {
+unsigned int ACT::Motion::getClipCount() const {
 	return(sprClips.size());
 }
 
-const RO::ACT::SprClip& RO::ACT::Motion::getClip(unsigned int clp) const {
+const ACT::SprClip& ACT::Motion::getClip(unsigned int clp) const {
 	if (clp < sprClips.size())
 		return(sprClips[clp]);
 	return(g_emptySprClip);
 }
 
-RO::ACT::Motion& RO::ACT::Motion::operator = (const Motion& p) {
+ACT::Motion& ACT::Motion::operator = (const Motion& p) {
 	copyFrom(p);
 	return(*this);
 }
 
-void RO::ACT::Motion::copyFrom(const Motion& p) {
+void ACT::Motion::copyFrom(const Motion& p) {
 	range1[0] = p.range1[0];
 	range1[1] = p.range1[1];
 	range1[2] = p.range1[2];
@@ -570,7 +572,7 @@ void RO::ACT::Motion::copyFrom(const Motion& p) {
 }
 
 #ifdef ROINT_USE_XML
-TiXmlElement* RO::ACT::Motion::GenerateXML(const s_obj_ver& v) const {
+TiXmlElement* ACT::Motion::GenerateXML(const s_obj_ver& v) const {
 	TiXmlElement *_mot = new TiXmlElement("motion");
 	TiXmlElement *e;
 
@@ -611,17 +613,17 @@ TiXmlElement* RO::ACT::Motion::GenerateXML(const s_obj_ver& v) const {
 }
 #endif
 
-RO::ACT::Action::Action() {
+ACT::Action::Action() {
 }
 
-RO::ACT::Action::Action(const Action& a) {
+ACT::Action::Action(const Action& a) {
 	copyFrom(a);
 }
 
-RO::ACT::Action::~Action() {
+ACT::Action::~Action() {
 }
 
-bool RO::ACT::Action::readStream(std::istream& s, const s_obj_ver& v) {
+bool ACT::Action::readStream(std::istream& s, const s_obj_ver& v) {
 	int i, nMotions;
 
 	motions.clear();
@@ -639,7 +641,7 @@ bool RO::ACT::Action::readStream(std::istream& s, const s_obj_ver& v) {
 	return(true);
 }
 
-bool RO::ACT::Action::writeStream(std::ostream& s, const s_obj_ver& v) const {
+bool ACT::Action::writeStream(std::ostream& s, const s_obj_ver& v) const {
 	int nMotion = motions.size();
 	s.write((char*)&nMotion, sizeof(int));
 	if (s.fail())
@@ -652,30 +654,30 @@ bool RO::ACT::Action::writeStream(std::ostream& s, const s_obj_ver& v) const {
 	return(true);
 }
 
-RO::ACT::Motion& RO::ACT::Action::operator[] (unsigned int i) { return(motions[i]); }
-const RO::ACT::Motion& RO::ACT::Action::operator[] (unsigned int i) const { return(motions[i]); }
+ACT::Motion& ACT::Action::operator[] (unsigned int i) { return(motions[i]); }
+const ACT::Motion& ACT::Action::operator[] (unsigned int i) const { return(motions[i]); }
 
-unsigned int RO::ACT::Action::getMotionCount() const {
+unsigned int ACT::Action::getMotionCount() const {
 	return(motions.size());
 }
 
-const RO::ACT::Motion& RO::ACT::Action::getMotion(unsigned int mot) const {
+const ACT::Motion& ACT::Action::getMotion(unsigned int mot) const {
 	if (mot < motions.size())
 		return(motions[mot]);
 	return(g_emptyMotion);
 }
 
-RO::ACT::Action& RO::ACT::Action::operator = (const Action& a) {
+ACT::Action& ACT::Action::operator = (const Action& a) {
 	copyFrom(a);
 	return(*this);
 }
 
-void RO::ACT::Action::copyFrom(const Action& a) {
+void ACT::Action::copyFrom(const Action& a) {
 	motions = a.motions;
 }
 
 #ifdef ROINT_USE_XML
-TiXmlElement* RO::ACT::Action::GenerateXML(const s_obj_ver& v) const {
+TiXmlElement* ACT::Action::GenerateXML(const s_obj_ver& v) const {
 	TiXmlElement *_act = new TiXmlElement("action");
 	unsigned int i, n;
 	n = motions.size();
@@ -686,3 +688,5 @@ TiXmlElement* RO::ACT::Action::GenerateXML(const s_obj_ver& v) const {
 	return(_act);
 }
 #endif
+
+} /* namespace ro */

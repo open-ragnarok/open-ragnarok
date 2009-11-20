@@ -78,26 +78,26 @@ bool SprGL::operator == (const SprGL& s) const {
 	return(m_texture == s.m_texture);
 }
 
-bool SprGL::open(const RO::SPR* spr, const RO::PAL* pal) {
+bool SprGL::open(const ro::SPR* spr, const ro::PAL* pal) {
 	unsigned int i;
 
 	release();
 	if (pal == NULL) {
 		pal = spr->getPal();
 	}
-	if (pal == NULL && spr->getImageCount(RO::SPR::PalType) > 0){
-		fprintf(stderr, "SprGL::open - pal is NULL (%u SPR pal images)\n", spr->getImageCount(RO::SPR::PalType));
+	if (pal == NULL && spr->getImageCount(ro::SPR::PalType) > 0){
+		fprintf(stderr, "SprGL::open - pal is NULL (%u SPR pal images)\n", spr->getImageCount(ro::SPR::PalType));
 		return(false);
 	}
 
-	m_palCount = spr->getImageCount(RO::SPR::PalType);
-	m_rgbaCount = spr->getImageCount(RO::SPR::RgbaType);
+	m_palCount = spr->getImageCount(ro::SPR::PalType);
+	m_rgbaCount = spr->getImageCount(ro::SPR::RgbaType);
 	m_info.resize(spr->getImageCount(), g_emptyInfo);
 
 	// calculate needed area
 	unsigned int neededArea = 0;
 	for (i = 0; i < m_info.size(); i++) {
-		const RO::SPR::Image* img = spr->getImage(i);
+		const ro::SPR::Image* img = spr->getImage(i);
 		neededArea += img->width * img->height;
 	}
 	// calculate texture size (power of two)
@@ -113,7 +113,7 @@ bool SprGL::open(const RO::SPR* spr, const RO::PAL* pal) {
 		unsigned int linespace = textureSize;
 		unsigned int lineheight = 0;
 		for (i = 0; i < m_info.size(); i++) {
-			const RO::SPR::Image* img = spr->getImage(i);
+			const ro::SPR::Image* img = spr->getImage(i);
 			if (img->width > textureSize || neededHeight > textureSize) {
 				tooSmall = true;
 				break;
@@ -144,7 +144,7 @@ bool SprGL::open(const RO::SPR* spr, const RO::PAL* pal) {
 	unsigned int offy = 0;
 	unsigned int lineheight = 0;
 	for (i = 0; i < m_info.size(); i++) {
-		const RO::SPR::Image* img = spr->getImage(i);
+		const ro::SPR::Image* img = spr->getImage(i);
 		if (offx + img->width > textureSize) {
 			// next line
 			offx = 0;
@@ -157,12 +157,12 @@ bool SprGL::open(const RO::SPR* spr, const RO::PAL* pal) {
 
 		// write data to image
 		// TODO shouldn't this be using: left to right, bottom to top? [flaviojs]
-		if (img->type == RO::SPR::PalType) {
+		if (img->type == ro::SPR::PalType) {
 			// left to right, top to bottom
 			for (unsigned int x = 0; x < img->width; x++) {
 				for (unsigned int y = 0; y < img->height; y++) {
 					unsigned char palpos = img->data.pal[x + y * img->width];
-					const RO::PAL::Color& color = pal->getColor(palpos);
+					const ro::PAL::Color& color = pal->getColor(palpos);
 					unsigned char* p = (unsigned char*)&teximage[4 * ((offx + x) + (offy + y) * textureSize)];
 					p[0] = color.r;
 					p[1] = color.g;
@@ -177,11 +177,11 @@ bool SprGL::open(const RO::SPR* spr, const RO::PAL* pal) {
 				}
 			}
 		}
-		else if (img->type == RO::SPR::RgbaType) {
+		else if (img->type == ro::SPR::RgbaType) {
 			// left to right, bottom to top -> left to right, top to bottom
 			for (unsigned int x = 0; x < img->width; x++) {
 				for (unsigned int y = 0; y < img->height; y++) {
-					const RO::SPR::Color& color = img->data.rgba[x + (img->height - y - 1) * img->width];
+					const ro::SPR::Color& color = img->data.rgba[x + (img->height - y - 1) * img->width];
 					unsigned char* p = (unsigned char*)&teximage[4 * ((offx + x) + (offy + y) * textureSize)];
 					p[0] = color.r;
 					p[1] = color.g;
@@ -288,8 +288,8 @@ void SprGL::Draw(unsigned int idx, bool xmirror) const {
 	Draw(idx, r, xmirror);
 }
 
-void SprGL::Draw(const RO::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const {
-	const RO::ACT::SprClip& cspr = cmot.getClip(clpno);
+void SprGL::Draw(const ro::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const {
+	const ro::ACT::SprClip& cspr = cmot.getClip(clpno);
 	unsigned int idx = getIndex(cspr.sprNo, cspr.sprType);
 
 	if (idx >= m_info.size())

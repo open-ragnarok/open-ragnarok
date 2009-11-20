@@ -26,14 +26,16 @@
 #include "ro/types/rsw.h"
 #include "ro/ro.h"
 
+namespace ro {
+
 // ===== OBJECT
-RO::RSW::Object::Object(RO::RSW::ObjectType t) : m_type(t) {
+RSW::Object::Object(RSW::ObjectType t) : m_type(t) {
 }
 
-RO::RSW::Object::~Object() {
+RSW::Object::~Object() {
 }
 
-RO::RSW::Object* RO::RSW::Object::readStream(std::istream& s, const RO::s_obj_ver& ver) {
+RSW::Object* RSW::Object::readStream(std::istream& s, const s_obj_ver& ver) {
 	int objtype;
 	s.read((char*)&objtype, sizeof(int));
 	if (s.fail())
@@ -86,7 +88,7 @@ RO::RSW::Object* RO::RSW::Object::readStream(std::istream& s, const RO::s_obj_ve
 	}
 }
 
-bool RO::RSW::Object::writeStream(std::ostream& s, const RO::s_obj_ver& ver) const {
+bool RSW::Object::writeStream(std::ostream& s, const s_obj_ver& ver) const {
 	s.write((char*)&m_type, sizeof(int));
 	if (s.fail())
 		return(false);
@@ -109,15 +111,15 @@ bool RO::RSW::Object::writeStream(std::ostream& s, const RO::s_obj_ver& ver) con
 	return(ret);
 }
 
-RO::RSW::ObjectType RO::RSW::Object::getType() const {
+RSW::ObjectType RSW::Object::getType() const {
 	return(m_type);
 }
 
-bool RO::RSW::Object::isType(RO::RSW::ObjectType t) const {
+bool RSW::Object::isType(RSW::ObjectType t) const {
 	return(m_type == t);
 }
 
-RO::RSW::Object* RO::RSW::Object::Copy() const {
+RSW::Object* RSW::Object::Copy() const {
 	Object* ret = NULL;
 	switch(m_type) {
 		case ModelType:
@@ -138,7 +140,7 @@ RO::RSW::Object* RO::RSW::Object::Copy() const {
 
 
 // ===== MODEL
-RO::RSW::ModelObject::ModelObject() : Object(RO::RSW::ModelType) {
+RSW::ModelObject::ModelObject() : Object(RSW::ModelType) {
 	memset(name, 0, sizeof(name));
 	animType = 0;
 	animSpeed = 1.0f;
@@ -150,14 +152,14 @@ RO::RSW::ModelObject::ModelObject() : Object(RO::RSW::ModelType) {
 	scale[0] = scale[1] = scale[2] = 0.0f;
 }
 
-RO::RSW::ModelObject::ModelObject(const ModelObject& obj) : Object(RO::RSW::ModelType) {
+RSW::ModelObject::ModelObject(const ModelObject& obj) : Object(RSW::ModelType) {
 	*this = obj;
 }
 
-RO::RSW::ModelObject::~ModelObject() {
+RSW::ModelObject::~ModelObject() {
 }
 
-bool RO::RSW::ModelObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+bool RSW::ModelObject::readData(std::istream& s, const s_obj_ver& ver) {
 	if ((ver.cver.major == 1 && ver.cver.minor >= 3) || ver.cver.major > 1) {
 		s.read(name, 40);
 		name[39] = 0;
@@ -181,7 +183,7 @@ bool RO::RSW::ModelObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
 	return(!s.fail());
 }
 
-bool RO::RSW::ModelObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+bool RSW::ModelObject::writeData(std::ostream& s, const s_obj_ver& ver) const {
 	if ((ver.cver.major == 1 && ver.cver.minor >= 3) || ver.cver.major > 1) {
 		s.write(name, 40);
 		s.write((char*)&animType, sizeof(int));
@@ -196,7 +198,7 @@ bool RO::RSW::ModelObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) 
 	return(!s.fail());
 }
 
-void RO::RSW::ModelObject::Dump(std::ostream& o, const std::string& pfx) const {
+void RSW::ModelObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "ModelObject" << std::endl;
 	o << pfx << "\tName: " << name << std::endl;
 	o << pfx << "\tAnim type: " << animType << std::endl;
@@ -209,7 +211,7 @@ void RO::RSW::ModelObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "\tScale: " << scale[0] << ", " << scale[1] << ", " << scale[2] << std::endl;
 }
 
-RO::RSW::ModelObject& RO::RSW::ModelObject::operator = (const ModelObject& obj) {
+RSW::ModelObject& RSW::ModelObject::operator = (const ModelObject& obj) {
 	memcpy(name, obj.name, sizeof(name));
 	animType = obj.animType;
 	animSpeed = obj.animSpeed;
@@ -224,17 +226,17 @@ RO::RSW::ModelObject& RO::RSW::ModelObject::operator = (const ModelObject& obj) 
 
 
 // ===== LIGHT
-RO::RSW::LightObject::LightObject() : Object(RO::RSW::LightType) {
+RSW::LightObject::LightObject() : Object(RSW::LightType) {
 }
 
-RO::RSW::LightObject::LightObject(const LightObject& obj) : Object(RO::RSW::LightType) {
+RSW::LightObject::LightObject(const LightObject& obj) : Object(RSW::LightType) {
 	*this = obj;
 }
 
-RO::RSW::LightObject::~LightObject() {
+RSW::LightObject::~LightObject() {
 }
 
-bool RO::RSW::LightObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+bool RSW::LightObject::readData(std::istream& s, const s_obj_ver& ver) {
 	s.read((char*)&name, 80);
 	name[79] = 0;
 	s.read((char*)&pos, sizeof(float) * 3);
@@ -245,7 +247,7 @@ bool RO::RSW::LightObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
 	return(!s.fail());
 }
 
-bool RO::RSW::LightObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+bool RSW::LightObject::writeData(std::ostream& s, const s_obj_ver& ver) const {
 	s.write((char*)&name, 80);
 	s.write((char*)&pos, sizeof(float) * 3);
 	s.write((char*)&red, sizeof(int));
@@ -255,7 +257,7 @@ bool RO::RSW::LightObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) 
 	return(!s.fail());
 }
 
-void RO::RSW::LightObject::Dump(std::ostream& o, const std::string& pfx) const {
+void RSW::LightObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "LightObject" << std::endl;
 	o << pfx << "\tName: " << name << std::endl;
 	o << pfx << "\tPos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
@@ -265,7 +267,7 @@ void RO::RSW::LightObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "\tRange: " << range << std::endl;
 }
 
-RO::RSW::LightObject& RO::RSW::LightObject::operator = (const LightObject& obj) {
+RSW::LightObject& RSW::LightObject::operator = (const LightObject& obj) {
 	memcpy(name, obj.name, sizeof(name));
 	memcpy(pos, obj.pos, sizeof(pos));
 	red = obj.red;
@@ -277,17 +279,17 @@ RO::RSW::LightObject& RO::RSW::LightObject::operator = (const LightObject& obj) 
 
 
 // ===== SOUND
-RO::RSW::SoundObject::SoundObject() : Object(RO::RSW::SoundType) {
+RSW::SoundObject::SoundObject() : Object(RSW::SoundType) {
 }
 
-RO::RSW::SoundObject::SoundObject(const SoundObject& obj) : Object(RO::RSW::SoundType) {
+RSW::SoundObject::SoundObject(const SoundObject& obj) : Object(RSW::SoundType) {
 	*this = obj;
 }
 
-RO::RSW::SoundObject::~SoundObject() {
+RSW::SoundObject::~SoundObject() {
 }
 
-bool RO::RSW::SoundObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+bool RSW::SoundObject::readData(std::istream& s, const s_obj_ver& ver) {
 	s.read(name, 80);
 	s.read(waveName, 80);
 	name[79] = waveName[79] = 0;
@@ -303,7 +305,7 @@ bool RO::RSW::SoundObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
 	return(!s.fail());
 }
 
-bool RO::RSW::SoundObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+bool RSW::SoundObject::writeData(std::ostream& s, const s_obj_ver& ver) const {
 	s.write(name, 80);
 	s.write(waveName, 80);
 	s.write((char*)&pos, sizeof(float) * 3);
@@ -316,7 +318,7 @@ bool RO::RSW::SoundObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) 
 	return(!s.fail());
 }
 
-void RO::RSW::SoundObject::Dump(std::ostream& o, const std::string& pfx) const {
+void RSW::SoundObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "SoundObject" << std::endl;
 	o << pfx << "\tName: " << name << std::endl;
 	o << pfx << "\tWave name: " << waveName << std::endl;
@@ -328,7 +330,7 @@ void RO::RSW::SoundObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "\tCycle: " << cycle << std::endl;
 }
 
-RO::RSW::SoundObject& RO::RSW::SoundObject::operator = (const SoundObject& obj) {
+RSW::SoundObject& RSW::SoundObject::operator = (const SoundObject& obj) {
 	memcpy(name, obj.name, sizeof(name));
 	memcpy(waveName, obj.waveName, sizeof(waveName));
 	memcpy(pos, obj.pos, sizeof(pos));
@@ -342,18 +344,18 @@ RO::RSW::SoundObject& RO::RSW::SoundObject::operator = (const SoundObject& obj) 
 
 
 // ===== EFFECT
-RO::RSW::EffectObject::EffectObject() : Object(RO::RSW::EffectType) {
+RSW::EffectObject::EffectObject() : Object(RSW::EffectType) {
 }
 
 
-RO::RSW::EffectObject::EffectObject(const EffectObject& obj) : Object(RO::RSW::EffectType) {
+RSW::EffectObject::EffectObject(const EffectObject& obj) : Object(RSW::EffectType) {
 	*this = obj;
 }
 
-RO::RSW::EffectObject::~EffectObject() {
+RSW::EffectObject::~EffectObject() {
 }
 
-bool RO::RSW::EffectObject::readData(std::istream& s, const RO::s_obj_ver& ver) {
+bool RSW::EffectObject::readData(std::istream& s, const s_obj_ver& ver) {
 	s.read(name, 80);
 	name[79] = 0;
 	s.read((char*)&pos, sizeof(float) * 3);
@@ -363,7 +365,7 @@ bool RO::RSW::EffectObject::readData(std::istream& s, const RO::s_obj_ver& ver) 
 	return(!s.fail());
 }
 
-bool RO::RSW::EffectObject::writeData(std::ostream& s, const RO::s_obj_ver& ver) const {
+bool RSW::EffectObject::writeData(std::ostream& s, const s_obj_ver& ver) const {
 	s.write(name, 80);
 	s.write((char*)&pos, sizeof(float) * 3);
 	s.write((char*)&type, sizeof(int));
@@ -372,7 +374,7 @@ bool RO::RSW::EffectObject::writeData(std::ostream& s, const RO::s_obj_ver& ver)
 	return(!s.fail());
 }
 
-void RO::RSW::EffectObject::Dump(std::ostream& o, const std::string& pfx) const {
+void RSW::EffectObject::Dump(std::ostream& o, const std::string& pfx) const {
 	o << pfx << "EffectObject" << std::endl;
 	o << pfx << "\tName: " << name << std::endl;
 	o << pfx << "\tPos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
@@ -381,7 +383,7 @@ void RO::RSW::EffectObject::Dump(std::ostream& o, const std::string& pfx) const 
 	o << pfx << "\tParam: " << param[0] << ", " << param[1] << ", " << param[2] << ", " << param[3] << std::endl;
 }
 
-RO::RSW::EffectObject& RO::RSW::EffectObject::operator = (const EffectObject& obj) {
+RSW::EffectObject& RSW::EffectObject::operator = (const EffectObject& obj) {
 	memcpy(name, obj.name, sizeof(name));
 	memcpy(pos, obj.pos, sizeof(pos));
 	type = obj.type;
@@ -389,3 +391,5 @@ RO::RSW::EffectObject& RO::RSW::EffectObject::operator = (const EffectObject& ob
 	memcpy(param, obj.param, sizeof(param));
 	return(*this);
 }
+
+} /* namespace ro */

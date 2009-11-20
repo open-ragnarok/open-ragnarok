@@ -22,7 +22,7 @@ public:
 // Reads files from a GRF file
 class GRFFileLoader : public FileLoader {
 protected:
-	RO::GRF m_grf;
+	ro::GRF m_grf;
 
 public:
 	virtual bool fileExists(const std::string& name) const;

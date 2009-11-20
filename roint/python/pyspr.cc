@@ -26,33 +26,34 @@
 
 #include "ro/python/pyspr.h"
 
-namespace RO {
-	SPR* new_SPR() {
-		return(new SPR());
-	}
+namespace ro {
 
-	void del_SPR(SPR* spr) {
-		delete(spr);
-	}
-
-	bool read_SPR(SPR* spr, const char* fn) {
-		return(spr->read(fn));
-	}
-
-	unsigned int getImageCount_SPR(const SPR* spr, int type) {
-		return(spr->getImageCount((SPR::ImageType)type));
-	}
-
-	const SPR::Image* getImage_SPR(const SPR* spr, int idx, int type) {
-		return(spr->getImage(idx, (SPR::ImageType)type));
-	}
-
-	const PAL* getPal_SPR(const SPR* spr) {
-		return(spr->getPal());
-	}
-
-	bool saveBMP_SPR(const SPR* spr, int idx, const char* fn, int type, const PAL* pal) {
-		return(spr->saveBMP(idx, fn, (SPR::ImageType)type, pal));
-	}
+SPR* new_SPR() {
+	return(new SPR());
 }
 
+void del_SPR(SPR* spr) {
+	delete(spr);
+}
+
+bool read_SPR(SPR* spr, const char* fn) {
+	return(spr->read(fn));
+}
+
+unsigned int getImageCount_SPR(const SPR* spr, int type) {
+	return(spr->getImageCount((SPR::ImageType)type));
+}
+
+const SPR::Image* getImage_SPR(const SPR* spr, int idx, int type) {
+	return(spr->getImage(idx, (SPR::ImageType)type));
+}
+
+const PAL* getPal_SPR(const SPR* spr) {
+	return(spr->getPal());
+}
+
+bool saveBMP_SPR(const SPR* spr, int idx, const char* fn, int type, const PAL* pal) {
+	return(spr->saveBMP(idx, fn, (SPR::ImageType)type, pal));
+}
+
+} /* namespace ro */

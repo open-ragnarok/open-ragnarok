@@ -25,7 +25,7 @@ void NpcObj::Draw() {
 		float dy = dest_y - map_y;
 		float size = sqrt(dx * dx + dy * dy);
 
-		m_dir = RO::dir2Cdir(dx, dy);
+		m_dir = ro::dir2Cdir(dx, dy);
 
 		if (size < speed) {
 			map_x = dest_x;
@@ -61,7 +61,7 @@ void NpcObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_npc.Draw(m_tickdelay, (RO::CDir)dir); // Draw
+	m_npc.Draw(m_tickdelay, (ro::CDir)dir); // Draw
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -110,7 +110,7 @@ bool NpcObj::open(CacheManager& cache, std::string name) {
 
 	// Creates an ActGL and registers it
 	m_npc.setSpr(sprgl);
-	m_npc.setAct((RO::ACT*)objects[act_n]);
+	m_npc.setAct((ro::ACT*)objects[act_n]);
 
 	return(true);
 }

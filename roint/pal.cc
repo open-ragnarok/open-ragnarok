@@ -25,19 +25,21 @@
 #include "stdafx.h"
 #include "ro/types/pal.h"
 
-RO::PAL::PAL() : Object() {
+namespace ro {
+
+PAL::PAL() : Object() {
 	memset(m_pal, 0, sizeof(m_pal));
 }
 
-RO::PAL::~PAL() {
+PAL::~PAL() {
 	reset();
 }
-void RO::PAL::reset() {
+void PAL::reset() {
 	m_valid = false;
 	memset(m_pal, 0, sizeof(m_pal));
 }
 
-bool RO::PAL::readStream(std::istream& s) {
+bool PAL::readStream(std::istream& s) {
 	s.read((char*)&m_pal, sizeof(m_pal));
 	if (s.fail()) {
 		reset();
@@ -47,7 +49,8 @@ bool RO::PAL::readStream(std::istream& s) {
 	return(true);
 }
 
-const RO::PAL::Color& RO::PAL::getColor(unsigned char idx) const {
+const PAL::Color& PAL::getColor(unsigned char idx) const {
 	return(m_pal[idx]);
 }
 
+} /* namespace ro */

@@ -41,7 +41,7 @@ public:
 
 	void Look() const;
 
-	RO::CDir getDirection() const;
+	ro::CDir getDirection() const;
 };
 
 #endif /* __CAMERA_H */

@@ -5,8 +5,8 @@
  *      Author: Sergio
  */
 
-#ifndef LOG_H_
-#define LOG_H_
+#ifndef ROINT_LOG_H_
+#define ROINT_LOG_H_
 
 #ifdef USE_LOGSYS
 #	include "logsys/logsys_macros.h"
@@ -28,7 +28,9 @@
 #define ROINT__WARNING 10004
 
 namespace ro {
-	ROINT_DLLAPI void SetupLogs();
-}
 
-#endif /* LOG_H_ */
+ROINT_DLLAPI void SetupLogs();
+
+} /* namespace ro */
+
+#endif /* ROINT_LOG_H_ */

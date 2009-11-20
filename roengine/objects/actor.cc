@@ -8,7 +8,7 @@ Actor::Actor() : GLObject() {
 	m_act = 0;
 	m_frame = 0;
 	speed = 0.2f;
-	m_dir = RO::DIR_N;
+	m_dir = ro::DIR_N;
 	m_type = UnknownType;
 	id = 0;
 	m_visible = true;
@@ -20,7 +20,7 @@ Actor::Actor(Type t) : GLObject() {
 	m_act = 0;
 	m_frame = 0;
 	speed = 0.2f;
-	m_dir = RO::DIR_N;
+	m_dir = ro::DIR_N;
 	m_type = t;
 	id = 0;
 	m_visible = true;
@@ -53,7 +53,7 @@ float Actor::getDestinationY() const {
 	return(dest_y);
 }
 
-void Actor::setDirection(RO::CDir dir) {
+void Actor::setDirection(ro::CDir dir) {
 	m_dir = dir;
 }
 

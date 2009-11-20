@@ -20,7 +20,7 @@ public:
 	bool VectorVisible(const Vector3f&) const;
 	bool PointVisible(float x, float y, float z) const;
 	bool BoxVisible(float x, float y, float z, float width, float height, float length) const;
-	bool ModelVisible(const RO::RSM* rsm, const RO::RSW::ModelObject* model) const;
+	bool ModelVisible(const ro::RSM* rsm, const ro::RSW::ModelObject* model) const;
 };
 
 #endif /* __FRUSTUM_H */

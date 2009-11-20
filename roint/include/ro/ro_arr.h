@@ -25,7 +25,7 @@
 #ifndef __RO_ARR_H
 #define __RO_ARR_H
 
-namespace RO {
+namespace ro {
 
 /** Array.
  * The data type must support 'a = b'.
@@ -115,6 +115,6 @@ public:
 	}
 };
 
-};
+} /* namespace ro */
 
 #endif /* __RO_ARR_H */

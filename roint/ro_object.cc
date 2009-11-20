@@ -27,53 +27,55 @@
 
 #include <fstream>
 
-RO::Object::Object() {
+namespace ro {
+
+Object::Object() {
 	m_valid = false;
 	m_version.sver = 0;
 	magicSize = 4;
 	memset(magic, 0, 4);
 }
 
-RO::Object::Object(const Object& o) {
+Object::Object(const Object& o) {
 	memcpy(magic, o.magic, 4);
 	magicSize = o.magicSize;
 	m_version.sver = o.m_version.sver;
 	m_valid = o.m_valid;
 }
 
-RO::Object::~Object() {
+Object::~Object() {
 }
 
-const RO::s_obj_ver* RO::Object::getVersion() const {
+const s_obj_ver* Object::getVersion() const {
 	return(&m_version);
 }
 
-bool RO::Object::IsCompatibleWith(unsigned char major, unsigned char minor) const {
+bool Object::IsCompatibleWith(unsigned char major, unsigned char minor) const {
 	return (
 		((m_version.cver.major == major) && (m_version.cver.minor >= minor))
 		|| (m_version.cver.major > major)
 	);
 }
 
-bool RO::Object::IsCompatibleWith(short ver) const {
+bool Object::IsCompatibleWith(short ver) const {
 	s_obj_ver v;
 	v.sver = ver;
 	return(IsCompatibleWith(v.cver.major, v.cver.minor));
 }
 
-bool RO::Object::readHeader(std::istream &s) {
+bool Object::readHeader(std::istream &s) {
 	s.read((char*)&magic, magicSize);
 	s.read((char*)&m_version, 2);
 	return(!s.fail());
 }
 
-bool RO::Object::writeHeader(std::ostream &s) const {
+bool Object::writeHeader(std::ostream &s) const {
 	s.write((char*)&magic, magicSize);
 	s.write((char*)&m_version, 2);
 	return(!s.fail());
 }
 
-bool RO::Object::copyHeader(Object* o) const {
+bool Object::copyHeader(Object* o) const {
 	memcpy(o->magic, magic, 4);
 	o->magicSize = magicSize;
 	o->m_version.sver = m_version.sver;
@@ -81,22 +83,22 @@ bool RO::Object::copyHeader(Object* o) const {
 	return(true);
 }
 
-bool RO::Object::copyHeader(Object& o) const {
+bool Object::copyHeader(Object& o) const {
 	return(copyHeader(&o));
 }
 
-bool RO::Object::isValid() const {
+bool Object::isValid() const {
 	return(m_valid);
 }
 
-bool RO::Object::checkHeader(const std::string& s) const {
+bool Object::checkHeader(const std::string& s) const {
 	if (strncmp(s.c_str(), magic, magicSize))
 		return(false);
 	return(true);
 }
 
 
-bool RO::Object::read(const std::string& fn) {
+bool Object::read(const std::string& fn) {
 	std::ifstream fp(fn.c_str(), std::ios_base::binary);
 	bool ret = readStream(fp);
 	fp.close();
@@ -104,7 +106,7 @@ bool RO::Object::read(const std::string& fn) {
 }
 
 #ifdef ROINT_USE_XML
-TiXmlElement *RO::Object::GenerateXML(const std::string& name, bool utf) const {
+TiXmlElement *Object::GenerateXML(const std::string& name, bool utf) const {
 	char buf[32];
 	memset(buf, 0, 32);
 	strncpy(buf, magic, magicSize);
@@ -119,7 +121,7 @@ TiXmlElement *RO::Object::GenerateXML(const std::string& name, bool utf) const {
 	return(root);
 }
 
-TiXmlDocument RO::Object::GenerateXMLDoc(const std::string& name, bool utf) const {
+TiXmlDocument Object::GenerateXMLDoc(const std::string& name, bool utf) const {
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
 	doc.LinkEndChild(decl);
@@ -130,16 +132,18 @@ TiXmlDocument RO::Object::GenerateXMLDoc(const std::string& name, bool utf) cons
 	return(doc);
 }
 
-bool RO::Object::SaveXML(std::ostream& out, const std::string& name, bool utf) const {
+bool Object::SaveXML(std::ostream& out, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateXMLDoc(name, utf);
 	out << doc;
 	return(true);
 }
 
-bool RO::Object::SaveXML(const std::string& fn, const std::string& name, bool utf) const {
+bool Object::SaveXML(const std::string& fn, const std::string& name, bool utf) const {
 	TiXmlDocument doc = GenerateXMLDoc(name, utf);
 	doc.SaveFile(fn);
 	return(true);
 }
 
 #endif
+
+} /* namespace ro */

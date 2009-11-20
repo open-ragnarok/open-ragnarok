@@ -3,7 +3,7 @@
 
 #include "roengine/gl_object_cache.h"
 
-void GLObjectCache::draw(const Frustum* f, long tickdelay, RO::CDir camera_look) {
+void GLObjectCache::draw(const Frustum* f, long tickdelay, ro::CDir camera_look) {
 	obj_drawn = 0;
 	obj_total = objects.size();
 

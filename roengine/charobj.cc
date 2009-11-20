@@ -25,7 +25,7 @@ void CharObj::Draw() {
 		float dy = dest_y - map_y;
 		float size = sqrt(dx * dx + dy * dy);
 
-		m_dir = RO::dir2Cdir(dx, dy);
+		m_dir = ro::dir2Cdir(dx, dy);
 
 		if (size < speed) {
 			map_x = dest_x;
@@ -64,9 +64,9 @@ void CharObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_bodyact.Draw(m_tickdelay, (RO::CDir)dir); // Draw
+	m_bodyact.Draw(m_tickdelay, (ro::CDir)dir); // Draw
 	if (m_headact.valid())
-		m_headact.Draw(m_tickdelay, (RO::CDir)dir);
+		m_headact.Draw(m_tickdelay, (ro::CDir)dir);
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -76,7 +76,7 @@ bool CharObj::valid() const {
 	return(m_bodyact.valid());
 }
 
-bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
+bool CharObj::open(CacheManager& cache, ro::CJob job, ro::CSex sex) {
 	//Cache objects
 	ROObjectCache& objects = cache.getROObjects();
 	GLObjectCache& globjects = cache.getGLObjects();
@@ -94,7 +94,7 @@ bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
 
 	char buf[256];
 	// ========== Body
-	sprintf(buf, "sprite\\%s\\%s\\%s\\%s_%s", RO::EUC::humans, RO::EUC::body, RO::EUC::sex[sex], RO::EUC::classname[job], RO::EUC::sex[sex]);
+	sprintf(buf, "sprite\\%s\\%s\\%s\\%s_%s", ro::EUC::humans, ro::EUC::body, ro::EUC::sex[sex], ro::EUC::classname[job], ro::EUC::sex[sex]);
 
 	// Setup filenames
 	act_n = buf;
@@ -120,10 +120,10 @@ bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
 
 	// Creates an ActGL and registers it
 	m_bodyact.setSpr(sprgl);
-	m_bodyact.setAct((RO::ACT*)objects[act_n]);
+	m_bodyact.setAct((ro::ACT*)objects[act_n]);
 
 	// ========== Head
-	sprintf(buf, "sprite\\%s\\%s\\%s\\%d_%s", RO::EUC::humans, RO::EUC::head, RO::EUC::sex[sex], m_hair, RO::EUC::sex[sex]);
+	sprintf(buf, "sprite\\%s\\%s\\%s\\%d_%s", ro::EUC::humans, ro::EUC::head, ro::EUC::sex[sex], m_hair, ro::EUC::sex[sex]);
 
 	// Setup filenames
 	act_n = buf;
@@ -147,7 +147,7 @@ bool CharObj::open(CacheManager& cache, RO::CJob job, RO::CSex sex) {
 
 	// Creates an ActGL and registers it
 	m_headact.setSpr(sprgl);
-	m_headact.setAct((RO::ACT*)objects[act_n]);
+	m_headact.setAct((ro::ACT*)objects[act_n]);
 
 	return(true);
 }

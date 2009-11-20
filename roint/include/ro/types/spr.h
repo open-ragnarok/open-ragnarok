@@ -31,82 +31,84 @@
 
 #include <vector>
 
-namespace RO {
-	/**
-	 * Sprite class.
-	 * Contains palette images, RGBA images (v2.0+) and possibly a palette (v1.1+).
-	 * Supported versions: v1.0 v1.1 v2.0 v2.1
-	 * 
-	 * \ingroup ROInterface
-	 */
-	class ROINT_DLLAPI SPR : public Object {
-	public:
-		/** Type of image */
-		enum ImageType {
-			PalType = 0,
-			RgbaType = 1,
-		};
+namespace ro {
+
+/**
+ * Sprite class.
+ * Contains palette images, RGBA images (v2.0+) and possibly a palette (v1.1+).
+ * Supported versions: v1.0 v1.1 v2.0 v2.1
+ * 
+ * \ingroup ROInterface
+ */
+class ROINT_DLLAPI SPR : public Object {
+public:
+	/** Type of image */
+	enum ImageType {
+		PalType = 0,
+		RgbaType = 1,
+	};
 
 #pragma pack(push,1)
-		/** RGBA pixel. */
-		struct Color {
-			unsigned char a;
-			unsigned char b;
-			unsigned char g;
-			unsigned char r;
-			inline operator unsigned char* () { return(&a); }
-			inline operator const unsigned char* () const { return(&a); }
-		};
+	/** RGBA pixel. */
+	struct Color {
+		unsigned char a;
+		unsigned char b;
+		unsigned char g;
+		unsigned char r;
+		inline operator unsigned char* () { return(&a); }
+		inline operator const unsigned char* () const { return(&a); }
+	};
 
-		/** Image data. */
-		struct Image {
-			ImageType type;
-			unsigned short width;
-			unsigned short height;
-			union Data {
-				unsigned char* pal; //< palette indexes; left to right, top to bottom ordering
-				Color* rgba; //< color pixels; left to right, bottom to top ordering
-			} data;
-		};
+	/** Image data. */
+	struct Image {
+		ImageType type;
+		unsigned short width;
+		unsigned short height;
+		union Data {
+			unsigned char* pal; //< palette indexes; left to right, top to bottom ordering
+			Color* rgba; //< color pixels; left to right, bottom to top ordering
+		} data;
+	};
 #pragma pack(pop)
 
-	protected:
-		bool readImagePal(std::istream& s, unsigned int idx);
-		bool readImageRgba(std::istream& s, unsigned int idx);
-		void reset();
+protected:
+	bool readImagePal(std::istream& s, unsigned int idx);
+	bool readImageRgba(std::istream& s, unsigned int idx);
+	void reset();
 
-		Arr<Image> m_imagesPal;
-		Arr<Image> m_imagesRgba;
-		RO::PAL* m_pal;
+	Arr<Image> m_imagesPal;
+	Arr<Image> m_imagesRgba;
+	PAL* m_pal;
 
-	public:
-		SPR();
-		virtual ~SPR();
+public:
+	SPR();
+	virtual ~SPR();
 
-		virtual bool readStream(std::istream& s);
+	virtual bool readStream(std::istream& s);
 
-		/** Returns the number of images */
-		unsigned int getImageCount(ImageType type) const;
-		/** Returns the total number of images */
-		unsigned int getImageCount() const;
+	/** Returns the number of images */
+	unsigned int getImageCount(ImageType type) const;
+	/** Returns the total number of images */
+	unsigned int getImageCount() const;
 
-		/** Returns the image data or NULL if not found */
-		const Image* getImage(unsigned int idx, ImageType type) const;
-		/** Returns the image data or NULL if not found */
-		const Image* getImage(unsigned int idx) const;
+	/** Returns the image data or NULL if not found */
+	const Image* getImage(unsigned int idx, ImageType type) const;
+	/** Returns the image data or NULL if not found */
+	const Image* getImage(unsigned int idx) const;
 
-		/** Returns the index of an image or -1 if not valid (pal images, then rgba images) */
-		unsigned int getIndex(unsigned int idx, ImageType type) const;
+	/** Returns the index of an image or -1 if not valid (pal images, then rgba images) */
+	unsigned int getIndex(unsigned int idx, ImageType type) const;
 
-		/** Returns the palette or NULL if not found */
-		const RO::PAL* getPal() const;
+	/** Returns the palette or NULL if not found */
+	const PAL* getPal() const;
 
-		bool saveBMP(unsigned int idx, std::ostream& s, ImageType type=PalType, const RO::PAL* pal=NULL) const;
-		bool saveBMP(unsigned int idx, const std::string& fn, ImageType type=PalType, const RO::PAL* pal=NULL) const;
-		/** Saves all images of the same type in a single file */
-		bool saveBMP(std::ostream& s, ImageType type=PalType, const RO::PAL* pal=NULL) const;
-	};
-}
+	bool saveBMP(unsigned int idx, std::ostream& s, ImageType type=PalType, const PAL* pal=NULL) const;
+	bool saveBMP(unsigned int idx, const std::string& fn, ImageType type=PalType, const PAL* pal=NULL) const;
+	/** Saves all images of the same type in a single file */
+	bool saveBMP(std::ostream& s, ImageType type=PalType, const PAL* pal=NULL) const;
+};
+
+} /* namespace ro */
 
 #endif /* __RO_TYPES_SPR_H */
 
