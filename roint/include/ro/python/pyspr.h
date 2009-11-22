@@ -30,13 +30,18 @@
 namespace ro {
 extern "C" {
 
-ROINT_DLLAPI SPR* new_SPR();
-ROINT_DLLAPI void del_SPR(SPR*);
-ROINT_DLLAPI bool read_SPR(SPR*, const char*);
-ROINT_DLLAPI unsigned int getImageCount_SPR(const SPR*, int type);
-ROINT_DLLAPI const SPR::Image* getImage_SPR(const SPR*, int idx, int type);
-ROINT_DLLAPI const PAL* getPal_SPR(const SPR*);
-ROINT_DLLAPI bool saveBMP_SPR(const SPR* spr, int idx, const char* fn, int type, const PAL* pal);
+ROINT_DLLAPI SPR* SPR_new();
+ROINT_DLLAPI void SPR_del(SPR* spr);
+ROINT_DLLAPI void SPR_copy(SPR* spr, const SPR* other);
+
+ROINT_DLLAPI unsigned char SPR_read(SPR* spr, const char* fn);
+ROINT_DLLAPI unsigned char SPR_isValid(const SPR* spr);
+ROINT_DLLAPI unsigned int SPR_getImageCount(const SPR* spr);
+ROINT_DLLAPI unsigned int SPR_getImageCountByType(const SPR* spr, unsigned char type);
+ROINT_DLLAPI const SPR::Image* SPR_getImage(const SPR* spr, unsigned int idx);
+ROINT_DLLAPI const SPR::Image* SPR_getImageByType(const SPR* spr, unsigned int idx, unsigned char type);
+ROINT_DLLAPI unsigned int SPR_getIndex(const SPR* spr, unsigned idx, unsigned char type);
+ROINT_DLLAPI const PAL* SPR_getPal(const SPR* spr);
 
 } /* extern "C" */
 } /* namespace ro */

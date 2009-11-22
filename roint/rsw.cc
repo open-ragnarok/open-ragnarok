@@ -26,6 +26,8 @@
 #include "ro/types/rsw.h"
 #include "ro/ro.h"
 
+#include <vector>
+
 namespace ro {
 
 /*

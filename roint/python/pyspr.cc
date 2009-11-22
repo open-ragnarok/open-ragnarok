@@ -28,32 +28,48 @@
 
 namespace ro {
 
-SPR* new_SPR() {
+SPR* SPR_new() {
 	return(new SPR());
 }
 
-void del_SPR(SPR* spr) {
+void SPR_del(SPR* spr) {
 	delete(spr);
 }
 
-bool read_SPR(SPR* spr, const char* fn) {
+void SPR_copy(SPR* spr, const SPR* other) {
+	*spr = *other;
+}
+
+unsigned char SPR_read(SPR* spr, const char* fn) {
 	return(spr->read(fn));
 }
 
-unsigned int getImageCount_SPR(const SPR* spr, int type) {
+unsigned char SPR_isValid(const SPR* spr) {
+	return(spr->isValid());
+}
+
+unsigned int SPR_getImageCount(const SPR* spr) {
+	return(spr->getImageCount());
+}
+
+unsigned int SPR_getImageCountByType(const SPR* spr, unsigned char type) {
 	return(spr->getImageCount((SPR::ImageType)type));
 }
 
-const SPR::Image* getImage_SPR(const SPR* spr, int idx, int type) {
+const SPR::Image* SPR_getImage(const SPR* spr, unsigned int idx) {
+	return(spr->getImage(idx));
+}
+
+const SPR::Image* SPR_getImageByType(const SPR* spr, unsigned int idx, unsigned char type) {
 	return(spr->getImage(idx, (SPR::ImageType)type));
 }
 
-const PAL* getPal_SPR(const SPR* spr) {
-	return(spr->getPal());
+unsigned int SPR_getIndex(const SPR* spr, unsigned int idx, unsigned char type) {
+	return(spr->getIndex(idx, (SPR::ImageType)type));
 }
 
-bool saveBMP_SPR(const SPR* spr, int idx, const char* fn, int type, const PAL* pal) {
-	return(spr->saveBMP(idx, fn, (SPR::ImageType)type, pal));
+const PAL* SPR_getPal(const SPR* spr) {
+	return(spr->getPal());
 }
 
 } /* namespace ro */

@@ -63,6 +63,41 @@ SPR::~SPR() {
 	reset();
 }
 
+SPR& SPR::operator = (const SPR &other) {
+	if( this == &other ) {
+		return(*this);
+	}
+	reset();
+	((Object&)*this) = ((const Object&)other);
+	m_imagesPal = other.m_imagesPal;
+	for (unsigned int i = 0; i < m_imagesPal.size(); i++) {
+		Image& image = m_imagesPal[i];
+		unsigned int len = image.width * image.height;
+		if (len > 0) {
+			unsigned char* data = new unsigned char[len];
+			memcpy(data, image.data.pal, len * sizeof(unsigned char));
+			image.data.pal = data;
+		}
+	}
+	m_imagesRgba = other.m_imagesRgba;
+	for (unsigned int i = 0; i < m_imagesRgba.size(); i++) {
+		Image& image = m_imagesRgba[i];
+		unsigned int len = image.width * image.height;
+		if (len > 0) {
+			Color* data = new Color[len];
+			memcpy(data, image.data.rgba, len * sizeof(Color));
+			image.data.rgba = data;
+		}
+	}
+	m_pal = other.m_pal;
+	if (m_pal != NULL) {
+		PAL* pal = new PAL();
+		*pal = *m_pal;
+		m_pal = pal;
+	}
+	return(*this);
+}
+
 bool SPR::readStream(std::istream& s) {
 	reset();
 	if (!readHeader(s)) {

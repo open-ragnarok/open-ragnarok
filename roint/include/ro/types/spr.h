@@ -29,8 +29,6 @@
 #include "../ro_arr.h"
 #include "pal.h"
 
-#include <vector>
-
 namespace ro {
 
 /**
@@ -61,13 +59,13 @@ public:
 
 	/** Image data. */
 	struct Image {
-		ImageType type;
 		unsigned short width;
 		unsigned short height;
 		union Data {
 			unsigned char* pal; //< palette indexes; left to right, top to bottom ordering
 			Color* rgba; //< color pixels; left to right, bottom to top ordering
 		} data;
+		unsigned char type; //< enum ImageType
 	};
 #pragma pack(pop)
 
@@ -83,6 +81,8 @@ protected:
 public:
 	SPR();
 	virtual ~SPR();
+
+	SPR& operator = (const SPR& other);
 
 	virtual bool readStream(std::istream& s);
 

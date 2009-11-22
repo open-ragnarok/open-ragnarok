@@ -21,7 +21,7 @@ class PAL_Color(Structure):
 
   def __ne__(self, other):
     """Inequality operator."""
-    return(not(self == other))
+    return not (self == other)
 
   def __eq__(self, other):
     """Equality operator."""
@@ -70,7 +70,7 @@ class PAL:
     if isinstance(pal, IntType):
       self._copy(self._base, pal) # copy from address
     elif pal is not None:
-      assert isinstance(pal, PAL)
+      assert isinstance(pal, PAL), "expected a PAL instance, got %s" % type(pal)
       self._copy(self._base, pal._base) # copy from PAL
 
   def __del__(self):
@@ -83,15 +83,9 @@ class PAL:
 
   def __eq__(self, other):
     """Equality operator."""
-    if not isinstance(other, PAL):
-      return False
-    if self.isValid() != other.isValid():
-      return False
-    colors = self._getColor(self._base, 0)
-    colors2 = other._getColor(other._base, 0)
-    if colors[:256] != colors2[:256]:
-      return False
-    return True
+    return(isinstance(other, PAL) and
+           self.isValid() == other.isValid() and
+           self._getColor(self._base, 0)[:256] == other._getColor(other._base, 0)[:256])
 
   def read(self, fn):
     """Reads a palette from file."""
