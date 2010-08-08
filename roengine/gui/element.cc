@@ -87,7 +87,8 @@ void Element::_init(Element* parent) {
 	m_visible = true;
 	m_fullscreen = false;
 	m_enabled = true;
-	m_MouseIn = false;
+	m_mouseIn = false;
+	m_mouseDown = false;
 	pos_x = 0;
 	pos_y = 0;
 	MaxLen = 0;
@@ -166,12 +167,12 @@ void Element::Render(unsigned int delay) {
 		glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	float speed = (float)delay / 20.0f;
+	float speed = (float)delay / 4.0f;
 	if(m_stransparent){
-		if(m_opacity > 0.5){
+		if(m_opacity > 0.5) {
 			m_opacity -= 0.006f * speed;
 		}
-		else {
+		if(m_opacity < 0.5) {
 			m_opacity = 0.5f;
 		}
 		glColor4f(1.0f, 1.0f, 1.0f, m_opacity);
@@ -286,6 +287,11 @@ void Element::setPos(const int& x, const int& y) {
 void Element::setSize(const int& w, const int& h) {
 	this->w = w;
 	this->h = h;
+}
+
+void Element::setMovableSize(const int& w, const int& h) {
+	this->mw = w;
+	this->mh = h;
 }
 
 bool Element::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
@@ -503,7 +509,7 @@ Element* Element::loadXml(Element* parent, const TiXmlElement* node, CacheManage
 	if (nodetype == "window") {
 		ret = new GUI::Window(parent, node, cache);
 	}
-	else if(nodetype == "textarea") {
+	else if(nodetype == "textinput") {
 		ret = new GUI::TextInput(parent, node, cache);
 	}
 	else if(nodetype == "label") {
@@ -515,14 +521,26 @@ Element* Element::loadXml(Element* parent, const TiXmlElement* node, CacheManage
 	else if (nodetype == "list") {
 		ret = new GUI::List(parent, node, cache);
 	}
-	else if (nodetype == "progressbar") {
-		ret = new GUI::ProgressBar(parent, node, cache);
+	else if (nodetype == "hpspbar") {
+		ret = new GUI::HpSpBar(parent, node, cache);
 	}
 	else if (nodetype == "buttonbar") {
 		ret = new GUI::ButtonBar(parent, node, cache);
 	}
-	else if (nodetype == "chatwindow") {
+/*	else if (nodetype == "chatwindow") {
 		ret = new GUI::ChatWindow(parent, node, cache);
+	}*/
+	else if (nodetype == "checkbox") {
+		ret = new GUI::CheckBox(parent, node, cache);
+	}
+	else if (nodetype == "dropdownlist") {
+		ret = new GUI::DropDownList(parent, node, cache);
+	}
+	else if (nodetype == "textbox") {
+		ret = new GUI::TextBox(parent, node, cache);
+	}
+	else if (nodetype == "sysbox") {
+		ret = new GUI::SysBox(parent, node, cache);
 	}
 	else {
 		// Default
@@ -600,10 +618,10 @@ bool Element::HandleMouseMove(const int& x, const int& y, const int& dx, const i
 
 	while (itr != m_children.end()) {
 		Element* e = *itr;
-		e->m_MouseIn = false;
+		e->m_mouseIn = false;
 		if (isInside(e, x, y)) {
 			if (e->isVisible()) {
-				e->m_MouseIn = true;
+				e->m_mouseIn = true;
 				e->HandleMouseMove(x - e->getX(), y - e->getY(), dx ,dy);
 			}
 		}
@@ -626,8 +644,10 @@ bool Element::HandleMouseDown(int x, int y, int button) {
 	while (itr != m_children.end()) {
 		Element* e = *itr;
 		if (isInside(e, x, y)) {
-			if (e->isVisible())
+			if (e->isVisible()) {
+				e->m_mouseDown = true;
 				return(e->HandleMouseDown(x - e->getX(), y - e->getY(), button));
+			}
 		}
 		itr++;
 	}
@@ -644,8 +664,12 @@ bool Element::HandleMouseRelease(int x, int y, int button) {
 
 	while (itr != m_children.end()) {
 		Element* e = *itr;
-		if (isInside(e, x, y))
-			return(e->HandleMouseRelease(x - e->getX(), y - e->getY(), button));
+		if (isInside(e, x, y)) {
+			if (e->isVisible()) {
+				return(e->HandleMouseRelease(x - e->getX(), y - e->getY(), button));
+			}
+		}
+		e->m_mouseDown = false;
 		itr++;
 	}
 
@@ -702,6 +726,18 @@ const Element* Element::getActiveChild() const {
 	return(m_active_child);
 }
 
+Element* Element::getChildMousePos(int x, int y) {
+	std::vector<Element*>::iterator itr = m_children.begin();
+	while (itr != m_children.end()) {
+		Element *e = *itr;
+		if (e->isVisible() && isInside(e, x - pos_x, y - pos_y)) {
+			return e->getChildMousePos(x - pos_x, y - pos_y);
+		}
+		itr++;
+	}
+	return this;
+}
+
 Element* Element::getElement(const std::string& name) {
 	return(m_elements.get(name));
 }
@@ -727,7 +763,7 @@ bool Element::isEnabled() const {
 }
 
 void Element::SetMouseInFlag(bool flag) {
-	m_MouseIn = flag;
+	m_mouseIn = flag;
 }
 
 void Element::WindowSeq(float x, float y, float w, float h, const sdle::Texture& start, const sdle::Texture& mid, const sdle::Texture& end) {
@@ -750,6 +786,33 @@ void Element::WindowSeq(float x, float y, float w, float h, const sdle::Texture&
 
 	// Right edge
 	Window(w - end.getWidth(), y, (float)end.getWidth(), (float)end.getHeight(), end);
+}
+
+void Element::WindowSeq(float x, float y, float w, float h, 
+			   const sdle::Texture& lu, const sdle::Texture& lm, const sdle::Texture& ld,
+			   const sdle::Texture& mu, const sdle::Texture& mm, const sdle::Texture& md,
+			   const sdle::Texture& ru, const sdle::Texture& rm, const sdle::Texture& rd) {
+	float used_y = 0;
+	float available_y;
+
+	// Top line
+	WindowSeq(x, y, w, h, lu, mu, ru);
+	used_y += lu.getHeight();
+	
+	// Checkout how much space we have
+	available_y = h - used_y - ld.getHeight();
+
+	// Draw it.
+	while (available_y > 0) {
+	//	Window(x+used_y, y, (float)mid.getWidth(), (float)mid.getHeight(), mid);
+		WindowSeq(x, y + used_y, w, h, lm, mm, rm);
+		used_y += lm.getHeight();
+		available_y -= lm.getHeight();
+	}
+
+	// Bottom line
+//	Window(w - end.getWidth(), y, (float)end.getWidth(), (float)end.getHeight(), end);
+	WindowSeq(x, h - ld.getHeight(), w, h, ld, md, rd);
 }
 
 

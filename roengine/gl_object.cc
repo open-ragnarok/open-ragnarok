@@ -34,9 +34,9 @@ bool GLObject::isVisible() const {
 void GLObject::BeforeDraw() {
 	glPushMatrix();
 	glTranslatef(pos[0], pos[1], pos[2]);
+	glRotatef(-xrot, 1, 0, 0);
+	glRotatef(-zrot, 0, 0, 1);
 	glRotatef(yrot, 0, 1, 0);
-	glRotatef(zrot, 1, 0, 0);
-	glRotatef(xrot, 0, 0, 1);
 	glScalef(scalex, scaley, scalez);
 	if (m_useTexture) {
 		glEnable(GL_TEXTURE_2D);

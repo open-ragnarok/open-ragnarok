@@ -1567,7 +1567,7 @@ enum CSkill {
 	AM_HEALHOMUN,
 	AM_RESURRECTHOMUN,
 
-	//크루세이더
+	//크루세이큱E
 	CR_TRUST,
 	CR_AUTOGUARD,
 	CR_SHIELDCHARGE,
@@ -1597,7 +1597,7 @@ enum CSkill {
 	MO_CHAINCOMBO,
 	MO_COMBOFINISH,
 
-	//세이지
+	//세이햨E
 	SA_ADVANCEDBOOK,
 	SA_CASTCANCEL,
 	SA_MAGICROD,
@@ -1629,7 +1629,7 @@ enum CSkill {
 	SA_FULLRECOVERY,
 	SA_COMA,
 
-	// 바드, 댄서
+	// 바탛E 덜幕
 	BD_ADAPTATION,
 	BD_ENCORE,
 	BD_LULLABY,
@@ -1660,7 +1660,7 @@ enum CSkill {
 
 	NPC_RANDOMMOVE,
 	NPC_SPEEDUP,
-	NPC_REVENGE, //임시루 여기에~
+	NPC_REVENGE, //임시톩E여기에~
 
 	// Wedding Patch
 	WE_MALE,
@@ -1753,7 +1753,7 @@ enum CSkill {
 	CG_MOONLIT,
 	CG_MARIONETTE,
 
-	// 전승 스킬 (2차)
+	// 픸E� 스킬 (2혖E
 	LK_SPIRALPIERCE,
 	LK_HEADCRUSH,
 	LK_JOINTBEAT,
@@ -1772,7 +1772,7 @@ enum CSkill {
 	WE_CALLPARENT,
 	WE_CALLBABY,
 
-	// 태권소년
+	// 태권소퀋E
 	TK_RUN,
 	TK_READYSTORM,
 	TK_STORMKICK,
@@ -1790,7 +1790,7 @@ enum CSkill {
 	TK_SEVENWIND,
 	TK_HIGHJUMP,
 
-	// 성투사
+	// 성투퍊E
 	SG_FEEL,
 	SG_SUN_WARM,
 	SG_MOON_WARM,
@@ -1810,7 +1810,7 @@ enum CSkill {
 	SG_KNOWLEDGE,
 	SG_FUSION,
 
-	// 소울링커
+	// 소퓖E돨�
 	SL_ALCHEMIST,
 	AM_BERSERKPITCHER,
 	SL_MONK,
@@ -2478,10 +2478,16 @@ ROINT_DLLAPI extern char user_interface[];
 
 ROINT_DLLAPI extern char body[];
 ROINT_DLLAPI extern char head[];
+ROINT_DLLAPI extern char head2[]; // Used by palette
 ROINT_DLLAPI extern char weapons[];
 
 ROINT_DLLAPI extern char humans[]; // Human family
 ROINT_DLLAPI extern char monsters[];
+
+ROINT_DLLAPI extern char shields[];
+ROINT_DLLAPI extern char items[];
+ROINT_DLLAPI extern char accesories[];
+ROINT_DLLAPI extern char effects[];
 
 ROINT_DLLAPI extern char water[];
 

@@ -15,6 +15,10 @@ GUI::Dialog::Dialog(const std::string& title, const std::string& msg, CacheManag
 	if (texture.Valid()) {
 		setSize(texture.getWidth(), texture.getHeight());
 	}
+	setMovableSize(280, 17);
+
+	label = new Label(this, NULL, cache);
+	label->setText(msg);
 
 	btnOk = new Button(this, Gui::getSingleton().getMsgboxOk(), cache);
 	btnOk->setName("dialog/btnOk");
@@ -25,6 +29,8 @@ GUI::Dialog::Dialog(const std::string& title, const std::string& msg, CacheManag
 	btnExit = new Button(this, Gui::getSingleton().getMsgboxExit(), cache);
 	btnExit->setName("dialog/btnExit");
 
+	label->setPos(10, 40);
+
 	btnOk->setPos(this->getW() - btnOk->getW() - btnCancel->getW() - 10, this->getH() - btnOk->getH() - 5);
 	btnCancel->setPos(this->getW() - btnCancel->getW() - 5, this->getH() - btnCancel->getH() - 5);
 	
@@ -32,6 +38,7 @@ GUI::Dialog::Dialog(const std::string& title, const std::string& msg, CacheManag
 	btnCancel->setVisible(true);
 	btnExit->setVisible(false);
 
+	m_children.push_back(label);
 	m_children.push_back(btnOk);
 	m_children.push_back(btnCancel);
 	m_children.push_back(btnExit);

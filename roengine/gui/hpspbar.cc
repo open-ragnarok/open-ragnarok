@@ -1,18 +1,18 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include "roengine/gui/progressbar.h"
+#include "roengine/gui/hpspbar.h"
 #include "roengine/gui/event.h"
 #include "roengine/gui/gui.h"
 
 namespace GUI {
 
-ProgressBar::ProgressBar(Element* parent) : Element(parent) {
+HpSpBar::HpSpBar(Element* parent) : Element(parent) {
 	m_value = 0;
 	m_maxvalue = 0;
 }
 
-ProgressBar::ProgressBar(Element* parent, const sdle::Texture& start, const sdle::Texture& mid, const sdle::Texture& end) : Element(parent) {
+HpSpBar::HpSpBar(Element* parent, const sdle::Texture& start, const sdle::Texture& mid, const sdle::Texture& end) : Element(parent) {
 	texture_start = start;
 	texture_mid = mid;
 	texture_end = end;
@@ -20,7 +20,7 @@ ProgressBar::ProgressBar(Element* parent, const sdle::Texture& start, const sdle
 	m_maxvalue = 0;
 }
 
-ProgressBar::ProgressBar(Element* parent, const std::string& start, const std::string& mid, const std::string& end, CacheManager& cache) : Element(parent) {
+HpSpBar::HpSpBar(Element* parent, const std::string& start, const std::string& mid, const std::string& end, CacheManager& cache) : Element(parent) {
 	texture_start = cache.getTextureManager().Register(cache.getFileManager(), start);
 	texture_mid = cache.getTextureManager().Register(cache.getFileManager(), mid);
 	texture_end = cache.getTextureManager().Register(cache.getFileManager(), end);
@@ -28,7 +28,7 @@ ProgressBar::ProgressBar(Element* parent, const std::string& start, const std::s
 	m_maxvalue = 0;
 }
 
-ProgressBar::ProgressBar(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
+HpSpBar::HpSpBar(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
 	m_value = 0;
 	m_maxvalue = 0;
 
@@ -36,7 +36,7 @@ ProgressBar::ProgressBar(Element* parent, const TiXmlElement* node, CacheManager
 		ParseFromXml(node, cache);
 }
 
-bool ProgressBar::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
+bool HpSpBar::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
 	if (Element::ParseXmlAttr(attr, cache))
 		return(true);
 
@@ -69,7 +69,7 @@ bool ProgressBar::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) 
 	return(false);
 }
 
-void ProgressBar::Draw(unsigned int delay) {
+void HpSpBar::Draw(unsigned int delay) {
 	int bar_w = 0;
 	int used_w = 0;
 
@@ -120,19 +120,19 @@ void ProgressBar::Draw(unsigned int delay) {
 	Window((float)(used_w), (float)0, (float)texture_end.getWidth(), (float)texture_end.getHeight(), texture_end);
 }
 
-void ProgressBar::setValue(int value) {
+void HpSpBar::setValue(int value) {
 	m_value = value;
 }
 
-void ProgressBar::setMaxValue(int maxvalue) {
+void HpSpBar::setMaxValue(int maxvalue) {
 	m_maxvalue = maxvalue;
 }
 
-int ProgressBar::getValue() const {
+int HpSpBar::getValue() const {
 	return(m_value);
 }
 
-int ProgressBar::getMaxValue() const {
+int HpSpBar::getMaxValue() const {
 	return(m_maxvalue);
 }
 

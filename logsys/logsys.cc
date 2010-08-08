@@ -10,6 +10,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
 
 LogSys* LogSys::m_singleton = NULL;
 
@@ -57,7 +60,6 @@ LogSys& LogSys::setActive(t_logid identifier, bool active) {
 	return(*this);
 }
 
-
 LogSys& LogSys::log(t_logid identifier, const char* fmt, ...) {
 	if (!m_active[identifier])
 		return(*this);
@@ -74,7 +76,44 @@ LogSys& LogSys::log(t_logid identifier, const char* fmt, ...) {
 
 	if (m_prefixes[identifier] != "") {
 		if (out == stdout || out == stderr) {
+#ifdef _MSC_VER
+			HANDLE hStdout;
+			WORD wAttributes;
+			CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+			if (out == stdout)
+				hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+			else if (out == stderr)
+				hStdout = GetStdHandle(STD_ERROR_HANDLE);
+			GetConsoleScreenBufferInfo(hStdout, &csbi);
+
+			switch(identifier & 0x07) {
+			case 1: // Debug
+				wAttributes = FOREGROUND_GREEN;
+				break;
+			case 2: // Error
+				wAttributes = FOREGROUND_RED;
+				break;
+			case 3: // Trace
+				wAttributes = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE; // White
+				break;
+			case 4: // Warning
+				wAttributes = FOREGROUND_RED | FOREGROUND_GREEN;
+				break;
+			default:
+				wAttributes = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE; // White
+				break;
+			}
+			wAttributes = wAttributes | FOREGROUND_INTENSITY;
+
+			SetConsoleTextAttribute(hStdout, wAttributes);
+			fprintf(out, "[%s] ", m_prefixes[identifier].c_str());
+			SetConsoleTextAttribute(hStdout, csbi.wAttributes);
+
+			fprintf(out, "%s\n", msg);
+#else
 			fprintf(out, "[%s%s%s] %s\n", CL_BOLD, m_prefixes[identifier].c_str(), CL_RESET, msg);
+#endif
 		}
 		else {
 			fprintf(out, "[%s] %s\n", m_prefixes[identifier].c_str(), msg);
@@ -108,19 +147,11 @@ LogSys& LogSys::hexlog(t_logid identifier, const unsigned char* buf, unsigned in
 	if (m_outputs.find(identifier) != m_outputs.end())
 		out = m_outputs[identifier];
 
-	char pfx[32];
-	if (m_prefixes[identifier] != "") {
-		if (out == stdout || out == stderr) {
-			sprintf(pfx, "[%s%s%s] ", CL_BOLD, m_prefixes[identifier].c_str(), CL_RESET);
-		}
-		else {
-			sprintf(pfx, "[%s] ", m_prefixes[identifier].c_str());
-		}
-	}
-	else {
-		pfx[0] = 0;
-	}
-
+	log(identifier, "Hex dump %d byte(s)", buflen);
+//	fprintf(out, "---------------------------------------------------------------------------\n");
+	fprintf(out, ".... | +0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F | 01234567 89ABCDEF\n");
+//	fprintf(out, "-----|--------------------------------------------------|------------------\n");
+//	fprintf(out, "---- | -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- -- | -------- --------\n");
 
 	unsigned int pos = 0;
 	unsigned int tbufpos = 0;
@@ -135,7 +166,7 @@ LogSys& LogSys::hexlog(t_logid identifier, const unsigned char* buf, unsigned in
 			if (pos > 0) {
 				fprintf(out, "| %s\n", tbuf);
 			}
-			fprintf(out, "%s%04x | ", pfx, pos);
+			fprintf(out, "%04x | ", pos);
 			tbufpos = 0;
 		}
 		else if (pos % 8 == 0) {
@@ -158,6 +189,7 @@ LogSys& LogSys::hexlog(t_logid identifier, const unsigned char* buf, unsigned in
 	}
 	tbuf[tbufpos] = 0;
 	fprintf(out, "| %s\n", tbuf);
+//	fprintf(out, "---------------------------------------------------------------------------\n");
 	fflush(out);
 	return(*this);
 }

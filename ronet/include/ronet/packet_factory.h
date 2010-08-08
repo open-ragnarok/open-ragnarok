@@ -86,9 +86,11 @@ namespace ronet {
 		DECL(SkillList);
 		DECL(MapMoveOk);
 		DECL(PlayerEquip);
+		DECL(ItemGained);
+		DECL(ItemLost);
 		DECL(InventoryItems);
 		DECL(InventoryItemsStackable);
-		DECL(StatInfo);
+		//DECL(StatInfo);
 		//DECL(StatInfo2);
 		DECL(HotkeyList);
 		DECL(ZenyExp);
@@ -101,10 +103,16 @@ namespace ronet {
 		DECL(RecvNpcTalkClose);
 		DECL(RecvNpcTalkResponses);
 		DECL(RecvNpcInputReq);
+		DECL(RecvNpcImage2);
 		DECL(MapChange);
 		DECL(ActorMove);
 		DECL(ActorAction);
 		DECL(ActorStop);
+		DECL(RestartCharSelect);
+		DECL(StatusUpAck);
+		DECL(Emotion);
+		DECL(NotifyEffect1);
+		DECL(QuitAck);
 
 		// Guild
 		//DECL(GuildAlliesEnemiesList);

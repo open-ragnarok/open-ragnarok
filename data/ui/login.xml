@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <desktop name="login_ui" texture="rag_title.bmp">
 	<!-- $Id$ -->
-	<window name="login_window" texture="login_interface\win_login.bmp" x="-1" y="-1" mw = "250" mh="18">
-		<textarea name="login_window/login" x="95" y="29" w="120" h="18" MaxLen="120" />
-		<textarea name="login_window/password" x="95" y="61" w="120" h="18" MaxLen="120" />
-		<button name="login_window/btnConnect" x="180" y="96" texture="login_interface\btn_connect.bmp" active="login_interface\btn_connect_a.bmp" hover="login_interface\btn_connect_b.bmp" />
-		<button name="login_window/btnCancel" x="230" y="96" texture="login_interface\btn_cancel.bmp" active="btn_cancel_a.bmp" hover="btn_cancel_b.bmp" />
+	<window name="login_window" texture="login_interface\win_login.bmp" x="-1" y="-1" mw = "280" mh="17">
+		<textinput name="login_window/login" x="95" y="29" w="120" h="18" MaxLen="120" />
+		<textinput name="login_window/password" x="95" y="61" w="120" h="18" MaxLen="120" />
+		<button name="login_window/btnConnect" x="180" y="96" texture="login_interface\btn_connect.bmp" hover="login_interface\btn_connect_a.bmp" click="login_interface\btn_connect_b.bmp" />
+		<button name="login_window/btnExit" x="230" y="96" texture="login_interface\btn_exit.bmp" hover="btn_exit_a.bmp" click="btn_exit_b.bmp" />
+		<checkbox name="login_window/btnSaveID" x="230" y="32" texture="login_interface\chk_saveoff.bmp" active="login_interface\chk_saveon.bmp" />
 	</window>
 </desktop>

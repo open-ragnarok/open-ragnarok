@@ -17,11 +17,13 @@ public:
 	CharObj();
 	virtual ~CharObj();
 
+//	virtual void setAction(unsigned short);
+
 	virtual void Draw();
 
 	virtual bool valid() const;
 
-	bool open(CacheManager& cache, ro::CJob job, ro::CSex sex = ro::S_MALE);
+	bool open(CacheManager& cache, ro::CJob job, ro::CSex sex = ro::S_MALE, int hair = 1);
 };
 
 #endif /* __ROENGINE_CHAROBJ_H */

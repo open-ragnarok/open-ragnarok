@@ -22,6 +22,7 @@ protected:
 	FullAct heads[CHAR_SLOT_COUNT];
 
 	virtual void afterDraw(unsigned int delay);
+	void updateButtonState();
 
 	GUI::Label* lblStr;
 	GUI::Label* lblAgi;
@@ -40,6 +41,8 @@ protected:
 public:
 	DesktopChar(OpenRO*);
 
+	bool HandleKeyDown(SDL_Event *sdlEvent, int mod);
+
 	bool handleSelect(GUI::Event&);
 	bool handleCancel(GUI::Event&);
 	bool handleBack(GUI::Event&);
@@ -49,6 +52,7 @@ public:
 	void addChar(const CharInformation&);
 	void delChar(unsigned int pos);
 	void delAllChars();
+	const CharInformation& getChar(int index);
 
 	void setInfo(int i);
 	bool setSelected(int m_selected);

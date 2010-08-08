@@ -39,6 +39,7 @@ protected:
 	DesktopCreate* dskCreate;
 	DesktopChar* dskChar;
 	DesktopIngame* dskIngame;
+//	DesktopLoading* dskLoading;
 	GUI::Desktop* dskLoading;
 
 	// Useful Packets
@@ -48,6 +49,8 @@ protected:
 	void ProcessNetwork();
 
 	//Add new packets here
+	HNDL_DECL(ItemGained);
+	HNDL_DECL(ItemLost);
 	HNDL_DECL(InventoryItems);
 	HNDL_DECL(HpUpdateParty);
 	HNDL_DECL(OtherSpeech);
@@ -76,12 +79,19 @@ protected:
 	HNDL_DECL(RecvNpcTalk);
 	HNDL_DECL(RecvNpcTalkNext);
 	HNDL_DECL(RecvNpcTalkClose);
+	HNDL_DECL(RecvNpcImage2);
 	HNDL_DECL(MapChange);
 	HNDL_DECL(RecvNpcInputReq);
 	HNDL_DECL(RecvNpcTalkResponses);
 	HNDL_DECL(ActorMove);
 	HNDL_DECL(ActorStop);
 	HNDL_DECL(ActorAction);
+	HNDL_DECL(ZenyExp);
+	HNDL_DECL(RestartCharSelect);
+	HNDL_DECL(StatusUpAck);
+	HNDL_DECL(Emotion);
+	HNDL_DECL(StatsInfo);
+	HNDL_DECL(QuitAck);
 
 	int m_charslot;
 
@@ -160,6 +170,8 @@ public:
 
 	/** Event received from ROEngine */
 	virtual void clickNpc(int x, int y, NpcObj* npc);
+
+	void Restart(unsigned char type);
 };
 
 #endif /* __OPENRO_H */

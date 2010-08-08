@@ -171,15 +171,18 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 
     WindowResize();
     glLoadIdentity();
+	GLFFont::Arabia8 = new GLFFont(glf_arabia8, glf_arabia8_size);
+	GLFFont::Arial8 = new GLFFont(glf_arial8, glf_arial8_size);
+	GLFFont::Arial10 = new GLFFont(glf_arial10, glf_arial10_size);
     AfterInit();
 
 	// Reset keys
 	for (int i = 0; i < 1024; i++)
 		keys[i] = false;
 
-	GLFFont::Arabia8 = new GLFFont(glf_arabia8, glf_arabia8_size);
+/*	GLFFont::Arabia8 = new GLFFont(glf_arabia8, glf_arabia8_size);
 	GLFFont::Arial8 = new GLFFont(glf_arial8, glf_arial8_size);
-	GLFFont::Arial10 = new GLFFont(glf_arial10, glf_arial10_size);
+	GLFFont::Arial10 = new GLFFont(glf_arial10, glf_arial10_size);*/
 
     return (true);
 }
@@ -220,6 +223,9 @@ void SDLEngine::WindowResize() {
     glLoadIdentity();
     float ratio = (float) m_width / (float) m_height;
     gluPerspective(45.0f, ratio, near_clip, far_clip);
+//	glOrtho(-m_width / 2, m_width / 2, -m_height / 2, m_height / 2, near_clip, far_clip);
+//	glOrtho(-600, 600, -400, 400, near_clip, far_clip);
+//    gluOrtho2D(0, 100, 100, 0);
     //printf("gluPerspetive(%f,%f,%f,%f)\n",45.0f, ratio, near_clip, far_clip);
     glMatrixMode(GL_MODELVIEW);
 }

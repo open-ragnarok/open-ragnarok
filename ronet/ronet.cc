@@ -253,4 +253,30 @@ bool RONet::sendAction(int id, unsigned char flag) {
 	return(true);
 }
 
+bool RONet::Restart(unsigned char type) {
+	ronet::pktRestart pkt(type);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+bool RONet::StatusUp(short type, char amount) {
+	ronet::pktStatusUp pkt(type, amount);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+bool RONet::Emotion(unsigned char type) {
+	ronet::pktReqEmotion pkt(type);
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
+//bool RONet::Quit(unsigned short type) {
+bool RONet::Quit() {
+//	ronet::pktQuit pkt(type);
+	ronet::pktQuit pkt;
+	pkt >> m_map.bufOutput;
+	return(true);
+}
+
 }

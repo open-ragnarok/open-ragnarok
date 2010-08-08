@@ -146,7 +146,7 @@ bool FTFont::openFromMemory(const char* buffer, unsigned int bufsize, unsigned i
         FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
 
         // See whether the character fits on the current line
-        if(m_widths[ch] > imageWidth - x) {
+        if(m_widths[ch] >= imageWidth - x) {
             x = MARGIN;
             y += (maxAscent + maxDescent + MARGIN);
         }

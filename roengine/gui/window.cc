@@ -28,6 +28,7 @@ void GUI::Window::setCaption(const std::string& n) {
 
 bool GUI::Window::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	SDLKey key = sdlEvent->key.keysym.sym;
+
 	if (key != SDLK_TAB) {
 		if (m_parent != NULL)
 			return(m_parent->HandleKeyDown(sdlEvent, mod));

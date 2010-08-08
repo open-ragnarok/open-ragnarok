@@ -8,8 +8,8 @@ namespace GUI {
 	class Button : public Element {
 	protected:
 		sdle::Texture texture_base;
-		sdle::Texture texture_active;
 		sdle::Texture texture_hover;
+		sdle::Texture texture_click;
 		sdle::Texture texture_disabled;
 
 		virtual bool ParseXmlAttr(const TiXmlAttribute*, CacheManager&);
@@ -35,12 +35,16 @@ namespace GUI {
 		 */
 		Button(Element* parent, const std::string& background, CacheManager&);
 
+		virtual Type getType() { return typeButton; }
+
 		virtual void Draw(unsigned int delay = 0);
 
+		void Down();
 		void Click();
 
 		virtual bool HandleMouseDown(int x, int y, int button);
-		virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);
+		virtual bool HandleMouseRelease(int x, int y, int button);
+	//	virtual bool HandleKeyDown(SDL_Event *sdlEvent, int mod = 0);
 		virtual void onGetFocus();
 		virtual void onLoseFocus();
 	};

@@ -19,6 +19,7 @@ namespace GUI {
 			evtMouseIn,
 			evtMouseOut,
 			evtMouseMove,
+			evtMouseDown,
 			evtDialog,
 			evtUnknown
 		} Type;

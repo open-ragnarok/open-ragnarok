@@ -15,16 +15,16 @@ typedef struct _Node {
 }NODE;
 
 typedef struct _TextEditor {
-	SDL_Surface	*Surface;           //目标表面
-	//sdle::Font	*Font;              //字体
+	SDL_Surface	*Surface;           //目眮E丒
+	//sdle::Font	*Font;              //字虂E
 
 	NODE		*Head;             //一行文字的开始
 	NODE		*Start;            //一行文字的开始
-	NODE		*Current;          //当前节点, 按左右等键移动此节点
-	NODE		*select1;          //按住选择结点1
-	NODE		*select2;          //按住选择结点2
+	NODE		*Current;          //当前节祦E 按左右等紒E贫私诘丒
+	NODE		*select1;          //按住选择结祦E
+	NODE		*select2;          //按住选择结祦E
         
-	bool		Text_Changed;      //文件是否已改变, FALSE没有改变, TURE已改变       
+	bool		Text_Changed;      //文件是否已改眮E FALSE没有改眮E TURE已改眮E      
         
 	Sint16		x;
 	Sint16		y;
@@ -49,13 +49,17 @@ typedef struct {
 /** GUI object for inputing text */
 class TextInput : public Label {
 protected:
-	static unsigned int cursor_delay;//当前光标闪烁等待时间
+	static unsigned int cursor_delay;//当前光眮E了傅却奔丒
 	/** Cursor Position */
 	unsigned int m_pos;
 	/** Cursor selection start */
+	int selStart, selEnd;
+	int len;
 	unsigned int m_start;
 	unsigned int m_delay;
 	bool m_bar,actived,m_MouseDown;
+	SDLKey m_key;
+	unsigned short repeatingDelay;
 
 public:
 	TextEditor G_Text;
@@ -81,6 +85,7 @@ public:
 
 	bool RemoveLeft();
 	bool RemoveRight();
+	bool RemoveSelected();
 	bool MoveLeft();
 	bool MoveRight();
 	bool MoveStart();

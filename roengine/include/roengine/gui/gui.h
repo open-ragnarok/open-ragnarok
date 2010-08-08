@@ -11,9 +11,15 @@
 #include "textinput.h"
 #include "list.h"
 #include "dialog.h"
-#include "progressbar.h"
-#include "chatwindow.h"
+//#include "progressbar.h"
+//#include "chatwindow.h"
 #include "buttonbar.h"
+#include "dropdownlist.h"
+#include "scrollbar.h"
+#include "textbox.h"
+#include "checkbox.h"
+#include "sysbox.h"
+#include "hpspbar.h"
 
 // Other stuff
 #include "singleton.h"
@@ -105,6 +111,7 @@ public:
 	 */
 	const Desktop* getDesktop() const;
 	Element* getActiveElement();
+	Element* getElementMousePos(int, int);
 
 	/**
 	 * Sets the active desktop to the given object.
@@ -185,6 +192,7 @@ public:
 	//int TextOutEx(IN TTF_Font *Font, IN const LCHAR *Text, IN float x, IN float y,IN float z, IN Uint32 FColor, IN Uint32 BColor, IN Uint8 Alpha);
 	int TextOutEx(TextEditor *G_Text);
 	void ClearFont_Screen(TextEditor *G_Text);
+	int calcTextWidth(const char* text) const;
 
 	/**
 	 * Finds an object of a given name. No two objects can have the same name.

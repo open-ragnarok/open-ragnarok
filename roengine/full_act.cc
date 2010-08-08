@@ -31,7 +31,7 @@ FullAct::FullAct(const ro::ACT* a, const rogl::SprGL& spr) {
 	m_spr = spr;
 }
 
-bool FullAct::Load(const std::string& name, CacheManager& cache) {
+bool FullAct::Load(const std::string& name, CacheManager& cache, const ro::PAL* pal) {
 	ROObjectCache& objects = cache.getROObjects();
 	FileManager& fm = cache.getFileManager();
 	TextureManager& tm = cache.getTextureManager();
@@ -47,7 +47,7 @@ bool FullAct::Load(const std::string& name, CacheManager& cache) {
 	}
 
 	if (!cache.getSprGLObjects().exists(spr_n)) {
-		if (!cache.getSprGLObjects().Load(spr_n, objects, fm))
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm, pal))
 			return(false);
 	}
 
@@ -77,7 +77,7 @@ const rogl::SprGL& FullAct::getSpr() const {
 	return(m_spr);
 }
 
-void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, bool ext, const FullAct* parent, bool v_mirror, bool cross) {
+void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, bool ext, const FullAct* parent, bool v_mirror, bool cross, float opacity) {
 #define CROSS_SIZE 10
 	unsigned int spr;
 	//float w, h;
@@ -86,12 +86,12 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	
 	if (parent != NULL) {
 		if (parent->getAct() != NULL) {
-			const ro::ACT::Action& pact = parent->getAct()->getAction(act_no);
+		//	const ro::ACT::Action& pact = parent->getAct()->getAction(act_no);
 			const ro::ACT::Motion& pmot = parent->getAct()->getMotion(act_no, pat_no);
 
 			if (pmot.attachPoints.size() > 0) {
-				x = x + pmot.attachPoints[0].x;
-				y = y + pmot.attachPoints[0].y;
+				x += pmot.attachPoints[0].x;
+				y += pmot.attachPoints[0].y;
 			}
 		}
 	}
@@ -108,7 +108,8 @@ void DrawFullAct(const FullAct& act, float x, float y, int act_no, int pat_no, b
 	const ro::ACT::Motion& cmot = act->getMotion(act_no, pat_no);
 
 	for (spr = 0; spr < cmot.getClipCount(); spr++) {
-		act.getSpr().Draw(cmot, spr, x, y, v_mirror, ext);
+//		act.getSpr().Draw(cmot, spr, x, y, v_mirror, ext);
+		act.getSpr().Draw(cmot, spr, x, y, v_mirror, ext, false, opacity);
 
 /*
 		if (cpat[spr].sprNo < 0)

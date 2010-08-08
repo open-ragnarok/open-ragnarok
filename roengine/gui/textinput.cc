@@ -21,6 +21,10 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, CacheManager& 
 	m_bar = true;
 	actived = false;
 	SelectFlag = false;
+	m_key = SDLK_UNKNOWN;
+
+	selStart = selEnd = 0;
+	len = 0;
 
 	m_MouseDown = FALSE;
 
@@ -39,7 +43,8 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, CacheManager& 
 	G_Text.SFColor   = SDL_WHITE;
 	G_Text.SBColor   = SDL_BLUE;
 	G_Text.Alpha    = SDL_OPACITY;
-	G_Text.m_text   = (LCHAR*)calloc(MaxLen+sizeof(LCHAR), sizeof(LCHAR));
+//	G_Text.m_text   = (LCHAR*)calloc(MaxLen+sizeof(LCHAR), sizeof(LCHAR));
+	G_Text.m_text   = (LCHAR*)calloc(MaxLen + 1, sizeof(LCHAR));
 
 	// TODO: put this in the FontManager
 	//sdle::FTFont *font = new sdle::FTFont();
@@ -60,6 +65,34 @@ void GUI::TextInput::Draw(unsigned int delay) {
 	//GetStringFromNode();
 	float color[4];
 	glGetFloatv(GL_CURRENT_COLOR, color);
+
+	if (1) {
+		glDisable(GL_TEXTURE_2D);
+
+		//glColor4f(0, 0.1, 1, 0.6f);
+#if 0
+	/*	bool sel = false;
+		for (int i = 0; i < G_Text.Len; i++) {
+			if (sel && !G_Text.Start[i].selected)
+				break;
+			if (G_Text.Start[i].selected)
+				sel = true;
+		}*/
+		glColor4f(0.482352941f, 0.580392157f, 0.803921569f, color[3]);
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glBegin(GL_QUADS);
+		glVertex3i(x+selStart, 3, 0);
+		glVertex3i(x+selStart, 15, 0);
+		glVertex3i(x+selEnd*6, 15, 0);
+		glVertex3i(x+selEnd*6, 3, 0);
+		glEnd();
+		//glDisable(GL_BLEND);
+#endif
+		glColor4fv(color);
+
+		glEnable(GL_TEXTURE_2D);
+	}
 
 	gui.TextOutEx(&G_Text);
 
@@ -147,20 +180,21 @@ bool GUI::TextInput::HandleMouseDown(int x, int y, int button) {
 
 void GUI::TextInput::onGetFocus() {
 	actived = true;
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 void GUI::TextInput::onLoseFocus() {
 	actived = false;
+	SDL_EnableKeyRepeat(0, 0);
 }
 
 bool GUI::TextInput::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
 
 	SDLKey key = sdlEvent->key.keysym.sym;
 
-	if(key == SDLK_RSHIFT)
+	if(key == SDLK_LSHIFT || key == SDLK_RSHIFT) 
 		SelectFlag = false;
-	else if(key == SDLK_LSHIFT)
-		SelectFlag = false;
+
 	if (m_parent == NULL)
 		return(false);
 	return(m_parent->HandleKeyUp(sdlEvent, mod));
@@ -169,10 +203,21 @@ bool GUI::TextInput::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
 bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	SDLKey key = sdlEvent->key.keysym.sym;
 
+	if (m_key == key)
+    // Determine if shift is held for selection.  
+ //   if( (mod & KMOD_LSHIFT) || (mod & KMOD_RSHIFT) )  
+	if(key == SDLK_LSHIFT || key == SDLK_RSHIFT) 
+		SelectFlag = true;  
+ 
+    // Detect keypresses.  
 	if(key == SDLK_BACKSPACE)
 		RemoveLeft();
-	else if(key == SDLK_DELETE)
-		RemoveRight();
+	else if(key == SDLK_DELETE) {
+		if (SelectFlag)
+			RemoveSelected();
+		else
+			RemoveRight();
+	}
 	else if(key == SDLK_LEFT)            
 		MoveLeft();
 	else if(key == SDLK_RIGHT)
@@ -181,23 +226,69 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 		MoveStart();
 	else if(key == SDLK_END)
 		MoveEnd();
-	else if(mod & KMOD_LSHIFT)
-		SelectFlag = true;
-	else if(mod & KMOD_RSHIFT)
-		SelectFlag = true;
+	// Catch modifier key presses.
+	else if(key == SDLK_LSHIFT || key == SDLK_RSHIFT);
+	else if(key == SDLK_LCTRL || key == SDLK_RCTRL);
+	else if(key == SDLK_LALT || key == SDLK_RALT);
+	else if(key == SDLK_LMETA || key == SDLK_RMETA);
+	else if(key == SDLK_LSUPER || key == SDLK_RSUPER);
+	else if(key == SDLK_ESCAPE);
+	else if(key == SDLK_PRINT || key == SDLK_SCROLLOCK || key == SDLK_PAUSE);
+	else if(key >= SDLK_F1 && key <= SDLK_F15);
+	else if(key == SDLK_NUMLOCK);
+	else if(key == SDLK_TAB);
+	else if(key == SDLK_MENU);
+	else if(key == SDLK_PAGEDOWN || key == SDLK_PAGEUP);
+	else if(key == SDLK_UNKNOWN);
+	else if(key == SDLK_RETURN);
+	// Detect CTRL+A 
 	else if( (mod & KMOD_LCTRL) && (key == 97 || key == 65 ) )
 		SelectAll();
 	else if( (mod & KMOD_RCTRL) && (key == 97 || key == 65 ) )
 		SelectAll();
+	// Unicode character 
 	else if(sdlEvent->key.keysym.unicode != 0)
 		Insert(sdlEvent->key.keysym.unicode);
+	// Num pad
+	else if(key >= SDLK_KP0 && key <= SDLK_KP9)
+		Insert(sdlEvent->key.keysym.sym - SDLK_KP0 + SDLK_0);
+	else if(key == SDLK_KP_PERIOD)
+		Insert(SDLK_PERIOD);
+	else if(key == SDLK_KP_DIVIDE)
+		Insert(SDLK_SLASH);
+	else if(key == SDLK_KP_MULTIPLY)
+		Insert(SDLK_ASTERISK);
+	else if(key == SDLK_KP_MINUS)
+		Insert(SDLK_MINUS);
+	else if(key == SDLK_KP_PLUS)
+		Insert(SDLK_PLUS);
+	else if(key == SDLK_KP_ENTER);
+	else if(key == SDLK_KP_EQUALS)
+		Insert(SDLK_EQUALS);
+	// Capitalized character  
+	else if( (mod & KMOD_RSHIFT) || (mod & KMOD_LSHIFT) ) {
+		if ((key >= SDLK_1 && key <= SDLK_9)
+		|| (key == SDLK_COLON || key == SDLK_SEMICOLON))
+			Insert(sdlEvent->key.keysym.sym - 16);
+		else if (key >= SDLK_COMMA && key <= SDLK_SLASH)
+			Insert(sdlEvent->key.keysym.sym + 16);
+		else if (key == SDLK_AT)
+			Insert(SDLK_BACKQUOTE);
+		else
+			Insert(toupper(sdlEvent->key.keysym.sym));
+	}
+	// Normal character  
 	else
 		Insert(sdlEvent->key.keysym.sym);
 
 	printf("Text input:\t");
 	printf("Unicode: %d\t", sdlEvent->key.keysym.unicode);
-	printf("Sym: %d", sdlEvent->key.keysym.sym);
-	printf("Char: [%c]", sdlEvent->key.keysym.sym);
+	printf("Sym: %3d\t", sdlEvent->key.keysym.sym);
+	if (sdlEvent->key.keysym.sym < SDLK_SPACE || sdlEvent->key.keysym.sym >= SDLK_DELETE)
+		printf("Char: [ ]\t");  
+	else
+		printf("Char: [%c]\t", sdlEvent->key.keysym.sym);  
+	printf("SelectFlag: %s", (SelectFlag)?"T":"F");  
 	printf("\n");
 
 
@@ -207,9 +298,12 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 }
 
 //==================================================================================
-// 从结构key.keysym.unicode插入字符
+// 从结构key.keysym.unicode插葋E址丒
 //==================================================================================
 bool GUI::TextInput::Insert(Uint16 Ch) {
+	m_key = (SDLKey)Ch;
+	len++;
+
 	NODE *tmp;
 	if (G_Text.Len <= 0)
 		return false;
@@ -265,7 +359,7 @@ bool GUI::TextInput::Insert(Uint16 Ch) {
 	return true;
 }
 //==================================================================================
-// 新的节点
+// 新的节祦E
 //==================================================================================
 NODE* GUI::TextInput::NewNode(OUT NODE *Front, OUT NODE *Behind, IN LCHAR Ch) {
 	NODE *Tmp = (NODE*)malloc(sizeof(NODE));
@@ -309,7 +403,7 @@ void GUI::TextInput::GetStringFromNode(void) {
 	G_Text.m_text[j] = AU('\0');
 }
 //==================================================================================
-// 删除左边一个字符
+// 删除左边一个字穪E
 //==================================================================================
 bool GUI::TextInput::RemoveLeft(void) {
 	NODE *tmp;
@@ -354,7 +448,7 @@ bool GUI::TextInput::RemoveLeft(void) {
 	return true;
 }
 //==================================================================================
-// 删除右边一个字符
+// 删除右边一个字穪E
 //==================================================================================
 bool GUI::TextInput::RemoveRight(void) {       
 	NODE *tmp;
@@ -403,8 +497,13 @@ bool GUI::TextInput::RemoveRight(void) {
 	G_Text.Text_Changed = true;
 	return true;
 }
+
+bool GUI::TextInput::RemoveSelected() {
+	return true;
+}
+
 //==================================================================================
-// 左移动一个字符
+// 左移动一个字穪E
 //==================================================================================
 bool GUI::TextInput::MoveLeft(void) {
 	if (G_Text.Start == NULL || G_Text.Current == NULL) {
@@ -424,7 +523,7 @@ bool GUI::TextInput::MoveLeft(void) {
 	return true;
 }
 //==================================================================================
-// 右移动一个字符
+// 右移动一个字穪E
 //==================================================================================
 bool GUI::TextInput::MoveRight(void) {
 	if (G_Text.Start == NULL) {
@@ -480,7 +579,7 @@ void GUI::TextInput::FreeString(void) {
 	free(G_Text.m_text);
 }
 //==================================================================================
-// 获取鼠标X坐标
+// 获取鼠标X坐眮E
 //==================================================================================
 int GUI::TextInput::GetCursorX() {
 	NODE *i;
@@ -573,7 +672,7 @@ bool GUI::TextInput::CheckPos() {
 	return false;
 }
 //==================================================================================
-// 获取鼠标点击
+// 获取鼠眮E慊丒
 //==================================================================================
 void GUI::TextInput::ClickPos(int x) {
 	NODE *i;
@@ -651,6 +750,9 @@ std::string& GUI::TextInput::getText() {
 }
 
 void GUI::TextInput::SelectAll() {
+	selStart = 0;
+	selEnd = len;
+
 	NODE *i;
 
 	MoveEnd();
@@ -665,6 +767,8 @@ void GUI::TextInput::SelectAll() {
 }
 
 void GUI::TextInput::UnSelectAll() {
+	selStart = selEnd = 0;
+
 	NODE *i;
 
 	i = G_Text.Head;

@@ -43,6 +43,7 @@ void Gui::Init(int w, int h) {
 	setSize(w, h);
 
 	m_defaultFont = (sdle::Font*)sdle::GLFFont::Arial10;
+//	m_defaultFont = (sdle::Font*)sdle::GLFFont::Arial8;
 }
 
 Gui::Gui() : Singleton<Gui>() {
@@ -129,6 +130,10 @@ void Gui::textOut(const std::string& text, float x, float y, float z,int MaxLen)
 	m_defaultFont->drawText(x, y, text.c_str());
 }
 
+int Gui::calcTextWidth(const char* text) const {
+	return ((sdle::FTFont*)m_defaultFont)->getWidth(text);
+}
+
 void Gui::setSize(int w, int h) {
 	m_width = w;
 	m_height = h;
@@ -202,6 +207,19 @@ Element* Gui::getActiveElement() {
 		}
 	}
 	return(active);
+}
+
+Element* Gui::getElementMousePos(int x, int y) {
+	Element* e = getDesktop()->getChildMousePos(x, y);
+/*	Element* next = e->getActiveChild();
+	while (next != NULL) {
+		e = next;
+		if (e->isVisible() && GUI::Element::isInside(e, x, y))
+			next = e->getActiveChild();
+		else
+			next = e->
+	}*/
+	return e;
 }
 
 bool Gui::InjectKeyPress(SDL_Event *sdlEvent, const int& mod) {
@@ -377,11 +395,11 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 		if ( w <= G_Text->EffectWidth ) {
 			FontW = w;
 			if( i->selected ) {
-				/* 输出字体 */
+				/* 输出字虂E*/
 				i->Font_Screen = TTF_RenderUNICODE_Shaded(G_Text->Font, Ch, Font_SFColor, Font_SBColor);
 			}
 			else {
-				/* 输出字体 */
+				/* 输出字虂E*/
 				i->Font_Screen = TTF_RenderUNICODE_Shaded(G_Text->Font, Ch, Font_FColor, Font_BColor);
 				SDL_SetColorKey(i->Font_Screen, SDL_SRCCOLORKEY, SDL_MapRGB(i->Font_Screen->format, Font_BColor.r, Font_BColor.g, Font_BColor.b));
 				if (G_Text->Alpha != SDL_ALPHA_OPAQUE)

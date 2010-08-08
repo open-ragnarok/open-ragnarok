@@ -66,14 +66,33 @@ void OpenRO::CharSelect(unsigned int slot){
 		return;
 
 	dskChar->setEnabled(false);
+	m_gui.setDesktop(dskLoading);
 
+	const CharInformation& charInfo = dskChar->getChar(slot);
 	printf("Char slot %d selected.\n",slot);
 	m_network.CharSelect(slot);
+	me.open(*this, (ro::CJob)charInfo.Class, (ro::CSex)GetAccountSex(), charInfo.hair);
+	me.setSpeed(charInfo.speed);
+//	me.id = charInfo.id;
+	me.id = m_serverlist->getAccountId();
+	dskIngame->setCharName(charInfo.name);
+	dskIngame->setJob(charInfo.Class);
+	dskIngame->setBaseLevel(charInfo.base_lv);
+	dskIngame->setJobLevel(charInfo.job_lv);
 }
 
 void OpenRO::HandleKeyboard() {
-	if (keys[SDLK_ESCAPE])
-		m_quit = true;
+	if (keys[SDLK_ESCAPE]) {
+		keys[SDLK_ESCAPE] = false;
+	//	((RODesktop*)m_gui.getDesktop())->showQuitDialog();
+	/*	switch(m_state) {
+		case ST_Map:
+			dskIngame->showQuitDialog();
+			break;
+		}*/
+		dskIngame->showQuitDialog();
+	//	m_quit = true;
+	}
 	if (keys[SDLK_F10]) {
 		m_gui.Dialog("Testing", "You've pressed F10", *this);
 		keys[SDLK_F10] = false;
@@ -81,13 +100,14 @@ void OpenRO::HandleKeyboard() {
 }
 
 void OpenRO::Quit() {
-	m_quit = true;
-	m_state = ST_Unk;
+	m_network.Quit();
+//	m_quit = true;
+//	m_state = ST_Unk;
 }
 
 void OpenRO::AfterDraw() {
 	if (!m_maploaded) {
-		m_gui.setDesktop(dskLoading);
+	//	m_gui.setDesktop(dskLoading);
 
 		if (m_cycle <= 2)
 			m_cycle++;
@@ -153,6 +173,8 @@ void OpenRO::ProcessNetwork() {
 		delpkt = true;
 		switch(pkt->getID()) {
 			//Add new packets here
+			HANDLEPKT(ItemGained, true);
+			HANDLEPKT(ItemLost, true);
 			HANDLEPKT(InventoryItems, true);
 			HANDLEPKT(HpUpdateParty, true);
 			HANDLEPKT(OtherSpeech, false);
@@ -178,9 +200,16 @@ void OpenRO::ProcessNetwork() {
 			HANDLEPKT(RecvNpcTalk, true);
 			HANDLEPKT(RecvNpcTalkNext, true);
 			HANDLEPKT(RecvNpcTalkClose, true);
+			HANDLEPKT(RecvNpcImage2, true);
 			HANDLEPKT(MapChange, true);
 			HANDLEPKT(RecvNpcInputReq, true);
 			HANDLEPKT(RecvNpcTalkResponses, true);
+			HANDLEPKT(ZenyExp, true);
+			HANDLEPKT(RestartCharSelect, true);
+			HANDLEPKT(StatusUpAck, true);
+			HANDLEPKT(Emotion, true);
+			HANDLEPKT(StatsInfo, true);
+			HANDLEPKT(QuitAck, true);
 			// Actor
 			HANDLEPKT(ActorDisplay, true);
 			HANDLEPKT(ActorSpawn, true);
@@ -247,6 +276,7 @@ void OpenRO::CreateChar(const std::string& charname, const CharAttributes& attr,
 	printf("Creating char in slot %d\n",slott);
 	dskCreate->setEnabled(false);
 	m_network.CreateChar(charname, attr, slott, color, style);
+	// TODO handle the exception "name is already exists"
 	m_gui.setDesktop(dskChar);
 }
 
@@ -323,7 +353,7 @@ unsigned int OpenRO::GetAccountID(){
 
 unsigned char OpenRO::GetAccountSex(){
 	unsigned char male = 0x01; //m
-	unsigned char female = 0x02; //f
+	unsigned char female = 0x00;//0x02; //f
 	
 	if(!m_network.getChar().isConnected())
 		return 0; 
@@ -351,12 +381,13 @@ void OpenRO::clickNpc(int x, int y, NpcObj* npc) {
 
 void OpenRO::clickMob(int x, int y, MobObj* mob) {
 	m_network.MoveCharacter(x, y); // Need this?
-	m_network.sendAction(mob->id, 7);
+	m_network.sendAction(mob->id, 7); // auto attack
+//	m_network.sendAction(mob->id, 0); // attack once
 	_log(OPENRO__DEBUG, "Attacking mob %d", mob->id);
 }
 
 void OpenRO::clickPortal(int x, int y, NpcObj* npc) {
-	m_network.RequestPlayerInfo(npc->id);
+//	m_network.RequestPlayerInfo(npc->id);
 }
 
 ronet::RONet& OpenRO::getNetwork() {
@@ -417,24 +448,33 @@ void OpenRO::LoadMap(const char* name) {
 	m_drawmap = false;
 }
 
+void OpenRO::Restart(unsigned char type) {
+	me.setAction(0);
+	m_network.Restart(type);
+}
+
 void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
 	Actor *actor = NULL;
 
 	if (m_actors.find(info->id) != m_actors.end()) {
 		// Already on the database...
 		actor = m_actors[info->id];
+		actor->setVisible(true);
 	}
 	else if (m_npc_names.find(info->type) != m_npc_names.end()) {
 		// Actor is a NPC
 		NpcObj* npc = new NpcObj();
 		actor = npc;
 		npc->open(*this, m_npc_names[info->type]);
+	//	npc->setSpeed(info->walk_speed); // Need this?
 	}
 	else if (m_job_names.find(info->type) != m_job_names.end()) {
 		// Actor is a player
 		CharObj *obj = new CharObj();
 		actor = obj;
 		obj->open(*this, (ro::CJob)info->type, (ro::CSex)info->sex);
+//		obj->open(*this, (ro::CJob)info->type, ro::S_MALE);
+		obj->setSpeed(info->walk_speed);
 	}
 	else if (m_homunculus_names.find(info->type) != m_homunculus_names.end()) {
 		// Homunculus
@@ -461,6 +501,7 @@ void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
 		MobObj* obj = new MobObj();
 		actor = obj;
 		obj->open(*this, m_mob_names[info->type]);
+		obj->setSpeed(info->walk_speed);
 		// _log(OPENRO__TRACE, "Monster type %d (id %d)", info->type, info->id);
 	}
 
@@ -537,8 +578,13 @@ HNDL_IMPL(ActorMove) {
 }
 
 HNDL_IMPL(ActorStop) {
+	if (me.id == pkt->getParam1()) {
+		me.setPos((float)pkt->getParam2(), (float)pkt->getParam3());
+		return;
+	}
+
 	if (m_actors.find(pkt->getParam1()) == m_actors.end()) {
-		_log(OPENRO__ERROR, "Received stop request for actor id %d, but not actor found in database.", pkt->getParam1());
+			_log(OPENRO__ERROR, "Received stop request for actor id %d, but not actor found in database.", pkt->getParam1());
 		return;
 	}
 
@@ -560,16 +606,46 @@ HNDL_IMPL(ActorAction) {
 */
 	switch(pkt->type) {
 		case 0:
-			printf("DAMAGE: %d->%d. Amount: %d\n", pkt->sourceID, pkt->targetID, pkt->damage);
+		//	printf("DAMAGE: %d->%d. Amount: %d\n", pkt->sourceID, pkt->targetID, pkt->damage);
+			_log(OPENRO__DEBUG, "DAMAGE: %d->%d. Amount: %d\n", pkt->sourceID, pkt->targetID, pkt->damage);
+			// 0: Stand 1: Walk 2: Sit 3: Pick up 4:Battle 5:Attack 6:Damage 7: 8:Dead
+			if (pkt->sourceID == me.id) {
+				me.setAction(5);
+				if (pkt->damage > 0) {
+					std::map<unsigned int, Actor*>::iterator itr = m_actors.find(pkt->targetID);
+					if (itr != m_actors.end()) {
+						itr->second->setAction(3);
+					}
+				}
+			}
+			else {
+				if (pkt->damage > 0)
+					me.setAction(6);
+				std::map<unsigned int, Actor*>::iterator itr = m_actors.find(pkt->sourceID);
+				if (itr != m_actors.end()) {
+					itr->second->setAction(2);
+				}
+			}
 			break;
 		case 1:
 			_log(OPENRO__DEBUG, "User %d get item %d", pkt->sourceID, pkt->targetID);
 			break;
 		case 2:
 			_log(OPENRO__DEBUG, "User %d sits down", pkt->sourceID);
+			me.setAction(2);
 			break;
 		case 3:
 			_log(OPENRO__DEBUG, "Damage? %d->%d, damage: %d", pkt->sourceID, pkt->targetID, pkt->damage);
+			me.setAction(0);
+			break;
+		case 0x9:
+			_log(OPENRO__DEBUG, "Endure %d->%d, damage: %d", pkt->sourceID, pkt->targetID, pkt->damage);
+			break;
+		case 0xa:
+			_log(OPENRO__DEBUG, "Critical hit %d->%d, damage: %d", pkt->sourceID, pkt->targetID, pkt->damage);
+			break;
+		case 0xb:
+			_log(OPENRO__DEBUG, "Lucky dodge %d->%d", pkt->sourceID, pkt->targetID);
 			break;
 		default:
 			_log(OPENRO__DEBUG, "Type: %d, source: %d, dest: %d, damage: %d", pkt->type, pkt->sourceID, pkt->targetID, pkt->damage);
@@ -595,6 +671,19 @@ HNDL_IMPL(RecvNpcTalkClose) {
 	dskIngame->AddNpcCloseBtn();
 }
 
+HNDL_IMPL(RecvNpcImage2) {
+	dskIngame->showNpcImage(pkt->getImageName(), pkt->getType());
+	_log(OPENRO__DEBUG, "NPC Image: %s type: %d", pkt->getImageName(), pkt->getType());
+}
+
+
+HNDL_IMPL(ItemGained) {
+	_log(OPENRO__DEBUG, "Received %d item gained",pkt->getItem().id);
+}
+
+HNDL_IMPL(ItemLost) {
+	_log(OPENRO__DEBUG, "Lost item index %d amount %d",pkt->getParam1(), pkt->getParam2());
+}
 
 HNDL_IMPL(InventoryItems) {
 	_log(OPENRO__DEBUG, "Received %d items in inventory",pkt->getItemCount());
@@ -643,9 +732,10 @@ HNDL_IMPL(GmBroad) {
 
 HNDL_IMPL(ServerTick) {
 	unsigned int m_expected = SDL_GetTicks() - m_tickoffset;
-	unsigned int m_lag = pkt->getServerTick() - m_expected;
+	unsigned int lag = pkt->getServerTick() - m_expected;
 	//_log(OPENRO__DEBUG, "Received server tick: %d.\tExpected: %d.\tLag: %dms", pkt->getServerTick(), m_expected, m_lag);
-	dskIngame->m_lag = m_lag;
+	dskIngame->m_lag = lag;
+	m_lag = lag;
 }
 
 HNDL_IMPL(MapMoveOk) {
@@ -669,7 +759,10 @@ HNDL_IMPL(DisplayStat) {
 	unsigned int base = pkt->getBase();
 	unsigned int bonus = pkt->getBonus();
 
-	_log(OPENRO__TRACE, "Stat %s: %d + %d", ro::dnames[type], base, bonus);
+	dskIngame->setStatus(type, base);
+	dskIngame->setStatus(type, bonus, true);
+
+	_log(OPENRO__TRACE, "Display Stat %s: %d + %d", ro::dnames[type], base, bonus);
 }
 
 HNDL_IMPL(UpdateStatus) {
@@ -677,8 +770,18 @@ HNDL_IMPL(UpdateStatus) {
 	unsigned int value = pkt->getValue();
 
 	switch(type) {
+	//	case ro::SP_SPEED:
+	//		break;
+	//	case ro::SP_KARMA:
+	//		break;
+	//	case ro::SP_MANNER:
+	//		break;
 		case 5: // HP
 			dskIngame->setHP(value);
+			if (value == 0) {
+				me.setAction(8);
+				dskIngame->showQuitDialog();
+			}
 			break;
 		case 6: // MAX HP
 			dskIngame->setMaxHP(value);
@@ -689,8 +792,17 @@ HNDL_IMPL(UpdateStatus) {
 		case 8: // MAX SP
 			dskIngame->setMaxSP(value);
 			break;
-		case 20: // Zeny
-			dskIngame->setZeny(value);
+		case ro::SP_STATUSPOINT:
+			dskIngame->setStatusPoint(value);
+			break;
+		case ro::SP_BASELEVEL:
+			dskIngame->setBaseLevel(value);
+			break;
+		case ro::SP_SKILLPOINT:
+			dskIngame->setSkillPoint(value);
+			break;
+		case ro::SP_JOBLEVEL:
+			dskIngame->setJobLevel(value);
 			break;
 		case 24: // Weight
 			dskIngame->setWeight((float)value/10.0f);
@@ -698,9 +810,25 @@ HNDL_IMPL(UpdateStatus) {
 		case 25: // Max Weight
 			dskIngame->setMaxWeight((float)value/10.0f);
 			break;
+		case ro::SP_ATK1:
+		case ro::SP_ATK2:
+		case ro::SP_MATK1:
+		case ro::SP_MATK2:
+		case ro::SP_DEF1:
+		case ro::SP_DEF2:
+		case ro::SP_MDEF1:
+		case ro::SP_MDEF2:
+		case ro::SP_HIT:
+		case ro::SP_FLEE1:
+		case ro::SP_FLEE2:
+		case ro::SP_CRITICAL:		
+		case ro::SP_ASPD:
+			dskIngame->setStatus(type, value);
+			break;
 		default:
 			_log(OPENRO__TRACE, "Unhandled update status \"%s\" (%d), with value %d", ro::dnames[type], type, value);
 	}
+//	_log(OPENRO__TRACE, "Update status \"%s\" (%d), with value %d", ro::dnames[type], type, value);
 }
 
 HNDL_IMPL(ServerList) {
@@ -725,6 +853,7 @@ HNDL_IMPL(CharList) {
 	for(int x=0;x<count;x++){
 		dskChar->addChar(pkt->getChar(x));
 	}
+	dskChar->setSelected(1);////
 }
 
 //[kR105]
@@ -760,6 +889,8 @@ HNDL_IMPL(LoginError) {
 
 	//We don't need the connection anymore.
 	m_network.getLogin().Close();
+
+	dskLogin->setEnabled(true);
 }
 
 //[kR105]
@@ -850,6 +981,10 @@ HNDL_IMPL(CharPosition) {
 
 HNDL_IMPL(MapChange) {
 	me.setPos((float)pkt->getPosX(), (float)pkt->getPosY());
+	dskIngame->closeNpcWindow();
+
+	m_gui.setDesktop(dskLoading);
+
 	LoadMap(pkt->getMapName());
 }
 
@@ -867,8 +1002,8 @@ HNDL_IMPL(MapLoginSuccess) {
 
 	m_maploaded = false;
 	
-	me.open(*this, ro::J_ALCHEMIST, ro::S_MALE);
 	me.setPos(pos_x, pos_y);
+	me.setDirection((ro::CDir)pos_dir);
 
 	m_tickoffset = SDL_GetTicks() - pkt->getServerTick();
 
@@ -882,3 +1017,101 @@ HNDL_IMPL(OwnSpeech) {
 HNDL_IMPL(SkillList) {
 	_log(OPENRO__TRACE, "Received skill list.");
 }
+
+HNDL_IMPL(ZenyExp) {
+	switch(pkt->getType()) {
+	case ro::SP_BASEEXP:
+		dskIngame->addExp(pkt->getValue());
+		break;
+	case ro::SP_JOBEXP:
+		dskIngame->addJobExp(pkt->getValue());
+		break;
+	case ro::SP_NEXTBASEEXP:
+		dskIngame->setNextExp(pkt->getValue());
+		break;
+	case ro::SP_NEXTJOBEXP:
+		dskIngame->setNextJobExp(pkt->getValue());
+		break;
+	default:
+		_log(OPENRO__TRACE, "ZenyExp: Received Type:%d Value:%d", pkt->getType(), pkt->getValue());
+		break;
+	}
+}
+
+HNDL_IMPL(RestartCharSelect) {
+	_log(OPENRO__TRACE, "Received restart char select. type: %d", pkt->getParam());
+
+	//If nothing selected
+//	if (serviceid < (m_serverlist->getServerCount()-1))
+//		return;
+
+	int serviceid = 0;
+
+//	dskService->setEnabled(false); //Disable the service select window
+	m_network.getMap().Close();	//Close the socket to the login server
+
+	struct in_addr addr;
+	addr.s_addr = (long)m_serverlist->getInfo(serviceid).ip;	//Convert the IP to string (stored in long)
+
+	fprintf(stdout,"%s:%d\n",inet_ntoa(addr),m_serverlist->getInfo(serviceid).port);	//Debug info
+
+	m_network.getChar().Connect(inet_ntoa(addr), m_serverlist->getInfo(serviceid).port);	//Connect to the charserver
+	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());	//Login to the charserver
+
+	dskIngame->setVisible(false);
+	dskChar->setVisible(true);
+	m_gui.setDesktop(dskChar);
+}
+
+HNDL_IMPL(StatusUpAck) {
+	_log(OPENRO__TRACE, "Received status up. type: %d value: %d fail: %d", pkt->getParam1(), pkt->getParam3(), pkt->getParam2());
+}
+
+HNDL_IMPL(Emotion) {
+//	_log(OPENRO__TRACE, "Received emotion. id: %d type: %d", pkt->getID(), pkt->getTrail());
+	_log(OPENRO__TRACE, "Received emotion. id: %d type: %d", pkt->getParam1(), pkt->getParam2());
+	if (me.id == pkt->getParam1())
+		me.setEmotion(pkt->getParam2());
+}
+
+HNDL_IMPL(StatsInfo) {
+	_log(OPENRO__TRACE, "Received stats info.");
+
+	dskIngame->setStatus(ro::SP_STATUSPOINT, pkt->PointsFree);
+	dskIngame->setStatus(ro::SP_STR, pkt->Str);
+	dskIngame->setStatus(ro::SP_USTR, pkt->PointsStr);
+	dskIngame->setStatus(ro::SP_AGI, pkt->Agi);
+	dskIngame->setStatus(ro::SP_UAGI, pkt->PointsAgi);
+	dskIngame->setStatus(ro::SP_VIT, pkt->Vit);
+	dskIngame->setStatus(ro::SP_UVIT, pkt->PointsVit);
+	dskIngame->setStatus(ro::SP_INT, pkt->Int);
+	dskIngame->setStatus(ro::SP_UINT, pkt->PointsInt);
+	dskIngame->setStatus(ro::SP_DEX, pkt->Dex);
+	dskIngame->setStatus(ro::SP_UDEX, pkt->PointsDex);
+	dskIngame->setStatus(ro::SP_LUK, pkt->Luk);
+	dskIngame->setStatus(ro::SP_ULUK, pkt->PointsLuk);
+	dskIngame->setStatus(ro::SP_ATK1, pkt->Attack);
+	dskIngame->setStatus(ro::SP_ATK2, pkt->AttackBonus);
+	dskIngame->setStatus(ro::SP_MATK1, pkt->AttackMagicMax);
+	dskIngame->setStatus(ro::SP_MATK2, pkt->AttackMagicMin);
+	dskIngame->setStatus(ro::SP_DEF1, pkt->Def);
+	dskIngame->setStatus(ro::SP_DEF2, pkt->DefBonus);
+	dskIngame->setStatus(ro::SP_MDEF1, pkt->DefMagic);
+	dskIngame->setStatus(ro::SP_MDEF2, pkt->DefMagicBonus);
+	dskIngame->setStatus(ro::SP_HIT, pkt->Hit);
+	dskIngame->setStatus(ro::SP_FLEE1, pkt->Flee);
+	dskIngame->setStatus(ro::SP_FLEE2, pkt->FleeBonus);
+	dskIngame->setStatus(ro::SP_CRITICAL, pkt->Critical);
+	dskIngame->setStatus(ro::SP_KARMA, pkt->Karma);
+	dskIngame->setStatus(ro::SP_MANNER, pkt->Manner);
+}
+
+HNDL_IMPL(QuitAck) {
+	if (pkt->getParam() == 0) {
+		m_quit = true;
+		m_state = ST_Unk;
+	}
+	else
+		_log(OPENRO__TRACE, "Failed to quit.", pkt->getParam());
+}
+

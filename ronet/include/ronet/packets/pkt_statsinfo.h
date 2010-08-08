@@ -44,6 +44,7 @@ namespace ronet {
 		unsigned short AttackMagicMin, AttackMagicMax;
 		unsigned short Def, DefBonus, DefMagic, DefMagicBonus;
 		unsigned short Hit, Flee, FleeBonus, Critical;
+		unsigned short Karma, Manner;
 	};
 }
 

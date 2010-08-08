@@ -49,7 +49,9 @@ bool RsmObject::loadTextures(CacheManager& cm) {
 
 void RsmObject::DrawBoundingBox() const {
 	// TODO
-#if 0
+#if 1
+
+#if 1 // Use BoundingBox
 	const ro::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	float vertices[8][3] = {
@@ -62,6 +64,28 @@ void RsmObject::DrawBoundingBox() const {
 		{ box.min.x, box.min.y, box.min.z }, // 6
 		{ box.min.x, box.min.y, box.max.z }  // 7
 	};
+#else // Use VolumeBox
+	if (rsm->getVolumeBoxCount() == 0)
+		return;
+	const ro::RSM::VolumeBox& box = rsm->getVolumeBox(0);
+	Vector3f max, min;
+	max.setX(box.pos.x + box.size.x / 2.0f);
+	max.setY(box.pos.y + box.size.y / 2.0f);
+	max.setZ(box.pos.z + box.size.z / 2.0f);
+	min.setX(box.pos.x - box.size.x / 2.0f);
+	min.setY(box.pos.y - box.size.y / 2.0f);
+	min.setZ(box.pos.z - box.size.z / 2.0f);
+	float vertices[8][3] = {
+		{ max.getX(), max.getY(), max.getZ() }, // 0
+		{ max.getX(), max.getY(), min.getZ() }, // 1
+		{ min.getX(), max.getY(), min.getZ() }, // 2
+		{ min.getX(), max.getY(), max.getZ() }, // 3
+		{ max.getX(), min.getY(), max.getZ() }, // 4
+		{ max.getX(), min.getY(), min.getZ() }, // 5
+		{ min.getX(), min.getY(), min.getZ() }, // 6
+		{ min.getX(), min.getY(), max.getZ() }  // 7
+	};
+#endif
 
 	static unsigned short lines[12][2] = {
 		{ 0, 1 },
@@ -80,6 +104,7 @@ void RsmObject::DrawBoundingBox() const {
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
+	glLineWidth(2);
 	glDrawElements(GL_LINES, 24, GL_UNSIGNED_SHORT, lines);
 	glDisableClientState(GL_VERTEX_ARRAY);
 #endif
@@ -150,15 +175,26 @@ void RsmObject::CalcRotFrame(const ro::RSM::Node& node, float* Ori, int& frame) 
 
 	//printf("time: %d\tcurframe: %d\tcframetime: %d\tnframetime: %d\r", time, current, mesh.frames[current].time, mesh.frames[next].time);
 
+//	if (frame >= node.rotKeyframes[node.rotKeyframes.size() - 1].frame)
+//		frame -= node.rotKeyframes[node.rotKeyframes.size() - 1].frame;
+	frame += node.rotKeyframes[node.rotKeyframes.size() - 1].frame / 100;
 	if (frame >= node.rotKeyframes[node.rotKeyframes.size() - 1].frame)
-		frame -= node.rotKeyframes[node.rotKeyframes.size() - 1].frame;
+		frame = 0;
+/*	frame -= 33;
+	if (frame >= node.rotKeyframes[current].frame)
+	{
+		frame = 0;
+		current++;
+		if (current >= node.rotKeyframes.size())
+			current = 0;
+	}*/
 }
 
 void RsmObject::DrawMesh(unsigned int meshid) {
 	int i, j, lasttex;
 	const ro::RSM::Node& node = rsm->getNode(meshid);
 	//const ro::RSM::BoundingBox& box = mesh.getBoundingBox();
-	//const ro::RSM::BoundingBox& box = rsm->getBoundingBox();
+	const ro::RSM::BoundingBox& box = rsm->getBoundingBox();
 
 	lasttex = -1;
 
@@ -206,7 +242,36 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 
 	glScalef(node.scale.x, node.scale.y, node.scale.z);
 
-	glTranslatef(node.pos.x, node.pos.y, node.pos.z);
+	if (node.is_main) {
+		if (node.is_only) {
+				glTranslatef(0.0, -box.max[1] + box.offset[1], 0.0);
+//				glTranslatef(0.0, -box.max[1], 0.0);
+//				glTranslatef(0.0, box.max[1] + box.offset[1], 0.0);
+//				glTranslatef(0.0, 0, 0.0);
+//				glTranslatef(0.0, box.max[1]-box.offset[1], 0.0);
+		/*	if ((box.max[1] >= box.max[0]) && (box.max[1] >= box.max[2]))
+				glTranslatef(0.0, -box.max[1] + box.offset[1], 0.0);
+			else if ((box.max[0] >= box.max[1]) && (box.max[0] >= box.max[2]))
+				glTranslatef(0.0, -box.max[0] + box.offset[0], 0.0);
+			else if ((box.max[2] >= box.max[1]) && (box.max[2] >= box.max[0]))
+				glTranslatef(0.0, -box.max[2] + box.offset[2], 0.0);*/
+		/*	if ((box.max[1] >= box.max[0]) && (box.max[1] >= box.max[2]))
+				glTranslatef(0.0, -box.max[1], 0.0);
+			else if ((box.max[0] >= box.max[1]) && (box.max[0] >= box.max[2]))
+				glTranslatef(0.0, -box.max[0], 0.0);
+			else if ((box.max[2] >= box.max[1]) && (box.max[2] >= box.max[0]))
+				glTranslatef(0.0, -box.max[2], 0.0);*/
+		}
+		else {
+			glTranslatef(-box.offset[0], -box.max[1], -box.offset[2]);
+		//	glTranslatef(-box.offset[0], box.max[1], -box.offset[2]);
+		//	glTranslatef(0, -box.max[1], 0);
+//			glTranslatef(0.0, -box.max[1] + box.offset[1], 0.0);
+//			glTranslatef(node.pos.x, node.pos.y, node.pos.z);
+		}
+	}
+	else
+		glTranslatef(node.pos.x, node.pos.y, node.pos.z);
 
 	if (node.rotKeyframes.size() == 0)
 		glRotatef(node.rotangle * 180.0f / 3.14159f,
@@ -219,33 +284,73 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 
 	glPushMatrix();
 
-	glTranslatef(node.offsetMT[9], node.offsetMT[10], node.offsetMT[11]);
+	if (node.is_main && node.is_only) {
+		//Primera diferencia
+		glTranslatef(-box.offset[0], -box.offset[1], -box.offset[2]);
+//		glTranslatef(-box.offset[0], box.max[1], -box.offset[2]);
+//		glTranslatef(-box.offset[0], box.offset[1], -box.offset[2]);
+	//	glTranslatef(-box.offset[0], -box.offset[0], -box.offset[0]);
+	/*		if ((box.max[1] >= box.max[0]) && (box.max[1] >= box.max[2]))
+		glTranslatef(-box.offset[0], -box.offset[1], -box.offset[2]);
+			else if ((box.max[0] >= box.max[1]) && (box.max[0] >= box.max[2]))
+		glTranslatef(-box.offset[0], -box.offset[0], -box.offset[2]);
+			else if ((box.max[2] >= box.max[1]) && (box.max[2] >= box.max[0]))
+		glTranslatef(-box.offset[0], -box.offset[2], -box.offset[2]);*/
+		//		glTranslatef(0.0, -box.max[1] + box.offset[1], 0.0);
+	//			glTranslatef(0.0, -box.max[1], 0.0);
+	}
+//	else if (!node.is_main)
+	else if (!node.is_main || !node.is_only)
+		glTranslatef(node.offsetMT[9], node.offsetMT[10], node.offsetMT[11]);
+
+#if 0
+	if (node.is_main)
+	{
+		glColor3f(1,0,1);
+		DrawBoundingBox();
+		glColor3f(1,1,1);
+	}
+#endif
+//	glColor4f(1,1,1,1);
 
 	glMultMatrixf(mat);
 
-#if 0
-	glColor3f(1,0,1);
-	DrawBoundingBox(box);
-	glColor3f(1,1,1);
-#endif
 
+//	glColor4fv(rsm->getColor());
+
+//	glDisable(GL_TEXTURE_2D);
 	glBegin(GL_TRIANGLES);
+//	glBegin(GL_TRIANGLE_STRIP);
 	// Draw each surface
 	for (i = 0; i < (int)node.faces.size(); i++) {
 		const ro::RSM::Face& face = node.faces[i];
 		if (face.texid != lasttex) {
 			glEnd();
 			lasttex = face.texid;
-			textures[lasttex].Activate();
-			//glBindTexture(GL_TEXTURE_2D, textures[lasttex]);
+			textures[node.textures[lasttex]].Activate();
 			glBegin(GL_TRIANGLES);
 		}
+		float f3Vector01[3], f3Vector12[3];
+		f3Vector01[0] = node.vertices[face.vertidx[1]].x - node.vertices[face.vertidx[0]].x;
+		f3Vector12[0] = node.vertices[face.vertidx[2]].x - node.vertices[face.vertidx[0]].x;
+
+		f3Vector01[1] = node.vertices[face.vertidx[1]].y - node.vertices[face.vertidx[0]].y;
+		f3Vector12[1] = node.vertices[face.vertidx[2]].y - node.vertices[face.vertidx[0]].y;
+
+		f3Vector01[2] = node.vertices[face.vertidx[1]].z - node.vertices[face.vertidx[0]].z;
+		f3Vector12[2] = node.vertices[face.vertidx[2]].z - node.vertices[face.vertidx[0]].z;
+		float f3NormalVector[3] = { f3Vector01[1] * f3Vector12[2] - f3Vector01[2] * f3Vector12[1],
+									f3Vector01[2] * f3Vector12[0] - f3Vector01[0] * f3Vector12[2],
+									f3Vector01[0] * f3Vector12[1] - f3Vector01[1] * f3Vector12[0] };
+		glNormal3fv( f3NormalVector );
 		for (j = 0; j < 3; j++) {
 			glTexCoord2f(node.tvertices[face.tvertidx[j]].u, 1.0f - node.tvertices[face.tvertidx[j]].v);
 			glVertex3fv(node.vertices[face.vertidx[j]]);
 		}
 	}
 	glEnd();
+
+//	glColor4f(1,1,1,1);
 
 	glPopMatrix();
 
@@ -261,6 +366,17 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 }
 
 void RsmObject::Draw() {
+	if (m_frustum != NULL) {
+	//	if (!isInFrustum(*m_frustum)) {
+		if (isInFrustum(*m_frustum)) {
+		//	return;
+		//	glColor3f(1, 0, 0);
+			glColor4f(1, 1, 1, 1);
+		}
+		else {
+			glColor4f(1, 1, 1, 1);
+		}
+	}
 #if 0
 	if (m_frustum != NULL) {
 		if (!isInFrustum(*m_frustum)) {
@@ -294,7 +410,7 @@ void RsmObject::Draw() {
 		}
 	}
 	else {
-		m_time += m_tickdelay * 10;
+	//	m_time += m_tickdelay * 10;
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.90f);

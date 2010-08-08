@@ -10,6 +10,15 @@ DesktopService::DesktopService(OpenRO* ro) : RODesktop("ui\\service_select.xml",
 	slist = (GUI::List*)getElement("service_select/servers");
 }
 
+bool DesktopService::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
+	SDLKey key = sdlEvent->key.keysym.sym;
+
+	if (key == SDLK_RETURN) {
+		((GUI::Button*)getElement("service_select/btnOk"))->Click();
+	}
+	return(true);
+}
+
 bool DesktopService::handleBtnOk(GUI::Event&) {
 
 	//If nothing selected

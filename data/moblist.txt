@@ -6,7 +6,7 @@
 1008#pupa#
 1009#condor#
 1010#wilow#
-1011#chonchon#
+1011#chocho#
 1012#roda_frog#
 1013#wolf#
 1014#spore#
@@ -33,7 +33,7 @@
 1039#baphomet#
 1040#golem#
 1041#mummy#
-1042#steel_chonchon#
+1042#steel_chocho#
 1044#obeaune#
 1045#marc#
 1046#doppelganger#
@@ -165,8 +165,8 @@
 1179#whisper#
 1180#nine_tail#
 1182#thief_mushroom#
-1183#chonchon_#
-1184#fabre_#
+1183#chocho_#
+1184#fabre#
 1185#whisper_#
 1186#whisper_boss#
 1187#switch#

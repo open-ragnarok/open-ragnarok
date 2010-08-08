@@ -32,6 +32,8 @@
 
 class ROEngine : public sdle::SDLEngine, public CacheManager {
 protected:
+	unsigned int m_lag, m_fps, m_elapsed;
+;
 	/**
 	 * Object to calculate what's visible to optimize drawing time
 	 */
@@ -44,6 +46,8 @@ protected:
 
 	/** Indicates if we're in a process of rotation or not */
 	bool m_rotating;
+	bool m_shift;
+	bool m_moving;
 
 	/**
 	 * The cursor
@@ -113,7 +117,13 @@ protected:
 	std::map<unsigned short, std::string> m_mercenary_names;
 	std::map<unsigned short, std::string> m_mob_names;
 
-	bool ReadTable(const char* fn, std::map<unsigned short, std::string>&);
+	std::map<std::string, std::string> m_mp3_names;
+	std::map<unsigned short, std::string> m_itemresource_names;
+	std::map<unsigned short, std::string> m_item_names;
+	std::map<unsigned short, std::string> m_itemdesc_names;
+	std::map<std::string, std::string> m_map_names;
+
+	bool ReadNameTable(const char* fn, std::map<unsigned short, std::string>&);
 
 public:
 	ROEngine(const std::string& name = "");
@@ -162,6 +172,9 @@ public:
 
 	/** Draws the map (if any) */
 	void DrawMap();
+
+	void Pickup(int x, int y);
+
 };
 
 #ifdef _MSC_VER

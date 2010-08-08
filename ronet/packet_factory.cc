@@ -60,9 +60,11 @@ HANDLER(OwnSpeech)
 HANDLER(SkillList)
 HANDLER(MapMoveOk)
 HANDLER(PlayerEquip)
+HANDLER(ItemGained)
+HANDLER(ItemLost)
 HANDLER(InventoryItems)
 HANDLER(InventoryItemsStackable)
-HANDLER(StatInfo)
+//HANDLER(StatInfo)
 //HANDLER(StatInfo2)
 HANDLER(HotkeyList)
 HANDLER(ZenyExp)
@@ -75,10 +77,16 @@ HANDLER(RecvNpcTalkNext)
 HANDLER(RecvNpcTalkClose)
 HANDLER(RecvNpcInputReq)
 HANDLER(RecvNpcTalkResponses)
+HANDLER(RecvNpcImage2)
 HANDLER(MapChange)
 HANDLER(ActorMove)
 HANDLER(ActorAction)
-HANDLER(ActorStop);
+HANDLER(ActorStop)
+HANDLER(RestartCharSelect)
+HANDLER(StatusUpAck)
+HANDLER(Emotion)
+HANDLER(NotifyEffect1)
+HANDLER(QuitAck)
 
 // Guild
 //HANDLER(GuildAlliesEnemiesList)
@@ -143,9 +151,11 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(SkillList);
 	CALLER(MapMoveOk);
 	CALLER(PlayerEquip);
+	CALLER(ItemGained);
+	CALLER(ItemLost);
 	CALLER(InventoryItems);
 	CALLER(InventoryItemsStackable);
-	CALLER(StatInfo);
+	//CALLER(StatInfo);
 	//CALLER(StatInfo2);
 	CALLER(HotkeyList);
 	CALLER(ZenyExp);
@@ -158,10 +168,16 @@ ronet::PacketFactory::PacketFactory() : m_dispatcher(this) {
 	CALLER(RecvNpcTalkClose);
 	CALLER(RecvNpcInputReq);
 	CALLER(RecvNpcTalkResponses);
+	CALLER(RecvNpcImage2);
 	CALLER(MapChange);
 	CALLER(ActorMove);
 	CALLER(ActorAction);
 	CALLER(ActorStop);
+	CALLER(RestartCharSelect);
+	CALLER(StatusUpAck);
+	CALLER(Emotion);
+	CALLER(NotifyEffect1);
+	CALLER(QuitAck);
 	
 	// Guild
 	//CALLER(GuildAlliesEnemiesList);

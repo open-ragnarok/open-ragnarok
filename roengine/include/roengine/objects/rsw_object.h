@@ -14,6 +14,8 @@
  * Stores the data of the map and draws it as requested.
  */
 class RswObject : public GLObject {
+private:
+	sdle::Texture m_grid;
 protected:
 	/** The size of the tile (default: 10.0f) */
 	static float m_tilesize;
@@ -24,6 +26,8 @@ protected:
 
 	/** Textures used by the ground */
 	TextureCache textures;
+	TextureCache lighmapTextures;
+	std::map<unsigned short, unsigned int*> lightmap_texmap; // TODO
 
 	/** Water textures */
 	TextureCache water_tex;

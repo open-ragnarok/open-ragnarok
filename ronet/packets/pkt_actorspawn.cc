@@ -52,7 +52,7 @@ bool pktActorSpawn::Decode(ucBuffer& buf) {
 	unsigned int c = 0;
 	unsigned char *coord = (unsigned char*)&c;
 
-	buf >> unk;
+//	buf >> unk;
 	/* Padding, according to eAthena code:
 #if PACKETVER >= 20071106
 	if (type) {

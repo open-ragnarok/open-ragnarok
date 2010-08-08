@@ -11,7 +11,7 @@ public:
 	SprCache();
 	virtual ~SprCache();
 
-	bool Load(const std::string&, ROObjectCache&, FileManager&);
+	bool Load(const std::string&, ROObjectCache&, FileManager&, const ro::PAL* pal = NULL);
 };
 
 #endif /* __ROENGINE_SPR_CACHE_H */

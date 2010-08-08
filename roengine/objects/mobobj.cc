@@ -17,7 +17,7 @@ void MobObj::Draw() {
 		return;
 
 	// Move...
-	if (dest_x != map_x || dest_y != map_y) {
+/*	if (dest_x != map_x || dest_y != map_y) {
 		if (m_act == 0) {
 			m_act = 1;
 		}
@@ -40,9 +40,56 @@ void MobObj::Draw() {
 			map_x += dx;
 			map_y += dy;
 		}
+	}*/
+	if (dest_x != map_x || dest_y != map_y) {
+	//	if (m_act == 0) {
+			m_act = 1;
+	//	}
+		float dx = dest_x - map_x;
+		float dy = dest_y - map_y;
+	//	float size = sqrt(dx * dx + dy * dy);
+		float ax = 0, ay = 0;
+		if (abs(dx) >= 0.1f)
+			ax = (dx > 0.0f) ? 1 : -1;
+		if (abs(dy) >= 0.1f)
+			ay = (dy > 0.0f) ? 1 : -1;
+
+
+		if (ax != 0.0f || ay != 0.0f)
+			m_dir = ro::dir2Cdir(ax, ay);
+
+	//	moveticks += m_tickdelay;
+	//	if (moveticks >= speed) {
+	//		moveticks = 0;
+			float m = 1.0f / ((float)speed / m_tickdelay);
+			if (abs(dx) >= 0.1f && abs(dy) >= 0.1f)
+				m *= 0.75f;
+			if (abs(dx) >= m) {
+				if (dest_x > map_x) {
+					map_x += m;
+				}
+				else if (dest_x < map_x) {
+					map_x -= m;
+				}
+			} else
+				map_x = dest_x;
+
+			if (abs(dy) >= m) {
+				if (dest_y > map_y) {
+					map_y += m;
+				}
+				else if (dest_y < map_y) {
+					map_y -= m;
+				}
+			} else
+				map_y = dest_y;
+	//	}
 	}
 	else {
 		if (m_act == 1) {
+			m_act = 0;
+		}
+		else if ((m_act == 2 || m_act == 3) && !m_mob.isPlaying()) {
 			m_act = 0;
 		}
 	}
@@ -55,13 +102,15 @@ void MobObj::Draw() {
 
 	m_mob.setAction(m_act);
 
-	int dir = (cameraDir + m_dir) % 8;
+//	int dir = (cameraDir + m_dir) % 8;
+	int dir = (cameraDir + 8 - m_dir) % 8;
 
 	glPushMatrix();
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_mob.Draw(m_tickdelay, (ro::CDir)dir); // Draw
+	m_shadowact.Draw(m_tickdelay, ro::CDir::DIR_N, -0.1);
+	m_mob.Draw(m_tickdelay, (ro::CDir)dir, !(m_act == 2 || m_act == 3)); // Draw
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -72,6 +121,11 @@ bool MobObj::valid() const {
 }
 
 bool MobObj::open(CacheManager& cache, std::string name) {
+	if (shadowLoaded) {
+		openAct(cache, "sprite\\shadow", m_shadowact);
+		shadowLoaded = true;
+	}
+
 	//Cache objects
 	ROObjectCache& objects = cache.getROObjects();
 	GLObjectCache& globjects = cache.getGLObjects();

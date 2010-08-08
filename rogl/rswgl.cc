@@ -114,7 +114,7 @@ bool rogl::draw(const ro::GND* gnd, const unsigned int* textures) {
 				for (k = 0; k < 4; k++) {
 					if (textures != NULL)
 						glTexCoord2fv(texv[k]);
-					glVertex3fv(vertsv[k]);
+				//	glVertex3fv(vertsv[k]);
 				}
 				glEnd();
 			}

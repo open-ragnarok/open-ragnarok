@@ -55,12 +55,23 @@ void NpcObj::Draw() {
 
 	m_npc.setAction(m_act);
 
-	int dir = (cameraDir + m_dir) % 8;
+	int dir;
+	if (m_dir % 2 == 1) {// Odd
+		if (m_dir < 4)
+			dir = (cameraDir + 4 - m_dir) % 8;
+		else if (m_dir > 4)
+			dir = (cameraDir + 12 - m_dir) % 8;
+	}
+	else if (m_dir % 4 == 0)
+		dir = (cameraDir + 4 + m_dir) % 8;
+	else
+		dir = (cameraDir + m_dir) % 8;
 
 	glPushMatrix();
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
+	m_shadowact.Draw(m_tickdelay, ro::CDir::DIR_N, -0.1);
 	m_npc.Draw(m_tickdelay, (ro::CDir)dir); // Draw
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
@@ -72,6 +83,11 @@ bool NpcObj::valid() const {
 }
 
 bool NpcObj::open(CacheManager& cache, std::string name) {
+	if (shadowLoaded) {
+		openAct(cache, "sprite\\shadow", m_shadowact);
+		shadowLoaded = true;
+	}
+
 	//Cache objects
 	ROObjectCache& objects = cache.getROObjects();
 	GLObjectCache& globjects = cache.getGLObjects();

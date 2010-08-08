@@ -7,6 +7,7 @@
 class MobObj : public Actor {
 protected:
 	rogl::ActGL m_mob;
+	bool shadowLoaded;
 
 public:
 	MobObj();

@@ -1,6 +1,7 @@
 /* $Id$ */
 #include "stdafx.h"
 
+#include <math.h>
 #include "rogl/actgl.h"
 
 namespace rogl {
@@ -11,6 +12,7 @@ ActGL::ActGL() {
 	m_action = 0;
 	m_delay = 0;
 	m_frame = 0;
+	m_playing = false;
 }
 
 ActGL::ActGL(const ActGL& _act) {
@@ -20,10 +22,18 @@ ActGL::ActGL(const ActGL& _act) {
 ActGL::~ActGL() {
 }
 
-void ActGL::setAction(unsigned short a) {
-	m_action = a;
+void ActGL::setAction(unsigned short action) {
+	if (m_action != action)
+	{
+		m_delay = 0;
+		m_frame = 0;
+		m_action = action;
+	}
 }
 
+bool ActGL::isPlaying() {
+	return m_playing;
+}
 
 bool ActGL::valid() const {
 	return(act != NULL);
@@ -34,12 +44,34 @@ void ActGL::Draw() const {
 }
 
 
-void ActGL::Draw(unsigned long delay, ro::CDir direction) {
+void ActGL::Draw(unsigned long delay, ro::CDir direction, float z, bool loop) {
+	m_playing = true;
+
 	m_delay += delay;
-	while (m_delay > 200) {
-		m_delay -= 200;
+	const float d = act->getDelay(m_action * 8 + direction) * 25;
+	while (m_delay > d) {
+		m_delay -= d;
 		m_frame++;
 	}
+	const ro::ACT::Action& a = act->getAction(m_action * 8 + direction);
+/*	if (loop) {
+		if(a.getMotionCount() > 0 && m_frame >= a.getMotionCount()) {
+			m_frame = m_frame % a.getMotionCount();
+		}
+	}
+	else {
+		m_frame = a.getMotionCount() - 1;
+	}*/
+	if(a.getMotionCount() > 0 && m_frame >= a.getMotionCount()) {
+		if (loop) {
+			m_frame = m_frame % a.getMotionCount();
+		}
+		else {
+			m_frame = a.getMotionCount() - 1;
+			m_playing = false;
+		}
+	}
+	const ro::ACT::Motion& p = a.getMotion(m_frame);
 
 	glPushMatrix();
 
@@ -59,11 +91,6 @@ void ActGL::Draw(unsigned long delay, ro::CDir direction) {
 
 
 	spr.getTexture().Activate();
-	const ro::ACT::Action& a = act->getAction(m_action * 8 + direction);
-	if(m_frame >= a.getMotionCount()) {
-		m_frame = m_frame % a.getMotionCount();
-	}
-	const ro::ACT::Motion& p = a.getMotion(m_frame);
 	float u[2], v[2];
 	//float aux;
 	int sprcount = p.getClipCount();
@@ -84,9 +111,11 @@ void ActGL::Draw(unsigned long delay, ro::CDir direction) {
 			h = info.h;
 
 		// Setup coordinates
-		v[0] = info.sv;
-		v[1] = info.ev;
-		if (s.mirrorOn) {
+	//	v[0] = info.sv;
+	//	v[1] = info.ev;
+		v[1] = info.sv;
+		v[0] = info.ev;
+		if (!s.mirrorOn) {
 			u[0] = info.su;
 			u[1] = info.eu;
 		}
@@ -98,36 +127,66 @@ void ActGL::Draw(unsigned long delay, ro::CDir direction) {
 		float x[2];
 		float y[2];
 
-		x[0] =  (float)s.x - 5.0f;
+		float xx = s.x;
+		float yy = s.y;
+
+		if (ext != NULL) {
+			if (ext->getAct() != NULL) {
+			//	const ro::ACT::Action& pact = ext->getAct()->getAction(act_no);
+				const ro::ACT::Motion& pmot = ext->getAct()->getMotion(m_action * 8 + direction, m_frame);
+				if (pmot.attachPoints.size() > 0) {
+					xx += pmot.attachPoints[0].x;
+					yy += pmot.attachPoints[0].y;
+				}
+			//	const ro::ACT::Motion& mot = a.getMotion(m_action, m_frame);
+				if (p.attachPoints.size() > 0) {
+					xx -= p.attachPoints[0].x;
+					yy -= p.attachPoints[0].y;
+				}
+			}
+		}
+		x[0] =  (float)xx - ceil((float)w / 2.0f);
 		x[1] =  x[0] + w;
 
-		y[0] =  (float)s.y + (float)h / 2.0f;
-		y[1] =  y[0] + (float)h;
+		y[0] =  -((float)yy - ceil((float)h / 2.0f));
+		y[1] =  y[0] - h;
 
 		// Set things straight
-		x[0] = x[0] / 10.0f - 2.5f; // 2.5f = half of a gat tile.
-		x[1] = x[1] / 10.0f - 2.5f;
-		y[0] /= 10.0f;
-		y[1] /= 10.0f;
+		x[0] /= 7.0f;// + (float)s.x + 2.5f; // 2.5f = half of a gat tile.
+		x[1] /= 7.0f;// + (float)s.x + 2.5f;
+		y[0] /= 7.0f;
+		y[1] /= 7.0f;
+
+		float color[4];
+		glGetFloatv(GL_CURRENT_COLOR, color);
+
+		glColor4ubv((GLubyte*)&s.color);
 
 		// Draw
 		glBegin(GL_QUADS);
-		glTexCoord2f(u[0], v[1]); glVertex3f(x[0], y[0], 0.0f);
-		glTexCoord2f(u[0], v[0]); glVertex3f(x[0], y[1], 0.0f);
-		glTexCoord2f(u[1], v[0]); glVertex3f(x[1], y[1], 0.0f);
-		glTexCoord2f(u[1], v[1]); glVertex3f(x[1], y[0], 0.0f);
+//		glBegin(GL_LINE_LOOP);
+		glTexCoord2f(u[0], v[1]); glVertex3f(x[0], y[0], z + 3.5f);
+		glTexCoord2f(u[0], v[0]); glVertex3f(x[0], y[1], z + 3.5f);
+		glTexCoord2f(u[1], v[0]); glVertex3f(x[1], y[1], z + 3.5f);
+		glTexCoord2f(u[1], v[1]); glVertex3f(x[1], y[0], z + 3.5f);
 		glEnd();
+
+		z += 0.01f;
+
+		glColor4fv(color);
 	}
 
 	//spr.Draw(m_frame, true);
-	if (ext != NULL) {
+/*	if (ext != NULL) {
 		if (p.attachPoints.size() > 0)
 			glTranslatef((float)p.attachPoints[0].x / 10.0f, (float)p.attachPoints[0].y / 10.0f, 0.0f);
 		ext->Draw(delay);
-	}
+	}*/
+#if 0
 	glColor3f(1,0,0);
-	Cross(10);
+	Cross(20);
 	glColor3f(1,1,1);
+#endif
 	glPopMatrix();
 }
 

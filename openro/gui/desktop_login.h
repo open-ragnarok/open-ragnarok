@@ -8,14 +8,18 @@ class DesktopLogin : public RODesktop {
 protected:
 	GUI::TextInput* tiUser;
 	GUI::TextInput* tiPass;
+	GUI::CheckBox* saveID;
 
 	virtual void afterDraw(unsigned int delay);
 
 public:
 	DesktopLogin(OpenRO*);
 
+	bool HandleKeyDown(SDL_Event *sdlEvent, int mod);
+
 	bool handleBtnOk(GUI::Event&);
-	bool handleBtnCancel(GUI::Event&);
+	bool handleBtnExit(GUI::Event&);
+	bool handleBtnSaveID(GUI::Event&);
 
 	void clear();
 };

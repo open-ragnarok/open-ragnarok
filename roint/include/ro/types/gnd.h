@@ -65,7 +65,8 @@ public:
 		float u[4]; //< west->east, south->north ordering; 0=left 1=right
 		float v[4]; //< west->east, south->north ordering; 0=up 1=down
 		short textureId; //< -1 for none
-		unsigned short lightmapId; //< -1 for none?
+//		unsigned short lightmapId; //< -1 for none?
+		short lightmapId; //< -1 for none?
 		struct {
 			unsigned char b;
 			unsigned char g;

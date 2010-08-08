@@ -55,9 +55,10 @@
 #include "pkt_keepalivemap.h"		//[kR105]
 #include "pkt_servertick.h"			//[kR105]
 #include "pkt_playerequip.h"
+#include "pkt_itemgained.h"
 #include "pkt_inventoryitems.h"
 #include "pkt_inventoryitemsstackable.h"
-#include "pkt_statinfo.h"
+//#include "pkt_statinfo.h"
 //#include "pkt_statinfo2.h"
 #include "pkt_hotkeylist.h"
 #include "pkt_zenyexp.h"
@@ -71,6 +72,7 @@
 #include "pkt_actorwalking.h"
 #include "pkt_talk.h"
 #include "pkt_recvnpctalk.h"
+#include "pkt_recvnpcimage2.h"
 #include "pkt_recvnpctalknext.h"
 #include "pkt_npccancel.h"
 #include "pkt_npccontinue.h"

@@ -42,7 +42,7 @@ CDir dir2Cdir(float x, float y) {
 	if (x < 0)
 		angle = 360 - angle;
 
-	if (angle <= 22.5)
+/*	if (angle <= 22.5)
 		return(DIR_N);
 	else if (angle <= 67.5)
 		return(DIR_NE);
@@ -57,9 +57,61 @@ CDir dir2Cdir(float x, float y) {
 	else if (angle <= 292.5)
 		return(DIR_W);
 	else if (angle <= 337.5)
+		return(DIR_NW);*/
+	if (angle <= 22.5)
+		return(DIR_N);
+	else if (angle <= 67.5)
 		return(DIR_NW);
+	else if (angle <= 112.5)
+		return(DIR_W);
+	else if (angle <= 157.5)
+		return(DIR_SW);
+	else if (angle <= 202.5)
+		return(DIR_S);
+	else if (angle <= 247.5)
+		return(DIR_SE);
+	else if (angle <= 292.5)
+		return(DIR_E);
+	else if (angle <= 337.5)
+		return(DIR_NE);
+
+/*	if (angle <= 22.5)
+		return(ro::DIR_E);
+	else if (angle <= 67.5)
+		return(ro::DIR_SE);
+	else if (angle <= 112.5)
+		return(ro::DIR_S);
+	else if (angle <= 157.5)
+		return(ro::DIR_SW);
+	else if (angle <= 202.5)
+		return(ro::DIR_W);
+	else if (angle <= 247.5)
+		return(ro::DIR_NW);
+	else if (angle <= 292.5)
+		return(ro::DIR_N);
+	else if (angle <= 337.5)
+		return(ro::DIR_NE);*/
+
+/*	if (angle <= 22.5)
+		return(ro::DIR_E);
+	else if (angle <= 67.5)
+		return(ro::DIR_NE);
+	else if (angle <= 112.5)
+		return(ro::DIR_N);
+	else if (angle <= 157.5)
+		return(ro::DIR_NW);
+	else if (angle <= 202.5)
+		return(ro::DIR_W);
+	else if (angle <= 247.5)
+		return(ro::DIR_SW);
+	else if (angle <= 292.5)
+		return(ro::DIR_S);
+	else if (angle <= 337.5)
+		return(ro::DIR_SE);*/
+
 
 	return(DIR_N);
+//	return(DIR_E);
 }
 
 CDir nextDirection(CDir dir) {

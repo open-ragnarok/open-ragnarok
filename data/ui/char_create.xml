@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <desktop name="char_create_ui" texture="rag_title3.bmp">
 	<!-- $Id$ -->
-	<window name="char_create" texture="login_interface\win_make.bmp" x="-1" y="-1" mw = "250" mh="18">
-		<textarea name="char_create/name" x="63" y="245" w="120" h="18" MaxLen="12" text="Character Name" />
+	<window name="char_create" texture="login_interface\win_make.bmp" x="-1" y="-1" mw = "576" mh="17">
+		<textinput name="char_create/name" x="63" y="245" w="120" h="18" MaxLen="12" text="Character Name" />
 
-		<label name="char_create/str" x="459" y="38" text="Default_STR" />
-		<label name="char_create/agi" x="459" y="54" text="Default_AGI" />
-		<label name="char_create/vit" x="459" y="70" text="Default_VIT" />
-		<label name="char_create/int" x="459" y="86" text="Default_INT" />
-		<label name="char_create/dex" x="459" y="102" text="Default_DEX" />
-		<label name="char_create/luk" x="459" y="118" text="Default_LUK" />
+		<label name="char_create/str" x="500" y="40" text="Default_STR" />
+		<label name="char_create/agi" x="500" y="56" text="Default_AGI" />
+		<label name="char_create/vit" x="500" y="72" text="Default_VIT" />
+		<label name="char_create/int" x="500" y="88" text="Default_INT" />
+		<label name="char_create/dex" x="500" y="104" text="Default_DEX" />
+		<label name="char_create/luk" x="500" y="120" text="Default_LUK" />
 		
-		<button name="char_create/btnStr" x="270" y="50" texture="login_interface\arw-str0.bmp" active="login_interface\arw-str1.bmp" />
-		<button name="char_create/btnInt" x="270" y="250" texture="login_interface\arw-int0.bmp" active="login_interface\arw-int1.bmp" />
+		<button name="char_create/btnStr" x="270" y="50" texture="login_interface\arw-str0.bmp" hover="login_interface\arw-str1.bmp" />
+		<button name="char_create/btnInt" x="270" y="250" texture="login_interface\arw-int0.bmp" hover="login_interface\arw-int1.bmp" />
 
-		<button name="char_create/btnAgi" x="185" y="103" texture="login_interface\arw-agi0.bmp" active="login_interface\arw-agi1.bmp" />
-		<button name="char_create/btnDex" x="185" y="193" texture="login_interface\arw-dex0.bmp" active="login_interface\arw-dex1.bmp" />
+		<button name="char_create/btnAgi" x="185" y="103" texture="login_interface\arw-agi0.bmp" hover="login_interface\arw-agi1.bmp" />
+		<button name="char_create/btnDex" x="185" y="193" texture="login_interface\arw-dex0.bmp" hover="login_interface\arw-dex1.bmp" />
 
-		<button name="char_create/btnVit" x="354" y="103" texture="login_interface\arw-vit0.bmp" active="login_interface\arw-vit1.bmp" />
-		<button name="char_create/btnLuk" x="354" y="193" texture="login_interface\arw-luk0.bmp" active="login_interface\arw-luk1.bmp" />
+		<button name="char_create/btnVit" x="354" y="103" texture="login_interface\arw-vit0.bmp" hover="login_interface\arw-vit1.bmp" />
+		<button name="char_create/btnLuk" x="354" y="193" texture="login_interface\arw-luk0.bmp" hover="login_interface\arw-luk1.bmp" />
 		
-		<button name="char_create/btnOk" x="-90" y="-25" texture="btn_ok.bmp" active="btn_ok_a.bmp" hover="btn_ok_b.bmp"/>
-		<button name="char_create/btnCancel" x="-45" y="-25" texture="btn_cancel.bmp" active="btn_cancel_a.bmp" hover="btn_cancel_b.bmp"/>
+		<button name="char_create/btnOk" x="-90" y="-25" texture="btn_ok.bmp" hover="btn_ok_a.bmp" click="btn_ok_b.bmp"/>
+		<button name="char_create/btnCancel" x="-45" y="-25" texture="btn_cancel.bmp" hover="btn_cancel_a.bmp" click="btn_cancel_b.bmp"/>
 
 		<button name="char_create/btnStyleDown" x="39" y="150" texture="scroll1left.bmp" />
 		<button name="char_create/btnStyleUp" x="132" y="146" texture="scroll1right.bmp" />
-		<button name="char_create/btnColor" x="92" y="112" texture="scroll0up.bmp" />
+		<button name="char_create/btnColor" x="89" y="112" texture="scroll0up.bmp" />
 	</window>
 </desktop>

@@ -5,18 +5,18 @@
 
 DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 	//Add events handlers for character slots
-	ADD_HANDLER("char_select/select1", evtClick, DesktopChar::handleSelect);
-	ADD_HANDLER("char_select/select2", evtClick, DesktopChar::handleSelect);
-	ADD_HANDLER("char_select/select3", evtClick, DesktopChar::handleSelect);
+	ADD_HANDLER("char_select/select1", evtMouseDown, DesktopChar::handleSelect);
+	ADD_HANDLER("char_select/select2", evtMouseDown, DesktopChar::handleSelect);
+	ADD_HANDLER("char_select/select3", evtMouseDown, DesktopChar::handleSelect);
 
 	//Add event handler for buttons
+	ADD_HANDLER("char_select/btnOk", evtClick, DesktopChar::handleOk);
 	ADD_HANDLER("char_select/btnCancel", evtClick, DesktopChar::handleCancel);
 	ADD_HANDLER("char_select/btnMake", evtClick, DesktopChar::handleMake);
-	ADD_HANDLER("char_select/btnOk", evtClick, DesktopChar::handleOk);
 
 	//Add event handler for back and next buttons
-	ADD_HANDLER("char_select/back", evtClick, DesktopChar::handleBack);
-	ADD_HANDLER("char_select/next", evtClick, DesktopChar::handleNext);
+	ADD_HANDLER("char_select/back", evtMouseDown, DesktopChar::handleBack);
+	ADD_HANDLER("char_select/next", evtMouseDown, DesktopChar::handleNext);
 
 	//Get the char_select window handler
 	window = (GUI::Window*)getElement("char_select");
@@ -54,6 +54,24 @@ DesktopChar::DesktopChar(OpenRO* ro) : RODesktop("ui\\char_select.xml", ro) {
 	}
 }
 
+bool DesktopChar::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
+	SDLKey key = sdlEvent->key.keysym.sym;
+
+	if (key == SDLK_RETURN) {
+		if (getElement("char_select/btnOk")->isVisible())
+			((GUI::Button*)getElement("char_select/btnOk"))->Click();
+		else if (getElement("char_select/btnMake")->isVisible())
+			((GUI::Button*)getElement("char_select/btnMake"))->Click();
+	}
+	if (key == SDLK_LEFT) {
+		((GUI::Button*)getElement("char_select/back"))->Down();
+	}
+	if (key == SDLK_RIGHT) {
+		((GUI::Button*)getElement("char_select/next"))->Down();
+	}
+	return(true);
+}
+
 void DesktopChar::addChar(const CharInformation& info) {
 	int i = (int)info.slot;
 
@@ -77,6 +95,11 @@ void DesktopChar::addChar(const CharInformation& info) {
 
 	bodies[i].Load(novice_body, *m_ro);
 	heads[i].Load(novice_head, *m_ro);
+
+	if (i == (m_selected + (screen * 3))) {
+		setInfo(m_selected);
+		updateButtonState();
+	}
 }
 
 void DesktopChar::delChar(unsigned int pos) {
@@ -90,6 +113,10 @@ void DesktopChar::delAllChars() {
 	}
 
 	return;
+}
+
+const CharInformation& DesktopChar::getChar(int index) {
+	return m_chars[index];
 }
 
 void DesktopChar::setInfo(int i){
@@ -165,8 +192,8 @@ void DesktopChar::afterDraw(unsigned int delay) {
 		if (!m_used[p+i])
 			continue;
 
-		DrawFullAct(bodies[p+i], (float)x[i], 158, 0, 0, false, NULL, true, false);
-		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], true, false);
+		DrawFullAct(bodies[p+i], (float)x[i], 158, 0, 0, false, NULL, true, false, window->m_opacity);
+		DrawFullAct(heads[p+i], (float)x[i], 158, 0, 0, true, &bodies[p+i], true, false, window->m_opacity);
 	}
 
 	curtick = SDL_GetTicks();
@@ -192,7 +219,23 @@ void DesktopChar::cross(float x, float y, float size) {
 	glEnable(GL_TEXTURE_2D);
 }
 
+void DesktopChar::updateButtonState() {
+	int x = m_selected + (screen * 3);
+	if (m_used[x]) {
+		getElement("char_select/btnMake")->setVisible(false);
+		getElement("char_select/btnOk")->setVisible(true);
+		getElement("char_select/btnDelete")->setVisible(true);
+	}
+	else {
+		getElement("char_select/btnMake")->setVisible(true);
+		getElement("char_select/btnOk")->setVisible(false);
+		getElement("char_select/btnDelete")->setVisible(false);
+	}
+}
+
+
 bool DesktopChar::setSelected(int m_selected){
+	this->m_selected = m_selected;
 	getElement("char_select/select1")->setTransparent(true);
 	getElement("char_select/select2")->setTransparent(true);
 	getElement("char_select/select3")->setTransparent(true);
@@ -217,7 +260,8 @@ bool DesktopChar::setSelected(int m_selected){
 
 	setInfo(m_selected);
 
-	int x = m_selected + (screen * 3);
+	updateButtonState();
+/*	int x = m_selected + (screen * 3);
 	if (m_used[x]) {
 		getElement("char_select/btnMake")->setVisible(false);
 		getElement("char_select/btnOk")->setVisible(true);
@@ -227,7 +271,7 @@ bool DesktopChar::setSelected(int m_selected){
 		getElement("char_select/btnMake")->setVisible(true);
 		getElement("char_select/btnOk")->setVisible(false);
 		getElement("char_select/btnDelete")->setVisible(false);
-	}
+	}*/
 	return(true);
 }
 

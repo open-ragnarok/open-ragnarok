@@ -7,6 +7,7 @@
 class DesktopCreate : public RODesktop {
 protected:
 	unsigned int m_headnum;
+	unsigned int m_palnum;
 
 	unsigned int m_pat;
 	unsigned int m_action;
@@ -42,6 +43,8 @@ protected:
 public:
 	DesktopCreate(OpenRO*);
 
+	bool HandleKeyDown(SDL_Event *sdlEvent, int mod);
+
 	bool handleStr(GUI::Event&);
 	bool handleAgi(GUI::Event&);
 	bool handleVit(GUI::Event&);
@@ -63,7 +66,7 @@ public:
 	int getDex() const;
 	int getLuk() const;
 	const std::string& getName() const;
-	void readObjects();
+	void readObjects(const ro::PAL* pal = NULL);
 
 	void clear();
 

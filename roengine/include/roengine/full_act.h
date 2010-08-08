@@ -18,7 +18,7 @@ public:
 
 	FullAct& operator = (const FullAct&);
 
-	bool Load(const std::string& act, CacheManager& cache);
+	bool Load(const std::string& act, CacheManager& cache, const ro::PAL* pal = NULL);
 	void Clear();
 
 	const ro::ACT* getAct() const;
@@ -27,6 +27,6 @@ public:
 	const ro::ACT* operator -> () const;
 };
 
-void DrawFullAct(const FullAct&, float x, float y, int act_no = 0, int pat_no = 0, bool ext = false, const FullAct* parent = NULL, bool v_mirror = false, bool cross = false);
+void DrawFullAct(const FullAct&, float x, float y, int act_no = 0, int pat_no = 0, bool ext = false, const FullAct* parent = NULL, bool v_mirror = false, bool cross = false, float opacity = 1.0f);
 
 #endif /* __ROENGINE_FULLACT_H */

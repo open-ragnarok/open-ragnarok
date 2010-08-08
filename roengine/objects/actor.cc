@@ -8,10 +8,13 @@ Actor::Actor() : GLObject() {
 	m_act = 0;
 	m_frame = 0;
 	speed = 0.2f;
-	m_dir = ro::DIR_N;
+//	moveticks = 0;
+	m_dir = ro::DIR_S;
 	m_type = UnknownType;
 	id = 0;
 	m_visible = true;
+
+	m_emotion = -1;
 }
 
 Actor::Actor(Type t) : GLObject() {
@@ -20,10 +23,13 @@ Actor::Actor(Type t) : GLObject() {
 	m_act = 0;
 	m_frame = 0;
 	speed = 0.2f;
-	m_dir = ro::DIR_N;
+//	moveticks = 0;
+	m_dir = ro::DIR_S;
 	m_type = t;
 	id = 0;
 	m_visible = true;
+
+	m_emotion = -1;
 }
 
 Actor::~Actor() {
@@ -79,4 +85,56 @@ bool Actor::isVisible() const {
 
 Actor::Type Actor::getType() const {
 	return(m_type);
+}
+
+void Actor::setSpeed(unsigned short value) {
+	speed = value;
+}
+
+void Actor::setAction(unsigned short action) {
+	m_act = action;
+}
+
+void Actor::setEmotion(int emotion) {
+	m_emotion = emotion;
+}
+
+//bool Actor::shadowLoaded = false;
+
+bool Actor::openAct(CacheManager& cache, std::string name, rogl::ActGL& actor) {
+	//Cache objects
+	ROObjectCache& objects = cache.getROObjects();
+	GLObjectCache& globjects = cache.getGLObjects();
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
+
+	std::string act_n, spr_n;
+
+	rogl::SprGL sprgl;
+
+	// Setup filenames
+	act_n = name + ".act";
+	spr_n = name + ".spr";
+
+	// Reads the ACT object
+	if (!objects.ReadACT(act_n, fm)) {
+		fprintf(stderr, "Error loading act file %s.\n", act_n.c_str());
+		return(false);
+	}
+
+	// Reads the SPR object
+	if (!cache.getSprGLObjects().exists(spr_n)) {
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm)) {
+			fprintf(stderr, "Error opening SPR file");
+			return(false);
+		}
+	}
+
+	sprgl = *cache.getSprGLObjects().get(spr_n);
+
+	// Creates an ActGL and registers it
+	actor.setSpr(sprgl);
+	actor.setAct((ro::ACT*)objects[act_n]);
+
+	return(true);
 }

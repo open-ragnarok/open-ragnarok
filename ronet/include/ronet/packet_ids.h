@@ -30,13 +30,24 @@ typedef enum PacketIDs{
 	pktRequestCharacterNameID = 0x0193,// (6 bytes)  S 0193 <id>.uint
 	pktGetStoreInfoID = 0x00c5,		// (7 bytes)  S 00c5 <id>.uint <info>.byte
 	pktRequestIgnoreListID = 0x00d3, 
-	pktTakeID = 0x009f,				// (6 bytes)  S 009f <id>.uint
+
+	pktItemPickupID = 0x009f,		// (6 bytes)  S 009f <id>.uint
+	pktItemDropID = 0x00a2,			// S 00a2 <index>.w <amount>.w
+
 	pktSendNpcTextID = 0x01d5,		// S 01d5 <size>.short <npcid>.uint <message>.text <0x00>.byte
 	pktSendNpcResponseID = 0x00b8,	// (7 bytes)  S 00b8 <npcid>.uint <number>.byte
 	pktSendNpcNumberID = 0x0143,	// (10 bytes) S 0143 <npcid>.uint <number>.uint
+
+	pktRestartID = 0x00b2,			// S 00b2 <type>.B
+	pktStatusUpID = 0x00bb,			// S 00bb <type>.w <amount>.B
+	pktQuitID = 0x018a,				// S 018a <fixed 0>.w
 	
+	pktReqEmotionID = 0x00bf,		// S 00bf <type>.B
+
 	// Packetver 20
-	pktActionRequestID = 0x0190,	// <packet_id>,<packet_len>,actionrequest,<offset of target_id (4 bytes)>,<offset of action_type (1 byte)> -- Thanks, FlavioJS!
+//	pktActionRequestID = 0x0190,	// <packet_id>,<packet_len>,actionrequest,<offset of target_id (4 bytes)>,<offset of action_type (1 byte)> -- Thanks, FlavioJS!
+	// Packetver 5
+	pktActionRequestID = 0x0089,	// <packet_id>.short <target_id>.uint <action_type>.B
 
 	// Packetver 23
 	pktMapLogin23ID = 0x0436,		// (19 bytes) S 0436 <account id>.int <char id>.int <login id>.int <client tick>.unsigned int <gender>.byte
@@ -68,25 +79,39 @@ typedef enum PacketIDs{
 	pktAttackRangeID = 0x013a,		// R 013a <val>.w
 	pktMapMoveOkID = 0x0087,		// (12 bytes) R 0087 <ticks>.int <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.B
 	pktServerTickID = 0x007f,		// R 007f <server tick>.l
+
 	pktPlayerEquipID = 0x01d7,		// (11 bytes) R 01d7 <id>.int <type>.B <id1>.short <id2>.short
+	pktItemGainedID = 0x00a0,		// R 00a0 <index>.short <amount>.short <id>.short <identified>.B <broken>.B <upgrade>.B <cards>.8B <type_equip>.short <type>.B <fail>.B
+	pktItemLostID = 0x00af,			// R 00af <index>.w <amount>.w
 	pktInventoryItemsID = 0x00a4,	// R 00a4 <size>.short array of (<index>.short <id>.short <type>.B <identified>.B <type_equip>.short <equipped>.short <broken>.B <upgrade>.B <cards>.8B)
 	pktInventoryItemsStackableID = 0x01ee, // R 01ee <size>.short array(<index>.short <id>.short <type>.B <unk>.3B <amount>.short <cards>.8B)
-	pktStatInfoID = 0x00b0,			// R 00b0 <type>.short <value>.int
-	pktStatInfo2ID = 0x0141,		// (14 bytes) R 0141 <type>.short 0x0000 <val>.short 0x0000 <val2>.short 0x0000
+
+//	pktStatInfoID = 0x00b0,			// R 00b0 <type>.short <value>.int
+//	pktStatInfo2ID = 0x0141,		// (14 bytes) R 0141 <type>.short 0x0000 <val>.short 0x0000 <val2>.short 0x0000
 	pktZenyExpID = 0x00b1,			// R 00b1 <type>.short <value>.int
 	pktHotkeyListID = 0x02b9,		// R 02b9 array of 27(struct HotkeyInfo)
 	pktStatsInfoID = 0x00bd,		// (44 bytes) R 00bd <status point>.w <STR>.B <STRupP>.B <AGI>.B <AGIupP>.B <VIT>.B <VITupP>.B <INT>.B <INTupP>.B <DEX>.B <DEXupP>.B <LUK>.B <LUKupP>.B <ATK>.w <ATKbonus>.w <MATKmax>.w <MATKmin>.w <DEF>.w <DEFbonus>.w <MDEF>.w <MDEFbonus>.w <HIT>.w <FLEE>.w <FLEEbonus>.w <critical>.w <karma?>.w <manner?>.w
+	
 	pktGmBroadID = 0x009a,			// R 009a <len>.w <message>.?B
 	pktCharLeaveScreenID = 0x0080,	// R 0080 <ID>.l <type>.B
 	pktOtherSpeechID = 0x008d,		// R 008d <len>.w <ID>.l <str>.?B
 	pktHpUpdatePartyID = 0x0106,	// R 0106 <ID>.l <HP>.w <MaxHP>.w
+	
 	pktRecvNpcTalkID = 0x00b4,		// R 00b4 <len>.short <id>.int <message>.string
 	pktRecvNpcTalkNextID = 0x00b5,	// R 00b5 <len>.short <id>.int
 	pktRecvNpcTalkCloseID = 0x00b6,	// R 00b6 <len>.short <id>.int
 	pktRecvNpcTalkResponsesID = 0x00b7,
+	pktRecvNpcImage2ID = 0x01b3,	// R 01b3 <len>.short <imagename>.string <type>.B <unknown>.unknown <message>.string
+	
 	pktMapChangeID = 0x0091,		// R 0091 <map>.16B <pos>.int
 	pktRecvNpcInputReqID = 0x01d4,	// R 01d4 <id>.int
 	pktStatChangedID = 0x013d,		// R 013d <type>.short <amount>.short
+	pktRestartCharSelectID = 0x00b3,// R 00b3 <type>.B
+	pktStatusUpAckID = 0x00bc,		// R 00bc <type>.w <fail>.B <val>.B
+	pktQuitAckID = 0x018b,			// R 018b <fail>.w
+
+	pktEmotionID = 0x00c0,			// R 00c0 <ID>.l <type>.B
+	pktNotifyEffect1ID = 0x019b,		// R 019b <ID>.l <type>.l
 	// Actor
 	pktActorDisplayID = 0x0078,		// R 0078 
 	pktActorMoveID = 0x0086,		// R 0086 <id>.uint <<start_coord>.20bits <dest_coord>.20bits>.5Bytes <0x88>.byte <ticks>.uint

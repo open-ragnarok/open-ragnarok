@@ -1,4 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <desktop name="loading_ui" texture="loading02.jpg">
 	<!-- $Id$ -->
+  <window name="messagewindow" visible="true" texture="win_msgbox.bmp" x="400" y="500" mw="280" mh="15">
+    <label name="progresswindow/lblMessage" text="Loading..." x="14" y="27" />
+  </window>
+
 </desktop>

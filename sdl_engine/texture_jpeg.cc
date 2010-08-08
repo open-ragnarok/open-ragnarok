@@ -155,7 +155,8 @@ Texture loadJPEGTexture(const unsigned char* buf, unsigned long buflen) {
 	Texture::Root* texp = new Texture::Root();
 	unsigned char* line = new unsigned char[cinfo.output_width * datasize];
 	unsigned char* data = new unsigned char[cinfo.output_width * cinfo.output_height * 4];
-	unsigned char* dataptr = data;
+//	unsigned char* dataptr = data;
+	unsigned char* dataptr = &data[(cinfo.output_height - 1) * (cinfo.output_width * 4)];
 
 	while (cinfo.output_scanline < cinfo.output_height) {
 		jpeg_read_scanlines(&cinfo, &line, 1);
@@ -167,7 +168,8 @@ Texture loadJPEGTexture(const unsigned char* buf, unsigned long buflen) {
 						dataptr[i * 4 + 0] = line[i];
 						dataptr[i * 4 + 1] = line[i];
 						dataptr[i * 4 + 2] = line[i];
-						dataptr[i * 4 + 3] = 0;
+//						dataptr[i * 4 + 3] = 0;
+						dataptr[i * 4 + 3] = 255;
 					}
 				}
 				break;
@@ -177,7 +179,8 @@ Texture loadJPEGTexture(const unsigned char* buf, unsigned long buflen) {
 						dataptr[i * 4 + 0] = line[i * 3 + 0];
 						dataptr[i * 4 + 1] = line[i * 3 + 1];
 						dataptr[i * 4 + 2] = line[i * 3 + 2];
-						dataptr[i * 4 + 3] = 0;
+//						dataptr[i * 4 + 3] = 0;
+						dataptr[i * 4 + 3] = 255;
 					}
 				}
 				break;
@@ -214,7 +217,14 @@ Texture loadJPEGTexture(const unsigned char* buf, unsigned long buflen) {
 						dataptr[i * 4 + 0] = (unsigned char)R;
 						dataptr[i * 4 + 1] = (unsigned char)G;
 						dataptr[i * 4 + 2] = (unsigned char)B;
-						dataptr[i * 4 + 3] = 0;
+//						dataptr[i * 4 + 3] = 0;
+						dataptr[i * 4 + 3] = 255;
+					/*	int a = cinfo.output_width - i - 1;
+						dataptr[a * 4 + 0] = (unsigned char)R;
+						dataptr[a * 4 + 1] = (unsigned char)G;
+						dataptr[a * 4 + 2] = (unsigned char)B;
+//						dataptr[a * 4 + 3] = 0;
+						dataptr[a * 4 + 3] = 255;*/
 					}
 				}
 				break;
@@ -223,7 +233,8 @@ Texture loadJPEGTexture(const unsigned char* buf, unsigned long buflen) {
 				break;
 		}
 		// Increase pointer
-		dataptr += cinfo.output_width * 4;
+//		dataptr += cinfo.output_width * 4;
+		dataptr -= cinfo.output_width * 4;
 	}
 
 	// Free used data
@@ -288,7 +299,8 @@ Texture loadJPEGTexture(const char* fn) {
 	Texture::Root* texp = new Texture::Root();
 	unsigned char* line = new unsigned char[cinfo.output_width * datasize];
 	unsigned char* data = new unsigned char[cinfo.output_width * cinfo.output_height * 4];
-	unsigned char* dataptr = data;
+//	unsigned char* dataptr = data;
+	unsigned char* dataptr = &data[(cinfo.output_height - 1) * (cinfo.output_width * 4)];
 
 	while (cinfo.output_scanline < cinfo.output_height) {
 		jpeg_read_scanlines(&cinfo, &line, 1);
@@ -300,7 +312,8 @@ Texture loadJPEGTexture(const char* fn) {
 						dataptr[i * 4 + 0] = line[i];
 						dataptr[i * 4 + 1] = line[i];
 						dataptr[i * 4 + 2] = line[i];
-						dataptr[i * 4 + 3] = 0;
+				//		dataptr[i * 4 + 3] = 0;
+						dataptr[i * 4 + 3] = 255;
 					}
 				}
 				break;
@@ -311,6 +324,7 @@ Texture loadJPEGTexture(const char* fn) {
 						dataptr[i * 4 + 1] = line[i * 3 + 1];
 						dataptr[i * 4 + 2] = line[i * 3 + 2];
 						dataptr[i * 4 + 3] = 0;
+						dataptr[i * 4 + 3] = 255;
 					}
 				}
 				break;
@@ -338,6 +352,7 @@ Texture loadJPEGTexture(const char* fn) {
 						dataptr[i * 4 + 1] = (unsigned char)G;
 						dataptr[i * 4 + 2] = (unsigned char)B;
 						dataptr[i * 4 + 3] = 0;
+						dataptr[i * 4 + 3] = 255;
 					}
 				}
 				break;
@@ -346,7 +361,8 @@ Texture loadJPEGTexture(const char* fn) {
 				break;
 		}
 		// Increase pointer
-		dataptr += cinfo.output_width * 4;
+	//	dataptr += cinfo.output_width * 4;
+		dataptr -= cinfo.output_width * 4;
 	}
 
 	// Free used data

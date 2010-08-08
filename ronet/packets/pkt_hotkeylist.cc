@@ -24,7 +24,7 @@
 */
 #include "stdafx.h"
 
-#include "ronet/packets/pkt_skilllist.h"
+#include "ronet/packets/pkt_hotkeylist.h"
 
 namespace ronet {
 

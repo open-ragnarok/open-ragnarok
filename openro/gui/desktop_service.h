@@ -14,6 +14,8 @@ protected:
 public:
 	DesktopService(OpenRO*);
 
+	bool HandleKeyDown(SDL_Event *sdlEvent, int mod);
+
 	bool handleBtnOk(GUI::Event&);
 	bool handleBtnCancel(GUI::Event&);
 

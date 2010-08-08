@@ -124,6 +124,14 @@ void Frustum::Calculate() {
 	frustum[5][1] /= t;
 	frustum[5][2] /= t;
 	frustum[5][3] /= t;
+
+	glColor3f(0,0,1);
+	for(int i = 0; i < 6; i++ ) {
+		glBegin(GL_QUADS);
+		glVertex4fv(frustum[i]);
+		glEnd();
+	}
+	glColor3f(1,1,1);
 }
 
 bool Frustum::VectorVisible(const Vector3f& v) const {
@@ -140,8 +148,11 @@ bool Frustum::PointVisible(float x, float y, float z) const {
 }
 
 bool Frustum::BoxVisible(float x, float y, float z, float width, float height, float length) const {
-	for(int i = 0; i < 6; i++ ) {
-		if (frustum[i][0] * (x - width) +
+	width /= 2;
+	height /= 2;
+	length /= 2;
+//	for(int i = 0; i < 6; i++ ) {
+	/*	if (frustum[i][0] * (x - width) +
 			frustum[i][1] * (y - height) +
 			frustum[i][2] * (z - length) +
 			frustum[i][3] > 0)
@@ -188,23 +199,54 @@ bool Frustum::BoxVisible(float x, float y, float z, float width, float height, f
 			frustum[i][2] * (z + length) +
 			frustum[i][3] > 0)
 		   continue;
+*/
+		if ((frustum[0][0] > (x - width) ||
+			frustum[0][1] > (x - width) ||
+			frustum[0][2] > (x - width) ||
+			frustum[0][3] > (x - width))
+		&& (frustum[1][0] < (x + width) ||
+			frustum[1][1] < (x + width) ||
+			frustum[1][2] < (x + width) ||
+			frustum[1][3] < (x + width))
+		&& (frustum[2][0] < (y + height) ||
+			frustum[2][1] < (y + height) ||
+			frustum[2][2] < (y + height) ||
+			frustum[2][3] < (y + height))
+		&& (frustum[3][0] > (y - height) ||
+			frustum[3][1] > (y - height) ||
+			frustum[3][2] > (y - height) ||
+			frustum[3][3] > (y - height))
+		&& (frustum[4][0] > (z - length) ||
+			frustum[4][1] > (z - length) ||
+			frustum[4][2] > (z - length) ||
+			frustum[4][3] > (z - length))
+		&& (frustum[5][0] < (z + length) ||
+			frustum[5][1] < (z + length) ||
+			frustum[5][2] < (z + length) ||
+			frustum[5][3] < (z + length)))
+			return true;
 
 		return false;
-	}
+//	}
 
 	return true;
 }
 
 bool Frustum::ModelVisible(const ro::RSM* rsm, const ro::RSW::ModelObject* model) const {
-#if 0
+#if 1
 	const ro::RSM::BoundingBox& box = rsm->getBoundingBox();
-	return(BoxVisible(
+/*	return(BoxVisible(
 		model->pos[0],
 		model->pos[1],
 		model->pos[2],
 		box.range[0] * model->scale[0],
 		box.range[1] * model->scale[1],
 		box.range[2] * model->scale[2]
+		));*/
+	return(PointVisible(
+		model->pos[0],
+		model->pos[1],
+		model->pos[2]
 		));
 #endif
 	// TODO

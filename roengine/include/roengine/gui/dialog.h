@@ -4,6 +4,7 @@
 
 #include "desktop.h"
 #include "button.h"
+#include "label.h"
 
 namespace GUI {
 typedef enum {
@@ -18,6 +19,7 @@ typedef enum {
  */
 class Dialog : public Desktop {
 protected:
+	Label* label;
 	Button* btnOk;
 	Button* btnCancel;
 	Button* btnExit;

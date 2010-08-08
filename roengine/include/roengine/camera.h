@@ -13,11 +13,15 @@ protected:
 	Vector3f eye;
 	Vector3f dest;
 
+	float fx, vx, fy, vy;
+	float zoom, zoom_a;
 public:
 	Camera();
 	~Camera();
 
-	void Rotate(float f);
+	void Update();
+	void RotateY(float f);
+	void RotateX(float f);
 	void Translate(const Vector3f&);
 	void TranslateX(const float&);
 	void TranslateY(const float&);

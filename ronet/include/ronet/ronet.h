@@ -116,6 +116,14 @@ public:
 	void KeepAliveMap(unsigned int acc_id);
 
 	bool sendAction(int id, unsigned char flag);
+
+	bool Restart(unsigned char type);
+
+	bool StatusUp(short type, char amount);
+
+	bool Emotion(unsigned char type);
+
+	bool Quit();
 };
 }
 

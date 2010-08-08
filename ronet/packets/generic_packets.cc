@@ -31,11 +31,23 @@ namespace ronet {
 	RONET_GENERIC_ID_IMPL(RequestCharacterName)
 	RONET_GENERIC_TRAILING_IMPL(GetStoreInfo)
 	RONET_GENERIC_IMPL(RequestIgnoreList)
-	RONET_GENERIC_ID_IMPL(Take)
+	RONET_GENERIC_ID_IMPL(ItemPickup)
+	RONET_GENERIC_2PARAM_IMPL(ItemDrop, unsigned short, unsigned short)
+	RONET_GENERIC_2PARAM_IMPL(ItemLost, unsigned short, unsigned short)
 	RONET_GENERIC_ID_IMPL(RecvNpcInputReq)
 	RONET_GENERIC_ID_IMPL(RecvNpcTalkClose)
 	RONET_GENERIC_2PARAM_IMPL(StatChanged, short, short)
 	RONET_GENERIC_3PARAM_IMPL(ActorStop, unsigned int, unsigned short, unsigned short);
+	RONET_GENERIC_1PARAM_IMPL(Restart, unsigned char)
+	RONET_GENERIC_1PARAM_IMPL(RestartCharSelect, unsigned char)
+	RONET_GENERIC_2PARAM_IMPL(StatusUp, short, unsigned char)
+	RONET_GENERIC_3PARAM_IMPL(StatusUpAck, short, unsigned char, unsigned char)
+	RONET_GENERIC_1PARAM_IMPL(ReqEmotion, unsigned char)
+//	RONET_GENERIC_TRAILING_IMPL(Emotion)
+	RONET_GENERIC_2PARAM_IMPL(Emotion, unsigned int, unsigned char)
+	RONET_GENERIC_2PARAM_IMPL(NotifyEffect1, unsigned int, unsigned int);
+	RONET_GENERIC_1PARAM_IMPL(Quit, unsigned short)
+	RONET_GENERIC_1PARAM_IMPL(QuitAck, unsigned short)
 	
 	// Guild
 	RONET_GENERIC_ID_IMPL(GuildMasterMember)

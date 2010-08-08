@@ -7,6 +7,9 @@
 
 namespace GUI {
 	class Label : public Element {
+	private:
+		bool m_shadow;
+		bool m_rightalign;
 	protected:
 		std::string m_text;
 

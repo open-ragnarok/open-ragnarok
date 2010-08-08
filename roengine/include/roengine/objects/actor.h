@@ -42,7 +42,9 @@ protected:
 	float dest_x, dest_y;
 
 	/** The speed */
-	float speed;
+//	float speed;
+	unsigned short speed;
+//	unsigned short moveticks;
 
 	bool m_visible;
 
@@ -50,6 +52,12 @@ protected:
 	ro::CDir m_dir;
 
 	Type m_type;
+
+	rogl::ActGL m_shadowact;
+	bool shadowLoaded;
+	rogl::ActGL m_emotionact;
+	bool emotionLoaded;
+	int m_emotion;
 
 public:
 	/** Actor ID as assigned by the server */
@@ -72,6 +80,8 @@ public:
 	float getDestinationY() const;
 
 	void setDirection(ro::CDir);
+	void setSpeed(unsigned short);
+	virtual void setAction(unsigned short);
 
 	/**
 	 * Setup the current position.
@@ -88,6 +98,10 @@ public:
 	void setVisible(bool);
 	bool isVisible() const;
 	Type getType() const;
+
+	void setEmotion(int emotion);
+
+	bool openAct(CacheManager& cache, std::string name, rogl::ActGL& actor);
 };
 
 #endif /* __ROENGINE_ACTOR_H */

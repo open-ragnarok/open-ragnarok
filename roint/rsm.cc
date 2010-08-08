@@ -26,6 +26,14 @@
 #include "ro/types/rsm.h"
 #include "ro/ro.h"
 
+#ifndef MAX
+#	define MAX(x,y) (((x)>(y))?(x):(y))
+#endif
+
+#ifndef MIN
+#	define MIN(x,y) (((y)>(x))?(x):(y))
+#endif
+
 namespace ro {
 
 static RSM::Node g_emptyNode;
@@ -125,12 +133,15 @@ bool RSM::readStream(std::istream& s) {
 		m_nodes.resize((unsigned int)n);
 		for (i = 0; i < n; i++) {
 			Node& node = m_nodes[i];
-			if (!node.readStream(s, m_version)) {
+		//	if (!node.readStream(s, m_version)) {
+			if (!node.readStream(s, m_version, i == 0)) {
 				reset();
 				return(false);
 			}
 		}
 	}
+	if (m_nodes.size() == 1)
+		m_nodes[0].is_only = true;
 
 	// read position animation of main node
 	if (!IsCompatibleWith(1,5)) {
@@ -166,19 +177,24 @@ bool RSM::readStream(std::istream& s) {
 		reset();
 		return(false);
 	}
-	if (IsCompatibleWith(1,3)) {
-		for (i = 0; i < n; i++) {
-			VolumeBox& box = m_volumeBoxes[i];
-			s.read((char*)&box, sizeof(VolumeBox));
+	if (n > 0) {
+		m_volumeBoxes.resize((unsigned int)n);
+		if (IsCompatibleWith(1,3)) {
+			for (i = 0; i < n; i++) {
+				VolumeBox& box = m_volumeBoxes[i];
+				s.read((char*)&box, sizeof(VolumeBox));
+			}
+		}
+		else {
+			for (i = 0; i < n; i++) {
+				VolumeBox& box = m_volumeBoxes[i];
+				s.read((char*)&box, sizeof(VolumeBox) - sizeof(int));
+				box.flag = 0;
+			}
 		}
 	}
-	else {
-		for (i = 0; i < n; i++) {
-			VolumeBox& box = m_volumeBoxes[i];
-			s.read((char*)&box, sizeof(VolumeBox) - sizeof(int));
-			box.flag = 0;
-		}
-	}
+
+	calcBoundingBox();
 
 	if (s.fail()) {
 		reset();
@@ -296,6 +312,63 @@ void RSM::Dump(std::ostream& out, const std::string& prefix) const {
 	}
 }
 
+void ro::RSM::calcBoundingBox() {
+#if 1
+	unsigned int i;
+
+	m_nodes[0].calcBoundingBox();
+	for (i = 1; i < m_nodes.size(); i++)
+		if (strcmp(m_nodes[i].parentname, m_nodes[0].name) == 0)
+			m_nodes[i].calcBoundingBox();
+
+	for (i = 0; i < 3; i++) {
+		box.max[i] = m_nodes[0].getBoundingBox().max[i];
+		box.min[i] = m_nodes[0].getBoundingBox().min[i];
+	/*	for (unsigned int j = 1; j < m_nodes.size(); j++) {
+			if (strcmp(m_nodes[i].parentname, m_nodes[0].name) == 0){
+				box.max[i] = MAX(m_nodes[j].getBoundingBox().max[i], box.max[i]);
+				box.min[i] = MIN(m_nodes[j].getBoundingBox().min[i], box.min[i]);
+			}
+		}*/
+		box.offset[i] = (box.max[i] + box.min[i]) / 2.0f;
+		box.range[i] = (box.max[i] - box.min[i]) / 2.0f;
+	}
+#else
+	unsigned int i, j;
+	BoundingBox& meshbox = box;
+	box.max.x = -999999;
+	box.max.y = -999999;
+	box.max.z = -999999;
+
+	box.min.x = 999999;
+	box.min.y = 999999;
+	box.min.z = 999999;
+
+	box.range.x = 0;
+	box.range.y = 0;
+	box.range.z = 0;
+	for (i = 0; i < m_nodes.size(); i++) {
+		m_nodes[i].calcBoundingBox(m_nodes[0].transf);
+		meshbox = m_nodes[i].getBoundingBox();
+
+		for(j = 0; j < 3; j++) {
+			if (meshbox.max[j] > box.max[j])
+				box.max[j] = meshbox.max[j];
+			if (meshbox.min[j] < box.min[j])
+				box.min[j] = meshbox.min[j];
+		}
+	}
+
+	for(j = 0; j < 3; j++)
+		// box.range[j] = box.max[j] - box.min[j];
+		box.range[j] = (box.max[j] + box.min[j])/2.0f;
+#endif
+}
+
+const ro::RSM::BoundingBox& ro::RSM::getBoundingBox() const {
+	return(box);
+}
+
 int RSM::getAnimLen() const {
 	return(m_animLen);
 }
@@ -346,6 +419,8 @@ const char* RSM::getTexture(unsigned int idx) const {
 }
 
 RSM::Node::Node() {
+    is_main = true;
+    is_only = false;
 }
 
 RSM::Node::Node(const RSM::Node& node) {
@@ -370,7 +445,17 @@ RSM::Node& RSM::Node::operator = (const RSM::Node& node) {
 	faces = node.faces;
 	posKeyframes = node.posKeyframes;
 	rotKeyframes = node.rotKeyframes;
+	is_main = node.is_main;
+	is_only = node.is_only;
 	return(*this);
+}
+
+unsigned int RSM::getVolumeBoxCount() const {
+	return m_volumeBoxes.size();
+}
+
+const RSM::VolumeBox& RSM::getVolumeBox(unsigned int idx) const {
+	return m_volumeBoxes[idx];
 }
 
 void RSM::Node::reset() {
@@ -389,10 +474,13 @@ void RSM::Node::reset() {
     rotKeyframes.clear();
 }
 
-bool RSM::Node::readStream(std::istream& s, const s_obj_ver& ver) {
+//bool RSM::Node::readStream(std::istream& s, const s_obj_ver& ver) {
+bool RSM::Node::readStream(std::istream& s, const s_obj_ver& ver, bool main) {
 	reset();
 	s.read(name, 40);
 	s.read(parentname, 40);
+
+	is_main = main;
 
 	int i, n;
 	// read texture indexes
@@ -648,6 +736,75 @@ void RSM::Node::Dump(std::ostream& out, const std::string& prefix) const {
 
 }
 
+void MatrixMultVect(const float* M, const RSM::Vertex& Vin, RSM::Vertex& Vout) {
+	Vout[0] = Vin[0]*M[0] + Vin[1]*M[4] + Vin[2]*M[8] + 1.0f * M[12];
+	Vout[1] = Vin[0]*M[1] + Vin[1]*M[5] + Vin[2]*M[9] + 1.0f * M[13];
+	Vout[2] = Vin[0]*M[2] + Vin[1]*M[6] + Vin[2]*M[10] + 1.0f * M[14];
+}
+
+void ro::RSM::Node::calcBoundingBox() {
+	box.max[0] = box.max[1] = box.max[2] = -999999.0;
+	box.min[0] = box.min[1] = box.min[2] = 999999.0;
+
+	float transf[15];
+	transf[0] = offsetMT[0];
+	transf[1] = offsetMT[1];
+	transf[2] = offsetMT[2];
+	transf[3] = 0;
+
+	transf[4] = offsetMT[3];
+	transf[5] = offsetMT[4];
+	transf[6] = offsetMT[5];
+	transf[7] = 0;
+
+	transf[8] = offsetMT[6];
+	transf[9] = offsetMT[7];
+	transf[10] = offsetMT[8];
+	transf[11] = 0;
+
+	transf[12] = 0;
+	transf[13] = 0;
+	transf[14] = 0;
+	transf[15] = 1;
+
+	unsigned int i, j;
+	Vertex vi, v;
+#if 1
+	for (i = 0; i < vertices.size(); i++) {
+		MatrixMultVect(transf, vertices[i], v);
+
+		for (j = 0; j < 3; j++) {
+			if (!is_only) v[j] += offsetMT[9 + j];// + t.translate2.v[j];
+
+			box.min[j] = MIN(v[j], box.min[j]);
+			box.max[j] = MAX(v[j], box.max[j]);
+		}
+	}
+#else
+	for (i = 0; i < vertices.size(); i++) {
+		for (j = 0; j < 3; j++) {
+			if (!is_only) v[j] += offsetMT[9 + j];// + t.translate2.v[j];
+
+			box.min[j] = MIN(vertices[i][j], box.min[j]);
+			box.max[j] = MAX(vertices[i][j], box.max[j]);
+		}
+	}
+
+	MatrixMultVect(transf, box.max, v);
+	box.max = v;
+	MatrixMultVect(transf, box.min, v);
+	box.min = v;
+#endif
+	for (i = 0; i < 3; i++) {
+		box.offset[i] = (box.max[i] + box.min[i]) / 2.0f;
+		box.range[i] = (box.max[i] - box.min[i]) / 2.0f;
+	}
+}
+
+const ro::RSM::BoundingBox& ro::RSM::Node::getBoundingBox() const {
+	return(box);
+}
+
 #ifdef ROINT_USE_XML
 
 TiXmlElement* RSM::GenerateXML(const std::string& name, bool utf) const {
@@ -839,6 +996,21 @@ TiXmlElement* RSM::GenerateXML(const std::string& name, bool utf) const {
 	}
 
 	return(root);
+}
+
+const float* ro::RSM::getColor() const {
+	static float color[4] = {1,1,1,1};
+	if (IsCompatibleWith(1,5)) {
+		color[1] = color[2] = 0;
+	}
+	else if (IsCompatibleWith(1,4)) {
+		color[0] = color[2] = 0;
+	}
+	else if (IsCompatibleWith(1,3)) {
+		color[0] = color[1] = 0;
+	}
+
+	return color;
 }
 
 #endif

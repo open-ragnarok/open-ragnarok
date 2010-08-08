@@ -12,7 +12,7 @@ ButtonBar::ButtonBar(Element* parent, CacheManager& cache) : Element(parent) {
 
 	m_arrow = false;
 	m_arrow_begin = false;
-	m_MouseIn = false;
+	m_mouseIn = false;
 
 	CheckMinimumSize();
 }
@@ -20,7 +20,7 @@ ButtonBar::ButtonBar(Element* parent, CacheManager& cache) : Element(parent) {
 ButtonBar::ButtonBar(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
 	m_arrow = false;
 	m_arrow_begin = false;
-	m_MouseIn = false;
+	m_mouseIn = false;
 
 	if (node != NULL)
 		ParseFromXml(node, cache);

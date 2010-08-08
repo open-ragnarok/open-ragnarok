@@ -6,7 +6,7 @@
 SprCache::SprCache() {}
 SprCache::~SprCache() {}
 
-bool SprCache::Load(const std::string& fn, ROObjectCache& objs, FileManager& fm) {
+bool SprCache::Load(const std::string& fn, ROObjectCache& objs, FileManager& fm, const ro::PAL* pal) {
 	if (exists(fn))
 		return(false);
 
@@ -17,7 +17,7 @@ bool SprCache::Load(const std::string& fn, ROObjectCache& objs, FileManager& fm)
 	}
 
 	rogl::SprGL* spr = new rogl::SprGL();
-	if (!spr->open((ro::SPR*)objs[fn])) {
+	if (!spr->open((ro::SPR*)objs[fn], pal)) {
 		delete(spr);
 		return(false);
 	}

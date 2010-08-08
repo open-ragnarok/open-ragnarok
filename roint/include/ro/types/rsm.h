@@ -96,6 +96,13 @@ public:
 		int flag; //< if (flag != 0) size += {3,0,3};
 	};
 
+	typedef struct BoundingBox {
+		Vertex max;
+		Vertex min;
+		Vertex offset;
+		Vertex range;
+	};
+
 	class ROINT_DLLAPI Node {
 	public:
 		char name[40];
@@ -112,6 +119,11 @@ public:
 		Arr<PosKeyframe> posKeyframes;
 		Arr<RotKeyframe> rotKeyframes;
 
+		bool is_main;
+		bool is_only;
+
+		const BoundingBox& getBoundingBox() const;
+
 		Node();
 		Node(const Node&);
 		~Node();
@@ -119,9 +131,13 @@ public:
 		Node& operator = (const Node&);
 
 		void reset();
-		bool readStream(std::istream& s, const s_obj_ver& ver);
+//		bool readStream(std::istream& s, const s_obj_ver& ver);
+		bool readStream(std::istream& s, const s_obj_ver& ver, bool main);
 		bool writeStream(std::ostream& s, const s_obj_ver& ver) const;
 		void Dump(std::ostream& out, const std::string& prefix) const;
+		void calcBoundingBox();
+	protected:
+		BoundingBox box;
 	};
 #pragma pack(pop)
 
@@ -137,12 +153,17 @@ protected:
 	Arr<Node> m_nodes;
 	Arr<VolumeBox> m_volumeBoxes;
 
+	void calcBoundingBox();
+	BoundingBox box;
+
 public:
 	RSM();
 	RSM(const RSM&);
 	virtual ~RSM();
 
 	RSM& operator = (const RSM&);
+
+	const BoundingBox& getBoundingBox() const;
 
 	virtual bool readStream(std::istream&);
 	bool writeStream(std::ostream& s) const;
@@ -167,6 +188,8 @@ public:
 
 	unsigned int getVolumeBoxCount() const;
 	const VolumeBox& getVolumeBox(unsigned int idx) const;
+
+	const float* getColor() const;
 };
 
 } /* namespace ro */

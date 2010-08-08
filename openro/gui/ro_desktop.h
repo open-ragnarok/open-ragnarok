@@ -11,6 +11,8 @@ protected:
 
 public:
 	RODesktop(const std::string&, OpenRO*);
+
+	void showQuitDialog() {} //= 0; TODO: to pure virtual function
 };
 
 #endif /* __OPENRO_RO_DESKTOP_H */

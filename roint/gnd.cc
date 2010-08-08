@@ -27,6 +27,14 @@
 #include "ro/types/gnd.h"
 #include "ro/ro.h"
 
+#include "../libpng/png.h"
+#ifdef ROINT_DLL
+#pragma comment(lib, "libpng.dll.lib")
+#endif
+#if 0
+#	include <SDL.h>
+#endif
+
 namespace ro {
 
 // TODO use proper default values
@@ -93,6 +101,88 @@ void GND::reset() {
 	m_surfaces.clear();
 	m_cells.clear();
 }
+
+int SavePngFile(const char* filename, unsigned char *pBits, int Width, int Height){
+
+	FILE *fp = fopen(filename, "wb");
+	if(!fp)return 0;
+	png_structp png_ptr;
+	png_infop info_ptr;
+
+	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if(!png_ptr) return 0;
+	info_ptr = png_create_info_struct(png_ptr);
+	if(!info_ptr){
+		png_destroy_write_struct(&png_ptr, png_infopp_NULL);
+		return 0;
+	}
+	if (setjmp(png_jmpbuf(png_ptr))){
+		fclose(fp);
+		return false;
+	}
+	png_init_io(png_ptr, fp);
+	png_set_IHDR(png_ptr, info_ptr, Width, Height, 8, PNG_COLOR_TYPE_RGB,
+		PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_BASE);
+
+
+	png_color_8 sig_bit;
+	sig_bit.red = 8;
+	sig_bit.green = 8;
+	sig_bit.blue = 8;
+	sig_bit.alpha = 0;
+	png_set_sBIT(png_ptr, info_ptr, &sig_bit);
+
+	// 
+	png_text text_ptr[1];
+	text_ptr[0].key = "Description";
+	text_ptr[0].text = "";
+	text_ptr[0].compression = PNG_TEXT_COMPRESSION_NONE;
+	png_set_text(png_ptr, info_ptr, text_ptr, 1);
+
+	png_write_info(png_ptr, info_ptr);
+
+	png_set_bgr(png_ptr);
+
+	#define Pixel(x, y)		(pBits + Width * (Height - y - 1) * 3 + x * 3)
+	png_bytep *row_pointers;
+	row_pointers = (png_bytep *)malloc(sizeof(png_bytep *) * Height);
+	for (int k = 0; k < Height; k++)
+		row_pointers[k] = (png_bytep)Pixel(0, k);
+
+	png_write_image(png_ptr, row_pointers);
+	free(row_pointers);
+	png_write_end(png_ptr, info_ptr);
+	
+	png_destroy_write_struct(&png_ptr, &info_ptr);
+
+	fclose(fp);
+	return 1;
+
+}
+
+#if 0
+void SaveBmpFile(const char* filename, unsigned char *pixels, int Width, int Height){
+    SDL_Surface *temp;
+    int i;
+
+    temp = SDL_CreateRGBSurface(SDL_SWSURFACE, Width, Height, 24,
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+            0x000000FF, 0x0000FF00, 0x00FF0000, 0
+#else
+            0x00FF0000, 0x0000FF00, 0x000000FF, 0
+#endif
+            );
+    if (temp == NULL)
+        return;
+
+    for (i = 0; i < Height; i++)
+        memcpy(((char *) temp->pixels) + temp->pitch * i, pixels + 3 * Width * (Height - i - 1), Width * 3);
+
+    SDL_SaveBMP(temp, filename);
+    SDL_FreeSurface(temp);
+    return;
+}
+#endif
 
 bool GND::readStream(std::istream& s) {
 	reset();
@@ -201,6 +291,74 @@ bool GND::readStream(std::istream& s) {
 		reset();
 		return(false);
 	}
+#if 0 // Save lightmap images to a png file
+	try {
+		lmapWidth -= 1; // It's magic!
+		lmapHeight -= 1;
+		unsigned char *pBits = new unsigned char[m_width * lmapWidth * m_height * lmapHeight * 3];
+	for (int i = 0; i < (int)m_height; i++) {
+		for (int k = 0; k < (int)m_width; k++) {
+			const ro::GND::Cell& cell = getCell(i, k);
+		//	if( cell.topSurfaceId != -1 )
+			if( cell.frontSurfaceId != -1 )
+		//	if( cell.rightSurfaceId != -1 )
+			{
+				for (int j = 0; j < lmapHeight; j++) {
+					for (int l = 0; l < lmapWidth; l++) {
+						const ro::GND::Surface& surface = getSurface(cell.topSurfaceId);
+						if (surface.lightmapId != -1)
+						{
+								unsigned char brightness = m_lightmaps[surface.lightmapId].brightness[l][j];
+								pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 0] = brightness;
+								pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 1] = brightness;
+								pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 2] = brightness;
+						}
+						else
+						{
+								pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 0] = 255;
+								pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 1] = 255;
+								pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 2] = 255;
+						}
+					}
+				}
+			}
+		}
+	}
+//		SavePngFile("lightmap_b.png", pBits, m_width * lmapWidth, m_height * lmapHeight);
+//		SaveBmpFile("lightmap_b.bmp", pBits, m_width * lmapWidth, m_height * lmapHeight);
+	for (int i = 0; i < (int)m_height; i++) {
+		for (int k = 0; k < (int)m_width; k++) {
+			const ro::GND::Cell& cell = getCell(i, k);
+			if( cell.topSurfaceId != -1 )
+			{
+				for (int j = 0; j < lmapHeight; j++) {
+					for (int l = 0; l < lmapWidth; l++) {
+						const ro::GND::Surface& surface = getSurface(cell.topSurfaceId);
+						if (surface.lightmapId != -1)
+						{
+							pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 0] = m_lightmaps[surface.lightmapId].color[l][j].b;
+							pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 1] = m_lightmaps[surface.lightmapId].color[l][j].g;
+							pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 2] = m_lightmaps[surface.lightmapId].color[l][j].r;
+						}
+						else
+						{
+							pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 0] = 0;
+							pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 1] = 0;
+							pBits[(i * lmapHeight * m_width * lmapWidth * 3) + ((m_width - 1 - k) * lmapWidth * 3) + (j * m_width * lmapWidth * 3) + ((lmapWidth - 1 - l) * 3) + 2] = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+//		SavePngFile("lightmap_c.png", pBits, m_width * lmapWidth, m_height * lmapHeight);
+//		SaveBmpFile("lightmap_c.bmp", pBits, m_width * lmapWidth, m_height * lmapHeight);
+		delete[] pBits;
+	}
+	catch (std::exception &e) {
+	}
+#endif
+
 	m_valid = true;
 	return(true);
 }

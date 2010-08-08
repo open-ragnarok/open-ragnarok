@@ -5,17 +5,18 @@
 
 // novice
 // (female)
-// data\sprite\¿Œ∞£¡∑\∏ˆ≈Î\ø©\√ ∫∏¿⁄_ø©.act
+// data\sprite\¿Œ∞£¡∑\∏ˆ≈ÅEø©\√ ∫∏¿⁄_ø©.act
 // data\sprite\humans\body\<sex>\<novice>_<sex>
 // char data[] = { 's', 'p', 'r', 'i', 't', 'e', '\\', 0xc0, 0xce, 0xb0, 0xa3, 0xc1, 0xb7, '\\', 0xb8, 0xf6, 0xc5, 0xeb, '\\', 0xbf, 0xa9, '\\', 0xc3, 0xca, 0xba, 0xb8, 0xc0, 0xda, '_', 0xbf, 0xa9, '.', 'a', 'c', 't', 0 };
 // (male)
-// data\sprite\¿Œ∞£¡∑\∏ˆ≈Î\≥≤\√ ∫∏¿⁄_≥≤.act
-// UTF8: data\sprite\Ïù∏Í∞ÑÏ°±\Î™∏ÌÜµ\ÎÇ®\Ï¥àÎ≥¥Ïûê_ÎÇ®.act
+// data\sprite\¿Œ∞£¡∑\∏ˆ≈ÅE≥≤\√ ∫∏¿⁄_≥≤.act
+// UTF8: data\sprite\ÅE∏ÅEÅE°±\ÅE∏˙¢µ\ÅE®\ÅEàÎ≥¥ÅEê_ÅE®.act
 // char data[] = { 's', 'p', 'r', 'i', 't', 'e', '\\', 0xc0, 0xce, 0xb0, 0xa3, 0xc1, 0xb7, '\\', 0xb8, 0xf6, 0xc5, 0xeb, '\\', 0xb3, 0xb2, '\\', 0xc3, 0xca, 0xba, 0xb8, 0xc0, 0xda, '_', 0xb3, 0xb2, '.', 'a', 'c', 't', 0 };
 
 
 DesktopCreate::DesktopCreate(OpenRO* ro) : RODesktop("ui\\char_create.xml", ro) {
 	m_headnum = 2;
+	m_palnum = 1;
 
 	ADD_HANDLER("char_create/btnStr", evtClick, DesktopCreate::handleStr);
 	ADD_HANDLER("char_create/btnAgi", evtClick, DesktopCreate::handleAgi);
@@ -45,31 +46,81 @@ DesktopCreate::DesktopCreate(OpenRO* ro) : RODesktop("ui\\char_create.xml", ro) 
 	readObjects();
 
 	m_pat = 0;
-	m_action = 1;
+	m_action = 0;
 	m_dir = 0;
 	elapsed = 0;
 }
 
+bool DesktopCreate::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
+	SDLKey key = sdlEvent->key.keysym.sym;
+
+	if (key == SDLK_RETURN) {
+		((GUI::Button*)getElement("char_create/btnOk"))->Click();
+	}
+	return(true);
+}
+
 bool DesktopCreate::handleBtnColor(GUI::Event&) {
+	if (m_palnum == 8)
+		m_palnum = 1;
+	else
+		m_palnum++;
+	
+	int accsex = m_ro->GetAccountSex();
+	char fn_pal[256];
+	sprintf(fn_pal, "palette\\%s\\%s%d_%s_%d.pal", ro::EUC::head2, ro::EUC::head2, m_headnum, ro::EUC::sex[accsex], m_palnum);
+
+	FileManager& fm = m_ro->getFileManager();
+	FileData data = fm.getFile(fn_pal);
+	if (data.blobSize() == 0)
+		return(false);
+
+	ro::PAL* pal = new ro::PAL();
+	std::stringstream ss;
+	data.write(ss);
+	if (!pal->readStream(ss)) {
+		delete(pal);
+		return(false);
+	}
+	char novice_head[256];
+	sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", ro::EUC::humans, ro::EUC::head, ro::EUC::sex[accsex], m_headnum, ro::EUC::sex[accsex]);
+	CacheManager& cache = *m_ro;
+	ROObjectCache& objects = cache.getROObjects();
+	TextureManager& tm = cache.getTextureManager();
+
+	std::string spr_n;
+	spr_n = novice_head;
+	spr_n += ".spr";
+//	if (!cache.getSprGLObjects().Load(spr_n, objects, fm, pal))
+	rogl::SprGL& sprgl = const_cast<rogl::SprGL&>(head.getSpr());
+	const ro::SPR* spr = (ro::SPR*)objects[spr_n];
+	if (!sprgl.open(spr, pal))
+		return false;
+	//	readObjects(pal);
+
 	return(true);
 }
 
 bool DesktopCreate::handleBtnStyleUp(GUI::Event&) {
+	m_headnum++;
 	if(m_headnum >= 23)
 		m_headnum = 2;
-	else
-		m_headnum++;
 
 	readObjects();
 	return(true);
 }
 
 bool DesktopCreate::handleBtnStyleDown(GUI::Event&) {
+	m_headnum--;
+	if(m_headnum < 2)
+		m_headnum = 23;
+
+	readObjects();
 	return(true);
 }
 
 
-void DesktopCreate::readObjects() {
+void DesktopCreate::readObjects(const ro::PAL* pal) {
 	// body: data\sprite\<humans>\<body>\<sex>\<novice>_<sex>
 	// head: data\sprite
 	// 1 = archer
@@ -85,16 +136,16 @@ void DesktopCreate::readObjects() {
 	obj.Load(novice_body, *m_ro);
 	obj.setPos(94, 180, 0);
 
-	if (!head.Load(novice_head, *m_ro)) {
-		m_headnum = 2;
+	if (!head.Load(novice_head, *m_ro, pal)) {
+	//	m_headnum = 2;
 		sprintf(novice_head, "sprite\\%s\\%s\\%s\\%d_%s", ro::EUC::humans, ro::EUC::head, ro::EUC::sex[accsex], m_headnum,ro::EUC::sex[accsex]);
-		head.Load(novice_head, *m_ro);
+		head.Load(novice_head, *m_ro, pal);
 	}
 }
 
 
 void DesktopCreate::afterDraw(unsigned int delay) {
-	static float str_coords[][2] = {
+/*	static float str_coords[][2] = {
 		{ 288.0f, 166.0f },
 		{ 288.0f, 150.0f },
 		{ 288.0f, 142.0f },
@@ -162,20 +213,57 @@ void DesktopCreate::afterDraw(unsigned int delay) {
 	static float luk_coords[][2] = {
 		{ 288.0f, 166.0f },
 		{ 294.6f, 170.0f },
-		{ 301.2f, 174.0f },
-		{ 307.8f, 178.0f },
-		{ 314.4f, 182.0f },
-		{ 321.0f, 186.0f },
-		{ 327.6f, 190.0f },
-		{ 334.2f, 194.0f },
-		{ 340.8f, 198.0f },
-		{ 355.0f, 206.0f }
-	};
+		{ 301.6f, 174.0f },
+		{ 308.4f, 178.0f },
+		{ 315.2f, 182.0f },
+		{ 322.0f, 186.0f },
+		{ 328.8f, 190.0f },
+		{ 335.6f, 194.0f },
+		{ 342.4f, 198.0f },
+		{ 356.0f, 206.0f }
+	};*/
+	static float str_coords[10][2];
+	static float int_coords[10][2];
+	static float vit_coords[10][2];
+	static float dex_coords[10][2];
+	static float agi_coords[10][2];
+	static float luk_coords[10][2];
+
+	for (int i = 0; i < 10; i++)
+	{
+		str_coords[i][0] = 288.0f;
+		int_coords[i][0] = 288.0f;
+		vit_coords[i][0] = 288.0f + (i + 1) * 6.8f;
+		dex_coords[i][0] = 288.0f - (i + 1) * 6.8f;
+		agi_coords[i][0] = 288.0f - (i + 1) * 6.8f;
+		luk_coords[i][0] = 288.0f + (i + 1) * 6.8f;
+
+		str_coords[i][1] = 166.0f - (i + 1) * 8.f;
+		int_coords[i][1] = 166.0f + (i + 1) * 8.f;
+		vit_coords[i][1] = 166.0f - (i + 1) * 4.f;
+		dex_coords[i][1] = 166.0f + (i + 1) * 4.f;
+		agi_coords[i][1] = 166.0f - (i + 1) * 4.f;
+		luk_coords[i][1] = 166.0f + (i + 1) * 4.f;
+	/*	str_coords[i][0] = 288.0ff;
+		int_coords[i][0] = 288.0ff;
+		vit_coords[i][0] = 288.0f + 3.2 + (i + 1) * 6.48f;
+		dex_coords[i][0] = 288.0f - 3.2 - (i + 1) * 6.48f;
+		agi_coords[i][0] = 288.0f - 3.2 - (i + 1) * 6.48f;
+		luk_coords[i][0] = 288.0f + 3.2 + (i + 1) * 6.48f;
+
+		str_coords[i][1] = 166.0f - 4 - (i + 1) * 7.6f;
+		int_coords[i][1] = 166.0f + 4 + (i + 1) * 7.6f;
+		vit_coords[i][1] = 166.0f - 2 - (i + 1) * 3.8f;
+		dex_coords[i][1] = 166.0f + 2 + (i + 1) * 3.8f;
+		agi_coords[i][1] = 166.0f - 2 - (i + 1) * 3.8f;
+		luk_coords[i][1] = 166.0f + 2 + (i + 1) * 3.8f;*/
+	}
 
 	glPushMatrix();
 	glTranslatef((float)window->getX(), (float)window->getY(), 0);
 	glDisable(GL_TEXTURE_2D);
-	glColor3d(0.482352941, 0.580392157, 0.803921569); // soft blue from the original client
+	glEnable(GL_BLEND);
+	glColor4d(0.482352941, 0.580392157, 0.803921569, window->m_opacity); // soft blue from the original client
 	glBegin(GL_TRIANGLE_FAN);
 
 	//		START			MID			END
@@ -188,14 +276,15 @@ void DesktopCreate::afterDraw(unsigned int delay) {
 	glVertex3f(288.0f, 166.0f, 0.0f); // Center
 	glVertex3f(str_coords[Str][0], str_coords[Str][1], 0);	// STR
 	glVertex3f(vit_coords[Vit][0], vit_coords[Vit][1], 0);	// VIT
-	glVertex3f(luk_coords[Luk][0], luk_coords[Luk][1], 0);	// VIT
+	glVertex3f(luk_coords[Luk][0], luk_coords[Luk][1], 0);	// LUK
 	glVertex3f(int_coords[Int][0], int_coords[Int][1], 0);	// INT
-	glVertex3f(dex_coords[Dex][0], dex_coords[Dex][1], 0);	// INT
+	glVertex3f(dex_coords[Dex][0], dex_coords[Dex][1], 0);	// DEX
 	glVertex3f(agi_coords[Agi][0], agi_coords[Agi][1], 0);	// AGI
 	glVertex3f(str_coords[Str][0], str_coords[Str][1], 0);	// STR -- round trip
 
 	glEnd();
-	glColor3f(1,1,1);
+	glColor4f(1,1,1,1);
+	glDisable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 
 	elapsed += delay;
@@ -244,49 +333,59 @@ void DesktopCreate::drawChar() {
 	glColor3f(1, 1, 1);
 
 
-	while (elapsed > 100) {
+	while (elapsed > 600) {
 		m_act = m_action * 8 + m_dir;
 		const ro::ACT::Action& cact = obj->getAction(m_act);
-		elapsed -= 100;
-		m_pat++;
+		elapsed -= 600;
+		m_dir++;
+		if (m_dir >= 8)
+			m_dir = 0;
+	/*	m_pat++;
 		if (m_pat >= cact.getMotionCount()) {
 			m_pat = 0;
 			m_dir++;
 			if (m_dir >= 8)
 				m_dir = 0;
-		}
+		}*/
 	}
 
 	m_act = m_action * 8 + m_dir;
 	const ro::ACT::Motion& cmot = obj->getMotion(m_act, m_pat);
 	const ro::ACT::Motion& cmot2 = head->getMotion(m_act, m_pat);
 
-	drawAct(x, y, obj, m_pat);
+//	drawAct(x, y, obj, m_pat);
+//	drawAct(x, y, obj, m_pat, true);
 
 	// EXT position
 	float cx = x;
 	float cy = y;
+	drawAct(cx, cy, obj, m_pat);
+
+	//cx += cpat[0].w / 2;
+
+#if 0
+	glColor3f(0, 1, 0);
+	cross(cx, cy, dif);
+	glColor3f(1, 1, 1);
+#endif
+
 	if (cmot.attachPoints.size() > 0) {
 		cx += cmot.attachPoints[0].x;
 		cy += cmot.attachPoints[0].y;
 	}
-
-	//cx += cpat[0].w / 2;
-
-	glColor3f(0, 1, 0);
-	cross(cx, cy, dif);
-	glColor3f(1, 1, 1);
-
 	if (cmot2.attachPoints.size() > 0) {
 		cx -= cmot2.attachPoints[0].x;
 		cy -= cmot2.attachPoints[0].y;
 	}
 
 	drawAct(cx, cy, head, m_pat, false); // << Work most of the times
+//	drawAct(cx, cy, head, m_pat, true); // << Work most of the times
 
+#if 0
 	glColor3f(0, 0, 1);
 	cross(cx, cy, dif);
 	glColor3f(1, 1, 1);
+#endif
 }
 
 void DesktopCreate::drawAct(float x, float y, GuiAct& o, int pat, bool ext) {
@@ -304,7 +403,8 @@ void DesktopCreate::drawSpr(float x, float y, GuiAct& o, int pat, int spr, bool 
 	const ro::ACT::Motion& cmot = o->getMotion(m_act, pat);
 	//sdle::Texture tp;
 
-	o.getSpr().Draw(cmot, spr, x, y, false, ext);
+//	o.getSpr().Draw(cmot, spr, x, y, false, ext);
+	o.getSpr().Draw(cmot, spr, x, y, true, ext, false, window->m_opacity);
 
 	/*
 	if (cpat[spr].sprNo < 0)
@@ -469,6 +569,7 @@ bool DesktopCreate::handleBtnOk(GUI::Event&) {
 	attr.Luk = Luk;
 
 	m_ro->CreateChar(txtName->getText(),attr,slot,0,m_headnum);
+	clear();
 
 	return(true);
 }
@@ -481,6 +582,7 @@ void DesktopCreate::clear() {
 }
 
 bool DesktopCreate::handleBtnCancel(GUI::Event&) {
+//	clear();
 	m_ro->CharSelectScreen();
 	return(true);
 }

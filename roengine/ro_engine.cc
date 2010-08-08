@@ -138,14 +138,14 @@ void ROEngine::ReadIni(const std::string& name) {
 		}
 	}
 
-	ReadTable("npclist.txt", m_npc_names);
-	ReadTable("joblist.txt", m_job_names);
-	ReadTable("homunculuslist.txt", m_homunculus_names);
-	ReadTable("mercenarylist.txt", m_mercenary_names);
-	ReadTable("moblist.txt", m_mob_names);
+	ReadNameTable("npclist.txt", m_npc_names);
+	ReadNameTable("joblist.txt", m_job_names);
+	ReadNameTable("homunculuslist.txt", m_homunculus_names);
+	ReadNameTable("mercenarylist.txt", m_mercenary_names);
+	ReadNameTable("moblist.txt", m_mob_names);
 }
 
-bool ROEngine::ReadTable(const char* fn, std::map<unsigned short, std::string>& list) {
+bool ROEngine::ReadNameTable(const char* fn, std::map<unsigned short, std::string>& list) {
 	if (!m_filemanager.fileExists(fn)) {
 		return(false);
 	}
@@ -197,11 +197,16 @@ ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 	for (int i = 0; i < 1024; i++)
 		keys[i] = false;
 
+	m_lag = 0;
+	m_fps = 0;
+	m_elapsed = 0;
 	m_quit = false;
 	m_cursorSprite = 0;
 	m_map = NULL;
-	cam.getEye().set(200, 200, -200);
+	cam.getEye().set(0, 100, 100);
 	m_rotating = false;
+	m_shift = false;
+	m_moving = false;
 	m_overactor = NULL;
 	m_drawmap = true;
 }
@@ -280,12 +285,26 @@ void ROEngine::DrawMap() {
 	glPushMatrix();
 	m_map->getWorldPosition(me.getPositionX(), me.getPositionY(), &wx, &wy, &wz);
 	glPopMatrix();
+	cam.Update();
 	cam.TranslateDestTo(Vector3f(wx, wy, wz));
 
 	if (me.valid()) {
 		me.setMap(m_map);
 		me.Render(50, &m_frustum, m_cameradir);
+		Vector3f &pos = me.getPos();
+//		alListener3f(AL_POSITION, me.getPositionX(), me.getPositionY(), 0);
+		alListener3f(AL_POSITION, m_map->getWorldX(), m_map->getWorldY(), m_map->getWorldZ());
+		if (m_moving) {
+			static int mouseX = 0, mouseY = 0;
+			if (mouseX != m_map->getMouseMapX() || mouseY != m_map->getMouseMapY()) {
+				mouseX = m_map->getMouseMapX();
+				mouseY = m_map->getMouseMapY();
+				clickMap(mouseX, mouseY);
+			}
+		}
 	}
+
+	Pickup(mousex, mousey);////
 
 	std::map<unsigned int, Actor*>::iterator itr;
 	itr = m_actors.begin();
@@ -316,6 +335,19 @@ void ROEngine::Run() {
 
 		//printf("delay: %d\tctick: %d\t\t\r", tickDelay, curtick);
 
+		m_elapsed += tickDelay;
+		if(m_elapsed >= 1000){
+			char s[256];
+			sprintf(s, "Open Ragnarok - www.open-ragnarok.org - FPS: %d approx  Lag: %dms", m_fps, m_lag);
+			SDL_WM_SetCaption(s, NULL);
+		//	m_elapsed -= 1000;
+			m_elapsed = 0;
+			m_fps = 0;
+		}
+		else {
+			m_fps++;
+		}
+
 		HandleKeyboard();
 
 		BeforeDraw();
@@ -329,6 +361,21 @@ void ROEngine::Run() {
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.45f);
 		ProcessMouse();
+	/*	if (m_map != NULL) {
+			GUI::Gui& gui = GUI::Gui::getSingleton();
+			char posbuf[36];
+			sprintf(posbuf, "Cursor X: %f", m_map->getWorldX());
+			gui.textOut(posbuf, 20, 260, 0, 0);
+			sprintf(posbuf, "Cursor Y: %f", m_map->getWorldY());
+			gui.textOut(posbuf, 20, 280, 0, 0);
+			sprintf(posbuf, "Cursor Z: %f", m_map->getWorldZ());
+			gui.textOut(posbuf, 20, 300, 0, 0);
+
+			sprintf(posbuf, "Player X: %f CellX: %d", me.getPositionX()*5, (int)me.getPositionX());
+			gui.textOut(posbuf, 20, 340, 0, 0);
+			sprintf(posbuf, "Player Y: %f CellY: %d", me.getPositionY()*5, (int)me.getPositionY());
+			gui.textOut(posbuf, 20, 360, 0, 0);
+		}*/
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_TEXTURE_2D);
 		Mode2DEnd();
@@ -355,10 +402,16 @@ bool ROEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) {
 		printf("Screenshot saved to file '%s'.", fn);
 		return(true);
 	}
+	else if (sdlEvent->key.keysym.sym == SDLK_LSHIFT || sdlEvent->key.keysym.sym == SDLK_RSHIFT) {
+		m_shift = true;
+	}
 	return(m_gui.InjectKeyPress(sdlEvent, mod));
 }
 
 bool ROEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) {
+	if (sdlEvent->key.keysym.sym == SDLK_LSHIFT || sdlEvent->key.keysym.sym == SDLK_RSHIFT) {
+		m_shift = false;
+	}
 	return(m_gui.InjectKeyRelease(sdlEvent, mod));
 }
 
@@ -370,6 +423,7 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 			return(true);
 		}
 		else if (buttons == 1) { // SDL_BUTTON_LEFT
+			m_moving = true;
 			if (m_map != NULL) {
 				int mapx, mapy;
 				mapx = m_map->getMouseMapX();
@@ -402,10 +456,10 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 			}
 		}
 		else if (buttons == 5) { // SDL_BUTTON_WHEELDOWN
-			cam.ZoomOut(8.0f);
+			cam.ZoomIn(10.0f);
 		}
 		else if (buttons == 4) { // SDL_BUTTON_WHEELUP
-			cam.ZoomIn(8.0f);
+			cam.ZoomOut(10.0f);
 		}
 	}
 
@@ -413,13 +467,24 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 }
 
 bool ROEngine::evtMouseRelease(const int& x, const int& y, const int& buttons) {
-	if (buttons & SDL_BUTTON_RIGHT) {
-		if (m_rotating) {
-			m_rotating = false;
-			return(true);
+	bool ret = m_gui.InjectMouseRelease(x, y, buttons);
+
+//	if (!ret) {
+		if (buttons & SDL_BUTTON_RIGHT) {
+			if (m_rotating) {
+				m_rotating = false;
+				return(true);
+			}
 		}
-	}
-	return(m_gui.InjectMouseRelease(x, y, buttons));
+		if (buttons & SDL_BUTTON_LEFT) {
+			if (m_moving) {
+				m_moving = false;
+				return(true);
+			}
+		}
+//	}
+//	return(m_gui.InjectMouseRelease(x, y, buttons));
+	return(ret);
 }
 
 bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int& dy) {
@@ -433,7 +498,10 @@ bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int
 	if (m_map != NULL) {
 
 		if (m_rotating) {
-			cam.Rotate((float)dx / 10);
+			if(m_shift)
+				cam.RotateX((float)dy / 10);
+			else
+				cam.RotateY((float)dx / 10);
 			return(true);
 		}
 
@@ -441,18 +509,96 @@ bool ROEngine::evtMouseMove(const int& x, const int& y, const int& dx, const int
 		mapx = m_map->getMouseMapX();
 		mapy = m_map->getMouseMapY();
 
-		std::map<unsigned int, Actor*>::iterator itr = m_actors.begin();
-		while (itr != m_actors.end()) {
-			Actor* actor = itr->second;
-			if (actor->getPositionX() == mapx && actor->getPositionY() == mapy) {
-				m_overactor = actor;
-				break;
-			}						
-			itr++;
-		}
+//		Pickup(0,0);////
+
 	}
 
 	return(m_gui.InjectMouseMove(x, y, dx, dy));
+}
+
+void ROEngine::Pickup(int x, int y) {
+#define BUFSIZE 512
+
+	GLuint selectBuf[BUFSIZE];
+	GLint hits;
+	GLint viewport[4];
+	float current_aspect;
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	glSelectBuffer(BUFSIZE, selectBuf);
+	glRenderMode(GL_SELECT);
+
+//	GLuint name = -1;
+	glInitNames();
+    glPushName(-1);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+		glLoadIdentity();
+		gluPickMatrix(x, viewport[3]-y, 10.0, 1.0, viewport);
+		current_aspect = (float)viewport[2]/(float)viewport[3];
+		gluPerspective( 45.0, current_aspect, 1.0, 100000.0 );
+		glMatrixMode( GL_MODELVIEW );
+
+		std::map<unsigned int, Actor*>::iterator itr;
+		itr = m_actors.begin();
+		while (itr != m_actors.end()) {
+			if (itr->second->isVisible()) {
+				glLoadName(itr->first);
+			//	itr->second->Render(50, &m_frustum, m_cameradir);
+				glPushMatrix();
+
+				float wx, wy, wz;
+				m_map->getWorldPosition(itr->second->getPositionX(), itr->second->getPositionY(), &wx, &wy, &wz);
+				glTranslatef(wx, wy, wz); // Moves our object to the proper place
+				
+				// Cylindrical Billboard
+				// Credits: http://www.lighthouse3d.com/opengl/billboarding/index.php3?billCheat1
+				float modelview[16];
+				int i,j;
+				glGetFloatv(GL_MODELVIEW_MATRIX , modelview);
+				for (i = 0; i < 3; i += 2)
+					for (j = 0; j < 3; j++)
+						if (i == j)
+							modelview[i * 4 + j] = 1.0f;
+						else
+							modelview[i * 4 + j] = 0.0f;
+				glLoadMatrixf(modelview);
+
+				glBegin(GL_QUADS);
+					glVertex3f(-4, 12, 0);
+					glVertex3f(4, 12, 0);
+					glVertex3f(4, -4, 0);
+					glVertex3f(-4, -4, 0);
+				glEnd();
+
+				glPopMatrix();
+			}
+			itr++;
+		}
+
+		glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode( GL_MODELVIEW );
+
+	hits = glRenderMode(GL_RENDER);
+    GLuint *ptr;
+	ptr = selectBuf;
+
+	for (int i = 0; i < hits; i++) {
+		unsigned int j, n = ptr[0];
+
+		double _near = (double)ptr[1] / (double)0x7fffffff;
+		double _far  = (double)ptr[2] / (double)0x7fffffff;
+
+		ptr += 3;
+		for (j = 0; j < n; j++) {
+			std::map<unsigned int, Actor*>::iterator itr;
+			itr = m_actors.find(*(ptr++));
+			if (itr != m_actors.end())
+				m_overactor = itr->second;
+		}
+	}
 }
 
 void ROEngine::ProcessMouse(int xless, int yless){
@@ -474,18 +620,40 @@ void ROEngine::ProcessMouse(int xless, int yless){
 			action = 5; // attack
 		}
 	}
+//	else
+//		m_cursorSprite = 0;
+	GUI::Element* e = m_gui.getElementMousePos(mousex, mousey);
+	if (e != NULL && e->getType() == GUI::Element::typeButton) {
+		action = 2;
+	}
 
 	maxspr = getCursor().getAct()->getMotionCount(action);
 
-	m_cursorTick += tickDelay;
-	m_cursorTick = m_cursorTick % (100 * maxspr);
+	if (action != 2) {
+		m_cursorTick += tickDelay;
+		m_cursorTick = m_cursorTick % (100 * maxspr);
+	}
+	else {
+		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(1)) {
+			m_cursorTick += tickDelay;
+			m_cursorTick = m_cursorTick % (100 * maxspr);
+		}
+		else
+			m_cursorSprite = 0;
+	}
 	while (m_cursorTick >= 100) {
 		m_cursorSprite++;
 		m_cursorTick -= 100;
 	}
 
-	m_cursorSprite = m_cursorSprite % maxspr;
+	if (action == 1 || action == 2) {
+		if (m_cursorSprite >= maxspr)
+			m_cursorSprite = maxspr - 1;
+	}
+	else
+		m_cursorSprite = m_cursorSprite % maxspr;
 
+//	m_overactor = NULL;
 
 	//TODO: Put a check to know if the cursor is over a button to change the sprite to a "hand".. etc
 	DrawFullAct(getCursor(), (float)(getMouseX() - xless), (float)(getMouseY() - yless), action, m_cursorSprite, false, NULL, true, false);

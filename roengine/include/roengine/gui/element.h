@@ -59,6 +59,26 @@ class Element;
  * This class can still be used for basic display. No events will be caught on this class.
  */
 class Element {
+public:
+	typedef enum {
+		typeElement = 0,
+		typeWindow,
+		typeDesktop,
+		typeDialog,
+		typeButton,
+		typeButtonBar,
+		typeCheckBox,
+		typeLabel,
+		typeList,
+		typeDropDownList,
+		typeProgressBar,
+		typeScrollBar,
+		typeSysBox,
+		typeTextBox,
+		typeTextInput,
+		typeHpSpBar
+	} Type;
+
 private:
 	std::string name;
 
@@ -101,7 +121,8 @@ protected:
 	bool m_focusable;
 	bool m_fullscreen;
 	bool m_enabled;
-	bool m_MouseIn;
+	bool m_mouseIn;
+	bool m_mouseDown;
 
 	std::vector<Element*> m_children;
 
@@ -142,6 +163,10 @@ protected:
 	 * @param end
 	 */
 	void WindowSeq(float x, float y, float w, float h, const sdle::Texture& start, const sdle::Texture& mid, const sdle::Texture& end);
+	void WindowSeq(float x, float y, float w, float h, 
+			   const sdle::Texture& lu, const sdle::Texture& lm, const sdle::Texture& ld,
+			   const sdle::Texture& mu, const sdle::Texture& mm, const sdle::Texture& md,
+			   const sdle::Texture& ru, const sdle::Texture& rm, const sdle::Texture& rd);
 
 public:
 	Element();
@@ -166,6 +191,8 @@ public:
 	Element(Element* parent, const std::string& background, CacheManager&);
 	virtual ~Element();
 
+	virtual Type getType() {return typeElement;} // = 0;
+
 	void setTexture(const sdle::Texture&);
 	void SetMouseInFlag(bool flag);
 
@@ -185,6 +212,7 @@ public:
 
 	/** Sets the element size. If the element size is not set manually, it will use the texture size. */
 	void setSize(const int&, const int&);
+	void setMovableSize(const int&, const int&);
 	void setFullscreen(bool = false);
 	virtual void setVisible(bool = true);
 	void setTransparent(bool = false);
@@ -226,6 +254,8 @@ public:
 	void setActiveChild(Element*);
 	Element* getActiveChild();
 	const Element* getActiveChild() const;
+
+	Element* getChildMousePos(int, int);
 
 	/* Static stuff */
 	static Element* loadXml(Element* parent, const TiXmlElement* node, CacheManager&);

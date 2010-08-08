@@ -3,9 +3,10 @@
 
 #include "sdle/texture.h"
 #include "sdle/structures.h"
+#include "rogl/globject.h"
 #include "ro/types/spr.h"
 #include "ro/types/act.h"
-#include "globject.h"
+//#include "globject.h"
 
 namespace rogl {
 
@@ -22,6 +23,8 @@ typedef struct sprInfo {
  * Utility class to properly load and create a SPR texture.
  */
 class ROGL_DLLAPI SprGL : public GLObject {
+private:
+	bool m_filtering;
 protected:
 	sdle::Texture m_texture;
 	unsigned int m_palCount;
@@ -38,8 +41,8 @@ public:
 	void Draw() const;
 	void Draw(unsigned int idx, bool xmirror = false) const;
 	void Draw(unsigned int idx, float width, float height, bool xmirror = false, bool ymirror = false) const;
-	void Draw(unsigned int idx, struct Rect rect, bool xmirror = false, bool ymirror = false) const;
-	void Draw(const ro::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const;
+	void Draw(unsigned int idx, struct Rect rect, bool xmirror = false, bool ymirror = false, bool filtering = true, float opacity = 1.0f) const;
+	void Draw(const ro::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext, bool filtering = true, float opacity = 1.0f) const;
 
 	// Deletes all info
 	void release();

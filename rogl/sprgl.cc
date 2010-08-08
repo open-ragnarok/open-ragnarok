@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
 #include "rogl/sprgl.h"
-#include <gl/gl.h>
+//#include <gl/gl.h>
+#include <math.h>
 
 
 namespace rogl {
@@ -11,6 +12,7 @@ static const sprInfo g_emptyInfo = {0,0,0,0,0,0};
 SprGL::SprGL() {
 	m_palCount = 0;
 	m_rgbaCount = 0;
+	m_filtering = true;
 }
 
 SprGL::SprGL(const SprGL& s) {
@@ -18,6 +20,7 @@ SprGL::SprGL(const SprGL& s) {
 	m_palCount = s.m_palCount;
 	m_rgbaCount = s.m_rgbaCount;
 	m_info = s.m_info;
+	m_filtering = true;
 }
 
 SprGL::~SprGL() {
@@ -212,6 +215,7 @@ bool SprGL::open(const ro::SPR* spr, const ro::PAL* pal) {
 	// generate the OpenGL texture
 	sdle::Texture::Root* root = new sdle::Texture::Root();
 	if (!root->Create(&teximage)) {
+//	if (!root->Create(&teximage, false)) {
 		release();
 		return(false);
 	}
@@ -223,13 +227,15 @@ void SprGL::Draw() const {
 	Draw(0);
 }
 
-void SprGL::Draw(unsigned int idx, struct Rect rect, bool xmirror, bool ymirror) const {
+void SprGL::Draw(unsigned int idx, struct Rect rect, bool xmirror, bool ymirror, bool filtering, float opacity) const {
 	if (idx >= m_info.size())
 		return;
 
 	float width = rect.dim.w;
 	float height = rect.dim.h;
-	float sx = - width / 2 + rect.pos.x; // Start X Position
+//	float sx = - width / 2 + rect.pos.x; // Start X Position
+//	float sy = rect.pos.y; // Start Y Position
+	float sx = rect.pos.x; // Start X Position
 	float sy = rect.pos.y; // Start Y Position
 
 	float u[2];
@@ -255,12 +261,32 @@ void SprGL::Draw(unsigned int idx, struct Rect rect, bool xmirror, bool ymirror)
 
 
 	m_texture.Activate();
+//	if (m_filtering != filtering) {
+		if (!filtering) {
+		//	m_filtering = false;
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		}
+		else {
+		//	m_filtering = true;
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		}
+//	}
+	glEnable(GL_BLEND);
+	glColor4f(1.0f, 1.0f, 1.0f, opacity);
+	
 	glBegin(GL_QUADS);
 	glTexCoord2f(u[0], v[1]);	glVertex3f(sx, sy, 0.0f);
 	glTexCoord2f(u[0], v[0]);	glVertex3f(sx, sy + height, 0.0f);
 	glTexCoord2f(u[1], v[0]);	glVertex3f(sx + width, sy + height, 0.0f);
 	glTexCoord2f(u[1], v[1]);	glVertex3f(sx + width, sy, 0.0f);
 	glEnd();
+
+	glDisable(GL_BLEND);
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 void SprGL::Draw(unsigned int idx, float width, float height, bool xmirror, bool ymirror) const {
@@ -288,7 +314,7 @@ void SprGL::Draw(unsigned int idx, bool xmirror) const {
 	Draw(idx, r, xmirror);
 }
 
-void SprGL::Draw(const ro::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext) const {
+void SprGL::Draw(const ro::ACT::Motion& cmot, unsigned int clpno, float& x, float& y, bool v_mirror, bool ext, bool filtering, float opacity) const {
 	const ro::ACT::SprClip& cspr = cmot.getClip(clpno);
 	unsigned int idx = getIndex(cspr.sprNo, cspr.sprType);
 
@@ -296,40 +322,24 @@ void SprGL::Draw(const ro::ACT::Motion& cmot, unsigned int clpno, float& x, floa
 		return;
 
 	float w, h;
-	float u[2], v[2];
 	w = (float)m_info[idx].w;
 	h = (float)m_info[idx].h;
-
-	u[0] = m_info[idx].su;
-	u[1] = m_info[idx].eu;
-	v[0] = m_info[idx].sv;
-	v[1] = m_info[idx].ev;
 
 	// Magnitude..
 	w *= cspr.xMag;
 	h *= cspr.yMag;
 
-	if (cspr.mirrorOn != 0)
-		w = -w;
-
-	if (v_mirror) {
-		float aux = v[0];
-		v[0] = v[1];
-		v[1] = aux;
-	}
-
 	if (ext && cmot.attachPoints.size() > 0) {
 		x -= cmot.attachPoints[0].x;
 		y -= cmot.attachPoints[0].y;
 	}
-
 	struct Rect r;
-	r.pos.x = x + cspr.x;
-	r.pos.y = y - h/2 + cspr.y;
+	r.pos.x = x - ceil(w / 2) + cspr.x;
+	r.pos.y = y - ceil(h / 2) + cspr.y;
 	r.dim.w = w;
 	r.dim.h = h;
 
-	Draw(idx, r, false, v_mirror);
+	Draw(idx, r, (bool)cspr.mirrorOn, v_mirror, filtering, opacity);
 }
 
 }

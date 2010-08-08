@@ -52,11 +52,13 @@ bool pktStatsInfo::Decode(ucBuffer& buf) {
 	buf >> Dex; buf >> PointsDex;
 	buf >> Luk; buf >> PointsLuk;
 	buf >> Attack; buf >> AttackBonus;
-	buf >> AttackMagicMin; buf >> AttackMagicMax;
+	buf >> AttackMagicMax; buf >> AttackMagicMin;
 	buf >> Def; buf >> DefBonus; buf >> DefMagic; buf >> DefMagicBonus;
 	buf >> Hit; buf >> Flee; buf >> FleeBonus; buf >> Critical;
+	buf >> Karma;
+	buf >> Manner;
 
-	buf.ignore(4);
+//	buf.ignore(4);
 
 	return(true);
 }

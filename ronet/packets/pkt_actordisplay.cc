@@ -36,7 +36,8 @@ bool pktActorDisplay::Decode(ucBuffer& buf) {
 	// Sanity Check
 	if (!CheckID(buf))
 		return(false);
-	if (buf.dataSize() < 55)
+//	if (buf.dataSize() < 55)
+	if (buf.dataSize() < 54)
 		return(false);
 
 	//_hexlog(RONET__DEBUG, buf.getBuffer(), 55);
@@ -47,7 +48,7 @@ bool pktActorDisplay::Decode(ucBuffer& buf) {
 	unsigned int c = 0;
 	unsigned char *coord = (unsigned char*)&c;
 
-	buf >> unk;
+//		buf >> unk;
 	/* Padding, according to eAthena code:
 #if PACKETVER >= 20071106
 	if (type) {
@@ -97,8 +98,8 @@ bool pktActorDisplay::Decode(ucBuffer& buf) {
 	c >>= 10;
 	info.coord_x = c & 0x03FF;
 
-	//_log(RONET__DEBUG, "There is someone at %d, %d (id: %08x)!", coord_x, coord_y, id);
-	//_log(RONET__DEBUG, "Type: %d", type);
+	_log(RONET__DEBUG, "There is someone at %d, %d (id: %08x)!", info.coord_x, info.coord_y, info.id);
+	_log(RONET__DEBUG, "Type: %d", info.type);
 
 	return(true);
 }

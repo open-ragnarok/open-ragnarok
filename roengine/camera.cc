@@ -6,13 +6,101 @@
 
 Camera::Camera() {
 	eye.set(20, 20, 20);
+//	speed = 1;
+	fx = vx = fy = vy = 0;
+	zoom = zoom_a = 0;
 }
 
 Camera::~Camera() {
 }
 
-void Camera::Rotate(float f) {
-	eye.rotateY(f, dest);
+void Camera::Update() {
+	//return;
+	/*if (v < f) {
+		v += speed;
+		if (v > f)
+			v = f;
+		eye.rotateY(speed, dest);
+	}*/
+	if (vx > 0.f) {
+		vx -= fx;
+		if (vx <= 0.f)
+			vx = 0.f;
+		else
+			eye.rotateX(vx / 20.0f, dest);
+	}
+	else if (vx < 0.f) {
+		vx -= fx;
+		if (vx >= 0.f)
+			vx = 0.f;
+		else
+			eye.rotateX(vx / 20.0f, dest);
+	}
+	if (vy > 0.f) {
+		vy -= fy;
+		if (vy <= 0.f)
+			vy = 0.f;
+		else
+			eye.rotateY(vy / 20.0f, dest);
+	}
+	else if (vy < 0.f) {
+		vy -= fy;
+		if (vy >= 0.f)
+			vy = 0.f;
+		else
+			eye.rotateY(vy / 20.0f, dest);
+	}
+
+	Vector3f dir = dest - eye;
+	if (zoom > 0.f) {
+		if (dir.size() <= 60.f) {
+			zoom = 0;
+			return;
+		}
+		zoom -= zoom / 5.f;
+		if (zoom <= 0.f)
+			zoom = 0.f;
+		else {
+			dir /= dir.size();
+			dir *= zoom;
+
+			eye += dir;
+		}
+	}
+	else if (zoom < 0.f) {
+		if (dir.size() >= 500.f) {
+			zoom = 0;
+			return;
+		}
+		zoom -= zoom / 5.f;
+		if (zoom >= 0.f)
+			zoom = 0.f;
+		else {
+			dir /= dir.size();
+			dir *= zoom;
+
+			eye += dir;
+		}
+	}
+}
+
+void Camera::RotateY(float f) {
+	//this->f =  v + f;
+	vy += f;
+	this->fy = vy / 10.0f;
+	//f *= 10;
+	//f = f * 3.141596 / 180.0f;
+	//eye.rotateY(f, dest);
+	//dest.rotateY(f, dest);
+}
+
+void Camera::RotateX(float f) {
+	vx += f;
+	this->fx = vx / 10.0f;
+
+//	eye.rotateX(f, dest);
+	//eye.rotateX(f);
+//	eye.rotateZ(f, dest);
 }
 
 void Camera::TranslateDestTo(const Vector3f& v) {
@@ -56,18 +144,30 @@ void Camera::setDest(const Vector3f& v) {
 
 void Camera::ZoomIn(float f) {
 	Vector3f dir = dest - eye;
+	if (dir.size() <= 60)
+		return;
+	zoom += f;
+	zoom_a = zoom / 10.f;
+	return;
 	dir /= dir.size();
 	dir *= f;
 
-	eye += dir;
+	//eye += dir;
+//	zoom += dir;
 }
 
 void Camera::ZoomOut(float f) {
 	Vector3f dir = dest - eye;
+	if (dir.size() >= 500)
+		return;
+	zoom -= f;
+	zoom_a = zoom / 10.f;
+	return;
 	dir /= dir.size();
 	dir *= f;
 
-	eye -= dir;
+	//eye -= dir;
+//	zoom -= dir;
 }
 
 
