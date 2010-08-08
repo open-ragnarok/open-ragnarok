@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="ronet"
 	ProjectGUID="{275A3E0D-3F51-473D-8CCD-747F38454450}"
 	RootNamespace="ronet"
@@ -483,6 +483,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_itemgained.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_keepalive.cc"
 					>
 				</File>
@@ -547,6 +551,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\packets\pkt_recvnpcimage2.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\packets\pkt_recvnpctalk.cc"
 					>
 				</File>
@@ -580,14 +588,6 @@
 				</File>
 				<File
 					RelativePath="..\packets\pkt_skilllist.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\packets\pkt_statinfo.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\packets\pkt_statinfo2.cc"
 					>
 				</File>
 				<File
@@ -789,6 +789,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_itemgained.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_keepalive.h"
 					>
 				</File>
@@ -853,6 +857,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\ronet\packets\pkt_recvnpcimage2.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\ronet\packets\pkt_recvnpctalk.h"
 					>
 				</File>
@@ -886,14 +894,6 @@
 				</File>
 				<File
 					RelativePath="..\include\ronet\packets\pkt_skilllist.h"
-					>
-				</File>
-				<File
-					RelativePath="..\include\ronet\packets\pkt_statinfo.h"
-					>
-				</File>
-				<File
-					RelativePath="..\include\ronet\packets\pkt_statinfo2.h"
 					>
 				</File>
 				<File
