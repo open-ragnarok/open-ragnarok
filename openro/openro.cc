@@ -107,7 +107,7 @@ void OpenRO::Quit() {
 
 void OpenRO::AfterDraw() {
 	if (!m_maploaded) {
-	//	m_gui.setDesktop(dskLoading);
+		m_gui.setDesktop(dskLoading);
 
 		if (m_cycle <= 2)
 			m_cycle++;
@@ -983,7 +983,7 @@ HNDL_IMPL(MapChange) {
 	me.setPos((float)pkt->getPosX(), (float)pkt->getPosY());
 	dskIngame->closeNpcWindow();
 
-	m_gui.setDesktop(dskLoading);
+//	m_gui.setDesktop(dskLoading);
 
 	LoadMap(pkt->getMapName());
 }
