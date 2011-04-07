@@ -13,6 +13,11 @@ public:
 	MobObj();
 	virtual ~MobObj();
 
+	virtual void setAction(unsigned short);
+	virtual void Attack();
+	virtual void Damage();
+	virtual void Dead();
+
 	virtual void Draw();
 
 	virtual bool valid() const;

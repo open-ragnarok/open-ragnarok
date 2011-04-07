@@ -73,6 +73,17 @@ void NpcObj::Draw() {
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
 	m_shadowact.Draw(m_tickdelay, ro::CDir::DIR_N, -0.1);
 	m_npc.Draw(m_tickdelay, (ro::CDir)dir); // Draw
+
+	glTranslatef(0, 10, 0); // Moves our object to the proper place
+	if (m_emotion > -1)
+		m_emotionact.Draw(m_tickdelay, (ro::CDir)m_emotion, 0.2);
+	if (!m_emotionact.isPlaying()) {
+		m_emotion = -1;
+	//	m_emotionact.setAction(1);
+	//	m_emotionact.setAction(0);
+		m_emotionact.Stop();
+	}
+
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -86,6 +97,12 @@ bool NpcObj::open(CacheManager& cache, std::string name) {
 	if (shadowLoaded) {
 		openAct(cache, "sprite\\shadow", m_shadowact);
 		shadowLoaded = true;
+	}
+	if (emotionLoaded) {
+		char s[256];
+		sprintf(s, "sprite\\%s\\emotion", ro::EUC::effects);
+		openAct(cache, s, m_emotionact);
+		emotionLoaded = true;
 	}
 
 	//Cache objects

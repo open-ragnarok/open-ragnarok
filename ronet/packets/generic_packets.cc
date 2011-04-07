@@ -43,7 +43,6 @@ namespace ronet {
 	RONET_GENERIC_2PARAM_IMPL(StatusUp, short, unsigned char)
 	RONET_GENERIC_3PARAM_IMPL(StatusUpAck, short, unsigned char, unsigned char)
 	RONET_GENERIC_1PARAM_IMPL(ReqEmotion, unsigned char)
-//	RONET_GENERIC_TRAILING_IMPL(Emotion)
 	RONET_GENERIC_2PARAM_IMPL(Emotion, unsigned int, unsigned char)
 	RONET_GENERIC_2PARAM_IMPL(NotifyEffect1, unsigned int, unsigned int);
 	RONET_GENERIC_1PARAM_IMPL(Quit, unsigned short)

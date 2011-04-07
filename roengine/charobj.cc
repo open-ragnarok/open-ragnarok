@@ -114,16 +114,24 @@ void CharObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_emotionact.setExt(&m_bodyact);
-	if (m_emotion > -1 && !m_emotionact.isPlaying())
-		m_emotionact.Draw(m_tickdelay, (ro::CDir)m_emotion, -0.1, false);
 	m_shadowact.Draw(m_tickdelay, ro::CDir::DIR_N, -0.1);
-	m_bodyact.Draw(m_tickdelay, (ro::CDir)dir, 0, !(m_act == 6 || m_act == 5)); // Draw
+//	m_bodyact.Draw(m_tickdelay, (ro::CDir)dir, 0, !(m_act == 6 || m_act == 5)); // Draw
+	m_bodyact.Draw(m_tickdelay, (ro::CDir)dir, 0); // Draw
 	if (m_headact.valid())
 		if (m_act == 0 || m_act == 2) // TODO: Fix
 			m_headact.Draw(0, (ro::CDir)dir, 0.1);
 		else
-			m_headact.Draw(m_tickdelay, (ro::CDir)dir, 0.1, !(m_act == 6 || m_act == 5));
+//			m_headact.Draw(m_tickdelay, (ro::CDir)dir, 0.1, !(m_act == 6 || m_act == 5));
+			m_headact.Draw(m_tickdelay, (ro::CDir)dir, 0.1);
+	glTranslatef(0, 10, 0); // Moves our object to the proper place
+	if (m_emotion > -1)
+		m_emotionact.Draw(m_tickdelay, (ro::CDir)m_emotion, 0.2);
+	if (!m_emotionact.isPlaying()) {
+		m_emotion = -1;
+	//	m_emotionact.setAction(1);
+	//	m_emotionact.setAction(0);
+		m_emotionact.Stop();
+	}
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();

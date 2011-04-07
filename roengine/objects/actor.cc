@@ -97,6 +97,9 @@ void Actor::setAction(unsigned short action) {
 
 void Actor::setEmotion(int emotion) {
 	m_emotion = emotion;
+
+	m_emotionact.Stop();
+	m_emotionact.Play(false);
 }
 
 //bool Actor::shadowLoaded = false;

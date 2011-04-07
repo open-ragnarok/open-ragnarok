@@ -9,6 +9,38 @@ MobObj::MobObj() : Actor(MobType) {
 MobObj::~MobObj() {
 }
 
+void MobObj::setAction(unsigned short action) {
+//	m_action = action;
+	m_act = action;
+
+	m_mob.setAction(action);
+
+	m_mob.Play(false);
+}
+
+void MobObj::Attack() {
+//	int action = 5;
+
+	// TODO: switch to current weapon
+
+	// case no weapon
+	setAction(2);
+
+	m_mob.Play(false);
+}
+
+void MobObj::Damage() {
+	setAction(3);
+
+	m_mob.Play(false);
+}
+
+void MobObj::Dead() {
+	setAction(4);
+
+	m_mob.Play(false);
+}
+
 void MobObj::Draw() {
 	if (m_map == NULL)
 		return;
@@ -111,6 +143,17 @@ void MobObj::Draw() {
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
 	m_shadowact.Draw(m_tickdelay, ro::CDir::DIR_N, -0.1);
 	m_mob.Draw(m_tickdelay, (ro::CDir)dir, !(m_act == 2 || m_act == 3)); // Draw
+	
+	glTranslatef(0, 10, 0); // Moves our object to the proper place
+	if (m_emotion > -1)
+		m_emotionact.Draw(m_tickdelay, (ro::CDir)m_emotion, 0.2);
+	if (!m_emotionact.isPlaying()) {
+		m_emotion = -1;
+	//	m_emotionact.setAction(1);
+	//	m_emotionact.setAction(0);
+		m_emotionact.Stop();
+	}
+
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
@@ -124,6 +167,12 @@ bool MobObj::open(CacheManager& cache, std::string name) {
 	if (shadowLoaded) {
 		openAct(cache, "sprite\\shadow", m_shadowact);
 		shadowLoaded = true;
+	}
+	if (emotionLoaded) {
+		char s[256];
+		sprintf(s, "sprite\\%s\\emotion", ro::EUC::effects);
+		openAct(cache, s, m_emotionact);
+		emotionLoaded = true;
 	}
 
 	//Cache objects

@@ -42,6 +42,7 @@ protected:
 	unsigned int m_frame;
 
 	bool m_playing;
+	bool m_loop;
 
 public:
 	ActGL();
@@ -65,6 +66,8 @@ public:
 	SprGL& getSpr();
 
 	bool isPlaying();
+	void Play(bool loop = true);
+	void Stop(bool reset = true);
 
 	/** Check if this act is valid */
 	bool valid() const;
@@ -74,7 +77,7 @@ public:
 	 * 
 	 * @param delay milliseconds passed since last Draw() was called (to calculate animations)
 	 */
-	void Draw(unsigned long delay, ro::CDir direction = ro::DIR_N, float z = 0.0f, bool loop = true);
+	void Draw(unsigned long delay, ro::CDir direction = ro::DIR_N, float z = 0.0f);
 
 	void Draw() const;
 };

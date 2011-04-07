@@ -1068,10 +1068,15 @@ HNDL_IMPL(StatusUpAck) {
 }
 
 HNDL_IMPL(Emotion) {
-//	_log(OPENRO__TRACE, "Received emotion. id: %d type: %d", pkt->getID(), pkt->getTrail());
 	_log(OPENRO__TRACE, "Received emotion. id: %d type: %d", pkt->getParam1(), pkt->getParam2());
 	if (me.id == pkt->getParam1())
 		me.setEmotion(pkt->getParam2());
+	else {
+		std::map<unsigned int, Actor*>::iterator itr = m_actors.find(pkt->getParam1());
+		if (itr != m_actors.end()) {
+			itr->second->setEmotion(pkt->getParam2());
+		}
+	}
 }
 
 HNDL_IMPL(StatsInfo) {

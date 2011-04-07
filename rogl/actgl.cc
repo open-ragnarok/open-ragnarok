@@ -13,6 +13,7 @@ ActGL::ActGL() {
 	m_delay = 0;
 	m_frame = 0;
 	m_playing = false;
+	m_loop = true;
 }
 
 ActGL::ActGL(const ActGL& _act) {
@@ -35,6 +36,19 @@ bool ActGL::isPlaying() {
 	return m_playing;
 }
 
+void ActGL::Play(bool loop) {
+	m_playing = true;
+	m_loop = loop;
+}
+
+void ActGL::Stop(bool reset) {
+	m_playing = false;
+	if (reset) {
+		m_delay = 0;
+		m_frame = 0;
+	}
+}
+
 bool ActGL::valid() const {
 	return(act != NULL);
 }
@@ -44,8 +58,7 @@ void ActGL::Draw() const {
 }
 
 
-void ActGL::Draw(unsigned long delay, ro::CDir direction, float z, bool loop) {
-	m_playing = true;
+void ActGL::Draw(unsigned long delay, ro::CDir direction, float z) {
 
 	m_delay += delay;
 	const float d = act->getDelay(m_action * 8 + direction) * 25;
@@ -63,7 +76,7 @@ void ActGL::Draw(unsigned long delay, ro::CDir direction, float z, bool loop) {
 		m_frame = a.getMotionCount() - 1;
 	}*/
 	if(a.getMotionCount() > 0 && m_frame >= a.getMotionCount()) {
-		if (loop) {
+		if (m_loop) {
 			m_frame = m_frame % a.getMotionCount();
 		}
 		else {
