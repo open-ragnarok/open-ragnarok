@@ -19,6 +19,7 @@
 #include "roengine/objects/npcobj.h"
 #include "roengine/objects/homunobj.h"
 #include "roengine/objects/mobobj.h"
+#include "roengine/objects/str_object.h"
 
 #include "ro/ro.h"
 #include "rogl/rogl.h"
@@ -106,6 +107,7 @@ protected:
 
 	Actor* m_overactor;
 
+	StrObject m_str;
 	/**
 	 * Clears all the actors (useful when changing maps)
 	 */

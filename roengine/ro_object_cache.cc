@@ -142,3 +142,22 @@ bool ROObjectCache::ReadSPR(const std::string& name, FileManager& fm) {
 	add(name, spr);
 	return(true);
 }
+
+bool ROObjectCache::ReadSTR(const std::string& name, FileManager& fm) {
+	if (exists(name))
+		return(false);
+
+	FileData data = fm.getFile(name);
+	if (data.blobSize() == 0)
+		return(false);
+
+	ro::STR* str = new ro::STR();
+	std::stringstream ss;
+	data.write(ss);
+	if (!str->readStream(ss)) {
+		delete(str);
+		return(false);
+	}
+	add(name, str);
+	return(true);
+}

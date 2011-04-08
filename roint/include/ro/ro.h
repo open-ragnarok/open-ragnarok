@@ -56,6 +56,7 @@
 #define RSW_HEADER "GRSW"
 #define GND_HEADER "GRGN"
 #define GAT_HEADER "GRAT"
+#define STR_HEADER "STRM"
 
 #include "roint_import.h"
 
@@ -85,6 +86,7 @@ ROINT_DLLAPI const char* strVersion();
 #include "types/rsw.h"
 #include "types/gnd.h"
 #include "types/gat.h"
+#include "types/str.h"
 
 /**
  * \defgroup ROInterface Interface

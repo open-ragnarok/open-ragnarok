@@ -733,6 +733,10 @@
 				RelativePath="..\objects\rsw_object.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\objects\str_object.cc"
+				>
+			</File>
 			<Filter
 				Name="Headers"
 				>
@@ -770,6 +774,10 @@
 				</File>
 				<File
 					RelativePath="..\include\roengine\objects\rsw_object.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\objects\str_object.h"
 					>
 				</File>
 			</Filter>

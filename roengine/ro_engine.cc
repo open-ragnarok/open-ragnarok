@@ -291,6 +291,11 @@ void ROEngine::DrawMap() {
 	if (me.valid()) {
 		me.setMap(m_map);
 		me.Render(50, &m_frustum, m_cameradir);
+
+		m_str.setScale(0.15, -0.15, 1);
+		m_str.setPos(wx, wy + 10, wz);
+		m_str.Render(16, &m_frustum);////
+
 		Vector3f &pos = me.getPos();
 //		alListener3f(AL_POSITION, me.getPositionX(), me.getPositionY(), 0);
 		alListener3f(AL_POSITION, m_map->getWorldX(), m_map->getWorldY(), m_map->getWorldZ());

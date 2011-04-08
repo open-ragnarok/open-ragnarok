@@ -68,7 +68,7 @@ void Camera::Update() {
 		}
 	}
 	else if (zoom < 0.f) {
-		if (dir.size() >= 500.f) {
+		if (dir.size() >= 1000.f) {
 			zoom = 0;
 			return;
 		}
@@ -158,7 +158,7 @@ void Camera::ZoomIn(float f) {
 
 void Camera::ZoomOut(float f) {
 	Vector3f dir = dest - eye;
-	if (dir.size() >= 500)
+	if (dir.size() >= 1000)
 		return;
 	zoom -= f;
 	zoom_a = zoom / 10.f;

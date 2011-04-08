@@ -263,6 +263,10 @@ void OpenRO::BeforeRun() {
 	sprintf(xcursor,"sprite\\cursors");
 	ycursor.Load(xcursor, *this);
 	setCursor(ycursor);
+	char *effect = "texture\\effect\\asum.str";
+	getROObjects().ReadSTR(effect, getFileManager());
+	StrObject strobj;
+	m_str.open(*this, (ro::STR*)getROObjects().get(effect));
 }
 
 void OpenRO::CreateCharWindow(int slot) {

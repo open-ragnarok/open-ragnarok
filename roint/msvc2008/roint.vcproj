@@ -701,6 +701,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\str.cc"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -803,6 +807,10 @@
 			</File>
 			<File
 				RelativePath="..\include\ro\types\spr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ro\types\str.h"
 				>
 			</File>
 		</Filter>

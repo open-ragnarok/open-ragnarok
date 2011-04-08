@@ -50,7 +50,7 @@ void SDLEngine::init() {
     m_mode2d = false;
 
     near_clip = 20.0f;
-    far_clip = 1000.0f;
+    far_clip = 2000.0f;
 
 	m_screenshot = false;
 }

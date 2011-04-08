@@ -20,6 +20,7 @@ public:
 	bool ReadACT(const std::string& name, FileManager& fm);
 	bool ReadSPR(const std::string& name, FileManager& fm);
 	bool ReadGAT(const std::string& name, FileManager& fm);
+	bool ReadSTR(const std::string& name, FileManager& fm);
 };
 
 #endif /* __RO_OBJECT_CACHE_H */
