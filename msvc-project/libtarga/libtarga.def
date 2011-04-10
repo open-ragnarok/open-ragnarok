@@ -1,0 +1,12 @@
+LIBRARY		LIBTARGA
+
+EXPORTS
+  tga_create
+  tga_error_string
+  tga_get_last_error
+
+  tga_load
+  tga_load_mem
+
+  tga_write_raw
+  tga_write_rle

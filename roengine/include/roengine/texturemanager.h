@@ -24,6 +24,7 @@ public:
 	sdle::Texture Register(FileManager&, const std::string& name);
 	sdle::Texture RegisterPNG(FileManager&, const std::string& name);
 	sdle::Texture RegisterJPEG(FileManager&, const std::string& name);
+	sdle::Texture RegisterTGA(FileManager&, const std::string& name);
 	sdle::Texture Register(const std::string& name, const sdle::Image& img);
 	sdle::Texture Register(const std::string& name, const sdle::Texture& t);
 	bool UnRegister(const std::string& name);

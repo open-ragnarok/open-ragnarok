@@ -232,6 +232,9 @@ void OpenRO::BeforeRun() {
 	ParseClientInfo();
 
 	InitDisplay(1024, 768, false);
+	GLenum err = glewInit();
+    if (err != GLEW_OK)
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 
 	SDL_WM_SetCaption("Open Ragnarok - www.open-ragnarok.org", "OpenRO");
 
@@ -244,7 +247,7 @@ void OpenRO::BeforeRun() {
 	m_gui.FontManager().add("lsans.ttf", lsans);
 	m_gui.setDefaultFont(lsans);
 
-	m_texturemanager.RegisterPNG(getFileManager(), "openro\\selected.png");
+	m_texturemanager.RegisterTGA(getFileManager(), "texture\\grid.tga");
 
 	// Hide the mouse cursor
 	SDL_ShowCursor(0);
@@ -258,15 +261,15 @@ void OpenRO::BeforeRun() {
 
 	m_gui.setDesktop(dskLogin);
 
-	FullAct ycursor;
-	char xcursor[256];
-	sprintf(xcursor,"sprite\\cursors");
-	ycursor.Load(xcursor, *this);
-	setCursor(ycursor);
-	char *effect = "texture\\effect\\asum.str";
-	getROObjects().ReadSTR(effect, getFileManager());
-	StrObject strobj;
-	m_str.open(*this, (ro::STR*)getROObjects().get(effect));
+	FullAct cursor;
+	char cursor_path[256];
+	sprintf(cursor_path,"sprite\\cursors");
+	cursor.Load(cursor_path, *this);
+	setCursor(cursor);
+
+//	char *effect = "texture\\effect\\asum.str";
+//	getROObjects().ReadSTR(effect, getFileManager());
+//	m_str.open(*this, (ro::STR*)getROObjects().get(effect));
 }
 
 void OpenRO::CreateCharWindow(int slot) {

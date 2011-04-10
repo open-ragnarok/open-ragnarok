@@ -261,7 +261,8 @@ void ROEngine::DrawMap() {
 
 	mapx = m_map->getMouseMapX();
 	mapy = m_map->getMouseMapY();
-	m_texturemanager["openro\\selected.png"].Activate();
+//	m_texturemanager["openro\\selected.png"].Activate();
+	m_texturemanager["texture\\grid.tga"].Activate();
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	m_map->DrawSelection(mapx, mapy);
@@ -292,9 +293,9 @@ void ROEngine::DrawMap() {
 		me.setMap(m_map);
 		me.Render(50, &m_frustum, m_cameradir);
 
-		m_str.setScale(0.15, -0.15, 1);
-		m_str.setPos(wx, wy + 10, wz);
-		m_str.Render(16, &m_frustum);////
+	//	m_str.setScale(0.15, -0.15, 1);
+	//	m_str.setPos(wx, wy + 10, wz);
+	//	m_str.Render(16, &m_frustum);////
 
 		Vector3f &pos = me.getPos();
 //		alListener3f(AL_POSITION, me.getPositionX(), me.getPositionY(), 0);

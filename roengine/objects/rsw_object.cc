@@ -244,16 +244,6 @@ void RswObject::getRot(float sizex, float sizey, float rot[16]) {
 }
 
 void RswObject::DrawSurface(const ro::GND::Surface& surface, const float* vertices) {
-	// TODO: move to core of engine
-	static bool a = true;
-	if (a) {
-		a = false;
-		GLenum err = glewInit();
-	    if (err != GLEW_OK)
-		{
-			fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-		}	
-	}
 	// TODO lightmap (use multi-texture extension?)
 	// TODO what should happen with the color? should glEnable(GL_COLOR_MATERIAL) be used?
 	glEnable(GL_COLOR_MATERIAL);

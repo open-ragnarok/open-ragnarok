@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\jpeg-7\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\include\&quot;;&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(SolutionDir)\FreeType2\include\&quot;;&quot;$(SolutionDir)\libpng\&quot;;&quot;$(SDL)\include\&quot;;&quot;$(SolutionDir)\jpeg-7\&quot;;&quot;$(SolutionDir)\libtarga\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -405,6 +405,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\texture_tga.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\vertex.cc"
 				>
 			</File>
@@ -504,6 +508,10 @@
 			</File>
 			<File
 				RelativePath="..\include\sdle\texture_png.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\sdle\texture_tga.h"
 				>
 			</File>
 			<File

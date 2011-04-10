@@ -11,9 +11,11 @@
 #	ifdef SDLENGINE_DLL
 #		pragma comment(lib, "zlib.dll.lib")
 #		pragma comment(lib, "libpng.dll.lib")
+#		pragma comment(lib, "libtarga.dll.lib")
 #	else
 #		pragma comment(lib, "zlib.lib")
 #		pragma comment(lib, "libpng.lib")
+#		pragma comment(lib, "libtarga.lib")
 #	endif
 #endif
 

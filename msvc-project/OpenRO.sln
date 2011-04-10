@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdl_engine", "..\sdl_engine\msvc\sdl_engine.vcproj", "{285D3072-BFB0-4F3A-9DB4-98126F028CA9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0008960E-E0DD-41A6-8265-00B31DDB4C21} = {0008960E-E0DD-41A6-8265-00B31DDB4C21}
@@ -54,6 +54,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openro", "..\openro\msvc\op
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logsys", "..\logsys\msvc\logsys.vcproj", "{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtarga", "libtarga\libtarga.vcproj", "{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +153,14 @@ Global
 		{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}.Release|Win32.Build.0 = Release|Win32
 		{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}.ReleaseDLL|Win32.ActiveCfg = Release|Win32
 		{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}.ReleaseDLL|Win32.Build.0 = Release|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.Debug|Win32.Build.0 = Debug|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.DebugDLL|Win32.ActiveCfg = DebugDLL|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.DebugDLL|Win32.Build.0 = DebugDLL|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.Release|Win32.ActiveCfg = Release|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.Release|Win32.Build.0 = Release|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.ReleaseDLL|Win32.ActiveCfg = ReleaseDLL|Win32
+		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.ReleaseDLL|Win32.Build.0 = ReleaseDLL|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

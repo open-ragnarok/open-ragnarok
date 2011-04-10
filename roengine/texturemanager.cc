@@ -7,6 +7,7 @@
 #include "sdle/image_bmp.h"
 #include "sdle/texture_png.h"
 #include "sdle/texture_jpeg.h"
+#include "sdle/texture_tga.h"
 
 
 #include <GL/gl.h>
@@ -59,6 +60,23 @@ sdle::Texture TextureManager::RegisterPNG(FileManager& fm, const std::string& na
 	return(t);
 }
 
+sdle::Texture TextureManager::RegisterTGA(FileManager& fm, const std::string& name) {
+	if (IsRegistered(name))
+		return(textures[name]);
+
+	sdle::Texture t;
+	FileData d = fm.getFile(name);
+	if (d.blobSize() == 0) {
+		return(t);
+	}
+
+	t = sdle::loadTGATexture((unsigned char*)d.getBuffer(), d.blobSize());
+	if (t.Valid())
+		Register(name, t);
+	
+	return(t);
+}
+
 sdle::Texture TextureManager::Register(FileManager& fm, const std::string& name) {
 	if (!fm.fileExists(name)) {
 		std::cerr << "Can't load texture " << name << std::endl;
@@ -74,6 +92,10 @@ sdle::Texture TextureManager::Register(FileManager& fm, const std::string& name)
 
 	if (!strcmp(extension, "png")) {
 		return(RegisterPNG(fm, name));
+	}
+
+	if (!strcmp(extension, "tga")) {
+		return(RegisterTGA(fm, name));
 	}
 
 	if (IsRegistered(name))
