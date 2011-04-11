@@ -567,19 +567,18 @@ void RswObject::DrawSurface(const ro::GND::Surface& surface, const float* vertic
 void RswObject::DrawGND() {
 	unsigned int cellx, celly;
 
-	float rot[16];
-	float sizex = gnd->getZoom() * gnd->getWidth();
-	float sizey = gnd->getZoom() * gnd->getHeight();
-	getRot(sizex, sizey, rot);
-	glMultMatrixf(rot);// TODO should this really be here?
-
 	glPushMatrix();
 	glScalef(gnd->getZoom(), -1, gnd->getZoom());
 	glEnable(GL_ALPHA_TEST); // TODO why is this needed?
 
+	Frustum f;
+	f.Calculate();
+
 	for (celly = 0; celly < gnd->getHeight(); celly++) {
 		for (cellx = 0; cellx < gnd->getWidth(); cellx++) {
 			const ro::GND::Cell& cell = gnd->getCell(cellx, celly);
+			if (!f.PointVisible((float)(cellx    ), cell.height[0], (float)(celly    ))) 
+				continue;
 			if( cell.topSurfaceId != -1 )
 			{
 				const ro::GND::Surface& surface = gnd->getSurface(cell.topSurfaceId);
@@ -634,6 +633,9 @@ void RswObject::DrawWater() {
 	glPushMatrix();
 	glScalef(gnd->getZoom(), -1, gnd->getZoom());
 
+	Frustum f;
+	f.Calculate();
+
 	// TODO set water opacity/alpha to 0x90
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
@@ -656,6 +658,8 @@ void RswObject::DrawWater() {
 			const ro::GND::Cell& cell = gnd->getCell(x, y);
 			if (cell.height[0] <= height[0] && cell.height[1] <= height[0] && cell.height[2] <= height[0] && cell.height[3] <= height[0])
 				continue;// water is below the ground
+			if (!f.PointVisible((float)(x    ), cell.height[0], (float)(y    ))) 
+				continue;
 			// TODO exclude tiles based on camera frustum?
 			// TODO check texture orientation in original
 			float u1 = (x % 4    ) * 0.25f;
@@ -770,14 +774,21 @@ void RswObject::Draw() {
 //	glEnable(GL_AUTO_NORMAL);
 
 	glPushMatrix();
+
+	float rot[16];
+	float sizex = gnd->getZoom() * gnd->getWidth();
+	float sizey = gnd->getZoom() * gnd->getHeight();
+	getRot(sizex, sizey, rot);
+	glMultMatrixf(rot);
+
 	if (glIsList(gnd_gl)) {
 		glCallList(gnd_gl);
 	}
 	else {
-		gnd_gl = glGenLists(1);
-		glNewList(gnd_gl, GL_COMPILE_AND_EXECUTE);
+	//	gnd_gl = glGenLists(1);
+	//	glNewList(gnd_gl, GL_COMPILE_AND_EXECUTE);
 		DrawGND();
-		glEndList();
+	//	glEndList();
 	}
 
 	DrawWater();

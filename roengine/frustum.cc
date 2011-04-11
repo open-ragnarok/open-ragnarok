@@ -142,7 +142,7 @@ bool Frustum::PointVisible(float x, float y, float z) const {
 	int p;
  
 	for( p = 0; p < 6; p++ )
-		if( frustum[p][0] * x + frustum[p][1] * y + frustum[p][2] * z + frustum[p][3] <= 0 )
+		if( frustum[p][0] * x + frustum[p][1] * y + frustum[p][2] * z + frustum[p][3] <= 0.f )
 			return false;
 	return true;
 }
@@ -246,7 +246,7 @@ bool Frustum::ModelVisible(const ro::RSM* rsm, const ro::RSW::ModelObject* model
 	return(PointVisible(
 		model->pos[0],
 		model->pos[1],
-		model->pos[2]
+		-model->pos[2]
 		));
 #endif
 	// TODO

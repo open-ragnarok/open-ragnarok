@@ -315,7 +315,7 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 
 	glMultMatrixf(mat);
 
-
+	glColor4f(1,1,1,1);
 //	glColor4fv(rsm->getColor());
 
 //	glDisable(GL_TEXTURE_2D);
@@ -367,15 +367,14 @@ void RsmObject::DrawMesh(unsigned int meshid) {
 
 void RsmObject::Draw() {
 	if (m_frustum != NULL) {
-	//	if (!isInFrustum(*m_frustum)) {
-		if (isInFrustum(*m_frustum)) {
-		//	return;
-		//	glColor3f(1, 0, 0);
-			glColor4f(1, 1, 1, 1);
+		if (!isInFrustum(*m_frustum)) {
+		//	glColor4f(1, 1, 1, 1);
+			return;
+
 		}
-		else {
-			glColor4f(1, 1, 1, 1);
-		}
+	//	else {
+	//		glColor4f(1, 1, 1, 1);
+	//	}
 	}
 #if 0
 	if (m_frustum != NULL) {
