@@ -33,6 +33,7 @@ void OpenRO::LoginScreen() {
 
 void OpenRO::CharSelectScreen() {
 	dskChar->setEnabled(true);
+	m_state = ST_CharSelect;
 	dskCreate->clear();
 	m_gui.setDesktop(dskChar);
 }
@@ -40,7 +41,11 @@ void OpenRO::CharSelectScreen() {
 void OpenRO::ProcessLogin(const std::string& user, const std::string& pass, unsigned int version) {
 	dskLogin->setEnabled(false);
 	m_network.getLogin().Connect(m_connectionip, m_connectionport);
-	m_network.GameLogin(user, pass, version);
+	bool success = m_network.GameLogin(user, pass, version);
+	if (!success) {
+		m_network.getLogin().Close();
+		dskLogin->setEnabled(true);
+	}
 }
 
 void OpenRO::ServiceSelect(unsigned int serviceid) {
@@ -57,7 +62,9 @@ void OpenRO::ServiceSelect(unsigned int serviceid) {
 	fprintf(stdout,"%s:%d\n",inet_ntoa(addr),m_serverlist->getInfo(serviceid).port);	//Debug info
 
 	m_network.getChar().Connect(inet_ntoa(addr), m_serverlist->getInfo(serviceid).port);	//Connect to the charserver
-	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());	//Login to the charserver
+	bool success = m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());	//Login to the charserver
+	if (!success)
+		dskLogin->setEnabled(true);
 }
 
 void OpenRO::CharSelect(unsigned int slot){
@@ -100,9 +107,25 @@ void OpenRO::HandleKeyboard() {
 }
 
 void OpenRO::Quit() {
+	switch (m_state) {
+		case ST_Login:
+		case ST_ServiceSelect:
+		case ST_CharSelect:
+		case ST_CharCreate:
+			m_quit = true;
+			m_state = ST_Unk;
+			break;
+		case ST_Loading:
+		case ST_Map:
 	m_network.Quit();
+			break;
+	}
 //	m_quit = true;
 //	m_state = ST_Unk;
+}
+
+void OpenRO::evtQuit() {
+	Quit();
 }
 
 void OpenRO::AfterDraw() {
@@ -277,6 +300,7 @@ void OpenRO::CreateCharWindow(int slot) {
 	dskCreate->readObjects();
 	m_gui.setDesktop(dskCreate);
 	dskCreate->setEnabled(true);
+	m_state = ST_CharCreate;
 }
 
 void OpenRO::CreateChar(const std::string& charname, const CharAttributes& attr, int slott, unsigned short color, unsigned short style) {
@@ -842,6 +866,7 @@ HNDL_IMPL(ServerList) {
 	m_serverlist = pkt;
 	m_gui.setDesktop(dskService);
 	dskService->setEnabled(true);
+	m_state = ST_ServiceSelect;
 	char buf[128];
 
 	dskService->clear();
@@ -856,6 +881,7 @@ HNDL_IMPL(CharList) {
 	_log(OPENRO__TRACE, "Received a list of %d chars", count);
 	m_gui.setDesktop(dskChar);
 	dskChar->setEnabled(true);
+	m_state = ST_CharSelect;
 	
 	for(int x=0;x<count;x++){
 		dskChar->addChar(pkt->getChar(x));
@@ -1048,6 +1074,12 @@ HNDL_IMPL(ZenyExp) {
 HNDL_IMPL(RestartCharSelect) {
 	_log(OPENRO__TRACE, "Received restart char select. type: %d", pkt->getParam());
 
+	if (m_map != NULL) {
+		delete(m_map);
+		m_map = NULL;
+		strcpy(m_mapname, "");
+	}
+
 	//If nothing selected
 //	if (serviceid < (m_serverlist->getServerCount()-1))
 //		return;
@@ -1065,8 +1097,8 @@ HNDL_IMPL(RestartCharSelect) {
 	m_network.getChar().Connect(inet_ntoa(addr), m_serverlist->getInfo(serviceid).port);	//Connect to the charserver
 	m_network.CharLogin(m_serverlist->getAccountId(), m_serverlist->getSessionId1(), m_serverlist->getSessionId2(), m_serverlist->getSex());	//Login to the charserver
 
-	dskIngame->setVisible(false);
-	dskChar->setVisible(true);
+//	dskIngame->setEnabled(false);
+	dskChar->setEnabled(true);
 	m_gui.setDesktop(dskChar);
 }
 

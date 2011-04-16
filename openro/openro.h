@@ -136,6 +136,7 @@ public:
 
 	/** Quits the game */
 	void Quit();
+	virtual void evtQuit();
 
 	/** Closes all connections */
 	void CloseSockets();

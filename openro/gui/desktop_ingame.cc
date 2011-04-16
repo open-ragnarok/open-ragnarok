@@ -919,8 +919,8 @@ void DesktopIngame::showQuitDialog() {
 }
 
 bool DesktopIngame::handleBtnQuit(GUI::Event& e) {
+	getElement("quitwindow")->setVisible(false);
 	if (e.getSource()->getName() == "quitwindow/btnReturnSavePoint") {
-		getElement("quitwindow")->setVisible(false);
 		m_ro->Restart(0);
 		return(true);
 	}
@@ -934,7 +934,6 @@ bool DesktopIngame::handleBtnQuit(GUI::Event& e) {
 		return(true);
 	}
 	else if (e.getSource()->getName() == "quitwindow/btnReturnGame") {
-		getElement("quitwindow")->setVisible(false);
 		return(true);
 	}
 
