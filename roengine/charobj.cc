@@ -8,11 +8,61 @@ CharObj::CharObj() : Actor(CharType) {
 
 CharObj::~CharObj() {
 }
-/*
+
 void CharObj::setAction(unsigned short action) {
+//	m_action = action;
+	m_act = action;
+
 	m_bodyact.setAction(action);
 	m_headact.setAction(action);
-}*/
+
+	m_bodyact.Play(!(m_act == 6 || m_act == 5));
+	m_headact.Play(!(m_act == 6 || m_act == 5));
+
+}
+
+void CharObj::WalkTo(int x, int y) {
+	setDest(x, y);
+	setAction(1);
+}
+
+void CharObj::LookAt(int x, int y) {
+	float dx = x - map_x;
+	float dy = y - map_y;
+//	float size = sqrt(dx * dx + dy * dy);
+	float ax = 0, ay = 0;
+	if (abs(dx) >= 0.1f)
+		ax = (dx > 0.0f) ? 1 : -1;
+	if (abs(dy) >= 0.1f)
+		ay = (dy > 0.0f) ? 1 : -1;
+
+	if (ax != 0.0f || ay != 0.0f)
+		m_dir = ro::dir2Cdir(ax, ay);
+}
+
+void CharObj::Attack() {
+//	int action = 5;
+
+	// TODO: switch to current weapon
+
+	// case no weapon
+	setAction(10);
+
+	m_headact.Play(false);
+	m_bodyact.Play(false);
+
+}
+
+void CharObj::Damage() {
+	setAction(6);
+
+	m_headact.Play(false);
+	m_bodyact.Play(false);
+}
+
+void CharObj::Dead() {
+	setAction(8);
+}
 
 void CharObj::Draw() {
 	if (m_map == NULL)
@@ -47,9 +97,10 @@ void CharObj::Draw() {
 		}
 	}*/
 	if (dest_x != map_x || dest_y != map_y) {
-	//	if (m_act == 0) {
-			m_act = 1;
-	//	}
+		if (m_act == 0 || m_act == 4) {
+		//	m_act = 1;
+		//	setAction(1);
+		}
 		float dx = dest_x - map_x;
 		float dy = dest_y - map_y;
 	//	float size = sqrt(dx * dx + dy * dy);
@@ -92,10 +143,12 @@ void CharObj::Draw() {
 	}
 	else {
 		if (m_act == 1) {
-			m_act = 0;
+		//	m_act = 0;
+			setAction(0);
 		}
-		else if ((m_act == 6 || m_act == 5) && !m_bodyact.isPlaying()) {
-			m_act = 4;
+		else if ((m_act == 6 || m_act == 5 || m_act == 10) && !m_bodyact.isPlaying()) {
+		//	m_act = 4;
+			setAction(4);
 		}
 	}
 
@@ -105,8 +158,8 @@ void CharObj::Draw() {
 	m_map->getWorldPosition(map_x, map_y, &wx, &wy, &wz);
 	glPopMatrix();
 
-	m_bodyact.setAction(m_act);
-	m_headact.setAction(m_act);
+//	m_bodyact.setAction(m_act);
+//	m_headact.setAction(m_act);
 
 	int dir = (cameraDir + 8 - m_dir) % 8;
 

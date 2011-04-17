@@ -403,15 +403,22 @@ unsigned int OpenRO::GetClientVersion(){
 }
 
 void OpenRO::clickMap(int x, int y) {
+	if (m_shift)
+		me.LookAt(x, y);
+	else
 	m_network.MoveCharacter(x, y);
 }
 
 void OpenRO::clickNpc(int x, int y, NpcObj* npc) {
+	me.LookAt(x, y);
+
 	m_network.Talk(npc->id);
 }
 
 void OpenRO::clickMob(int x, int y, MobObj* mob) {
-	m_network.MoveCharacter(x, y); // Need this?
+	me.LookAt(x, y);
+
+//	m_network.MoveCharacter(x, y); // Need this?
 	m_network.sendAction(mob->id, 7); // auto attack
 //	m_network.sendAction(mob->id, 0); // attack once
 	_log(OPENRO__DEBUG, "Attacking mob %d", mob->id);
@@ -645,23 +652,25 @@ HNDL_IMPL(ActorAction) {
 	switch(pkt->type) {
 		case 0:
 		//	printf("DAMAGE: %d->%d. Amount: %d\n", pkt->sourceID, pkt->targetID, pkt->damage);
-			_log(OPENRO__DEBUG, "DAMAGE: %d->%d. Amount: %d\n", pkt->sourceID, pkt->targetID, pkt->damage);
+			_log(OPENRO__DEBUG, "DAMAGE: %d->%d. Amount: %d", pkt->sourceID, pkt->targetID, pkt->damage);
 			// 0: Stand 1: Walk 2: Sit 3: Pick up 4:Battle 5:Attack 6:Damage 7: 8:Dead
 			if (pkt->sourceID == me.id) {
-				me.setAction(5);
+				me.Attack();
 				if (pkt->damage > 0) {
 					std::map<unsigned int, Actor*>::iterator itr = m_actors.find(pkt->targetID);
 					if (itr != m_actors.end()) {
 						itr->second->setAction(3);
+					//	itr->second->Damage();
 					}
 				}
 			}
 			else {
 				if (pkt->damage > 0)
-					me.setAction(6);
+					me.Damage();
 				std::map<unsigned int, Actor*>::iterator itr = m_actors.find(pkt->sourceID);
 				if (itr != m_actors.end()) {
 					itr->second->setAction(2);
+				//	itr->second->Attack();
 				}
 			}
 			break;
@@ -781,7 +790,8 @@ HNDL_IMPL(MapMoveOk) {
 	int x, y;
 
 	pkt->getDest(&x, &y);
-	me.setDest((float)x, (float)y);
+//	me.setDest((float)x, (float)y);
+	me.WalkTo((float)x, (float)y);
 }
 
 HNDL_IMPL(AttackRange) {
@@ -818,7 +828,7 @@ HNDL_IMPL(UpdateStatus) {
 		case 5: // HP
 			dskIngame->setHP(value);
 			if (value == 0) {
-				me.setAction(8);
+				me.Dead();
 				dskIngame->showQuitDialog();
 			}
 			break;

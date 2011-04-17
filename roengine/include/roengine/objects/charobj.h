@@ -17,7 +17,12 @@ public:
 	CharObj();
 	virtual ~CharObj();
 
-//	virtual void setAction(unsigned short);
+	virtual void setAction(unsigned short);
+	virtual void WalkTo(int x, int y);
+	virtual void LookAt(int x, int y);
+	virtual void Attack();
+	virtual void Damage();
+	virtual void Dead();
 
 	virtual void Draw();
 
