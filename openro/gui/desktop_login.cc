@@ -43,7 +43,7 @@ bool DesktopLogin::handleBtnExit(GUI::Event& e) {
 }
 
 bool DesktopLogin::handleBtnSaveID(GUI::Event& e) {
-	saveID->setChecked(saveID->isChecked());
+	saveID->setChecked(!saveID->isChecked());
 	return(true);
 }
 

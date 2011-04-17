@@ -173,6 +173,9 @@ public:
 	virtual void clickNpc(int x, int y, NpcObj* npc);
 
 	void Restart(unsigned char type);
+
+	void EnableBGM(bool);
+	void EnableSE(bool);
 };
 
 #endif /* __OPENRO_H */

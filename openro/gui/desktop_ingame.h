@@ -118,6 +118,11 @@ public:
 
 	bool handleBtnStatusUp(GUI::Event&);
 
+	void handleBtnBGM(GUI::Event&);
+	void handleBtnSE(GUI::Event&);
+	void handleBtnOpaque(GUI::Event&);
+	void handleBtnSnap(GUI::Event&);
+
 	bool handleBtnQuit(GUI::Event&);
 
 	void setCharName(const char* name);
@@ -176,6 +181,8 @@ public:
 	void AddNpcOption(std::string);
 	void showNpcImage(const char* fname, unsigned char type);
 	void closeNpcWindow();
+
+	void LogChat(std::string s);
 
 	/** Opens up a text box for the user to input text to a NPC */
 	void NpcText();

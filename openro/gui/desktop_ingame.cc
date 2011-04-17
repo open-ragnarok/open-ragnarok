@@ -45,6 +45,13 @@ DesktopIngame::DesktopIngame(OpenRO* ro) : RODesktop("ui\\ingame.xml", ro) {
 	ADD_HANDLER("statuswindow/btnDex", evtClick, DesktopIngame::handleBtnStatusUp);
 	ADD_HANDLER("statuswindow/btnLuk", evtClick, DesktopIngame::handleBtnStatusUp);
 
+	ADD_HANDLER("optionwindow/btnBGM", evtClick, DesktopIngame::handleBtnBGM);
+	ADD_HANDLER("optionwindow/btnSE", evtClick, DesktopIngame::handleBtnSE);
+	ADD_HANDLER("optionwindow/btnOpaque", evtClick, DesktopIngame::handleBtnOpaque);
+	ADD_HANDLER("optionwindow/btnAttack", evtClick, DesktopIngame::handleBtnSnap);
+	ADD_HANDLER("optionwindow/btnSkill", evtClick, DesktopIngame::handleBtnSnap);
+	ADD_HANDLER("optionwindow/btnItem", evtClick, DesktopIngame::handleBtnSnap);
+
 	ADD_HANDLER("quitwindow/btnReturnSavePoint", evtClick, DesktopIngame::handleBtnQuit);
 	ADD_HANDLER("quitwindow/btnCharSelect", evtClick, DesktopIngame::handleBtnQuit);
 	ADD_HANDLER("quitwindow/btnExit", evtClick, DesktopIngame::handleBtnQuit);
@@ -345,7 +352,15 @@ void DesktopIngame::updateHP() {
 	GUI::Label* lbl;
 	char buf[32];
 
+	if ((float)m_hp / (float)m_maxhp > 0.25f) {
 	bar = (GUI::HpSpBar*)getElement("stats_window/hp");
+		getElement("stats_window/hpred")->setVisible(false);
+	}
+	else {
+		bar = (GUI::HpSpBar*)getElement("stats_window/hpred");
+		getElement("stats_window/hp")->setVisible(false);
+	}
+	bar->setVisible(true);
 	lbl = (GUI::Label*)getElement("stats_window/hp_text");
 
 	sprintf(buf, "%d / %d", m_hp, m_maxhp);
@@ -870,6 +885,10 @@ void DesktopIngame::showNpcImage(const char* fname, unsigned char type) {
 	}
 }
 
+void DesktopIngame::LogChat(std::string s) {
+	((GUI::ChatLog*)getElement("chatlog"))->Add(s);
+}
+
 void DesktopIngame::closeNpcWindow() {
 	getElement("npcchatwindow")->setVisible(false);
 	getElement("npcinput")->setVisible(false);
@@ -939,3 +958,26 @@ bool DesktopIngame::handleBtnQuit(GUI::Event& e) {
 
 	return(true);
 }
+
+void DesktopIngame::handleBtnBGM(GUI::Event& e) {
+	GUI::CheckBox* check = (GUI::CheckBox*)e.getSource();
+	check->setChecked(!check->isChecked());
+	m_ro->EnableBGM(check->isChecked());
+}
+
+void DesktopIngame::handleBtnSE(GUI::Event& e) {
+	GUI::CheckBox* check = (GUI::CheckBox*)e.getSource();
+	check->setChecked(!check->isChecked());
+	m_ro->EnableSE(check->isChecked());
+}
+
+void DesktopIngame::handleBtnOpaque(GUI::Event& e) {
+	GUI::CheckBox* check = (GUI::CheckBox*)e.getSource();
+	check->setChecked(!check->isChecked());
+}
+
+void DesktopIngame::handleBtnSnap(GUI::Event& e) {
+	GUI::CheckBox* check = (GUI::CheckBox*)e.getSource();
+	check->setChecked(!check->isChecked());
+}
+

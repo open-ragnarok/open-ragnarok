@@ -264,7 +264,7 @@ void OpenRO::BeforeRun() {
 	// TODO: This should be a parameter
 	sdle::FTFont* lsans = new sdle::FTFont();
 	FileData data = m_filemanager.getFile("font\\lsans.ttf");
-	if (!lsans->openFromMemory(data.getBuffer(), data.blobSize(), 12)) {
+	if (data.getBuffer() == NULL || !lsans->openFromMemory(data.getBuffer(), data.blobSize(), 12)) {
 		fprintf(stderr, "Erorr loading font 'font\\lsans.ttf'\n");
 	}
 	m_gui.FontManager().add("lsans.ttf", lsans);
@@ -482,6 +482,13 @@ void OpenRO::LoadMap(const char* name) {
 void OpenRO::Restart(unsigned char type) {
 	me.setAction(0);
 	m_network.Restart(type);
+}
+
+void OpenRO::EnableBGM(bool enabled) {
+	m_bgmEnabled = enabled;
+}
+
+void OpenRO::EnableSE(bool enabled) {
 }
 
 void OpenRO::HandleActorInfo(const struct ActorInfo* info) {
@@ -751,6 +758,7 @@ HNDL_IMPL(HpUpdateParty) {
 
 HNDL_IMPL(OtherSpeech) {
 	_log(OPENRO__DEBUG, "Player %d talk: %s",pkt->getIdMes(), pkt->getText());
+	dskIngame->LogChat(pkt->getText());
 }
 
 HNDL_IMPL(PlayerEquip) {
@@ -1040,11 +1048,12 @@ HNDL_IMPL(MapLoginSuccess) {
 
 	m_tickoffset = SDL_GetTicks() - pkt->getServerTick();
 
-	_log(OPENRO__TRACE, "\tpos_x = %d\n\tpos_y = %d\n\tpos_dir = %d\n\tserver_tick = %d", pos_x, pos_y, pos_dir, server_tick);
+	_log(OPENRO__TRACE, "pos_x = %d\n\t pos_y = %d\n\t pos_dir = %d\n\t server_tick = %d", pos_x, pos_y, pos_dir, server_tick);
 }
 
 HNDL_IMPL(OwnSpeech) {
 	_log(OPENRO__TRACE, "OwnSpeech: %s",pkt->getText());
+	dskIngame->LogChat(pkt->getText());
 }
 
 HNDL_IMPL(SkillList) {
