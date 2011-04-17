@@ -13,6 +13,11 @@ GUI::List::List(GUI::Element* parent, const TiXmlElement* node, CacheManager& ca
 	selected = 0;
 	m_first = 0;
 	m_focusable = true;
+
+	scrollbar = new ScrollBar(this, cache);
+	scrollbar->setSize(20, h);
+	scrollbar->setPos(w - 5, 0);
+	m_children.push_back(scrollbar);
 }
 
 bool GUI::List::HandleKeyDown(SDL_Event  *sdlEvent, int mod) {

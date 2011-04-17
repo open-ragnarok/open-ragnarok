@@ -103,10 +103,10 @@ bool ScrollBar::ParseXmlAttr(const TiXmlAttribute* attr, CacheManager& cache) {
 }
 
 void ScrollBar::Draw(unsigned int delay) {
-	int bar_w = 0;
-	int used_w = 0;
+	int bar_h = 0;
+	int used_h = 0;
 
-	this->h  = texture.getHeight();
+//	this->h  = texture.getHeight();
 	if (this->h == 0)
 		this->h = tex_mid.getHeight();
 
@@ -122,35 +122,92 @@ void ScrollBar::Draw(unsigned int delay) {
 	if (!tex_end.Valid())
 		return;
 
-	if (m_value <= 0) {
+/*	if (m_value <= 0) {
 		return;
-	}
+	}*/
 
 	if (m_value >= m_maxvalue) {
-		bar_w = this->w;
+		bar_h = this->h;
 	}
 	else {
 		float aux = (float)m_value/(float)m_maxvalue;
-		bar_w = (int)(aux * this->w);
+		bar_h = (int)(aux * this->h);
 	}
 
-	if (bar_w == 0)
+	if (bar_h == 0)
 		return;
 
+	// Upper arrow
 	Window((float)0, (float)0, (float)tex_start.getWidth(), (float)tex_start.getHeight(), tex_start);
-	used_w = tex_start.getWidth();
-	if (used_w >= bar_w)
+	used_h = tex_start.getHeight();
+	if (used_h >= bar_h)
 		return;
 
-	if (used_w <= (bar_w + tex_end.getWidth())) {
-		int bar_width = bar_w - used_w - tex_end.getWidth();
-		for (int i = 0; i < bar_width; i++) {
-			Window((float)(used_w + i), (float)0, 1.0f, (float)h, tex_mid);
+/*	if (used_h <= (bar_h + tex_end.getWidth())) {
+		int bar_height = bar_h - used_h - tex_end.getHeight();
+		for (int i = 0; i < bar_height; i++) {
+	//	while (available_y < 0) {
+			Window((float)0, (float)(used_h + i), (float)tex_mid.getWidth(), tex_mid.getHeight(), tex_mid);
 		}
-		used_w += bar_width;
+		used_h += bar_height;
+	}*/
+
+	int available_y = h - used_h - tex_end.getHeight();
+
+	// Draw it.
+	if (used_h <= (bar_h + tex_end.getWidth())) {
+		int bar_height = bar_h - used_h - tex_end.getHeight();
+	//	while (available_y > 0) {
+		while (available_y > tex_mid.getHeight()) {
+			Window(0, used_h - 1, (float)tex_mid.getWidth(), (float)tex_mid.getHeight(), tex_mid);
+			used_h += tex_mid.getHeight();
+			available_y -= tex_mid.getHeight();
+		}
+		Window(0, used_h - (tex_mid.getHeight() - available_y), (float)tex_mid.getWidth(), (float)tex_mid.getHeight(), tex_mid);
 	}
 
-	Window((float)(used_w), (float)0, (float)tex_end.getWidth(), (float)tex_end.getHeight(), tex_end);
+	// Lower arrow
+//	Window((float)0, (float)used_h - 2, (float)tex_end.getWidth(), (float)tex_end.getHeight(), tex_end);
+	Window((float)0, (float)used_h + available_y - 2, (float)tex_end.getWidth(), (float)tex_end.getHeight(), tex_end);
+
+
+
+
+
+	// Draw bar
+	// Upper 
+	Window((float)0, (float)tex_start.getHeight() - 1, (float)tex_bar_start.getWidth(), (float)tex_bar_start.getHeight(), tex_bar_start);
+	used_h = tex_start.getHeight() + tex_bar_start.getHeight();
+	if (used_h >= bar_h)
+		return;
+
+/*	if (used_h <= (bar_h + tex_end.getWidth())) {
+		int bar_height = bar_h - used_h - tex_end.getHeight();
+		for (int i = 0; i < bar_height; i++) {
+	//	while (available_y < 0) {
+			Window((float)0, (float)(used_h + i), (float)tex_mid.getWidth(), tex_mid.getHeight(), tex_mid);
+		}
+		used_h += bar_height;
+	}*/
+
+	available_y = h - used_h - tex_bar_end.getHeight();
+
+	// Draw it.
+	if (used_h <= (bar_h + tex_bar_end.getWidth())) {
+		int bar_height = bar_h - used_h - tex_bar_end.getHeight() - tex_end.getHeight();
+	//	while (available_y > 0) {
+	//	while (available_y > tex_bar_mid.getHeight()) {
+			Window(0, used_h - 1, (float)tex_bar_mid.getWidth(), (float)tex_bar_mid.getHeight(), tex_bar_mid);
+			used_h += tex_bar_mid.getHeight();
+			available_y -= tex_bar_mid.getHeight();
+	//	}
+	//	Window(0, used_h - (tex_bar_mid.getHeight() - available_y), (float)tex_bar_mid.getWidth(), (float)tex_bar_mid.getHeight(), tex_bar_mid);
+	}
+
+	// Lower 
+//	Window((float)0, (float)used_h - 2, (float)tex_bar_end.getWidth(), (float)tex_bar_end.getHeight(), tex_bar_end);
+//	Window((float)0, (float)used_h + available_y - 2, (float)tex_bar_end.getWidth(), (float)tex_bar_end.getHeight(), tex_bar_end);
+	Window((float)0, (float)used_h - 1, (float)tex_bar_end.getWidth(), (float)tex_bar_end.getHeight(), tex_bar_end);
 }
 
 void ScrollBar::setValue(int value) {

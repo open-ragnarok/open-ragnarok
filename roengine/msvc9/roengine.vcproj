@@ -794,6 +794,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\chatlog.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\checkbox.cc"
 				>
 			</File>
@@ -826,6 +830,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gui\inventorywindow.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\gui\label.cc"
 				>
 			</File>
@@ -835,6 +843,10 @@
 			</File>
 			<File
 				RelativePath="..\gui\scrollbar.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gui\slider.cc"
 				>
 			</File>
 			<File
@@ -866,6 +878,10 @@
 				</File>
 				<File
 					RelativePath="..\include\roengine\gui\buttonbar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\gui\chatlog.h"
 					>
 				</File>
 				<File
@@ -901,6 +917,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\include\roengine\gui\inventorywindow.h"
+					>
+				</File>
+				<File
 					RelativePath="..\include\roengine\gui\label.h"
 					>
 				</File>
@@ -918,6 +938,10 @@
 				</File>
 				<File
 					RelativePath="..\include\roengine\gui\singleton.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\roengine\gui\slider.h"
 					>
 				</File>
 				<File

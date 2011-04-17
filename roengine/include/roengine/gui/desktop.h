@@ -25,6 +25,8 @@ public:
 	Desktop();
 	Desktop(const std::string&, CacheManager&);
 	
+	virtual Type getType() { return typeDesktop; }
+
 	bool HandleEvent(const Event&);
 
 	bool Load(const std::string&, CacheManager&);

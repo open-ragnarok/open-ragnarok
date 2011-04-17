@@ -75,7 +75,7 @@ void ROEngine::ReadIni(const std::string& name) {
 			file += ptr[0];
 			ptr++;
 		}
-		std::cout << "CMD: " << cmd << "\tFILE: " << file << std::endl;
+		std::cout << "CMD: " << cmd << "  FILE: " << file << std::endl;
 
 		if (cmd == "grf") {
 			if (!m_filemanager.OpenGRF(file))
@@ -310,7 +310,10 @@ void ROEngine::DrawMap() {
 		}
 	}
 
-	Pickup(mousex, mousey);////
+	GUI::Element* e = m_gui.getElementMousePos(mousex, mousey);
+	if (e != NULL && e->getType() == GUI::Element::typeDesktop) {
+		Pickup(mousex, mousey);////
+	}
 
 	std::map<unsigned int, Actor*>::iterator itr;
 	itr = m_actors.begin();
@@ -429,35 +432,38 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 			return(true);
 		}
 		else if (buttons == 1) { // SDL_BUTTON_LEFT
-			m_moving = true;
-			if (m_map != NULL) {
-				int mapx, mapy;
-				mapx = m_map->getMouseMapX();
-				mapy = m_map->getMouseMapY();
-
-				if (m_overactor != NULL) {
-					if (m_overactor->typeID == 45) {
-						// Yeah, yeah... We click on the portal and move to it.
-						// The server handles the warp by walking into the portal location
-						// Kudos to FlavioJS.
-						clickPortal(mapx, mapy, (NpcObj*)m_overactor);
-						clickMap(mapx, mapy);
-					}
-					else {
-						switch(m_overactor->getType()) {
-							case Actor::NpcType:
-								clickNpc(mapx, mapy, (NpcObj*)m_overactor);
-								break;
-							case Actor::MobType:
-								clickMob(mapx, mapy, (MobObj*)m_overactor);
-								break;
-							default:
-								printf("Unhandled actor click. Type %d\n", m_overactor->typeID);
+			GUI::Element* e = m_gui.getElementMousePos(mousex, mousey);
+			if (e != NULL && e->getType() == GUI::Element::typeDesktop) {
+				m_moving = true;
+				if (m_map != NULL) {
+					int mapx, mapy;
+					mapx = m_map->getMouseMapX();
+					mapy = m_map->getMouseMapY();
+	
+					if (m_overactor != NULL) {
+						if (m_overactor->typeID == 45) {
+							// Yeah, yeah... We click on the portal and move to it.
+							// The server handles the warp by walking into the portal location
+							// Kudos to FlavioJS.
+							clickPortal(mapx, mapy, (NpcObj*)m_overactor);
+							clickMap(mapx, mapy);
+						}
+						else {
+							switch(m_overactor->getType()) {
+								case Actor::NpcType:
+									clickNpc(mapx, mapy, (NpcObj*)m_overactor);
+									break;
+								case Actor::MobType:
+									clickMob(mapx, mapy, (MobObj*)m_overactor);
+									break;
+								default:
+									printf("Unhandled actor click. Type %d\n", m_overactor->typeID);
+							}
 						}
 					}
-				}
-				else {
-					clickMap(mapx, mapy);
+					else {
+						clickMap(mapx, mapy);
+					}
 				}
 			}
 		}
@@ -610,12 +616,14 @@ void ROEngine::Pickup(int x, int y) {
 void ROEngine::ProcessMouse(int xless, int yless){
 	//Change the cursor sprite every 100ms
 
+	GUI::Element* e = m_gui.getElementMousePos(mousex, mousey);
 	int action = 0;
 	int maxspr;
 	if (m_rotating) {
 		action = 4;
 	}
 	else if (m_overactor != NULL) {
+		if (e != NULL && e->getType() == GUI::Element::typeDesktop) {
 		// TODO: Check if Another player
 		if (m_npc_names.find(m_overactor->typeID) != m_npc_names.end()) {
 			action = 1; // npc
@@ -626,9 +634,9 @@ void ROEngine::ProcessMouse(int xless, int yless){
 			action = 5; // attack
 		}
 	}
+	}
 //	else
 //		m_cursorSprite = 0;
-	GUI::Element* e = m_gui.getElementMousePos(mousex, mousey);
 	if (e != NULL && e->getType() == GUI::Element::typeButton) {
 		action = 2;
 	}

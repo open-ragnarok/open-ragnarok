@@ -14,7 +14,7 @@ ButtonBar::ButtonBar(Element* parent, CacheManager& cache) : Element(parent) {
 	m_arrow_begin = false;
 	m_mouseIn = false;
 
-	CheckMinimumSize();
+//	CheckMinimumSize();
 }
 
 ButtonBar::ButtonBar(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
@@ -57,7 +57,7 @@ void ButtonBar::CheckMinimumSize() {
 }
 
 void ButtonBar::Draw(unsigned int delay) {
-	CheckMinimumSize();
+//	CheckMinimumSize();
 
 	float x = 0;
 	float y = 0;

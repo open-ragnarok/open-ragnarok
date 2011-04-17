@@ -20,6 +20,9 @@
 #include "checkbox.h"
 #include "sysbox.h"
 #include "hpspbar.h"
+#include "chatlog.h"
+#include "inventorywindow.h"
+#include "slider.h"
 
 // Other stuff
 #include "singleton.h"

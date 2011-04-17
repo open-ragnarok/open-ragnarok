@@ -542,6 +542,15 @@ Element* Element::loadXml(Element* parent, const TiXmlElement* node, CacheManage
 	else if (nodetype == "sysbox") {
 		ret = new GUI::SysBox(parent, node, cache);
 	}
+	else if (nodetype == "chatlog") {
+		ret = new GUI::ChatLog(parent, node, cache);
+	}
+	else if (nodetype == "inventorywindow") {
+		ret = new GUI::InventoryWindow(parent, node, cache);
+	}
+	else if (nodetype == "slider") {
+		ret = new GUI::Slider(parent, node, cache);
+	}
 	else {
 		// Default
 		ret = new Element(parent, node, cache);

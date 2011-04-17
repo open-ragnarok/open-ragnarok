@@ -68,6 +68,8 @@ protected:
 
 	bool m_quit;
 
+	bool m_bgmEnabled;
+
 	virtual void HandleKeyboard();
 	virtual void BeforeRun();
 	virtual void AfterRun();

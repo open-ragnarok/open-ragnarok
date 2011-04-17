@@ -66,7 +66,7 @@ void CheckBox::Draw(unsigned int delay) {
 }
 
 void CheckBox::setChecked(bool checked) {
-	m_checked = !checked;
+	m_checked = checked;
 }
 
 bool CheckBox::isChecked() const {

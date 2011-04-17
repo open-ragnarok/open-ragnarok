@@ -3,6 +3,7 @@
 #define __GUI_LIST_H
 
 #include "element.h"
+#include "roengine/gui/scrollbar.h"
 
 namespace GUI {
 	class List : public Element {
@@ -17,6 +18,8 @@ namespace GUI {
 		bool actived;
 
 		// virtual bool ParseXmlAttr(const TiXmlAttribute*, TextureManager&, FileManager&);
+	
+		ScrollBar *scrollbar;
 	public:
 		List(Element* parent, const TiXmlElement*, CacheManager&);
 
