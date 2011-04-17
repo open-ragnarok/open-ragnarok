@@ -8,6 +8,7 @@ rogl::ActGL* act_test = NULL;
 
 OpenRO::OpenRO() : ROEngine() {
 	ReadIni("data.ini");
+	ReadNameTables();
 	m_state = ST_Login;
 	//m_showui = true;
 
@@ -199,6 +200,7 @@ void OpenRO::ProcessNetwork() {
 			HANDLEPKT(ItemGained, true);
 			HANDLEPKT(ItemLost, true);
 			HANDLEPKT(InventoryItems, true);
+			HANDLEPKT(InventoryItemsStackable, true);
 			HANDLEPKT(HpUpdateParty, true);
 			HANDLEPKT(OtherSpeech, false);
 			HANDLEPKT(PlayerEquip, false);
@@ -733,7 +735,28 @@ HNDL_IMPL(ItemLost) {
 }
 
 HNDL_IMPL(InventoryItems) {
+	_log(OPENRO__DEBUG, "Received %d equipment items in inventory",pkt->getItemCount());
+	for (int i = 0; i < pkt->getItemCount(); i++) {
+		InventoryItem *item = pkt->getItem(i);
+		_log(OPENRO__DEBUG, "Item id:%d index:%d type:%d type_equip:%d equipped:%d identified:%d", item->id, item->index, item->type, item->type_equip, item->equipped, item->identified);
+		if (item->equipped > 0) {
+			switch (item->equipped) {
+			case 2:
+				break;
+			case 256:
+				me.setHelm(*this, m_itemres_names[item->id].c_str());
+				break;
+			}
+		}
+	}
+}
+
+HNDL_IMPL(InventoryItemsStackable) {
 	_log(OPENRO__DEBUG, "Received %d items in inventory",pkt->getItemCount());
+	for (int i = 0; i < pkt->getItemCount(); i++) {
+		InventoryItem *item = pkt->getItem(i);
+		_log(OPENRO__DEBUG, "Item id:%d index:%d type:%d amount:%d identified:%d", item->id, item->index, item->type, item->amount, item->identified);
+	}
 }
 
 HNDL_IMPL(ActorDisplay) {
@@ -772,6 +795,7 @@ HNDL_IMPL(OtherSpeech) {
 
 HNDL_IMPL(PlayerEquip) {
 	_log(OPENRO__DEBUG, "Player %d put %d in %d (left hand %d)", pkt->getPlayer(), pkt->getID1(), pkt->getType(), pkt->getID2());
+	me.setWeapon(*this, pkt->getID1(), true);
 }
 
 HNDL_IMPL(GmBroad) {

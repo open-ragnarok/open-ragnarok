@@ -122,11 +122,12 @@ protected:
 	std::map<unsigned short, std::string> m_mob_names;
 
 	std::map<std::string, std::string> m_mp3_names;
-	std::map<unsigned short, std::string> m_itemresource_names;
+	std::map<unsigned short, std::string> m_itemres_names;
 	std::map<unsigned short, std::string> m_item_names;
 	std::map<unsigned short, std::string> m_itemdesc_names;
 	std::map<std::string, std::string> m_map_names;
 
+	void ReadNameTables();
 	bool ReadNameTable(const char* fn, std::map<unsigned short, std::string>&);
 
 public:

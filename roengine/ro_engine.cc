@@ -138,6 +138,13 @@ void ROEngine::ReadIni(const std::string& name) {
 		}
 	}
 
+}
+
+void ROEngine::ReadNameTables() {
+	ReadNameTable("idnum2itemresnametable.txt", m_itemres_names);
+	ReadNameTable("idnum2itemdisplaynametable.txt", m_item_names);
+//	ReadNameTable("idnum2itemdesctable.txt", m_itemdesc_names);
+
 	ReadNameTable("npclist.txt", m_npc_names);
 	ReadNameTable("joblist.txt", m_job_names);
 	ReadNameTable("homunculuslist.txt", m_homunculus_names);

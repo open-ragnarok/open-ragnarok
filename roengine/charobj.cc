@@ -16,8 +16,17 @@ void CharObj::setAction(unsigned short action) {
 	m_bodyact.setAction(action);
 	m_headact.setAction(action);
 
+	m_weaponrightact.setAction(action);
+	m_weaponrightlightact.setAction(action);
+
+	m_helmtopact.setAction(action);
+
 	m_bodyact.Play(!(m_act == 6 || m_act == 5));
 	m_headact.Play(!(m_act == 6 || m_act == 5));
+
+	m_weaponrightact.Play(!(m_act == 6 || m_act == 5));
+
+	m_helmtopact.Play(!(m_act == 6 || m_act == 5));
 
 }
 
@@ -51,6 +60,10 @@ void CharObj::Attack() {
 	m_headact.Play(false);
 	m_bodyact.Play(false);
 
+	m_weaponrightact.Play(false);
+	m_weaponrightlightact.Play(false);
+
+	m_helmtopact.Play(false);
 }
 
 void CharObj::Damage() {
@@ -176,6 +189,31 @@ void CharObj::Draw() {
 		else
 //			m_headact.Draw(m_tickdelay, (ro::CDir)dir, 0.1, !(m_act == 6 || m_act == 5));
 			m_headact.Draw(m_tickdelay, (ro::CDir)dir, 0.1);
+
+	// Weapon
+	if (m_weaponrightact.valid())
+		m_weaponrightact.Draw(m_tickdelay, (ro::CDir)dir, 0.11);
+	if (m_weaponrightlightact.valid())
+		m_weaponrightlightact.Draw(m_tickdelay, (ro::CDir)dir, 0.11);
+
+	// Helm
+	if (m_act == 0 || m_act == 2) { // TODO: Fix
+		if (m_helmtopact.valid())
+			m_helmtopact.Draw(0, (ro::CDir)dir, 0.11);
+		if (m_helmmidact.valid())
+			m_helmmidact.Draw(0, (ro::CDir)dir, 0.11);
+		if (m_helmbottomact.valid())
+			m_helmbottomact.Draw(0, (ro::CDir)dir, 0.11);
+	}
+	else {
+		if (m_helmtopact.valid())
+			m_helmtopact.Draw(m_tickdelay, (ro::CDir)dir, 0.11);
+		if (m_helmmidact.valid())
+			m_helmmidact.Draw(m_tickdelay, (ro::CDir)dir, 0.11);
+		if (m_helmbottomact.valid())
+			m_helmbottomact.Draw(m_tickdelay, (ro::CDir)dir, 0.11);
+	}
+
 	glTranslatef(0, 10, 0); // Moves our object to the proper place
 	if (m_emotion > -1)
 		m_emotionact.Draw(m_tickdelay, (ro::CDir)m_emotion, 0.2);
@@ -283,3 +321,171 @@ bool CharObj::open(CacheManager& cache, ro::CJob job, ro::CSex sex, int hair) {
 
 	return(true);
 }
+
+bool CharObj::setHelm(CacheManager& cache, const char *name) {
+	//Cache objects
+	ROObjectCache& objects = cache.getROObjects();
+	GLObjectCache& globjects = cache.getGLObjects();
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
+
+	std::string act_n, spr_n;
+
+	rogl::SprGL sprgl;
+
+	char buf[256];
+	// ========== Weapon
+	sprintf(buf, "sprite\\%s\\%s\\%s_%s", ro::EUC::accessories, ro::EUC::sex[m_sex], ro::EUC::sex[m_sex], name);
+//	if (!fm.fileExists(buf))
+//		sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::dagger);
+
+	// Setup filenames
+	act_n = buf;
+	spr_n = buf;
+	act_n += ".act";
+	spr_n += ".spr";
+
+	// Reads the ACT object
+	if (!objects.ReadACT(act_n, fm)) {
+		fprintf(stderr, "Error loading act file %s.\n", act_n.c_str());
+		return(false);
+	}
+
+	// Reads the SPR object
+	if (!cache.getSprGLObjects().exists(spr_n)) {
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm)) {
+			fprintf(stderr, "Error opening SPR file");
+			return(false);
+		}
+	}
+
+	sprgl = *cache.getSprGLObjects().get(spr_n);
+
+	// Creates an ActGL and registers it
+	m_helmtopact.setSpr(sprgl);
+	m_helmtopact.setAct((ro::ACT*)objects[act_n]);
+	m_helmtopact.setExt(&m_bodyact);
+}
+
+bool CharObj::setWeapon(CacheManager& cache, int weapon, bool right) {
+	//Cache objects
+	ROObjectCache& objects = cache.getROObjects();
+	GLObjectCache& globjects = cache.getGLObjects();
+	TextureManager& tm = cache.getTextureManager();
+	FileManager& fm = cache.getFileManager();
+
+	std::string act_n, spr_n;
+
+	rogl::SprGL sprgl;
+
+	char buf[256];
+	// ========== Weapon
+	sprintf(buf, "sprite\\%s\\%s\\%s_%s_%d", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], weapon);
+	act_n = buf;
+	act_n += ".act";
+	if (!fm.fileExists(act_n.c_str())) {
+		if (1101 <= weapon && weapon < 1150)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::sword);
+		else if (1151 <= weapon && weapon < 1200)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::sword);
+		else if (1200 <= weapon && weapon < 1250)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::dagger);
+		else if (1250 <= weapon && weapon < 1300)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::katar);
+		else if (1300 <= weapon && weapon < 1350)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::axe);
+		else if (1350 <= weapon && weapon < 1400)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::axe);
+		else if (1400 <= weapon && weapon < 1450)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::spear);
+		else if (1450 <= weapon && weapon < 1500)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::spear);
+		else if (1500 <= weapon && weapon < 1550)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::mace);
+		else if (1550 <= weapon && weapon < 1600)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::book);
+		else if (1600 <= weapon && weapon < 1650)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::staff);
+	//	else if (1650 <= weapon && weapon < 1700)
+	//		sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::staff);
+		else if (1700 <= weapon && weapon < 1750)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::bow);
+	//	else if (1750 <= weapon && weapon < 1800)
+	//		sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::arrow);
+		else if (1800 <= weapon && weapon < 1850)
+			sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::claw);
+	}
+	// Setup filenames
+	act_n = buf;
+	spr_n = buf;
+	act_n += ".act";
+	spr_n += ".spr";
+
+	// Reads the ACT object
+	if (!objects.ReadACT(act_n, fm)) {
+		fprintf(stderr, "Error loading act file %s.\n", act_n.c_str());
+		return(false);
+	}
+
+	// Reads the SPR object
+	if (!cache.getSprGLObjects().exists(spr_n)) {
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm)) {
+			fprintf(stderr, "Error opening SPR file");
+			return(false);
+		}
+	}
+
+	sprgl = *cache.getSprGLObjects().get(spr_n);
+
+	// Creates an ActGL and registers it
+	if (right) {
+		m_weaponrightact.setSpr(sprgl);
+		m_weaponrightact.setAct((ro::ACT*)objects[act_n]);
+	//	m_weaponrightact.setExt(&m_bodyact);
+	}
+	else {
+		m_weaponleftact.setSpr(sprgl);
+		m_weaponleftact.setAct((ro::ACT*)objects[act_n]);
+	//	m_weaponleftact.setExt(&m_bodyact);
+	}
+
+	// ========== Weapon's afterimage
+//	sprintf(buf, "sprite\\%s\\%s\\%s_%s_%s_%s", ro::EUC::humans, ro::EUC::classname[m_job], ro::EUC::classname[m_job], ro::EUC::sex[m_sex], ro::EUC::sword, ro::EUC::afterimage);
+	sprintf(buf, "%s_%s", buf, ro::EUC::afterimage);
+
+	// Setup filenames
+	act_n = buf;
+	spr_n = buf;
+	act_n += ".act";
+	spr_n += ".spr";
+
+	// Reads the ACT object
+	if (!objects.ReadACT(act_n, fm)) {
+		fprintf(stderr, "Error loading act file %s.\n", act_n.c_str());
+		return(false);
+	}
+
+	// Reads the SPR object
+	if (!cache.getSprGLObjects().exists(spr_n)) {
+		if (!cache.getSprGLObjects().Load(spr_n, objects, fm)) {
+			fprintf(stderr, "Error opening SPR file");
+			return(false);
+		}
+	}
+
+	sprgl = *cache.getSprGLObjects().get(spr_n);
+
+	// Creates an ActGL and registers it
+	if (right) {
+		m_weaponrightlightact.setSpr(sprgl);
+		m_weaponrightlightact.setAct((ro::ACT*)objects[act_n]);
+	//	m_weaponrightlightact.setExt(&m_bodyact);
+	}
+	else {
+	//	m_weaponleftlightact.setSpr(sprgl);
+	//	m_weaponleftlightact.setAct((ro::ACT*)objects[act_n]);
+	}
+
+	return(true);
+}
+

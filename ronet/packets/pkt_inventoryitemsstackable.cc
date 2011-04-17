@@ -69,8 +69,10 @@ bool pktInventoryItemsStackable::Decode(ucBuffer& buf) {
 		buf >> items[x].index;
 		buf >> items[x].id;
 		buf >> items[x].type;
-		buf.ignore(3); // 3 unknown bytes
+	//	buf.ignore(3); // 3 unknown bytes
+		buf >> items[x].identified;
 		buf >> items[x].amount;
+		buf.ignore(2); // 2 unknown bytes
 		buf.read((unsigned char*)items[x].cards, 8);
 		items[x].identified = 1;
 	}

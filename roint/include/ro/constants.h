@@ -2486,7 +2486,7 @@ ROINT_DLLAPI extern char monsters[];
 
 ROINT_DLLAPI extern char shields[];
 ROINT_DLLAPI extern char items[];
-ROINT_DLLAPI extern char accesories[];
+ROINT_DLLAPI extern char accessories[]; // Head accessories (Helm)
 ROINT_DLLAPI extern char effects[];
 
 ROINT_DLLAPI extern char water[];
@@ -2495,6 +2495,24 @@ ROINT_DLLAPI extern char water[];
 ROINT_DLLAPI extern char *sex[];
 ROINT_DLLAPI extern char female[];
 ROINT_DLLAPI extern char male[];
+
+// weapons
+ROINT_DLLAPI extern char dagger[];
+ROINT_DLLAPI extern char sword[];
+ROINT_DLLAPI extern char axe[];
+ROINT_DLLAPI extern char staff[];
+ROINT_DLLAPI extern char mace[];
+ROINT_DLLAPI extern char spear[];
+ROINT_DLLAPI extern char claw[];
+ROINT_DLLAPI extern char book[];
+ROINT_DLLAPI extern char katar[];
+ROINT_DLLAPI extern char bow[];
+ROINT_DLLAPI extern char instrument[];
+ROINT_DLLAPI extern char whip[];
+
+ROINT_DLLAPI extern char afterimage[];
+
+//ROINT_DLLAPI extern char arrow[];
 
 // classes
 /**

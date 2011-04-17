@@ -21,7 +21,7 @@ bool FileLoader::writeFile(const std::string& name, std::ostream& os) {
 bool GRFFileLoader::fileExists(const std::string& name) const {
 	std::string fn, aux = "data\\";
 	for (unsigned int i = 0; i < name.length(); i++)
-		if (name[i] > 'A' && name[i] < 'Z')
+		if (name[i] >= 'A' && name[i] <= 'Z')
 			fn += (name[i] - 'A' + 'a');
 		else
 			fn += name[i];
@@ -36,7 +36,7 @@ FileData GRFFileLoader::getFile(const std::string& name) {
 	std::stringstream ss;
 	std::string fn, aux = "data\\";
 	for (unsigned int i = 0; i < name.length(); i++)
-		if (name[i] > 'A' && name[i] < 'Z')
+		if (name[i] >= 'A' && name[i] <= 'Z')
 			fn += (name[i] - 'A' + 'a');
 		else
 			fn += name[i];

@@ -52,6 +52,7 @@ protected:
 	HNDL_DECL(ItemGained);
 	HNDL_DECL(ItemLost);
 	HNDL_DECL(InventoryItems);
+	HNDL_DECL(InventoryItemsStackable);
 	HNDL_DECL(HpUpdateParty);
 	HNDL_DECL(OtherSpeech);
 	HNDL_DECL(PlayerEquip);
