@@ -21,6 +21,7 @@
     <button name="stats_window/btnChat" focusable="false" x="207" y="94" texture="basic_interface\btn_comm_off.bmp" hover="basic_interface\btn_comm_on.bmp" />
     <button name="stats_window/btnFriend" focusable="false" x="243" y="94" texture="basic_interface\btn_friend_off.bmp" hover="basic_interface\btn_friend_on.bmp" />
     <hpspbar name="stats_window/hp" x="110" y="22" w="85" h="9" max="100" val="80" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
+    <hpspbar name="stats_window/hpred" visible="false" x="110" y="22" w="85" h="9" max="100" val="80" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzered_left.bmp" mid="basic_interface\gzered_mid.bmp" end="basic_interface\gzered_right.bmp" />
     <hpspbar name="stats_window/sp" x="110" y="43" w="85" h="9" max="100" val="40" texture="basic_interface\gze_bg.bmp" start="basic_interface\gzeblue_left.bmp" mid="basic_interface\gzeblue_mid.bmp" end="basic_interface\gzeblue_right.bmp" />
     <button name="stats_window/btnMinimize" texture="basic_interface\sys_mini_off.bmp" hover="basic_interface\sys_mini_on.bmp" x="267" y="4" />
     <button texture="basic_interface\sys_base_off.bmp" hover="basic_interface\sys_base_on.bmp" x="4" y="4" />
@@ -41,7 +42,7 @@
     <button name="quitwindow/btnReturnGame" focusable="false" x="30" y="97" texture="esc_02a.bmp" hover="esc_02b.bmp" click="esc_02c.bmp" />
   </window>
 
-  <window name="shortcutwindow" visible="false" texture="basic_interface\shortitem_bg.bmp" x="280" y="0" mw="280" mh="34">
+  <window name="shortcutwindow" visible="true" texture="basic_interface\shortitem_bg.bmp" x="280" y="0" mw="280" mh="34">
       <button name="shortcutwindow/btnClose" texture="basic_interface\sys_close_off.bmp" hover="basic_interface\sys_close_on.bmp" x="267" y="4" focusable="false" />
       <label name="shortcutwindow/lblNum" text="1" x="270" y="20" />
   </window>
@@ -92,7 +93,7 @@
     </window>
   </window>
   
-  <window name="optionwindow" visible="false" x="400" y="300" w="280" h="120" mx="5" mw="250" mh="15" >
+  <window name="optionwindow" visible="false" x="200" y="500" w="280" h="120" mx="5" mw="250" mh="15" >
     <window name="optionwindow/titlebar" visible="true" texture="basic_interface\titlebar_fix.bmp" >
       <label text="Option" shadow="true" x="17" y="4" />
       <button texture="basic_interface\sys_base_off.bmp" hover="basic_interface\sys_base_on.bmp" x="4" y="4" focusable="false" />
@@ -101,28 +102,51 @@
     </window>
     <window name="optionwindow/optionwindow" visible="true" x="0" y="17" w="280" h="103" >
       <window name="optionwindow/optionwindow0" visible="true" texture="basic_interface\optwin0_bg.bmp" x="0" y="0" >
+        <slider name="optionwindow/sliderBGM" visible="true" x="72" y="4" w="163" h="13" />
+        <checkbox name="optionwindow/btnBGM" x="237" y="6" texture="checkbox_0.bmp" active="checkbox_1.bmp" checked="true" />
+        <label text="on" x="248" y="6" />
+        <slider name="optionwindow/sliderSE" visible="true" x="72" y="23" w="163" h="13" />
+        <checkbox name="optionwindow/btnSE" x="237" y="25" texture="checkbox_0.bmp" active="checkbox_1.bmp" checked="true" />
+        <label text="on" x="248" y="25" />
+        <dropdownlist name="optionwindow/dropdownSkin" text="on" x="75" y="47" w="183" h="18" texture="basic_interface\txtbox_btn_a.bmp" hover="basic_interface\txtbox_btn_b.bmp" click="basic_interface\txtbox_btn_c.bmp" />
+        <checkbox name="optionwindow/btnOpaque" x="11" y="84" texture="checkbox_0.bmp" active="checkbox_1.bmp" />
+        <label text="opaque" x="22" y="84" />
+        <label text="snap" x="76" y="84" />
+        <checkbox name="optionwindow/btnAttack" x="112" y="84" texture="checkbox_0.bmp" active="checkbox_1.bmp" />
+        <label text="attack" x="123" y="84" />
+        <checkbox name="optionwindow/btnSkill" x="162" y="84" texture="checkbox_0.bmp" active="checkbox_1.bmp" />
+        <label text="skill" x="173" y="84" />
+        <checkbox name="optionwindow/btnItem" x="204" y="84" texture="checkbox_0.bmp" active="checkbox_1.bmp" />
+        <label text="item" x="215" y="84" />
       </window>
       <window name="optionwindow/optionwindow1" visible="false" texture="basic_interface\optwin1_bg.bmp" x="0" y="0" >
       </window>
     </window>
   </window>
 
-  <window name="itemswindow" visible="false" x="400" y="300" w="280" h="100" mx="5" mw="250" mh="15" >
+  <window name="itemswindow" visible="false" x="100" y="300" w="280" h="100" mx="5" mw="250" mh="15" >
     <window name="itemswindow/titlebar" visible="true" texture="basic_interface\titlebar_fix.bmp" >
       <label text="Inventory" shadow="true" x="17" y="4" />
       <button texture="basic_interface\sys_base_off.bmp" hover="basic_interface\sys_base_on.bmp" x="4" y="4" focusable="false" />
       <button name="itemswindow/btnMinimize" texture="basic_interface\sys_mini_off.bmp" hover="basic_interface\sys_mini_on.bmp" x="253" y="4" focusable="false" />
       <button name="itemswindow/btnClose" texture="basic_interface\sys_close_off.bmp" hover="basic_interface\sys_close_on.bmp" x="267" y="4" focusable="false" />
     </window>
-    <window name="itemswindow/itemswindow" visible="true" texture="basic_interface\tab_itm_01.bmp" x="0" y="17" >
+    <window name="itemswindow/itemswindow" visible="true" x="0" y="17" w="280" h="85" >
       <window name="itemswindow/itemswindow1" visible="true" texture="basic_interface\tab_itm_01.bmp" x="0" y="0" />
+      <button name="itemswindow/btnItem1" x="4" y="0" w="14" h="24" focusable="false" visible="true" />
       <window name="itemswindow/itemswindow2" visible="false" texture="basic_interface\tab_itm_02.bmp" x="0" y="0" />
+      <button name="itemswindow/btnItem2" x="4" y="24" w="14" h="24" focusable="false" visible="true" />
       <window name="itemswindow/itemswindow3" visible="false" texture="basic_interface\tab_itm_03.bmp" x="0" y="0" />
+      <button name="itemswindow/btnItem3" x="4" y="48" w="14" h="24" focusable="false" visible="true" />
+      <inventorywindow name="itemswindow/inventorywindow" visible="true" x="20" y="0" w="260" h="65" />
+      <buttonbar x="0" y="66" w="260" >
+        <button name="itemswindow/btnResize" texture="btn_resize.bmp" x="247" y="8" w="13" h="13" focusable="false" />
+      </buttonbar>
     </window>
   </window>
 
-  <window name="equipwindow" visible="false" x="400" y="300" w="280" h="147" mx="5" mw="250" mh="15" >
-    <window name="equipwindow" visible="true" texture="basic_interface\titlebar_fix.bmp" >
+  <window name="equipwindow" visible="false" x="400" y="100" w="280" h="147" mx="5" mw="250" mh="15" >
+    <window name="equipwindow/titlebar" visible="true" texture="basic_interface\titlebar_fix.bmp" >
       <label text="Equipment" shadow="true" x="17" y="4" />
       <button texture="basic_interface\sys_base_off.bmp" hover="basic_interface\sys_base_on.bmp" x="4" y="4" focusable="false" />
       <button name="equipwindow/btnMinimize" texture="basic_interface\sys_mini_off.bmp" hover="basic_interface\sys_mini_on.bmp" x="253" y="4" focusable="false" />
@@ -132,8 +156,8 @@
     </window>
   </window>
 
-  <window name="skillwindow" visible="false" x="400" y="300" w="280" h="248" mx="5" mw="250" mh="15" >
-    <window name="skillwindow" visible="true" texture="basic_interface\titlebar_fix.bmp" >
+  <window name="skillwindow" visible="false" x="600" y="500" w="280" h="248" mx="5" mw="250" mh="15" >
+    <window name="skillwindow/titlebar" visible="true" texture="basic_interface\titlebar_fix.bmp" >
       <label text="Skill Tree" x="17" y="4" />
       <button texture="basic_interface\sys_base_off.bmp" hover="basic_interface\sys_base_on.bmp" x="4" y="4" focusable="false" />
       <button name="skillwindow/btnMinimize" texture="basic_interface\sys_mini_off.bmp" hover="basic_interface\sys_mini_on.bmp" x="253" y="4" focusable="false" />
@@ -167,4 +191,17 @@
     <button name="minimap/btnPlus" texture="basic_interface\battle_option_a.bmp" x="-10" y="5" />
     <button name="minimap/btnLess" texture="basic_interface\wnd_mini_a.bmp" x="-10" y="15" />
   </window>
+  
+  <chatlog name="chatlog" visible="true" x="304" y="698" w="592" h="46" mw="600" mh="4" />
+  <window name="chatwindow" visible="true" x="300" y="744" w="600" h="24" mh="4" mw="600" texture="basic_interface\dialog_bg.bmp" >
+    <textinput name="chatwindow/input1" focusable="true" x="6" y="4" w="88" h="16" MaxLen="120" />
+    <textinput name="chatwindow/input2" focusable="true" x="110" y="4" w="460" h="16" MaxLen="120" />
+    <button name="chatwindow/btnChat" focusable="false" x="98" y="4" texture="basic_interface\dialog_btn0.bmp" hover="basic_interface\dialog_btn1.bmp" click="basic_interface\dialog_btn2.bmp" visible="true" />
+    <button name="chatwindow/btn1" focusable="false" x="573" y="8" texture="basic_interface\sys_base_off.bmp" hover="basic_interface\sys_base_off.bmp" click="basic_interface\sys_base_on.bmp" visible="true" />
+    <button name="chatwindow/btn2" focusable="false" x="587" y="8" texture="basic_interface\sys_base_off.bmp" hover="basic_interface\sys_base_off.bmp" click="basic_interface\sys_base_on.bmp" visible="true" />
+  </window>
+
+  <button name="btnBaseLevelup" x="289" y="500" texture="basic_interface\lv_up_off.bmp" click="basic_interface\lv_up_on.bmp" focusable="false" visible="false" />
+  <button name="btnSkillLevelup" x="0" y="500" texture="basic_interface\lv_up_off.bmp" click="basic_interface\lv_up_on.bmp" focusable="false" visible="false" />
+
 </desktop>
