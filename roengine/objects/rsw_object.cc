@@ -50,6 +50,16 @@ RswObject::~RswObject() {
 			m_cache.getGLObjects().remove(rswobj->name);
 		}
 	}
+
+	// Deletes lightmaps
+	std::map<unsigned short, unsigned int*>::iterator itr = lightmap_texmap.begin();
+	while (itr != lightmap_texmap.end()) {
+		unsigned int *texid = itr->second;
+		glDeleteTextures(2, texid);
+		delete [] texid;
+		itr = lightmap_texmap.erase(itr);
+	}
+	lightmap_texmap.clear();
 }
 
 const ro::RSW* RswObject::getRSW() const {
@@ -77,21 +87,13 @@ bool RswObject::loadTextures(CacheManager& cache) {
 	unsigned int i;
 	sdle::Texture tex;
 	std::string texname;
-	std::wstring texnamew;
-	const char *tmp;
 
 	TextureManager& tm = cache.getTextureManager();
 	FileManager& fm = cache.getFileManager();
 
 	for (i = 0; i < gnd->getTextureCount(); i++) {
 		texname = "texture\\";
-		//texname += gnd->getTexture(i);
-		tmp = gnd->getTexture(i);
-		//std::transform(texname.begin(), texname.end(), texname.begin(), tolower);
-		//std::transform(texnamew.begin(), texnamew.end(), texnamew.begin(), tolower);
-		//texname = texnamew.;
-		for (int j = 0; j < strlen(tmp); j++)
-			texname += tolower(tmp[j]);
+		texname += gnd->getTexture(i);
 		tex = tm.Register(fm, texname);
 		if (!tex.Valid()) {
 			fprintf(stderr, "Warning: Texture not found: %s\n", texname.c_str());
@@ -396,8 +398,9 @@ void RswObject::DrawSurface(const ro::GND::Surface& surface, const float* vertic
 
 //	static std::map<unsigned short, unsigned int*> texmap;
 	std::map<unsigned short, unsigned int*>::iterator itr = lightmap_texmap.find(surface.lightmapId);
-	unsigned int *m_texid = new unsigned int[2];
+	unsigned int *m_texid;
 	if (itr == lightmap_texmap.end()) {
+		m_texid = new unsigned int[2];
 		glGenTextures(2, m_texid);
 	//	lightmap_texmap.insert(std::pair<unsigned short, unsigned int*>(surface.lightmapId, m_texid));
 		lightmap_texmap[surface.lightmapId] = m_texid;
