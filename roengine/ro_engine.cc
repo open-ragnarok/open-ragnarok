@@ -512,9 +512,11 @@ bool ROEngine::evtMouseClick(const int& x, const int& y, const int& buttons) {
 							switch(m_overactor->getType()) {
 								case Actor::NpcType:
 									clickNpc(mapx, mapy, (NpcObj*)m_overactor);
+									m_moving = false;
 									break;
 								case Actor::MobType:
 									clickMob(mapx, mapy, (MobObj*)m_overactor);
+									m_moving = false;
 									break;
 								default:
 									printf("Unhandled actor click. Type %d\n", m_overactor->typeID);
