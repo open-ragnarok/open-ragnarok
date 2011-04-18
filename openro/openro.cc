@@ -141,9 +141,16 @@ void OpenRO::AfterDraw() {
 				m_map = NULL;
 			}
 
-			m_map = RswObject::open(*this, m_mapname);
+			char mapname[64];
+			if (m_mapres_names.find(m_mapname) != m_mapres_names.end() )
+				strcpy(mapname, m_mapres_names[m_mapname].c_str());
+			else
+				strcpy(mapname, m_mapname);
+
+
+			m_map = RswObject::open(*this, mapname);
 			if (m_map == NULL) {
-				_log(OPENRO__ERROR, "Error loading map %s!", m_mapname);
+				_log(OPENRO__ERROR, "Error loading map %s!", mapname);
 			}
 			std::string gnd_fn = m_map->getRSW()->getGndFile();
 			std::string aux;
@@ -172,6 +179,8 @@ void OpenRO::AfterDraw() {
 
 			// Place ourselves
 			me.setMap(m_map);
+
+			PlayBGM(m_mapname);
 
 			// Send message to the server that we're good to go.
 			m_network.MapLoaded();
@@ -257,6 +266,7 @@ void OpenRO::BeforeRun() {
 	ParseClientInfo();
 
 	InitDisplay(1024, 768, false);
+	InitSound();
 	GLenum err = glewInit();
     if (err != GLEW_OK)
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
@@ -295,6 +305,8 @@ void OpenRO::BeforeRun() {
 //	char *effect = "texture\\effect\\asum.str";
 //	getROObjects().ReadSTR(effect, getFileManager());
 //	m_str.open(*this, (ro::STR*)getROObjects().get(effect));
+
+	PlayBGM("bgm\\01.mp3");
 }
 
 void OpenRO::CreateCharWindow(int slot) {
@@ -458,14 +470,13 @@ void OpenRO::LoadMap(const char* name) {
 	char mapname[64];
 	strcpy(mapname, name);
 
-	int i = 0;
-	while (mapname[i] != 0) {
+	for (int i = 0; mapname[i] != 0; i++) {
 		if (mapname[i] == '.') {
 			mapname[i] = 0;
 			break;
 		}
-		i++;
 	}
+	sprintf(mapname, "%s.rsw", mapname);
 
 	// Clears all the actors
 	std::map<unsigned int, Actor*>::iterator itr = m_actors.begin();
@@ -486,6 +497,7 @@ void OpenRO::LoadMap(const char* name) {
 
 	m_maploaded = false;
 	m_drawmap = false;
+	StopBGM(true);
 }
 
 void OpenRO::Restart(unsigned char type) {
@@ -495,6 +507,12 @@ void OpenRO::Restart(unsigned char type) {
 
 void OpenRO::EnableBGM(bool enabled) {
 	m_bgmEnabled = enabled;
+	if (enabled) {
+		PlayBGM(m_mapname);
+	}
+	else {
+		StopBGM();
+	}
 }
 
 void OpenRO::EnableSE(bool enabled) {
@@ -1121,6 +1139,8 @@ HNDL_IMPL(RestartCharSelect) {
 		delete(m_map);
 		m_map = NULL;
 		strcpy(m_mapname, "");
+
+		StopBGM();
 	}
 
 	//If nothing selected
@@ -1143,6 +1163,8 @@ HNDL_IMPL(RestartCharSelect) {
 //	dskIngame->setEnabled(false);
 	dskChar->setEnabled(true);
 	m_gui.setDesktop(dskChar);
+
+	PlayBGM("bgm\\01.mp3");
 }
 
 HNDL_IMPL(StatusUpAck) {

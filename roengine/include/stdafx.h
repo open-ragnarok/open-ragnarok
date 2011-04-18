@@ -8,7 +8,7 @@
 #	define _CRT_SECURE_NO_WARNINGS
 #	include <windows.h>
 #	include <SDL.h>
-#	include <AL/alut.h>
+
 #	pragma warning(disable: 4251)
 #else
 #	include <SDL/SDL.h>
@@ -28,8 +28,11 @@
 //#	pragma comment(lib, "glu32.lib")
 #	pragma comment(lib, "glew32.lib")
 #	pragma comment(lib, "sdl.lib")
-#	pragma comment(lib, "OpenAL32.lib")
-#	pragma comment(lib, "alut.lib")
+#	ifdef DEBUG
+#		pragma comment(lib, "cAudio_d.lib")
+#	elif
+#		pragma comment(lib, "cAudio.lib")
+#	endif
 #endif
 
 #endif /* __STDAFX_H */

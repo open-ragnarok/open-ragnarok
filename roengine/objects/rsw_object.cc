@@ -120,17 +120,24 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 
 	// TODO: Delete active map (if any)
 
-	std::string rsw_fn(map);
+//	std::string rsw_fn(map);
 	
-	rsw_fn += ".rsw";
+//	rsw_fn += ".rsw";
 	// Load the rsw object
-	if (!cache.getROObjects().exists(rsw_fn)) {
+/*	if (!cache.getROObjects().exists(rsw_fn)) {
 		if (!cache.getROObjects().ReadRSW(rsw_fn.c_str(), cache.getFileManager())) {
 			fprintf(stderr, "Error loading RSW file %s\n", rsw_fn.c_str());
 			return(NULL);
 		}
 	}
-	rsw = (ro::RSW*)cache.getROObjects().get(rsw_fn);
+	rsw = (ro::RSW*)cache.getROObjects().get(rsw_fn);*/
+	if (!cache.getROObjects().exists(map)) {
+		if (!cache.getROObjects().ReadRSW(map, cache.getFileManager())) {
+			fprintf(stderr, "Error loading RSW file %s\n", map);
+			return(NULL);
+		}
+	}
+	rsw = (ro::RSW*)cache.getROObjects().get(map);
 
 	if (!cache.getROObjects().exists(rsw->getGndFile())) {
 		if (!cache.getROObjects().ReadGND(rsw->getGndFile(), cache.getFileManager())) {
@@ -195,13 +202,8 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 				fprintf(stderr, "Error loading Wave file %s.\n", fn);
 				continue;
 			}
-			// TODO: move to core of engine
-			static bool alinit = false;
-			if (!alinit){
-				alinit = true;
-				alutInit (NULL, NULL);
-			}
-			ALuint buffer, source;
+
+		/*	ALuint buffer, source;
 			buffer = alutCreateBufferFromFileImage(data.getBuffer(), data.size());
 			alGenSources (1, &source);
 			alSourcei (source, AL_BUFFER, buffer);
@@ -209,7 +211,7 @@ RswObject* RswObject::open(CacheManager& cache, const char* map) {
 		//	alSourcei(source, AL_GAIN, sound->vol);
 
 			alSourcei (source, AL_LOOPING, AL_TRUE);
-			alSourcePlay (source);
+			alSourcePlay (source);*/
 		}
 		else if (type == ro::RSW::EffectType) {
 		}

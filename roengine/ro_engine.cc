@@ -133,7 +133,8 @@ void ROEngine::ReadIni(const std::string& name) {
 			b[strlen(b) - 1] = 0;
 			//printf("%s => %s\n", a, b);
 			if (strcmp(a,b) != 0) {
-				m_filemanager.addName(a, b);
+			//	m_filemanager.addName(a, b);
+				m_mapres_names[a] = b;
 			}
 		}
 	}
@@ -141,6 +142,8 @@ void ROEngine::ReadIni(const std::string& name) {
 }
 
 void ROEngine::ReadNameTables() {
+	ReadNameTable("mp3nametable.txt", m_mp3_names);
+
 	ReadNameTable("idnum2itemresnametable.txt", m_itemres_names);
 	ReadNameTable("idnum2itemdisplaynametable.txt", m_item_names);
 //	ReadNameTable("idnum2itemdesctable.txt", m_itemdesc_names);
@@ -199,6 +202,54 @@ bool ROEngine::ReadNameTable(const char* fn, std::map<unsigned short, std::strin
 	return(true);
 }
 
+bool ROEngine::ReadNameTable(const char* fn, std::map<std::string, std::string>& list) {
+	if (!m_filemanager.fileExists(fn)) {
+		return(false);
+	}
+
+	list.clear();
+	FileData data = m_filemanager.getFile(fn);
+	char line[512];
+	char a[256], b[256];
+	unsigned int linepos;
+	unsigned int pos = 0;
+	char c;
+	while(pos < data.blobSize()) {
+		memset(line, 0, 512);
+		memset(a, 0, 256);
+		memset(b, 0, 256);
+		linepos = 0;
+		// Read the line
+		c = data[pos++];
+		while (pos < data.blobSize()) {
+			if (c == 13 || c == 0 || c == 10) {
+				if (linepos == 0) {
+					c = data[pos++];
+					continue;
+				}
+				break;
+			}
+			line[linepos++] = c;
+			c = data[pos++];
+		}
+		// Process the line
+		linepos = 0;
+		while (line[linepos] != '#' && line[linepos] != 0)
+			linepos++;
+		if (linepos >= strlen(line)) {
+			// Comments and stuff
+			continue;
+		}
+		strncpy(a, line, linepos);
+		strcpy(b, line + linepos + 1);
+		b[strlen(b) - 1] = 0;
+		if (strcmp(a,b) != 0) {
+			list[a] = b;
+		}
+	}
+
+	return(true);
+}
 
 ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 	for (int i = 0; i < 1024; i++)
@@ -216,6 +267,8 @@ ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
 	m_moving = false;
 	m_overactor = NULL;
 	m_drawmap = true;
+
+	m_bgm = NULL;
 }
 
 ROEngine::~ROEngine() {
@@ -306,7 +359,7 @@ void ROEngine::DrawMap() {
 
 		Vector3f &pos = me.getPos();
 //		alListener3f(AL_POSITION, me.getPositionX(), me.getPositionY(), 0);
-		alListener3f(AL_POSITION, m_map->getWorldX(), m_map->getWorldY(), m_map->getWorldZ());
+//		alListener3f(AL_POSITION, m_map->getWorldX(), m_map->getWorldY(), m_map->getWorldZ());
 		if (m_moving) {
 			static int mouseX = 0, mouseY = 0;
 			if (mouseX != m_map->getMouseMapX() || mouseY != m_map->getMouseMapY()) {
@@ -704,3 +757,60 @@ void ROEngine::clickNpc(int x, int y, NpcObj* npc) {
 	printf("Clicked NPC 0x%08x at %d,%d\n", npc->id, x, y);
 }
 
+void ROEngine::InitSound() {
+	m_audioManager = cAudio::createAudioManager(true);
+}
+
+void ROEngine::ReleaseSound() {
+	m_audioManager->shutDown();
+	cAudio::destroyAudioManager(m_audioManager);
+}
+
+void ROEngine::PlayBGM(const char *filename) {
+//	m_bgmname = filename;
+
+	if (!m_bgmEnabled)
+		return;
+
+	cAudio::IAudioSource *tmp;
+	char s[256];
+
+	if (m_mp3_names.find(filename) != m_mp3_names.end())
+		sprintf(s, "%s", m_mp3_names[filename].c_str());
+	else
+		sprintf(s, "%s", filename);
+
+	if (m_bgm != NULL) {
+		tmp = m_audioManager->getSoundByName(s);
+		if (tmp == NULL) {
+			StopBGM();
+		}
+		else {
+			m_bgm->play2d(true);
+		}
+	}
+
+	if (m_bgm == NULL) {
+		m_bgm = m_audioManager->create(s, s, false);
+
+		if (m_bgm)
+		{
+			m_bgm->setVolume(0.3f);
+			m_bgm->play2d(true);
+		}
+	}
+}
+
+void ROEngine::StopBGM(bool pause) {
+	if (!m_bgm)
+		return;
+
+	if (pause) {
+		m_bgm->pause();
+	}
+	else {
+		m_bgm->stop();
+		m_audioManager->release(m_bgm);
+		m_bgm = NULL;
+	}
+}

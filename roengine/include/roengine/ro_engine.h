@@ -2,6 +2,8 @@
 #ifndef __RO_ENGINE_H
 #define __RO_ENGINE_H
 
+#include "cAudio.h"
+
 #include "sdle/sdl_engine.h"
 #include "ro_object_cache.h"
 #include "gl_object_cache.h"
@@ -68,6 +70,8 @@ protected:
 
 	bool m_quit;
 
+	cAudio::IAudioManager *m_audioManager;
+	cAudio::IAudioSource *m_bgm;
 	bool m_bgmEnabled;
 
 	virtual void HandleKeyboard();
@@ -125,10 +129,12 @@ protected:
 	std::map<unsigned short, std::string> m_itemres_names;
 	std::map<unsigned short, std::string> m_item_names;
 	std::map<unsigned short, std::string> m_itemdesc_names;
+	std::map<std::string, std::string> m_mapres_names;
 	std::map<std::string, std::string> m_map_names;
 
 	void ReadNameTables();
 	bool ReadNameTable(const char* fn, std::map<unsigned short, std::string>&);
+	bool ReadNameTable(const char* fn, std::map<std::string, std::string>&);
 
 public:
 	ROEngine(const std::string& name = "");
@@ -179,6 +185,11 @@ public:
 	void DrawMap();
 
 	void Pickup(int x, int y);
+
+	void InitSound();
+	void ReleaseSound();
+	void PlayBGM(const char *filename);
+	void StopBGM(bool pause = false);
 
 };
 
