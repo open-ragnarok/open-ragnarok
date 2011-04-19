@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logsys", "..\logsys\msvc\lo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtarga", "libtarga\libtarga.vcproj", "{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GRF Explorer", "..\grf_explorer\msvc\GRFExplorer.vcproj", "{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

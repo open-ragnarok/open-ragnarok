@@ -181,6 +181,18 @@ void decode(unsigned char* buf, size_t len, int cycle) {
 	}
 }
 
+void decodeFilename(unsigned char* buf, size_t len)
+{
+	size_t lop;
+	for(lop=0; lop*8<len; lop++, buf+=8)
+	{
+		NibbleSwap(buf, 8);
+		BitConvert(buf,BitSwapTable1);
+		BitConvert4(buf);
+		BitConvert(buf,BitSwapTable2);
+	}
+}
+
 } /* namespace DES */
 
 GRF::GRF() {
@@ -202,6 +214,7 @@ bool GRF::open(const std::string& fn) {
 	m_fp.open(fn.c_str(), std::ios_base::binary);
 	if (!m_fp.is_open()) {
 		_log(ROINT__ERROR, "Error opening GRF file %s", fn.c_str());
+		m_fp.clear(); // Clear bad flag bit
 		return(false);
 	}
 
@@ -216,6 +229,20 @@ bool GRF::open(const std::string& fn) {
 		return(false);
 	}
 
+	std::stringstream ss;
+	if ((m_header.version & 0xFF00) == 0x0100) {
+		size_t cur = m_fp.tellg();
+		size_t fileSize = (size_t)m_fp.seekg(0, std::ios::end).tellg();
+		m_fp.seekg(cur, std::ios::beg);
+		int size = fileSize - cur;
+		unsigned char *body;
+		body = new unsigned char[size];
+		m_fp.read((char*)body, size);
+		ss.write((char*)body, size);
+		delete[] body;
+		m_items = new FileTableItem_Ver1[m_filecount];
+	}
+	else if ((m_header.version & 0xFF00) == 0x0200) {
 	m_fp.read((char*)&m_filetableheader, sizeof(unsigned int) * 2);
 	m_filetableheader.body = new unsigned char[m_filetableheader.compressedLength];
 	m_filetableheader.uncompressedBody = new unsigned char[m_filetableheader.uncompressedLength];
@@ -231,10 +258,6 @@ bool GRF::open(const std::string& fn) {
 		_log(ROINT__WARNING, "GRF Warning: Uncompressed lengths for FileTableHeader differ! (%d/%d)", m_filetableheader.uncompressedLength, ul);
 	}
 
-	// Read files
-	int i;
-	m_items = new FileTableItem[m_filecount];
-	std::stringstream ss;
 	ss.write((char*)m_filetableheader.uncompressedBody, m_filetableheader.uncompressedLength);
 
 	// Delete unneeded data
@@ -243,7 +266,10 @@ bool GRF::open(const std::string& fn) {
 	delete[] m_filetableheader.uncompressedBody;
 	m_filetableheader.uncompressedBody = NULL;
 
+		m_items = new FileTableItem_Ver2[m_filecount];
+	}
 
+	int i;
 	for (i = 0; i < m_filecount; i++)
 		m_items[i].readStream(ss);
 
@@ -287,7 +313,7 @@ bool GRF::write(const std::string& s, std::ostream& out) {
 
 			m_fp.seekg(m_items[i].offset + 46);
 			m_fp.read((char*)body, m_items[i].compressedLengthAligned);
-			if ((m_items[i].flags == 3) || (m_items[i].flags == 5)) {
+			if ((m_items[i].flags == 3) || (m_items[i].flags == 5) || ((m_header.version & 0xFF00) == 0x0100)) {
 				// DES encoded. Let's decode!
 				DES::decode(body, m_items[i].compressedLengthAligned, m_items[i].cycle);
 			}
@@ -330,6 +356,16 @@ bool GRF::write(const std::string& s, std::ostream& out) {
 }
 
 bool GRF::save(const std::string& s, const std::string& filename) {
+	if (!m_opened)
+		return(false);
+
+	std::ofstream out(filename.c_str(), std::ios_base::out | std::ios_base::binary);
+	bool r = write(s, out);
+	out.close();
+	return(r);
+}
+
+bool GRF::save(const std::string& s, const std::wstring& filename) {
 	if (!m_opened)
 		return(false);
 
@@ -402,7 +438,63 @@ GRF::FileTableItem::~FileTableItem() {
 		delete[] filename;
 }
 
-bool GRF::FileTableItem::readStream(std::istream& ss) {
+bool GRF::FileTableItem_Ver1::readStream(std::istream& ss) {
+	char buf[256];
+	int idx;
+
+	unsigned int len;
+	ss.read((char*)&len, sizeof(len));
+	ss.seekg(2, std::ios::cur);
+	ss.read(buf, len-6);
+	DES::decodeFilename((unsigned char*)&buf[0], len);
+	idx = len;
+
+	cycle = 0;
+
+	buf[idx] = 0;
+	filename = new char[strlen(buf) + 1];
+	strcpy(filename, buf);
+
+	unsigned int len1, len2, len3;
+
+	ss.seekg(4, std::ios::cur);
+
+	ss.read((char*)&len1, sizeof(unsigned int));
+	ss.read((char*)&len2, sizeof(unsigned int));
+	ss.read((char*)&len3, sizeof(unsigned int));
+	compressedLength = len1 - len3 - 0x2CB;
+	compressedLengthAligned = len2 - 0x92CB;
+	uncompressedLength = len3;
+	ss.read(&flags, 1);
+	ss.read((char*)&offset, sizeof(unsigned int));
+
+	// Setup for decryption
+	static const char *suffix[] = {".act", ".gat", ".gnd", ".str"};
+	bool a = true;
+
+	if (flags == 0) {
+		flags = 2;
+	}
+	else {
+		for (int i=0; i<4; i++) {
+			if (strnicmp(strrchr(filename, '.'), suffix[i], 4) == 0) {
+				a = false;
+				break;
+			}
+		}
+		if (a) {
+			int lop;
+			int srccount;
+			int srclen = compressedLength;
+			for (lop = 10, srccount = 1; srclen >= lop; lop = lop * 10, srccount++);
+			cycle = srccount;
+		}
+	}
+
+	return(true);
+}
+
+bool GRF::FileTableItem_Ver2::readStream(std::istream& ss) {
 	char buf[256];
 	int idx;
 	char c;

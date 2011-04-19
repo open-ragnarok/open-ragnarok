@@ -185,7 +185,7 @@
 				Optimization="3"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)\zlib123\&quot;;&quot;$(ProjectDir)..\include\&quot;;&quot;$(SolutionDir)\..\logsys\include\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"

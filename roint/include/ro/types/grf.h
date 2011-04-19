@@ -61,13 +61,15 @@ public:
 	};
 #pragma pack(pop)
 
+	class FileTableItem;
+
 	/** Presents information on each file inside of the GRF */
 	class ROINT_DLLAPI FileTableItem {
 	public:
 		FileTableItem();
 		FileTableItem(const FileTableItem&);
 		~FileTableItem();
-		bool readStream(std::istream& ss);
+		virtual bool readStream(std::istream& ss) = 0;
 
 		FileTableItem& operator = (const FileTableItem&);
 
@@ -90,6 +92,16 @@ public:
 		char flags;
 		int offset;
 		int cycle; // for DES Decoding purposes
+	};
+
+	class ROINT_DLLAPI FileTableItem_Ver1 : public FileTableItem {
+	public:
+		virtual bool readStream(std::istream& ss);
+	};
+
+	class ROINT_DLLAPI FileTableItem_Ver2 : public FileTableItem {
+	public:
+		virtual bool readStream(std::istream& ss);
 	};
 
 protected:
@@ -119,6 +131,7 @@ public:
 
 	/** Saves the file f into the file filename */
 	bool save(const std::string& f, const std::string& filename);
+	bool save(const std::string& f, const std::wstring& filename);
 
 	bool fileExists(const std::string& fn) const;
 
