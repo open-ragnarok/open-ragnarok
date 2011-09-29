@@ -25,15 +25,7 @@
 #ifndef __STDAFX_H
 #define __STDAFX_H
 
-#ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
-#endif
-
 #define RONET_INTERNAL
-
-#ifdef _MSC_VER
-#	define USE_LOGSYS
-#endif
 
 #include "ronet/packet_vector.h"
 
@@ -57,18 +49,7 @@
 	#define SOCKET_ERROR -1
 #endif
 
-#ifdef _MSC_VER
-#	pragma comment(lib, "wsock32.lib")
-#endif
-
 #include "log.h"
-
-#ifdef USE_LOGSYS
-#	include "logsys/logsys.h"
-#	ifdef _MSC_VER
-#		pragma comment(lib, "logsys.lib")
-#	endif
-#endif
 
 
 #endif /* __STDAFX_H */

@@ -28,6 +28,7 @@
 #include "ronet_import.h"
 
 #include <iostream>
+#include <string.h>// memcpy,memmove
 
 namespace ronet {
 	template <typename T, int _StorSize = 2048>

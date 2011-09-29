@@ -30,6 +30,7 @@
 #include "ronet/blob.h"
 #include "structures.h"
 #include "ronet/packet_ids.h"
+#include <stdio.h>// stderr
 
 namespace ronet {
 
