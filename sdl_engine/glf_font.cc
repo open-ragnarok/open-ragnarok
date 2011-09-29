@@ -7,8 +7,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 namespace sdle {
 /* Note from Sergio:

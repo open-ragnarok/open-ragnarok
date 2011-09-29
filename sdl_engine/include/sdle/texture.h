@@ -5,8 +5,8 @@
  *      Author: Sergio Moura
  */
 
-#ifndef TEXTURE_H_
-#define TEXTURE_H_
+#ifndef __SDLENGINE_TEXTURE_H
+#define __SDLENGINE_TEXTURE_H
 
 #include "sdle_import.h"
 #include "image.h"
@@ -96,4 +96,4 @@ public:
 };
 }
 
-#endif /* TEXTURE_H_ */
+#endif /* __SDLENGINE_TEXTURE_H */

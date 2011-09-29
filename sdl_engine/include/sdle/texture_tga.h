@@ -2,8 +2,8 @@
  * texture_tga.h
  *
  */
-#ifndef TEXTURE_TGA_H_
-#define TEXTURE_TGA_H_
+#ifndef __SDLENGINE_TEXTURE_TGA_H
+#define __SDLENGINE_TEXTURE_TGA_H
 
 #include "texture.h"
 
@@ -12,4 +12,4 @@ namespace sdle {
 SDLENGINE_DLLAPI Texture loadTGATexture(const unsigned char* buf, unsigned long buflen);
 }
 
-#endif /* TEXTURE_TGA_H_ */
+#endif /* __SDLENGINE_TEXTURE_TGA_H */

@@ -7,14 +7,8 @@
 #include "sdle/arial-8.glf.h"
 #include "sdle/arial-10.glf.h"
 
-#ifndef _MSC_VER
-#	include <SDL/SDL.h>
-#else
-#	include <SDL.h>
-#endif
+#include <SDL.h>
 #include <stdio.h>
-#include <gl/gl.h>
-#include <GL/glu.h>
 
 namespace sdle {
 bool SDLEngine::m_supportPot = false;

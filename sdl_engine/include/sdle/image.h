@@ -17,8 +17,8 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __IMAGE_H
-#define __IMAGE_H
+#ifndef __SDLENGINE_IMAGE_H
+#define __SDLENGINE_IMAGE_H
 
 #include "sdle_import.h"
 #include "blob.h"
@@ -53,4 +53,4 @@ public:
 };
 }
 
-#endif /*IMAGE_H_*/
+#endif /* __SDLENGINE_IMAGE_H */

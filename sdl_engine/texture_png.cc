@@ -24,7 +24,7 @@ Texture loadPngTexture(const char* filename) {
 
 	unsigned char* dataptr = data;
 	for (unsigned int i = 0; i < png.height; i++) {
-		png_read_row(png.png_ptr, (png_bytep)dataptr, png_bytep_NULL);
+		png_read_row(png.png_ptr, (png_bytep)dataptr, NULL);
 		dataptr += png.width * 4;
 	}
 
@@ -88,7 +88,7 @@ Texture loadPngTexture(const char* buf, unsigned int buflen) {
 		return(Texture()); //Do your own error recovery/handling here
 	}
 
-	png_set_read_fn(pngPtr,(voidp)&source, userReadData);
+	png_set_read_fn(pngPtr,(void*)(std::istream*)&source, userReadData);
 
     //Set the amount signature bytes we've already read:
     //We've defined PNGSIGSIZE as 8;
@@ -113,7 +113,7 @@ Texture loadPngTexture(const char* buf, unsigned int buflen) {
             break;
         case PNG_COLOR_TYPE_GRAY:
             if (bitdepth < 8)
-            png_set_gray_1_2_4_to_8(pngPtr);
+            png_set_expand_gray_1_2_4_to_8(pngPtr);
             break;
     }
 
@@ -132,7 +132,7 @@ Texture loadPngTexture(const char* buf, unsigned int buflen) {
 
 	unsigned char* dataptr = data;
 	for (unsigned int i = 0; i < imgHeight; i++) {
-		png_read_row(pngPtr, (png_bytep)dataptr, png_bytep_NULL);
+		png_read_row(pngPtr, (png_bytep)dataptr, NULL);
 		dataptr += imgWidth * 4;
 	}
 
@@ -200,13 +200,13 @@ PngLoader::PngLoader(const char* filename) {
 	info_ptr = png_create_info_struct(png_ptr);
 	if (info_ptr == NULL) {
 		fclose(fp);
-		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		return;
 	}
 	png_init_io(png_ptr, fp);
 	png_set_sig_bytes(png_ptr, sig_read);
 	png_read_info(png_ptr, info_ptr);
-	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, int_p_NULL, int_p_NULL);
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, NULL, NULL);
 
 	//ret->widthpot = getNextPower2(ret->width);
 	//ret->heightpot = getNextPower2(ret->height);
@@ -216,7 +216,7 @@ PngLoader::PngLoader(const char* filename) {
 	if (color_type == PNG_COLOR_TYPE_PALETTE)
 		png_set_palette_to_rgb(png_ptr);
 	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-		png_set_gray_1_2_4_to_8(png_ptr);
+		png_set_expand_gray_1_2_4_to_8(png_ptr);
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 		png_set_tRNS_to_alpha(png_ptr);
 	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
@@ -227,7 +227,7 @@ PngLoader::PngLoader(const char* filename) {
 PngLoader::~PngLoader() {
 	if (m_valid) {
 		png_read_end(png_ptr, info_ptr);
-		png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
 	}
 }

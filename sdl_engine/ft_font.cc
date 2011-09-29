@@ -393,11 +393,7 @@ float FTFont::getWidth(const char *str, ...) const {
     char buf[1024];
 
     va_start(args,str);
-#ifndef _MSC_VER
-	std::vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
-#else
 	vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
-#endif
     va_end(args);
 
 	float used_w = 0;

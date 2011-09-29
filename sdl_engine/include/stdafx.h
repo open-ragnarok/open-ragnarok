@@ -2,22 +2,11 @@
 #define __SDLENGINE_STDAFX_H
 
 #ifdef _MSC_VER // Using Microsoft Visual Studio
-#	define _CRT_SECURE_NO_WARNINGS // Disable secure warnings
 #	include <windows.h>
-#	pragma comment(lib, "sdl.lib")
-#	pragma comment(lib, "opengl32.lib")
-#	pragma comment(lib, "glu32.lib")
-#	pragma comment(lib, "freetype.lib")
-#	ifdef SDLENGINE_DLL
-#		pragma comment(lib, "zlib.dll.lib")
-#		pragma comment(lib, "libpng.dll.lib")
-#		pragma comment(lib, "libtarga.dll.lib")
-#	else
-#		pragma comment(lib, "zlib.lib")
-#		pragma comment(lib, "libpng.lib")
-#		pragma comment(lib, "libtarga.lib")
-#	endif
 #endif
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #define SDLENGINE_INTERNAL
 

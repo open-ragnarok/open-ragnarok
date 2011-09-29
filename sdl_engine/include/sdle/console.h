@@ -7,14 +7,10 @@
 
 #include "font.h"
 #include <vector>
+#include <string>
 
-#ifndef _MSC_VER
-#	include <SDL/SDL_keysym.h>
-#	include <SDL/SDL_events.h>
-#else
-#	include <SDL_keysym.h>
-#	include <SDL_events.h>
-#endif
+#include <SDL_keysym.h>
+#include <SDL_events.h>
 
 namespace sdle {
 

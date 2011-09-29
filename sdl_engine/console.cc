@@ -14,7 +14,7 @@ Console::Console() {
 	m_active = false;
 	m_activated = false;
 	m_linecount = 8;
-	m_font = (Font*)Font_Arial10;
+	m_font = (Font*)sdle::GLFFont::Arial10;
 	add("Console initialized...");
 }
 
@@ -36,7 +36,7 @@ bool Console::setFont(Font* f) {
 void Console::setVisible(bool v) {
 	m_active = v;
 	if (m_font == NULL)
-		m_font = (Font*)Font_Arial10;
+		m_font = (Font*)sdle::GLFFont::Arial10;
 
 	if (m_font == NULL)
 		m_active = false;

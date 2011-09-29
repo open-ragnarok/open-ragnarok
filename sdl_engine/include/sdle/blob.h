@@ -5,13 +5,15 @@
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-#ifndef __BLOB_H
-#define __BLOB_H
+#ifndef __SDLENGINE_BLOB_H
+#define __SDLENGINE_BLOB_H
 
 #include "sdle_import.h"
 
 #include <string>
 #include <cassert>
+#include <stdio.h>// stderr
+#include <string.h>// memcpy
 
 namespace sdle {
 /**
@@ -156,4 +158,4 @@ public:
 
 }
 
-#endif /* __BLOB_H */
+#endif /* _SDLENGINE_BLOB_H */

@@ -5,8 +5,8 @@
  *      Author: N0C2
  */
 
-#ifndef GUI_H_
-#define GUI_H_
+#ifndef __SDLENGINE_GUI_H
+#define __SDLENGINE_GUI_H
 
 #include "engine.h"
 
@@ -17,4 +17,4 @@ private:
 };
 }
 
-#endif /* GUI_H_ */
+#endif /* __SDLENGINE_GUI_H */

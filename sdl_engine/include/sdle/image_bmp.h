@@ -1,6 +1,6 @@
 /* $Id$ */
-#ifndef __IMAGE_BMP_H
-#define __IMAGE_BMP_H
+#ifndef __SDLENGINE_IMAGE_BMP_H
+#define __SDLENGINE_IMAGE_BMP_H
 
 #include "sdle_import.h"
 #include "image.h"
@@ -63,4 +63,4 @@ protected:
 };
 }
 
-#endif /* __IMAGE_BMP_H */
+#endif /* __SDLENGINE_IMAGE_BMP_H */

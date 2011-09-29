@@ -5,8 +5,8 @@
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-#ifndef TEXTURE_BMP_H_
-#define TEXTURE_BMP_H_
+#ifndef __SDLENGINE_TEXTURE_BMP_H
+#define __SDLENGINE_TEXTURE_BMP_H
 
 #include "texture.h"
 
@@ -15,4 +15,4 @@ namespace sdle {
 SDLENGINE_DLLAPI Texture loadBMPTexture(const char*);
 }
 
-#endif /* TEXTURE_BMP_H_ */
+#endif /* __SDLENGINE_TEXTURE_BMP_H */

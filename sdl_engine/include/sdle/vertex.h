@@ -6,8 +6,8 @@
  *    Revision: $Rev$
  */
 
-#ifndef VERTEX_H_
-#define VERTEX_H_
+#ifndef __SDLENGINE_VERTEX_H
+#define __SDLENGINE_VERTEX_H
 
 #include "sdle_import.h"
 
@@ -25,4 +25,4 @@ extern const Vertex Vertex_X, Vertex_Y, Vertex_Z, Vertex_ZERO;
 
 }
 
-#endif /* VERTEX_H_ */
+#endif /* __SDLENGINE_VERTEX_H */

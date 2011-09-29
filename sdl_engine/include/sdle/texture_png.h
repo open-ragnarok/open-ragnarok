@@ -5,8 +5,8 @@
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-#ifndef TEXTURE_PNG_H_
-#define TEXTURE_PNG_H_
+#ifndef __SDLENGINE_TEXTURE_PNG_H
+#define __SDLENGINE_TEXTURE_PNG_H
 
 #include "texture.h"
 #include <png.h>
@@ -42,4 +42,4 @@ SDLENGINE_DLLAPI Texture loadPngTexture(const char*);
 SDLENGINE_DLLAPI Texture loadPngTexture(const char* buf, unsigned int buflen);
 }
 
-#endif /* TEXTURE_PNG_H_ */
+#endif /* __SDLENGINE_TEXTURE_PNG_H */

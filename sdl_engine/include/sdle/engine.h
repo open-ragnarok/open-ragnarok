@@ -6,8 +6,8 @@
  *    Revision: $Rev$
  */
 
-#ifndef ENGINE_H_
-#define ENGINE_H_
+#ifndef __SDLENGINE_ENGINE_H
+#define __SDLENGINE_ENGINE_H
 
 #include "sdle_import.h"
 #include "sdl_engine.h"
@@ -36,4 +36,4 @@ public:
 }
 }
 
-#endif /* ENGINE_H_ */
+#endif /* __SDLENGINE_ENGINE_H */

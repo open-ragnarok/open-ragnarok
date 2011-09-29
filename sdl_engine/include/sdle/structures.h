@@ -4,8 +4,8 @@
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-#ifndef __SDLE_STRUCTURES_H
-#define __SDLE_STRUCTURES_H
+#ifndef __SDLENGINE_STRUCTURES_H
+#define __SDLENGINE_STRUCTURES_H
 
 struct Pos2D {
 	float x, y;
@@ -20,4 +20,4 @@ struct Rect {
 	struct Dimension dim;
 };
 
-#endif /* __SDLE_STRUCTURES_H */
+#endif /* __SDLENGINE_STRUCTURES_H */

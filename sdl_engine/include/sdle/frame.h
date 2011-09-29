@@ -5,8 +5,8 @@
  *      Author: N0C2
  */
 
-#ifndef FRAME_H_
-#define FRAME_H_
+#ifndef __SDLENGINE_FRAME_H
+#define __SDLENGINE_FRAME_H
 
 #include "sdle_import.h"
 
@@ -39,4 +39,4 @@ public:
 }
 }
 
-#endif /* FRAME_H_ */
+#endif /* __SDLENGINE_FRAME_H */

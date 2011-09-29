@@ -3,6 +3,9 @@
 #include "sdle/font.h"
 
 #include <stdexcept>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 
 namespace sdle {
 
@@ -26,11 +29,7 @@ void Font::drawText(float x, float y, const char *str, ...) const {
     char buf[1024];
 
     va_start(args,str);
-#ifndef _MSC_VER
-	std::vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
-#else
 	vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
-#endif
     va_end(args);
 
 	Rect r;
@@ -86,11 +85,7 @@ void Font::drawTextBox(float x, float y, float w, float h, const char *str, ...)
     char buf[1024];
 
     va_start(args,str);
-#ifndef _MSC_VER
-	std::vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
-#else
 	vsnprintf(buf, 1024, str, args);   // avoid buffer overflow
-#endif
     va_end(args);
 
 	Rect r;

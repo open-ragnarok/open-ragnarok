@@ -4,8 +4,8 @@
  *      Author: Sergio Moura
  *    Revision: $Rev$
  */
-#ifndef __SDL_ENGINE_H
-#define __SDL_ENGINE_H
+#ifndef __SDLENGINE_SDL_ENGINE_H
+#define __SDLENGINE_SDL_ENGINE_H
 
 #include "sdle_import.h"
 #include "sdle_settings.h"
@@ -15,15 +15,8 @@
 
 #include <string>
 
-#include <GL/gl.h>
-
-#ifndef _MSC_VER
-#	include <SDL/SDL_keysym.h>
-#	include <SDL/SDL_events.h>
-#else
-#	include <SDL_keysym.h>
-#	include <SDL_events.h>
-#endif
+#include <SDL_keysym.h>
+#include <SDL_events.h>
 
 #ifdef SDLENGINE_CONSOLE
 #	include "console.h"
@@ -190,4 +183,4 @@ public:
 
 }
 
-#endif
+#endif /* __SDLENGINE_SDL_ENGINE_H */
