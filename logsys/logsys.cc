@@ -36,7 +36,7 @@ LogSys* LogSys::GetSingleton() {
 }
 
 LogSys& LogSys::log(const char* data) {
-	printf(data);
+	printf("%s", data);
 	printf("\n");
 	return(*this);
 }
