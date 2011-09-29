@@ -4,6 +4,12 @@
 #include "sdle/ft_font.h"
 #include "rogl/actgl.h"
 
+#ifndef _MSC_VER
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
+
 rogl::ActGL* act_test = NULL;
 
 OpenRO::OpenRO() : ROEngine() {
@@ -279,8 +285,10 @@ void OpenRO::BeforeRun() {
 	if (data.getBuffer() == NULL || !lsans->openFromMemory(data.getBuffer(), data.blobSize(), 12)) {
 		fprintf(stderr, "Erorr loading font 'font\\lsans.ttf'\n");
 	}
-	m_gui.FontManager().add("lsans.ttf", lsans);
-	m_gui.setDefaultFont(lsans);
+	else {
+		m_gui.FontManager().add("lsans.ttf", lsans);
+		m_gui.setDefaultFont(lsans);
+	}
 
 	m_texturemanager.RegisterTGA(getFileManager(), "texture\\grid.tga");
 

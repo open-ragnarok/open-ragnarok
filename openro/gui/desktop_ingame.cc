@@ -409,7 +409,7 @@ void DesktopIngame::setCharName(const char* name) {
 void DesktopIngame::setStatus(unsigned short type, unsigned int value, bool bonus) {
 	char s[20] = "";
 	if (!bonus)
-		_itoa(value, s, 10);
+		sprintf(s, "%d", value);
 
 	switch(type) {
 		case ro::SP_STR:
@@ -557,7 +557,7 @@ void DesktopIngame::setStatus(unsigned short type, unsigned int value, bool bonu
 			lblCri->setText(s);
 			break;
 		case ro::SP_ASPD:
-			_itoa(200 - value / 10.0, s, 10);
+			sprintf(s, "%d", (int)(200 - value / 10.0));
 			lblAspd->setText(s);
 			break;
 		default:

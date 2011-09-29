@@ -4,18 +4,14 @@
 
 #include <stdio.h>
 
-#ifdef _MSC_VER
-#	include <SDL_main.h>
-#else
-#	include <SDL/SDL_main.h>
-#endif
+#include <SDL_main.h>
 
 #include "ronet/connection.h"
 
 #define OUTFN "output.txt"
 //#define REDIRECT_OUTPUT
 
-int main(int argc, char** argv) {
+int openro_main(int argc, char** argv) {
 #ifdef USE_LOGSYS
 	// Checkout logsys.h for more info.
 	struct LogSysInfo openro_logsys[] = {
@@ -46,5 +42,57 @@ int main(int argc, char** argv) {
 	fclose(stdout);
 #endif
 
+	return(0);
+}
+
+
+/////////////////////////////////////////////////////////////////////
+// replacement code for SDL_main
+
+#ifdef main
+#	undef main
+#endif
+
+/* SDL_Quit() shouldn't be used with atexit() directly because
+   calling conventions may differ... */
+static void cleanup(void)
+{
+	SDL_Quit();
+}
+
+int main(int argc, char** argv) {
+#ifdef _MSC_VER // SDL_main
+	/* Start up DDHELP.EXE before opening any files, so DDHELP doesn't
+	   keep them open.  This is a hack.. hopefully it will be fixed 
+	   someday.  DDHELP.EXE starts up the first time DDRAW.DLL is loaded.
+	 */
+	HINSTANCE handle = LoadLibrary(TEXT("DDRAW.DLL"));
+	if ( handle != NULL )
+		FreeLibrary(handle);
+#endif /* _MSC_VER */
+
+	/* Load SDL dynamic link library */
+	if ( SDL_Init(SDL_INIT_NOPARACHUTE) < 0 ) {
+		fprintf(stderr, "SDL init error: %s", SDL_GetError());
+		return(1);
+	}
+	atexit(cleanup);
+
+#ifdef _MSC_VER // SDL_main
+	/* Sam:
+	   We still need to pass in the application handle so that
+	   DirectInput will initialize properly when SDL_RegisterApp()
+	   is called later in the video initialization.
+	 */
+	SDL_SetModuleHandle(GetModuleHandle(NULL));
+#endif
+	
+	/* Run the application main() code */
+	int status = openro_main(argc, argv);
+
+	/* Exit cleanly, calling atexit() functions */
+	exit(status);
+
+	/* Hush little compiler, don't you cry... */
 	return(0);
 }
