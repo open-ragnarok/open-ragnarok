@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "rogl/sprgl.h"
-//#include <gl/gl.h>
 #include <math.h>
 
 

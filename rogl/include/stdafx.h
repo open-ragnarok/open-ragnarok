@@ -7,4 +7,6 @@
 #include "rogl/rogl_import.h"
 //#include "rogl/rogl.h"
 
+#include <GL/gl.h>
+
 #endif /* __STDAFX_H */

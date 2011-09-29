@@ -21,10 +21,6 @@
 #	endif
 #endif
 
-#ifdef ROGL_DLL
-#	define ROINT_DLL
-#endif
-
 #include "ro/ro.h"
 
 #endif /* __ROGL_IMPORT_H */

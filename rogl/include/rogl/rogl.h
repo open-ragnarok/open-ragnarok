@@ -4,10 +4,6 @@
 
 #include "rogl/rogl_import.h"
 
-#include <GL/glew.h>
-//#include <GL/gl.h>
-//#include <GL/glu.h>
-
 namespace rogl {
 	unsigned short ROGL_DLLAPI Version();
 }
