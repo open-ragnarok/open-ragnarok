@@ -97,7 +97,7 @@ bool ImageBMP::ReadFromStream(std::istream& input, bool flipvertical) {
 			assert(!"Can't load Windows V5 bitmaps");
 			break;
 		default:
-			printf("invalid header size %d\n", headerSize);
+			printf("invalid header size %ld\n", headerSize);
 			assert(!"Unknown bitmap format");
 	}
 	

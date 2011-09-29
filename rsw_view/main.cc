@@ -86,7 +86,7 @@ public:
 		s = 1.0f/64.0f;
 	}
 
-	RSWDraw(RO::GRF* grf) {
+	RSWDraw(ro::GRF* grf) {
 		rsw.setGRF(grf);
 	}
 
@@ -96,7 +96,7 @@ public:
 		return(rsw.Read(name));
 	}
 
-	bool Read(RO::GRF* grf, const std::string& name) {
+	bool Read(ro::GRF* grf, const std::string& name) {
 		rsw.setGRF(grf);
 		bool ret = rsw.Read(name);
 		return(ret);
@@ -121,14 +121,14 @@ public:
 		// cube();
 		rsw.Draw();
 		//rsw.DrawModels();
-		Sleep(3);
+		SDL_Delay(3);
 	}
 };
 
 int main(int argc, char* argv[]) {
 	// === LOAD GRF ===
 	std::string grf_fn;
-	RO::GRF grf;
+	ro::GRF grf;
 	grf_fn = "data/sdata.grf";
 	grf.open(grf_fn);
 	if (grf.isOpen()) {
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
 	}
 	else {
 		printf("can't find file '%s'\n", grf_fn.c_str());
-		Sleep(5000);
+		SDL_Delay(5000);
 		return(1);
 	}
 
@@ -158,7 +158,7 @@ int main(int argc, char* argv[]) {
 	int i;
 	for (i = 0; i < 200; i++) {
 		draw.Sync();
-		Sleep(30);
+		SDL_Delay(30);
 	}
 	draw.CloseDisplay();
 

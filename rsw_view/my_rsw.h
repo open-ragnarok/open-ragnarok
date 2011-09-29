@@ -2,21 +2,22 @@
 #ifndef __MY_RSW_H
 #define __MY_RSW_H
 
-#include "ro.h"
-#include "rogl.h"
+#include "ro/ro.h"
+#include "rogl/rogl.h"
 
 #include "image_bmp.h"
-#include "my_rsm.h"
+//#include "my_rsm.h"// TODO file is missing!!!
+class MyRsm;
 
 #include <map>
 
 class MyRsw {
 protected:
-	RO::RSW *rsw;
-	RO::GND *gnd;
+	ro::RSW *rsw;
+	ro::GND *gnd;
 
-	/** The RO::GRF object used to read the files from. This pointer is not managed by this class */
-	RO::GRF *grf;
+	/** The ro::GRF object used to read the files from. This pointer is not managed by this class */
+	ro::GRF *grf;
 	unsigned int gl_list;
 	unsigned int *textures;
 
@@ -28,9 +29,9 @@ protected:
 public:
 	MyRsw();
 
-	MyRsw(RO::GRF* grf);
-	void setGRF(RO::GRF* grf);
-	MyRsw(RO::GRF* grf, const std::string& fn);
+	MyRsw(ro::GRF* grf);
+	void setGRF(ro::GRF* grf);
+	MyRsw(ro::GRF* grf, const std::string& fn);
 	bool registerTexture(std::istream& sdata, const int& texid);
 	bool registerTexture(const std::string& fn, const int& texid, const std::string& out = "");
 	bool LoadTextures();
