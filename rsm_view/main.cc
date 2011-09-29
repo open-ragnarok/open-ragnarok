@@ -1,8 +1,6 @@
 /* $Id$ */
 #include "stdafx.h"
 
-#include <windows.h>
-
 #include <SDL.h>
 
 #include <stdio.h>
@@ -17,15 +15,15 @@
 /** VERY simple wrapper to store the Model data and its textures */
 class MyRSM {
 protected:
-	RO::RSM* rsm;
+	ro::RSM* rsm;
 	unsigned int* textures;
 
 	bool m_valid;
 
 public:
-	RO::GRF* grf;
+	ro::GRF* grf;
 
-	MyRSM(const std::string& fn, RO::GRF* grf) {
+	MyRSM(const std::string& fn, ro::GRF* grf) {
 		rsm = NULL;
 		this->grf = grf;
 		textures = NULL;
@@ -94,7 +92,7 @@ public:
 			std::cerr << "Can't find file " << rsm_fn << std::endl;
 			return(false);
 		}
-		rsm = new RO::RSM();
+		rsm = new ro::RSM();
 		if (!rsm->readStream(sdata)) {
 			std::cerr << "Error parsing file " << rsm_fn << std::endl;
 			delete(rsm);
@@ -262,7 +260,7 @@ void cube(float s = 1.0f) {
 /**
  * Saves the grf file list into a stream, including a C unsigned char vector for copy-paste operation for testing purposes
  */
-void saveList(const RO::GRF& grf, std::ostream& out) {
+void saveList(const ro::GRF& grf, std::ostream& out) {
 	unsigned int c = grf.getCount();
 	unsigned int i, j;
 
@@ -317,11 +315,11 @@ void Draw(const MyRSM& rsm, float x, float y, float z, float rx = -90, float ry 
 	glPopMatrix();
 }
 
-int main(int argc, char* argv[]) {
+int rsm_view_main(int argc, char** argv) {
 	std::string grf_fn;
 	std::string rsm_fn;
 
-	RO::GRF grf;
+	ro::GRF grf;
 
 	grf_fn = "data/sdata.grf";
 	grf.open(grf_fn);
@@ -374,7 +372,7 @@ int main(int argc, char* argv[]) {
 	while(!m_quit) {
 		Draw(rsm, x, y, z, rx, ry, rz, s);
 		engine.Sync();
-		Sleep(9);
+		SDL_Delay(9);
 		// z+= 0.05f;
 
 		if (engine.getKey(SDLK_SPACE)) {
@@ -429,5 +427,57 @@ int main(int argc, char* argv[]) {
 	rsm.close();
 	engine.CloseDisplay();
 	grf.close();
+	return(0);
+}
+
+
+/////////////////////////////////////////////////////////////////////
+// replacement code for SDL_main
+
+#ifdef main
+#	undef main
+#endif
+
+/* SDL_Quit() shouldn't be used with atexit() directly because
+   calling conventions may differ... */
+static void cleanup(void)
+{
+	SDL_Quit();
+}
+
+int main(int argc, char** argv) {
+#ifdef _MSC_VER // SDL_main
+	/* Start up DDHELP.EXE before opening any files, so DDHELP doesn't
+	   keep them open.  This is a hack.. hopefully it will be fixed 
+	   someday.  DDHELP.EXE starts up the first time DDRAW.DLL is loaded.
+	 */
+	HINSTANCE handle = LoadLibrary(TEXT("DDRAW.DLL"));
+	if ( handle != NULL )
+		FreeLibrary(handle);
+#endif /* _MSC_VER */
+
+	/* Load SDL dynamic link library */
+	if ( SDL_Init(SDL_INIT_NOPARACHUTE) < 0 ) {
+		fprintf(stderr, "SDL init error: %s", SDL_GetError());
+		return(1);
+	}
+	atexit(cleanup);
+
+#ifdef _MSC_VER // SDL_main
+	/* Sam:
+	   We still need to pass in the application handle so that
+	   DirectInput will initialize properly when SDL_RegisterApp()
+	   is called later in the video initialization.
+	 */
+	SDL_SetModuleHandle(GetModuleHandle(NULL));
+#endif
+	
+	/* Run the application main() code */
+	int status = rsm_view_main(argc, argv);
+
+	/* Exit cleanly, calling atexit() functions */
+	exit(status);
+
+	/* Hush little compiler, don't you cry... */
 	return(0);
 }

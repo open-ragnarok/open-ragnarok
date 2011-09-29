@@ -22,6 +22,8 @@
 
 #include <string>
 #include <cassert>
+#include <stdio.h>
+#include <string.h>
 
 /**
  * Provides instantiation and helper functions for

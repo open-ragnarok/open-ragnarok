@@ -2,9 +2,8 @@
 #ifndef __SDLENGINE_H
 #define __SDLENGINE_H
 
-#include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <SDL.h>
 
 /**
