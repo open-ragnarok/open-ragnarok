@@ -27,19 +27,6 @@
 
 #define TIXML_USE_STL
 
-#ifdef _MSC_VER
-#	define USE_LOGSYS // In MSVC we define it here. Other systems, we use the makefile.
-#	define _CRT_SECURE_NO_WARNINGS
-#	ifndef ROINT_DLL
-#		pragma comment(lib, "zlib.lib")
-#	else
-#		pragma comment(lib, "zlib.dll.lib")
-#	endif
-#	ifdef USE_LOGSYS
-#		pragma comment(lib, "logsys.lib")
-#	endif
-#endif
-
 #include "ro/roint_settings.h"
 
 #define ROINT_INTERNAL
@@ -48,5 +35,13 @@
 #include "ro/ro.h"
 
 #include "log.h"
+
+#ifndef HAVE_STRNICMP
+#	ifdef HAVE_STRNCASECMP
+#		define strnicmp strncasecmp
+#	else
+#		error "strnicmp is missing!"
+#	endif
+#endif
 
 #endif /* __STDAFX_H */

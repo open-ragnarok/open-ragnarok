@@ -43,7 +43,7 @@ class ROINT_DLLAPI GRF {
 public:
 #pragma pack(push,1)
 	/** Header common to all GRF files */
-	typedef struct Header {
+	struct Header {
 		char signature[16];
 		unsigned char allowEncryption[14];
 		unsigned int fileTableOffset;

@@ -37,14 +37,14 @@
 #	endif
 #endif
 
-#ifndef ROINT_DLL
-#	define ROINT_DLLAPI
-#else
+#if defined(ROINT_DLL) && defined(_MSC_VER)
 #	ifdef ROINT_INTERNAL
 #		define ROINT_DLLAPI  __declspec( dllexport )
 #	else
 #		define ROINT_DLLAPI  __declspec( dllimport )
 #	endif
+#else
+#	define ROINT_DLLAPI
 #endif
 
 // Use XML?

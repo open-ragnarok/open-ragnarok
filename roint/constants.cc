@@ -30,80 +30,80 @@ namespace ro {
 
 namespace EUC {
 
-char user_interface[] =  "\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba";
+const char* user_interface =  "\xc0\xaf\xc0\xfa\xc0\xce\xc5\xcd\xc6\xe4\xc0\xcc\xbd\xba";
 
 // BODY PARTS
-char body[] = "\xb8\xf6\xc5\xeb";
-char head[] = "\xb8\xd3\xb8\xae\xc5\xeb";
-char head2[] = "\xb8\xd3\xb8\xae"; // Used by palette
-char weapons[] = "\xb8\xf9\xc5\xa9";
+const char* body = "\xb8\xf6\xc5\xeb";
+const char* head = "\xb8\xd3\xb8\xae\xc5\xeb";
+const char* head2 = "\xb8\xd3\xb8\xae"; // Used by palette
+const char* weapons = "\xb8\xf9\xc5\xa9";
 
 //CHARACTER TYPE
-char humans[] = "\xc0\xce\xb0\xa3\xc1\xb7"; // Human family
-char monsters[] = "\xb8\xf3\xbd\xba\xc5\xcd";
+const char* humans = "\xc0\xce\xb0\xa3\xc1\xb7"; // Human family
+const char* monsters = "\xb8\xf3\xbd\xba\xc5\xcd";
 
 //
-char shields[] = "\xb9\xe6\xc6\xd0";
-char items[] = "\xbe\xc6\xc0\xcc\xc5\xdb";
-char accessories[] = "\xbe\xc7\xbc\xbc\xbb\xe7\xb8\xae"; // Head accessories (Helm)
-char effects[] = "\xc0\xcc\xc6\xd1\xc6\xae";
+const char* shields = "\xb9\xe6\xc6\xd0";
+const char* items = "\xbe\xc6\xc0\xcc\xc5\xdb";
+const char* accessories = "\xbe\xc7\xbc\xbc\xbb\xe7\xb8\xae"; // Head accessories (Helm)
+const char* effects = "\xc0\xcc\xc6\xd1\xc6\xae";
 
-char water[] = "\xbf\xf6\xc5\xcd";
+const char* water = "\xbf\xf6\xc5\xcd";
 
 // === SEX
-char female[] = "\xbf\xa9";
-char male[] = "\xb3\xb2";
-char *sex[] = {
+const char* female = "\xbf\xa9";
+const char* male = "\xb3\xb2";
+const char* sex[] = {
 	male, female
 };
 
 // Weapons
-char sword[] = "\xb0\xcb";
-char dagger[] = "\xb4\xdc\xb0\xcb";
-char axe[] = "\xb5\xb5\xb3\xa2";
-char staff[] = "\xb7\xd4\xb5\xe5";
-char mace[] = "\xc5\xac\xb7\xb4";
-char spear[] = "\xc3\xa2\x0d\x0a";
-char claw[] = "\xb3\xca\xc5\xac";
-char book[] = "\xc3\xa5";
-char katar[] = "\xc4\xab\xc5\xb8\xb8\xa3";
-char bow[] = "\xc8\xb0";
-char instrument[] = "\xbe\xc7\xb1\xe2";
-char whip[] = "\xc3\xa4\xc2\xef";
+const char* sword = "\xb0\xcb";
+const char* dagger = "\xb4\xdc\xb0\xcb";
+const char* axe = "\xb5\xb5\xb3\xa2";
+const char* staff = "\xb7\xd4\xb5\xe5";
+const char* mace = "\xc5\xac\xb7\xb4";
+const char* spear = "\xc3\xa2\x0d\x0a";
+const char* claw = "\xb3\xca\xc5\xac";
+const char* book = "\xc3\xa5";
+const char* katar = "\xc4\xab\xc5\xb8\xb8\xa3";
+const char* bow = "\xc8\xb0";
+const char* instrument = "\xbe\xc7\xb1\xe2";
+const char* whip = "\xc3\xa4\xc2\xef";
 
-char afterimage[] = "\xb0\xcb\xb1\xa4"; // Weapons's after image
+const char* afterimage = "\xb0\xcb\xb1\xa4"; // Weapons's after image
 
-//char arrow[] = "\x\x\x\x";
+//const char* arrow = "\x\x\x\x";
 
 // classes [kR105]
-char novice[] = "\xC3\xCA\xBA\xB8\xC0\xDA";
-char swordsman[] = "\xB0\xCB\xBB\xE7";
-char magician[] = "\xB8\xB6\xB9\xFD\xBB\xE7";
-char archer[] = "\xB1\xC3\xBC\xF6";
-char acolyte[] = "\xBC\xBA\xC1\xF7\x9F\xE0";
-char merchant[] = "\xBB\xF3\xC0\xCE";
-char thief[] = "\xB5\xB5\xB5\xCF";
-char knight[] = "\xB1\xE2\xBB\xE7";
-char priest[] = "\xC7\xC1\xB8\xAE\xBD\xBA\xC6\xAE";
-char wizard[] = "\xC0\xA7\xC0\xFA\xB5\xE5";
-char blacksmith[] = "\xC1\xA6\xC3\xB6";
-char hunter[] = "\xC7\xE5\xC5\xCD";
-char assassin[] = "\xBE\xEE\xBC\xBC\xBD\xC5";
-char knight_mounted[] = "\xC6\xE4\xC4\xDA\xC6\xE4\xC4\xDA\x5F\xB1\xE2\xBB\xE7";
-char crusader[] = "\xC5\xA9\xB7\xE7\xBC\xBC\xC0\xCC\xB4\xF5";
-char monk[] = "\xB8\xF9\xC5\xA9";
-char sage[] = "\xBC\xBC\xC0\xCC\xC1\xF6";
-char rogue[] = "\xB7\xCE\xB1\xD7";
-char alchemist[] = "\xBF\xAC\xB1\xDD\xBC\xFA\xBB\xE7";
-char bard[] = "\xB9\xD9\xB5\xE5";
-char dancer[] = "\xB9\xAB\xC8\xF1";
-char crusader_mounted[] = "\xBD\xC5\xC6\xE4\xC4\xDA\xC5\xA9\xB7\xE7\xBC\xBC\xC0\xCC\xB4\xF5";
-char gm[] = "\x9D\xC4\xBF\xB5\xC0\xDA";
-char mercenary[] = "\xBF\xEB\xBA\xB4";
+const char* novice = "\xC3\xCA\xBA\xB8\xC0\xDA";
+const char* swordsman = "\xB0\xCB\xBB\xE7";
+const char* magician = "\xB8\xB6\xB9\xFD\xBB\xE7";
+const char* archer = "\xB1\xC3\xBC\xF6";
+const char* acolyte = "\xBC\xBA\xC1\xF7\x9F\xE0";
+const char* merchant = "\xBB\xF3\xC0\xCE";
+const char* thief = "\xB5\xB5\xB5\xCF";
+const char* knight = "\xB1\xE2\xBB\xE7";
+const char* priest = "\xC7\xC1\xB8\xAE\xBD\xBA\xC6\xAE";
+const char* wizard = "\xC0\xA7\xC0\xFA\xB5\xE5";
+const char* blacksmith = "\xC1\xA6\xC3\xB6";
+const char* hunter = "\xC7\xE5\xC5\xCD";
+const char* assassin = "\xBE\xEE\xBC\xBC\xBD\xC5";
+const char* knight_mounted = "\xC6\xE4\xC4\xDA\xC6\xE4\xC4\xDA\x5F\xB1\xE2\xBB\xE7";
+const char* crusader = "\xC5\xA9\xB7\xE7\xBC\xBC\xC0\xCC\xB4\xF5";
+const char* monk = "\xB8\xF9\xC5\xA9";
+const char* sage = "\xBC\xBC\xC0\xCC\xC1\xF6";
+const char* rogue = "\xB7\xCE\xB1\xD7";
+const char* alchemist = "\xBF\xAC\xB1\xDD\xBC\xFA\xBB\xE7";
+const char* bard = "\xB9\xD9\xB5\xE5";
+const char* dancer = "\xB9\xAB\xC8\xF1";
+const char* crusader_mounted = "\xBD\xC5\xC6\xE4\xC4\xDA\xC5\xA9\xB7\xE7\xBC\xBC\xC0\xCC\xB4\xF5";
+const char* gm = "\x9D\xC4\xBF\xB5\xC0\xDA";
+const char* mercenary = "\xBF\xEB\xBA\xB4";
 
 #define CLASSNAME_COUNT 24
 
-char *classname[] = {
+const char* classname[] = {
 	novice,
 	swordsman,
 	magician,
@@ -143,7 +143,7 @@ const char* getClassName(unsigned int id) {
 
 } /* namespace EUC */
 
-char *classname_en[] = {
+const char* classname_en[] = {
 	"Novice",
 	"Swordsman",
 	"Magician",
@@ -182,7 +182,7 @@ const char* getClassNameEN(unsigned int id) {
 }
 
 
-char *dnames[] = {
+const char* dnames[] = {
 	"Speed",
 	"Base Exp",
 	"Job Exp",

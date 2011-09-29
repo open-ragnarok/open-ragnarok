@@ -96,7 +96,7 @@ public:
 		int flag; //< if (flag != 0) size += {3,0,3};
 	};
 
-	typedef struct BoundingBox {
+	struct BoundingBox {
 		Vertex max;
 		Vertex min;
 		Vertex offset;

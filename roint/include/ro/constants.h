@@ -2455,7 +2455,7 @@ enum _sp {
  * read more than the available amount of classes.
  * The last index is always NULL.
  */
-ROINT_DLLAPI extern char *classname_en[];
+ROINT_DLLAPI extern const char* classname_en[];
 
 /**
  * Safely returns the classname in english language.
@@ -2474,45 +2474,45 @@ namespace EUC {
  */
 ROINT_DLLAPI const char* getClassName(unsigned int id);
 
-ROINT_DLLAPI extern char user_interface[];
+ROINT_DLLAPI extern const char* user_interface;
 
-ROINT_DLLAPI extern char body[];
-ROINT_DLLAPI extern char head[];
-ROINT_DLLAPI extern char head2[]; // Used by palette
-ROINT_DLLAPI extern char weapons[];
+ROINT_DLLAPI extern const char* body;
+ROINT_DLLAPI extern const char* head;
+ROINT_DLLAPI extern const char* head2; // Used by palette
+ROINT_DLLAPI extern const char* weapons;
 
-ROINT_DLLAPI extern char humans[]; // Human family
-ROINT_DLLAPI extern char monsters[];
+ROINT_DLLAPI extern const char* humans; // Human family
+ROINT_DLLAPI extern const char* monsters;
 
-ROINT_DLLAPI extern char shields[];
-ROINT_DLLAPI extern char items[];
-ROINT_DLLAPI extern char accessories[]; // Head accessories (Helm)
-ROINT_DLLAPI extern char effects[];
+ROINT_DLLAPI extern const char* shields;
+ROINT_DLLAPI extern const char* items;
+ROINT_DLLAPI extern const char* accessories; // Head accessories (Helm)
+ROINT_DLLAPI extern const char* effects;
 
-ROINT_DLLAPI extern char water[];
+ROINT_DLLAPI extern const char* water;
 
 // sex
-ROINT_DLLAPI extern char *sex[];
-ROINT_DLLAPI extern char female[];
-ROINT_DLLAPI extern char male[];
+ROINT_DLLAPI extern const char* sex[];
+ROINT_DLLAPI extern const char* female;
+ROINT_DLLAPI extern const char* male;
 
 // weapons
-ROINT_DLLAPI extern char dagger[];
-ROINT_DLLAPI extern char sword[];
-ROINT_DLLAPI extern char axe[];
-ROINT_DLLAPI extern char staff[];
-ROINT_DLLAPI extern char mace[];
-ROINT_DLLAPI extern char spear[];
-ROINT_DLLAPI extern char claw[];
-ROINT_DLLAPI extern char book[];
-ROINT_DLLAPI extern char katar[];
-ROINT_DLLAPI extern char bow[];
-ROINT_DLLAPI extern char instrument[];
-ROINT_DLLAPI extern char whip[];
+ROINT_DLLAPI extern const char* dagger;
+ROINT_DLLAPI extern const char* sword;
+ROINT_DLLAPI extern const char* axe;
+ROINT_DLLAPI extern const char* staff;
+ROINT_DLLAPI extern const char* mace;
+ROINT_DLLAPI extern const char* spear;
+ROINT_DLLAPI extern const char* claw;
+ROINT_DLLAPI extern const char* book;
+ROINT_DLLAPI extern const char* katar;
+ROINT_DLLAPI extern const char* bow;
+ROINT_DLLAPI extern const char* instrument;
+ROINT_DLLAPI extern const char* whip;
 
-ROINT_DLLAPI extern char afterimage[];
+ROINT_DLLAPI extern const char* afterimage;
 
-//ROINT_DLLAPI extern char arrow[];
+//ROINT_DLLAPI extern const char* arrow;
 
 // classes
 /**
@@ -2521,36 +2521,36 @@ ROINT_DLLAPI extern char afterimage[];
  * read more than the available amount of classes.
  * The last index is always NULL.
  */
-ROINT_DLLAPI extern char *classname[];
+ROINT_DLLAPI extern const char* classname[];
 
-ROINT_DLLAPI extern char acolyte[];
-ROINT_DLLAPI extern char alchemist[];
-ROINT_DLLAPI extern char archer[];
-ROINT_DLLAPI extern char assassin[];
-ROINT_DLLAPI extern char bard[];
-ROINT_DLLAPI extern char blacksmith[];
-ROINT_DLLAPI extern char crusader[];
-ROINT_DLLAPI extern char dancer[];
-ROINT_DLLAPI extern char hunter[];
-ROINT_DLLAPI extern char knight[];
-ROINT_DLLAPI extern char magician[];
-ROINT_DLLAPI extern char mercenary[];
-ROINT_DLLAPI extern char merchant[];
-ROINT_DLLAPI extern char monk[];
-ROINT_DLLAPI extern char novice[];
-ROINT_DLLAPI extern char priest[];
-ROINT_DLLAPI extern char rogue[];
-ROINT_DLLAPI extern char sage[];
-ROINT_DLLAPI extern char swordsman[];
-ROINT_DLLAPI extern char thief[];
-ROINT_DLLAPI extern char wizard[];
-ROINT_DLLAPI extern char gm[];
-ROINT_DLLAPI extern char crusader_mounted[];
-ROINT_DLLAPI extern char knight_mounted[];
+ROINT_DLLAPI extern const char* acolyte;
+ROINT_DLLAPI extern const char* alchemist;
+ROINT_DLLAPI extern const char* archer;
+ROINT_DLLAPI extern const char* assassin;
+ROINT_DLLAPI extern const char* bard;
+ROINT_DLLAPI extern const char* blacksmith;
+ROINT_DLLAPI extern const char* crusader;
+ROINT_DLLAPI extern const char* dancer;
+ROINT_DLLAPI extern const char* hunter;
+ROINT_DLLAPI extern const char* knight;
+ROINT_DLLAPI extern const char* magician;
+ROINT_DLLAPI extern const char* mercenary;
+ROINT_DLLAPI extern const char* merchant;
+ROINT_DLLAPI extern const char* monk;
+ROINT_DLLAPI extern const char* novice;
+ROINT_DLLAPI extern const char* priest;
+ROINT_DLLAPI extern const char* rogue;
+ROINT_DLLAPI extern const char* sage;
+ROINT_DLLAPI extern const char* swordsman;
+ROINT_DLLAPI extern const char* thief;
+ROINT_DLLAPI extern const char* wizard;
+ROINT_DLLAPI extern const char* gm;
+ROINT_DLLAPI extern const char* crusader_mounted;
+ROINT_DLLAPI extern const char* knight_mounted;
 
 } /* namespace EUC */
 
-ROINT_DLLAPI extern char *dnames[];
+ROINT_DLLAPI extern const char* dnames[];
 
 } /* namespace ro */
 

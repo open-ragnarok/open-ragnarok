@@ -133,7 +133,7 @@ bool SPR::readStream(std::istream& s) {
 
 	if (imgCountPal > 0)
 	{
-		Image empty = {PalType,0,0,NULL};
+		Image empty = {0,0,NULL,PalType};
 		m_imagesPal.resize(imgCountPal, empty);
 		for (i = 0; i < imgCountPal; i++) {
 			if (!readImagePal(s, i)) {
@@ -144,7 +144,7 @@ bool SPR::readStream(std::istream& s) {
 	}
 	if (imgCountRgba > 0)
 	{
-		Image empty = {RgbaType,0,0,NULL};
+		Image empty = {0,0,NULL,RgbaType};
 		m_imagesRgba.resize(imgCountRgba, empty);
 		for (i = 0; i < imgCountRgba; i++) {
 			if (!readImageRgba(s, i)) {

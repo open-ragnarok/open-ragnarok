@@ -369,7 +369,16 @@ bool GRF::save(const std::string& s, const std::wstring& filename) {
 	if (!m_opened)
 		return(false);
 
-	std::ofstream out(filename.c_str(), std::ios_base::out | std::ios_base::binary);
+	size_t len = MB_CUR_MAX*filename.length();
+	char* mbFilename = new char[len + 1];
+	len = wcstombs(mbFilename, filename.c_str(), len);
+	if (len == -1) {// invalid multibyte character
+		delete[] mbFilename;
+		return(false);
+	}
+	mbFilename[len] = '\0';
+	std::ofstream out(mbFilename, std::ios_base::out | std::ios_base::binary);
+	delete[] mbFilename;
 	bool r = write(s, out);
 	out.close();
 	return(r);

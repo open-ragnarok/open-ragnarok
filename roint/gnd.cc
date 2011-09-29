@@ -27,10 +27,7 @@
 #include "ro/types/gnd.h"
 #include "ro/ro.h"
 
-#include "../libpng/png.h"
-#ifdef ROINT_DLL
-#pragma comment(lib, "libpng.dll.lib")
-#endif
+#include <png.h>
 #if 0
 #	include <SDL.h>
 #endif
@@ -113,7 +110,7 @@ int SavePngFile(const char* filename, unsigned char *pBits, int Width, int Heigh
 	if(!png_ptr) return 0;
 	info_ptr = png_create_info_struct(png_ptr);
 	if(!info_ptr){
-		png_destroy_write_struct(&png_ptr, png_infopp_NULL);
+		png_destroy_write_struct(&png_ptr, NULL);
 		return 0;
 	}
 	if (setjmp(png_jmpbuf(png_ptr))){
