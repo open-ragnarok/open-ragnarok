@@ -55,14 +55,17 @@ bool GRFFileLoader::open(const std::string& name) {
 
 bool FSFileLoader::fileExists(const std::string& name) const {
 	std::string fn = m_path;
-	if (fn[fn.length() - 1] != '\\')
-		fn += "\\";
 	fn += name;
+	std::string::iterator it = fn.begin() + m_path.length();
+	for (; it != fn.end(); ++it)
+		if( *it == '\\' || *it == '/' )
+			*it = DIR_SEPARATOR;
 
 	struct stat stFileInfo;
-	// Stat returns 0 on success (meaning the file exists)
-	if (stat(fn.c_str(), &stFileInfo))
-		return(false);
+	if (stat(fn.c_str(), &stFileInfo) != 0)
+		return(false);// not found
+	if ((stFileInfo.st_mode&S_IFDIR) != 0)
+		return(false);// directory
 
 	return(true);
 }
@@ -72,9 +75,11 @@ FileData FSFileLoader::getFile(const std::string& name) {
 	FileData ret;
 
 	std::string fn = m_path;
-	if (fn[fn.length() - 1] != '\\')
-		fn += "\\";
 	fn += name;
+	std::string::iterator it = fn.begin() + m_path.length();
+	for (; it != fn.end(); ++it)
+		if( *it == '\\' || *it == '/' )
+			*it = DIR_SEPARATOR;
 
 	file.open(fn.c_str(), std::ios_base::in | std::ios_base::binary);
 
@@ -90,7 +95,15 @@ FileData FSFileLoader::getFile(const std::string& name) {
 	return(ret);
 }
 bool FSFileLoader::open(const std::string& name) {
+	struct stat stDirInfo;
+	if (stat(name.c_str(), &stDirInfo) != 0)
+		return(false);// not found
+	if ((stDirInfo.st_mode&S_IFDIR) == 0)
+		return(false);// not directory
+
 	m_path = name;
+	if (m_path[m_path.length() - 1] != DIR_SEPARATOR)
+		m_path += DIR_SEPARATOR;
 	return(true);
 }
 

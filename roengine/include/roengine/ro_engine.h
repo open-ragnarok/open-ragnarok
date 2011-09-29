@@ -25,11 +25,7 @@
 
 #include "ro/ro.h"
 #include "rogl/rogl.h"
-#ifdef _MSC_VER
-#	include <SDL.h>
-#else
-#	include <SDL/SDL.h>
-#endif
+#include <SDL.h>
 #include "gui/gui.h"
 #include "roengine/full_act.h"
 

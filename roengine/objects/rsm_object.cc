@@ -5,9 +5,6 @@
 
 #include <math.h>
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 RsmObject::RsmObject(const ro::RSM* o, const ro::RSW::ModelObject* mdl) : GLObject() {
 	rsm = o;
 	m_time = 0;

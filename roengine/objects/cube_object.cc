@@ -3,9 +3,6 @@
 
 #include "roengine/objects/cube_object.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 CubeObject::CubeObject(const float& size) : GLObject() {
 	m_size = size;
 }

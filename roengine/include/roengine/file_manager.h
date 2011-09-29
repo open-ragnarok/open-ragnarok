@@ -33,6 +33,11 @@ public:
 // Reads files from a filesystem directory
 class FSFileLoader : public FileLoader {
 protected:
+#ifdef _WIN32
+	static const char DIR_SEPARATOR = '\\';
+#else
+	static const char DIR_SEPARATOR = '/';
+#endif
 	std::string m_path;
 public:
 	virtual bool fileExists(const std::string& name) const;

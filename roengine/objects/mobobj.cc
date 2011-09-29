@@ -141,7 +141,7 @@ void MobObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_shadowact.Draw(m_tickdelay, ro::CDir::DIR_N, -0.1);
+	m_shadowact.Draw(m_tickdelay, ro::DIR_N, -0.1);
 	m_mob.Draw(m_tickdelay, (ro::CDir)dir, !(m_act == 2 || m_act == 3)); // Draw
 	
 	glTranslatef(0, 10, 0); // Moves our object to the proper place

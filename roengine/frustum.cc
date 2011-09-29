@@ -5,9 +5,6 @@
 
 #include <math.h>
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 Frustum::Frustum() {
 }
 

@@ -2,9 +2,6 @@
 
 #include "roengine/objects/act_object.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 float act_angles[] = {
 	-157.5,
 	-112.5,

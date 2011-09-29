@@ -5,11 +5,6 @@
 #include "sdle/sdl_engine.h"
 #include "sdle/texture_jpeg.h"
 
-//#include <GL/gl.h>
-//#include <GL/glu.h>
-//#include <GL/glext.h>
-#include <GL/glew.h>
-
 #include <iostream>
 #include <algorithm>
 #include <locale>
@@ -57,7 +52,7 @@ RswObject::~RswObject() {
 		unsigned int *texid = itr->second;
 		glDeleteTextures(2, texid);
 		delete [] texid;
-		itr = lightmap_texmap.erase(itr);
+		++itr;
 	}
 	lightmap_texmap.clear();
 }

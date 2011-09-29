@@ -6,7 +6,7 @@
 #include "sdle/font.h"
 
 typedef struct _Node {
-        LCHAR Ch;
+        Uint16 UnicodeCh;
 		bool  selected;
         
         struct _Node *Prev;
@@ -31,7 +31,7 @@ typedef struct _TextEditor {
 	Sint16		z;
 	Sint32		Len;
 	int         EffectWidth;
-	LCHAR		*m_text;
+	Uint16		*m_text;
 	Uint32		FColor;
 	Uint32		BColor;
 	Uint32		SFColor;
@@ -80,7 +80,7 @@ public:
 	virtual bool HandleMouseRelease(int x, int y, int button);
 
 	bool Insert(Uint16 Ch);
-	NODE* NewNode(OUT NODE *Front, OUT NODE *Behind, IN LCHAR Ch);
+	NODE* NewNode(NODE *Front, NODE *Behind, Uint16 UnicodeCh);
 	void GetStringFromNode();
 
 	bool RemoveLeft();

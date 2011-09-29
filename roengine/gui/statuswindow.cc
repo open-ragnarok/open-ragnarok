@@ -1,7 +1,7 @@
 /* $Id: statuswindow.cc $ */
 #include "stdafx.h"
 
-#include "roengine/gui/StatusWindow.h"
+#include "roengine/gui/statuswindow.h"
 #include "roengine/gui/gui.h"
 
 namespace GUI {

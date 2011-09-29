@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "roengine/camera.h"
-#include <gl/glu.h>
 #include <math.h>
 
 Camera::Camera() {

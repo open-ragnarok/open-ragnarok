@@ -17,6 +17,18 @@ int file_exists (char* fileName) {
 	return 0;
 }
 
+void trim_whitespaces (char* s) {
+	static std::string whitespaces (" \t\f\v\n\r");
+	size_t begin = 0;
+	size_t end = strlen(s);
+	while( begin < end && whitespaces.find(s[begin]) != whitespaces.npos )
+		++begin;// prefixing whitespace
+	while( begin < end && whitespaces.find(s[end-1]) != whitespaces.npos )
+		--end;// surfixing whitespace
+	s[end] = '\0';
+	memmove(s, s + begin, end - begin + 1);
+}
+
 void ROEngine::HandleKeyboard() {}
 
 void ROEngine::clearActors() {
@@ -47,6 +59,7 @@ void ROEngine::ReadIni(const std::string& name) {
 	while (!ini.eof()) {
 		is_cmd = true;
 		ini.getline(buf, 512);
+		trim_whitespaces(buf);
 		ptr = buf;
 		cmd = "";
 		file = "";

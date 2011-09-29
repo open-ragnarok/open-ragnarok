@@ -180,7 +180,7 @@ void CharObj::Draw() {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(wx, wy, wz); // Moves our object to the proper place
-	m_shadowact.Draw(m_tickdelay, ro::CDir::DIR_N, -0.1);
+	m_shadowact.Draw(m_tickdelay, ro::DIR_N, -0.1);
 //	m_bodyact.Draw(m_tickdelay, (ro::CDir)dir, 0, !(m_act == 6 || m_act == 5)); // Draw
 	m_bodyact.Draw(m_tickdelay, (ro::CDir)dir, 0); // Draw
 	if (m_headact.valid())
@@ -365,6 +365,7 @@ bool CharObj::setHelm(CacheManager& cache, const char *name) {
 	m_helmtopact.setSpr(sprgl);
 	m_helmtopact.setAct((ro::ACT*)objects[act_n]);
 	m_helmtopact.setExt(&m_bodyact);
+	return(true);
 }
 
 bool CharObj::setWeapon(CacheManager& cache, int weapon, bool right) {

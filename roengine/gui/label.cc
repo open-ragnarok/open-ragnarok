@@ -4,9 +4,6 @@
 #include "roengine/gui/label.h"
 #include "roengine/gui/gui.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 GUI::Label::Label(Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
 	m_focusable = false;
 	m_shadow = false;

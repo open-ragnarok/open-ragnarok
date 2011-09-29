@@ -10,9 +10,6 @@
 #include "sdle/texture_tga.h"
 
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 // === TEXTURE MANAGER ===
 
 TextureManager::TextureManager() {

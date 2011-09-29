@@ -2,8 +2,6 @@
 #include "stdafx.h"
 
 #include "roengine/gui/gui.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include "sdle/glf_font.h"
 #include "sdle/ft_font.h"
 
@@ -318,7 +316,7 @@ void Gui::Dialog(const std::string& title, const std::string& text, CacheManager
 	dialog->setVisible(true);
 }
 
-SDL_Color GetRGB(IN SDL_Surface *Surface, IN Uint32 Color){
+static SDL_Color GetRGB(SDL_Surface *Surface, Uint32 Color){
 	SDL_Color Rgb;
 	SDL_GetRGB(Color, Surface->format, &(Rgb.r), &(Rgb.g), &(Rgb.b));
 	return Rgb;
@@ -355,7 +353,7 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 	unsigned int i = 0;
 	NODE* n = G_Text->Start;
 	while (n != NULL) {
-		text[i] = n->Ch;
+		text[i] = n->UnicodeCh;
 		i++;
 		text[i] = 0;
 		n = n->Next;
@@ -387,11 +385,11 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 	Font_SBColor = GetRGB(SDL_GetVideoSurface(), G_Text->SBColor);
 
 	for (i=G_Text->Start; i != NULL ; i=i->Next) {
-		G_Text->m_text[j++] = i->Ch;
+		G_Text->m_text[j++] = i->UnicodeCh;
 		G_Text->m_text[j] = AU('\0');
 		TTF_SizeUNICODE(G_Text->Font, G_Text->m_text, &w, &h);
 		FontH = h;
-		Ch[0] = i->Ch;
+		Ch[0] = i->UnicodeCh;
 		if ( w <= G_Text->EffectWidth ) {
 			FontW = w;
 			if( i->selected ) {
@@ -409,7 +407,7 @@ int Gui::TextOutEx(TextEditor *G_Text) {
 			}
 
 			if (i->Font_Screen == NULL) {
-				std::cout << "::CreateFont failed: " << i->Ch << std::endl;
+				std::cout << "::CreateFont failed: " << i->UnicodeCh << std::endl;
 				ClearFont_Screen(G_Text);
 				return -1;
 			}

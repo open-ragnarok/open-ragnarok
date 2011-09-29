@@ -4,9 +4,6 @@
 #include "roengine/gui/list.h"
 #include "roengine/gui/gui.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 GUI::List::List(GUI::Element* parent, const TiXmlElement* node, CacheManager& cache) : Element(parent) {
 	if (node != NULL)
 		ParseFromXml(node, cache);

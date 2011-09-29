@@ -4,8 +4,6 @@
 #include "roengine/gui/element.h"
 #include "roengine/gui/gui.h"
 
-#include <GL/gl.h>
-
 namespace GUI {
 
 Element::Cache Element::m_elements;

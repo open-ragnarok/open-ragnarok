@@ -2,9 +2,6 @@
 
 #include "roengine/objects/str_object.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 StrObject::StrObject() : GLObject() {
 	m_time = 0;
 

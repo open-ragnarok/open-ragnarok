@@ -3,10 +3,10 @@
 
 #include "roengine/gui/textinput.h"
 #include "roengine/gui/gui.h"
+#include "sdle/font.h"
 #include "sdle/ft_font.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <stdlib.h>
 
 unsigned int GUI::TextInput::cursor_delay = 500;
 
@@ -26,7 +26,7 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, CacheManager& 
 	selStart = selEnd = 0;
 	len = 0;
 
-	m_MouseDown = FALSE;
+	m_MouseDown = false;
 
 	G_Text.Surface  = SDL_GetVideoSurface();
 	G_Text.Text_Changed	= false;
@@ -43,8 +43,7 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, CacheManager& 
 	G_Text.SFColor   = SDL_WHITE;
 	G_Text.SBColor   = SDL_BLUE;
 	G_Text.Alpha    = SDL_OPACITY;
-//	G_Text.m_text   = (LCHAR*)calloc(MaxLen+sizeof(LCHAR), sizeof(LCHAR));
-	G_Text.m_text   = (LCHAR*)calloc(MaxLen + 1, sizeof(LCHAR));
+	G_Text.m_text   = (Uint16*)calloc(MaxLen + 1, sizeof(Uint16));
 
 	// TODO: put this in the FontManager
 	//sdle::FTFont *font = new sdle::FTFont();
@@ -180,12 +179,14 @@ bool GUI::TextInput::HandleMouseDown(int x, int y, int button) {
 
 void GUI::TextInput::onGetFocus() {
 	actived = true;
+	SDL_EnableUNICODE(1);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 void GUI::TextInput::onLoseFocus() {
 	actived = false;
 	SDL_EnableKeyRepeat(0, 0);
+	SDL_EnableUNICODE(0);
 }
 
 bool GUI::TextInput::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
@@ -300,8 +301,8 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 //==================================================================================
 // 从结构key.keysym.unicode插葋E址丒
 //==================================================================================
-bool GUI::TextInput::Insert(Uint16 Ch) {
-	m_key = (SDLKey)Ch;
+bool GUI::TextInput::Insert(Uint16 UnicodeCh) {
+	m_key = (SDLKey)UnicodeCh;
 	len++;
 
 	NODE *tmp;
@@ -309,19 +310,19 @@ bool GUI::TextInput::Insert(Uint16 Ch) {
 		return false;
 
 	if (G_Text.Head == NULL) {
-		G_Text.Head = G_Text.Start  = G_Text.Current = NewNode(NULL, NULL, Ch);
+		G_Text.Head = G_Text.Start  = G_Text.Current = NewNode(NULL, NULL, UnicodeCh);
 		G_Text.Len--;
 		return true;
 	}
 
-	if (Ch <= 31) {
+	if (UnicodeCh <= 31) {
 		return false;
 	}
 
 	if (G_Text.Current != NULL) {
 		if (G_Text.Current->Next != NULL) {
 			tmp = G_Text.Current->Next;
-			G_Text.Current->Next = NewNode(G_Text.Current, tmp, Ch);
+			G_Text.Current->Next = NewNode(G_Text.Current, tmp, UnicodeCh);
 			if (G_Text.Current->Next == NULL) {
 				G_Text.Current->Next = tmp;
 				return false;
@@ -333,7 +334,7 @@ bool GUI::TextInput::Insert(Uint16 Ch) {
 			}
 		}
 		else {
-			G_Text.Current->Next = NewNode(G_Text.Current, NULL, Ch);
+			G_Text.Current->Next = NewNode(G_Text.Current, NULL, UnicodeCh);
 			if (G_Text.Current->Next != NULL) {
 				G_Text.Current = G_Text.Current->Next;
 			}
@@ -343,7 +344,7 @@ bool GUI::TextInput::Insert(Uint16 Ch) {
 		}
 	}
 	else {
-		tmp = NewNode(NULL, G_Text.Start, Ch);
+		tmp = NewNode(NULL, G_Text.Start, UnicodeCh);
 		if (tmp != NULL) {
 			G_Text.Start->Prev = tmp;
 			G_Text.Head = G_Text.Start = G_Text.Current = tmp;
@@ -361,10 +362,10 @@ bool GUI::TextInput::Insert(Uint16 Ch) {
 //==================================================================================
 // 新的节祦E
 //==================================================================================
-NODE* GUI::TextInput::NewNode(OUT NODE *Front, OUT NODE *Behind, IN LCHAR Ch) {
+NODE* GUI::TextInput::NewNode(NODE *Front, NODE *Behind, Uint16 UnicodeCh) {
 	NODE *Tmp = (NODE*)malloc(sizeof(NODE));
 	if (Tmp != NULL) {
-		Tmp->Ch   = Ch;
+		Tmp->UnicodeCh = UnicodeCh;
 		Tmp->selected   = false;
 		Tmp->Prev = Front;
 		Tmp->Next = Behind;
@@ -390,7 +391,7 @@ void GUI::TextInput::GetStringFromNode(void) {
 		return;
 	}
 	for (i = G_Text.Start; i != NULL; i = i->Next) {
-		G_Text.m_text[j++] = i->Ch;
+		G_Text.m_text[j++] = i->UnicodeCh;
 		G_Text.m_text[j] = AU('\0');
 		font->getSize(G_Text.m_text, &w, &h);
 		if (w > this->w) {
@@ -584,9 +585,9 @@ void GUI::TextInput::FreeString(void) {
 int GUI::TextInput::GetCursorX() {
 	NODE *i;
 	int k = 0, w, h;
-	LCHAR *Buffer = NULL;
+	Uint16 *Buffer = NULL;
 
-	Buffer = new LCHAR[MaxLen+1];
+	Buffer = new Uint16[MaxLen+1];
 
 	const sdle::Font* font = GUI::Gui::getSingleton().getDefaultFont();
 	if (font == NULL)
@@ -598,7 +599,7 @@ int GUI::TextInput::GetCursorX() {
 
 	if (G_Text.Start != NULL && G_Text.Current != NULL) {
 		for (i = G_Text.Start; i != G_Text.Current->Next; i = i->Next) {
-			Buffer[k++] = i->Ch;
+			Buffer[k++] = i->UnicodeCh;
 			Buffer[k] = AU('\0');
 			font->getSize(Buffer, &w, &h);
 			if (w > this->w) {
@@ -619,7 +620,7 @@ bool GUI::TextInput::CheckPos() {
 	int Step = 3;
 	NODE *i;
 	int k = 0, w, h;
-	LCHAR *Buffer = NULL;
+	Uint16 *Buffer = NULL;
 
 	const sdle::Font* font = GUI::Gui::getSingleton().getDefaultFont();
 	if (font == NULL)
@@ -641,13 +642,13 @@ bool GUI::TextInput::CheckPos() {
 		return true;
 	}
 
-	Buffer = new LCHAR[MaxLen+1];
+	Buffer = new Uint16[MaxLen+1];
 
 	if (Buffer == NULL)
 		return false;
 
 	for (i = G_Text.Start; i != NULL; i = i->Next) {
-		Buffer[k++] = i->Ch;
+		Buffer[k++] = i->UnicodeCh;
 		if(i == G_Text.Current->Next)
 			break;
 	}
@@ -677,7 +678,7 @@ bool GUI::TextInput::CheckPos() {
 void GUI::TextInput::ClickPos(int x) {
 	NODE *i;
 	int k = 0, w, h;
-	LCHAR *Buffer = NULL;
+	Uint16 *Buffer = NULL;
 
 	const sdle::Font* font = GUI::Gui::getSingleton().getDefaultFont();
 	if (font == NULL)
@@ -687,13 +688,13 @@ void GUI::TextInput::ClickPos(int x) {
 		return;
 	}
 
-	Buffer = new LCHAR[MaxLen+1];
+	Buffer = new Uint16[MaxLen+1];
 
 	if (Buffer == NULL)
 		return;
 
 	for (i = G_Text.Start; i != NULL; i=i->Next) {
-		Buffer[k++] = i->Ch;
+		Buffer[k++] = i->UnicodeCh;
 		Buffer[k] = AU('\0');
 		font->getSize(Buffer, &w, &h);
 		if (w > this->w) {
@@ -728,23 +729,19 @@ std::string& GUI::TextInput::getText() {
 	if (G_Text.Start == NULL) {
 		return m_text;
 	}
+	char *mbCh = new char[MB_CUR_MAX+1];
 	for (i = G_Text.Start; i != NULL; i = i->Next) {
-		G_Text.m_text[j++] = i->Ch;
+		wchar_t wideCh = wchar_t(i->UnicodeCh);
+		int mbLen = wctomb(mbCh, wideCh);
+		if (mbLen == -1) {// invalid multibyte character
+			m_text.clear();
+			return m_text;
+		}
+		mbCh[mbLen] = '\0';
+		m_text.append(mbCh);
+		G_Text.m_text[j++] = i->UnicodeCh;
 	}
-
-	G_Text.m_text[j] = AU('\0');
-
-	DWORD dwNum = WideCharToMultiByte(CP_OEMCP,NULL,(LPCWSTR)G_Text.m_text,-1,NULL,0,NULL,FALSE);
-	char *psText;
-	psText = new char[dwNum];
-	if(!psText) {
-		delete []Buffer;
-		return m_text;
-	}
-	WideCharToMultiByte (CP_OEMCP,NULL,(LPCWSTR)G_Text.m_text,-1,psText,dwNum,NULL,FALSE);
-	m_text = psText;
-	delete []psText;
-	delete []Buffer;
+	delete []mbCh;
 
 	return m_text;
 }
