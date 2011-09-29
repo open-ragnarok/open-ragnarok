@@ -224,7 +224,7 @@ void PktGen::OutputSource(FILE* out) {
 	fprintf(out, "\tunsigned short size;\n");
 	fprintf(out, "\tbuf.peek((unsigned char*)&buf_id, 2);\n");
 	fprintf(out, "\tif (buf_id != id) {\n");
-	fprintf(out, "\t\tfprintf(stderr, \"Wrong packet id! (%04x != %04x)\\n\", id, buf_id);\n");
+	fprintf(out, "\t\tfprintf(stderr, \"Wrong packet id! (%%04x != %%04x)\\n\", id, buf_id);\n");
 	fprintf(out, "\t\treturn(false);\n");
 	fprintf(out, "\t}\n");
 	fprintf(out, "\tsize = *(unsigned short*)(buf.getBuffer() + 2);\n");

@@ -2,6 +2,5 @@
 #define __STDAFX_H
 
 #define TIXML_USE_STL
-#define _CRT_SECURE_NO_WARNINGS
 
 #endif /* __STDAFX_H */
