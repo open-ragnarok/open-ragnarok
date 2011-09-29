@@ -1,0 +1,83 @@
+
+#
+# roengine
+#
+if( HAVE_ronet AND HAVE_roint AND HAVE_sdl_engine AND HAVE_rogl AND HAVE_png AND HAVE_freetype AND HAVE_OpenGL AND HAVE_glew AND HAVE_sdl AND HAVE_cAudio )
+	option( BUILD_LIBRARY_ROENGINE "build roengine library" ON )
+	set( BUILD_LIBRARY_ROENGINE_TYPE "STATIC" CACHE STRING "build type: SHARED (dll/so) or STATIC (lib/a)" )
+	set_property( CACHE BUILD_LIBRARY_ROENGINE_TYPE  PROPERTY STRINGS "SHARED" "STATIC" )
+else()
+	unset( BUILD_LIBRARY_ROENGINE CACHE )
+	unset( BUILD_LIBRARY_ROENGINE_TYPE CACHE )
+endif()
+if( BUILD_LIBRARY_ROENGINE )
+message( STATUS "Creating target roengine" )
+message( STATUS "- type: ${BUILD_LIBRARY_ROENGINE_TYPE} library" )
+
+# variables
+set( ROENGINE_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE INTERNAL "" )
+if( BUILD_LIBRARY_ROENGINE_TYPE STREQUAL "SHARED" )
+	set( ROENGINE_DEFINITIONS "-DROENGINE_DLL" CACHE INTERNAL "" )
+else()
+	set( ROENGINE_DEFINITIONS "-DROENGINE_STATIC" CACHE INTERNAL "" )
+endif()
+file( GLOB ROENGINE_HEADERS
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/roengine/*.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/roengine/gui/*.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/roengine/objects/*.h"
+	)
+file( GLOB ROENGINE_SOURCES
+	"${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
+	"${CMAKE_CURRENT_SOURCE_DIR}/gui/*.cc"
+	"${CMAKE_CURRENT_SOURCE_DIR}/objects/*.cc"
+	)
+set( INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}" ${ROENGINE_INCLUDE_DIRS} ${RONET_INCLUDE_DIRS} ${ROINT_INCLUDE_DIRS} ${SDL_ENGINE_INCLUDE_DIRS} ${ROGL_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS} ${SDL_INCLUDE_DIR} ${CAUDIO_INCLUDE_DIRS} )
+set( DEFINITIONS ${ROENGINE_DEFINITIONS} ${RONET_DEFINITIONS} ${ROINT_DEFINITIONS} ${SDL_ENGINE_DEFINITIONS} ${ROGL_DEFINITIONS} )
+set( LIBRARIES ronet roint sdl_engine rogl ${FREETYPE_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} ${SDL_LIBRARY} ${CAUDIO_LIBRARIES} )
+set( DEPENDENCIES ronet roint sdl_engine rogl )
+if( WITH_LOCAL_LIBRARIES_libpng )
+	set( INCLUDE_DIRS ${LOCAL_PNG_INCLUDE_DIRS} ${INCLUDE_DIRS} )# local first
+	list( APPEND LIBRARIES local_libpng )
+	list( APPEND DEPENDENCIES local_libpng )
+else( WITH_LOCAL_LIBRARIES_libpng )
+	list( APPEND INCLUDE_DIRS ${PNG_PNG_INCLUDE_DIR} )
+	list( APPEND LIBRARIES ${PNG_LIBRARY} )
+endif( WITH_LOCAL_LIBRARIES_libpng )
+if( HAVE_logsys )
+	message( STATUS "- enabling logsys" )
+	list( APPEND INCLUDE_DIRS ${LOGSYS_INCLUDE_DIRS} )
+	list( APPEND DEFINITIONS ${LOGSYS_DEFINITIONS} )
+	list( APPEND LIBRARIES logsys )
+	list( APPEND DEPENDENCIES logsys )
+else( HAVE_logsys )
+	message( STATUS "- disabling logsys" )
+endif( HAVE_logsys )
+
+# target
+include_directories( ${INCLUDE_DIRS} )
+add_definitions( ${DEFINITIONS} )
+add_library( roengine ${BUILD_LIBRARY_ROENGINE_TYPE} ${ROENGINE_SOURCES} ${ROENGINE_HEADERS} )
+target_link_libraries( roengine ${LIBRARIES} )
+add_dependencies( roengine ${DEPENDENCIES} )
+
+# install
+if( INSTALL_LIBRARIES )
+install( TARGETS roengine
+	RUNTIME DESTINATION "${INSTALL_DIR_RUNTIME}"
+	LIBRARY DESTINATION "${INSTALL_DIR_LIBRARIES}"
+	ARCHIVE DESTINATION "${INSTALL_DIR_LIBRARIES}"
+	)
+install( DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
+	DESTINATION "${INSTALL_DIR_INCLUDES}"
+	PATTERN "stdafx.h" EXCLUDE
+	)
+endif( INSTALL_LIBRARIES )
+
+set( TARGET_LIST ${TARGET_LIST} roengine  CACHE INTERNAL "" )
+set( HAVE_roengine ON  CACHE INTERNAL "" )
+message( STATUS "Creating target roengine - done" )
+else( BUILD_LIBRARY_ROENGINE )
+message( STATUS "Skipping target roengine (requires ronet,roint,sdl_engine,rogl,png,freetype,OpenGL,glew,sdl,cAudio)" )
+unset( HAVE_roengine CACHE )
+endif( BUILD_LIBRARY_ROENGINE )

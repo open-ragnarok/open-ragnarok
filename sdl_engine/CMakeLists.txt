@@ -1,0 +1,104 @@
+
+#
+# sdl_engine
+#
+if( HAVE_zlib AND HAVE_png AND HAVE_targa AND HAVE_jpeg AND HAVE_freetype AND HAVE_OpenGL AND HAVE_sdl )
+	option( BUILD_LIBRARY_SDL_ENGINE "build sdl_engine library" ON )
+	set( BUILD_LIBRARY_SDL_ENGINE_TYPE "STATIC" CACHE STRING "build type: SHARED (dll/so) or STATIC (lib/a)" )
+	set_property( CACHE BUILD_LIBRARY_SDL_ENGINE_TYPE  PROPERTY STRINGS "SHARED" "STATIC" )
+	option( ENABLE_SDL_ENGINE_CONSOLE "enable the sdl_engine console" OFF )
+else()
+	unset( BUILD_LIBRARY_SDL_ENGINE CACHE )
+	unset( BUILD_LIBRARY_SDL_ENGINE_TYPE CACHE )
+	unset( ENABLE_SDL_ENGINE_CONSOLE CACHE )
+endif()
+if( BUILD_LIBRARY_SDL_ENGINE )
+message( STATUS "Creating target sdl_engine" )
+message( STATUS "- type: ${BUILD_LIBRARY_SDL_ENGINE_TYPE} library" )
+
+# variables
+set( SDL_ENGINE_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE INTERNAL "" )
+if( BUILD_LIBRARY_SDL_ENGINE_TYPE STREQUAL "SHARED" )
+	set( SDL_ENGINE_DEFINITIONS "-DSDLENGINE_DLL" CACHE INTERNAL "" )
+else()
+	set( SDL_ENGINE_DEFINITIONS "-DSDLENGINE_STATIC" CACHE INTERNAL "" )
+endif()
+file( GLOB SDL_ENGINE_HEADERS
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/sdle/*.h"
+	)
+file( GLOB SDL_ENGINE_SOURCES
+	"${CMAKE_CURRENT_SOURCE_DIR}/*.cc"
+	)
+set( INCLUDE_DIRS ${LOCAL_TARGA_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}" ${SDL_ENGINE_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${SDL_INCLUDE_DIR} )
+set( DEFINITIONS ${SDL_ENGINE_DEFINITIONS} )
+set( LIBRARIES local_libtarga ${FREETYPE_LIBRARIES} ${OPENGL_LIBRARIES} ${SDL_LIBRARY} )
+set( DEPENDENCIES local_libtarga )
+if( WITH_LOCAL_LIBRARIES_zlib )
+	set( INCLUDE_DIRS ${LOCAL_ZLIB_INCLUDE_DIRS} ${INCLUDE_DIRS} )# local first
+	list( APPEND LIBRARIES local_zlib )
+	list( APPEND DEPENDENCIES local_zlib )
+else( WITH_LOCAL_LIBRARIES_zlib )
+	list( APPEND INCLUDE_DIRS ${ZLIB_INCLUDE_DIR} )
+	list( APPEND LIBRARIES ${ZLIB_LIBRARY} )
+endif( WITH_LOCAL_LIBRARIES_zlib )
+if( WITH_LOCAL_LIBRARIES_libpng )
+	set( INCLUDE_DIRS ${LOCAL_PNG_INCLUDE_DIRS} ${INCLUDE_DIRS} )# local first
+	list( APPEND LIBRARIES local_libpng )
+	list( APPEND DEPENDENCIES local_libpng )
+else( WITH_LOCAL_LIBRARIES_libpng )
+	list( APPEND INCLUDE_DIRS ${PNG_PNG_INCLUDE_DIR} )
+	list( APPEND LIBRARIES ${PNG_LIBRARY} )
+endif( WITH_LOCAL_LIBRARIES_libpng )
+if( WITH_LOCAL_LIBRARIES_libjpeg )
+	set( INCLUDE_DIRS ${LOCAL_JPEG_INCLUDE_DIRS} ${INCLUDE_DIRS} )# local first
+	list( APPEND LIBRARIES local_libjpeg )
+	list( APPEND DEPENDENCIES local_libjpeg )
+else( WITH_LOCAL_LIBRARIES_libjpeg )
+	list( APPEND INCLUDE_DIRS ${JPEG_INCLUDE_DIR} )
+	list( APPEND LIBRARIES ${JPEG_LIBRARIES} )
+endif( WITH_LOCAL_LIBRARIES_libjpeg )
+if( HAVE_logsys )
+	message( STATUS "- enabling logsys" )
+	list( APPEND INCLUDE_DIRS ${LOGSYS_INCLUDE_DIRS} )
+	list( APPEND DEFINITIONS ${LOGSYS_DEFINITIONS} )
+	list( APPEND LIBRARIES logsys )
+	list( APPEND DEPENDENCIES logsys )
+else( HAVE_logsys )
+	message( STATUS "- disabling logsys" )
+endif( HAVE_logsys )
+if( ENABLE_SDL_ENGINE_CONSOLE )
+	message( STATUS "- enabling console" )
+	list( APPEND DEFINITIONS -DSDLENGINE_CONSOLE )
+	set( SDL_ENGINE_DEFINITIONS ${SDL_ENGINE_DEFINITIONS} -DSDLENGINE_CONSOLE  CACHE INTERNAL "" )
+else( ENABLE_SDL_ENGINE_CONSOLE )
+	message( STATUS "- disabling console" )
+endif( ENABLE_SDL_ENGINE_CONSOLE )
+
+# target
+include_directories( ${INCLUDE_DIRS} )
+add_definitions( ${DEFINITIONS} )
+add_library( sdl_engine ${BUILD_LIBRARY_SDL_ENGINE_TYPE} ${SDL_ENGINE_SOURCES} ${SDL_ENGINE_HEADERS} )
+target_link_libraries( sdl_engine ${LIBRARIES} )
+add_dependencies( sdl_engine ${DEPENDENCIES} )
+
+# install
+if( INSTALL_LIBRARIES )
+install( TARGETS sdl_engine
+	RUNTIME DESTINATION "${INSTALL_DIR_RUNTIME}"
+	LIBRARY DESTINATION "${INSTALL_DIR_LIBRARIES}"
+	ARCHIVE DESTINATION "${INSTALL_DIR_LIBRARIES}"
+	)
+install( DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
+	DESTINATION "${INSTALL_DIR_INCLUDES}"
+	PATTERN "stdafx.h" EXCLUDE
+	)
+endif( INSTALL_LIBRARIES )
+
+set( TARGET_LIST ${TARGET_LIST} sdl_engine  CACHE INTERNAL "" )
+set( HAVE_sdl_engine ON  CACHE INTERNAL "" )
+message( STATUS "Creating target sdl_engine - done" )
+else( BUILD_LIBRARY_SDL_ENGINE )
+message( STATUS "Skipping target sdl_engine (requires zlib,png,targa,jpeg,freetype,OpenGL,sdl)" )
+unset( HAVE_sdl_engine CACHE )
+endif( BUILD_LIBRARY_SDL_ENGINE )
