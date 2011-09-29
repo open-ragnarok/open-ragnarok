@@ -218,7 +218,7 @@ public:
 			return(ret);
 		}
 
-		printf("[DEBUG] No handler for %s\n", tokens[0]);
+		printf("[DEBUG] No handler for %s\n", tokens[0].c_str());
 
 		return(ret);
 	}
@@ -277,7 +277,7 @@ int main(int argc, char** argv) {
 	std::string ret;
 	do {
 		printf("> ");
-		gets(buf);
+		fgets(buf, 256, stdin);
 		if (strcmp(buf, "exit") == 0) {
 			sprintf(buf, "");
 		}
