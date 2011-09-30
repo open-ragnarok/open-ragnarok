@@ -1,4 +1,4 @@
-#include <roint/ro.h>
+#include <ro/ro.h>
 
 #include <iostream>
 #include <fstream>
@@ -13,18 +13,18 @@ void printSyntax(const char* me) {
 }
 
 void DumpRSW(const std::string& fn) {
-	RO::RSW rsw;
+	ro::RSW rsw;
 	if (!rsw.read(fn)) {
 		std::cout << "Error reading file " << fn << std::endl;
 		return;
 	}
 	std::stringstream ss;
 	rsw.Dump(ss);
-	RO::euc2utf8(ss, std::cout);
+	ro::euc2utf8(ss, std::cout);
 }
 
-void DumpRSWFromGRF(const std::string& fn, RO::GRF& grf) {
-	RO::RSW rsw;
+void DumpRSWFromGRF(const std::string& fn, ro::GRF& grf) {
+	ro::RSW rsw;
 	std::stringstream fd;
 	std::string file = "data\\";
 	file += fn;	
@@ -38,7 +38,7 @@ void DumpRSWFromGRF(const std::string& fn, RO::GRF& grf) {
 	}
 	std::stringstream ss;
 	rsw.Dump(ss);
-	RO::euc2utf8(ss, std::cout);
+	ro::euc2utf8(ss, std::cout);
 }
 
 int main(int argc, char* argv[]) {
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 
 	bool found = false;
 
-	RO::GRF grf;
+	ro::GRF grf;
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "--grf")) {
 			i++;

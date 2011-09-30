@@ -1,4 +1,4 @@
-#include <roint/ro.h>
+#include <ro/ro.h>
 
 #include <iostream>
 #include <fstream>
@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 		return(1);
 	}
 
-	RO::RSM rsm;
+	ro::RSM rsm;
 	if (!rsm.read(argv[1])) {
 		std::cout << "Error reading file " << argv[1] << std::endl;
 		return(1);

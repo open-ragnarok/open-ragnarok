@@ -1,4 +1,4 @@
-#include <roint/ro.h>
+#include <ro/ro.h>
 
 #include <iostream>
 #include <fstream>
@@ -22,14 +22,14 @@ bool convert(const std::string& fn) {
 		return(false);
 	}
 
-	RO::SPR spr;
+	ro::SPR spr;
 	spr.readStream(in);
-	std::cout << "\tFile has " << spr.getImgCount() << " frames." << std::endl;
+	std::cout << "\tFile has " << spr.getImageCount() << " frames." << std::endl;
 	std::cout << "\tVersion " << (int)spr.getVersion()->cver.major << "." << (int)spr.getVersion()->cver.minor << std::endl;
-	for (i = 0; i < spr.getImgCount(); i++) {
+	for (i = 0; i < spr.getImageCount(); i++) {
 		sprintf(ofn, "%s-%d.bmp", prefix.c_str(), i);
 		// std::cout << "\tExporting frame " << i << " to file " << ofn;
-		const RO::SPR::Image* img = spr.getFrame(i);
+		const ro::SPR::Image* img = spr.getImage(i);
 		// std::cout << " (" << img->w << "x" << img->h << ")" << std::endl;
 		std::ofstream out(ofn, std::ios_base::binary);
 		if (!out.is_open())
