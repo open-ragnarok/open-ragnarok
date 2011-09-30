@@ -199,7 +199,7 @@ void MyFrame::OnOpen(wxCommandEvent& WXUNUSED(event)) {
 	openFileDialog.SetWildcard("GRF Files|*.grf|All Files|*.*");
 	if (openFileDialog.ShowModal() == wxID_OK){
 		wxString fileName = openFileDialog.GetPath();
-		std::string fn = fileName.utf8_str();
+		std::string fn = fileName.utf8_str().data();
 		if (!m_grf.open(fn)) {
 			wxMessageDialog dial(NULL, wxString::Format(L"Error loading file %s", fileName),
 				wxT("Error"), wxOK | wxICON_ERROR);
@@ -265,7 +265,7 @@ void MyFrame::OnExtract(wxCommandEvent& event) {
 	std::string fn = item.filename;
 	fileDialog.SetFilename(wxFileNameFromPath(wxString(item.filename, wxCSConv("EUC-KR"))));
 	if (fileDialog.ShowModal() == wxID_OK) {
-		std::wstring outfn = fileDialog.GetPath().wc_str();
+		std::wstring outfn = fileDialog.GetPath().wc_str().data();
 		if (!m_grf.save(item.filename, outfn)) {
 			wxMessageDialog dial(NULL, wxString::Format(_T("Failed to save file %s."), wxString(outfn.c_str())),
 			wxT("Error"), wxOK | wxICON_ERROR);

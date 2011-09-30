@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <wx/tokenzr.h>
+#include <wx/filename.h>
 
 #include "up_arrow.xpm"
 #include "down_arrow.xpm"
@@ -35,7 +36,7 @@ BEGIN_EVENT_TABLE(GRFTree, wxTreeCtrl)
 END_EVENT_TABLE()
 
 #define HEADER_COUNT 6
-char *grflist_headers[HEADER_COUNT] = {
+const char* grflist_headers[HEADER_COUNT] = {
 	"idx", 
 	"size", 
 	"compressed", 
@@ -440,7 +441,7 @@ bool GRFTree::LoadGRF(ro::GRF* grf, wxString &fn) {
 
 	m_internalList.resize(grf->getCount());
 
-	std::map<wxString, std::vector<int>> pathList;
+	std::map<wxString, std::vector<int> > pathList;
 	float step = (grf->getCount() / 100.f);
 	float cur = step;
 	wxCSConv euckrconv(wxT("EUC-KR"));
@@ -455,7 +456,7 @@ bool GRFTree::LoadGRF(ro::GRF* grf, wxString &fn) {
 		listitem.flags = item.flags;
 		listitem.filename = wxString(item.filename, euckrconv);
 		wxString path, fn, ext;
-		wxSplitPath(listitem.filename, &path, &fn, &ext);
+		wxFileName::SplitPath(listitem.filename, &path, &fn, &ext);
 		listitem.ext = ext;
 		std::vector<int> &fileList = pathList[path];
 		fileList.push_back(i);
@@ -477,7 +478,7 @@ bool GRFTree::LoadGRF(ro::GRF* grf, wxString &fn) {
 //	wxTreeItemId idParent = rootId;
 	std::vector<int> emptyList;
 
-	for (std::map<wxString, std::vector<int>>::iterator itr = pathList.begin();
+	for (std::map<wxString, std::vector<int> >::iterator itr = pathList.begin();
 		itr != pathList.end(); 
 		itr++) 
 	{
@@ -490,7 +491,7 @@ bool GRFTree::LoadGRF(ro::GRF* grf, wxString &fn) {
 		while ( tkz.HasMoreTokens() )
 		{
 		//	Expand(_id);
-			wxString &token = tkz.GetNextToken();
+			wxString token = tkz.GetNextToken();
 
 			if (GetChildrenCount(_id, false) == 0) {
 				if ( tkz.HasMoreTokens() )

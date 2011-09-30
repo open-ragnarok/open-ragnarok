@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "wx_support.h"
+#include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/treectrl.h>
 

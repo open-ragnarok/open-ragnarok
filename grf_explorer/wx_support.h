@@ -4,6 +4,7 @@
 #include "wx/wx.h"
 #include "wx/progdlg.h"
 
+#if 0
 #pragma comment(lib,"comctl32.lib")
 #pragma comment(lib,"rpcrt4.lib")
 #pragma comment(lib,"winmm.lib")
@@ -39,5 +40,6 @@
 #		pragma comment(lib,"wxbase"__WXVERSION".lib")
 #	endif
 #endif
+#endif /* 0 */
 
 #endif
