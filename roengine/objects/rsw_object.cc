@@ -248,250 +248,106 @@ void RswObject::DrawSurface(const ro::GND::Surface& surface, const float* vertic
 	glEnable(GL_COLOR_MATERIAL);
 	glColor4ub(surface.color.r, surface.color.g, surface.color.b, surface.color.a);
 
-#if 1
 	if (surface.textureId != -1 && textures[surface.textureId].Valid())
 	{
 		const sdle::Texture texture = textures[surface.textureId];
-		//float tvertices[4 * 2] = {
+		// Texture coordinates for unit 0
 		float tvertices0[4 * 2] = {
 			surface.u[0] * texture.getMaxU(), (1.0f - surface.v[0]) * texture.getMaxV(),
 			surface.u[1] * texture.getMaxU(), (1.0f - surface.v[1]) * texture.getMaxV(),
 			surface.u[2] * texture.getMaxU(), (1.0f - surface.v[2]) * texture.getMaxV(),
 			surface.u[3] * texture.getMaxU(), (1.0f - surface.v[3]) * texture.getMaxV()
 		};
-//		float tvertices[4 * 3] = {
-/*		float tvertices0[4 * 3] = {
-			surface.u[0] * texture.getMaxU(), (1.0f - surface.v[0]) * texture.getMaxV(), -100,
-			surface.u[1] * texture.getMaxU(), (1.0f - surface.v[1]) * texture.getMaxV(), -100,
-			surface.u[2] * texture.getMaxU(), (1.0f - surface.v[2]) * texture.getMaxV(), -100,
-			surface.u[3] * texture.getMaxU(), (1.0f - surface.v[3]) * texture.getMaxV(), -100
-		};*/
-		glActiveTexture(GL_TEXTURE0);////
+
+		// Texture unit 0 is normal surface texture
+		glActiveTexture(GL_TEXTURE0);
 		texture.Activate();
-#if 0
-		glEnable(GL_TEXTURE_2D);
-		glBegin(GL_TRIANGLE_STRIP);
-#if 1
-/*		glTexCoord2fv(tvertices + 0); glVertex3fv(vertices + 0);
-		glTexCoord2fv(tvertices + 2); glVertex3fv(vertices + 3);
-		glTexCoord2fv(tvertices + 4); glVertex3fv(vertices + 6);
-		glTexCoord2fv(tvertices + 6); glVertex3fv(vertices + 9);*/
-		glMultiTexCoord2fv(GL_TEXTURE0, tvertices0 + 0); 
-	//	glMultiTexCoord2fv(GL_TEXTURE1, tvertices1 + 0); 
-		glVertex3fv(vertices + 0);
-		glMultiTexCoord2fv(GL_TEXTURE0, tvertices0 + 2); 
-	//	glMultiTexCoord2fv(GL_TEXTURE1, tvertices1 + 2); 
-		glVertex3fv(vertices + 3);
-		glMultiTexCoord2fv(GL_TEXTURE0, tvertices0 + 4); 
-	//	glMultiTexCoord2fv(GL_TEXTURE1, tvertices1 + 4); 
-		glVertex3fv(vertices + 6);
-		glMultiTexCoord2fv(GL_TEXTURE0, tvertices0 + 6); 
-	//	glMultiTexCoord2fv(GL_TEXTURE1, tvertices1 + 6); 
-		glVertex3fv(vertices + 9);
-#else // projection mapping
-		glTexCoord2fv(tvertices + 0); glVertex3fv(vertices + 0);
-		glTexCoord2fv(tvertices + 3); glVertex3fv(vertices + 3);
-		glTexCoord2fv(tvertices + 6); glVertex3fv(vertices + 6);
-		glTexCoord2fv(tvertices + 9); glVertex3fv(vertices + 9);
-#endif
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-#endif
 
-#if 0
-		//glLineWidth(5);
-		glColor4f(0, 0, 1, 1);
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(vertices + 0);
-		glVertex3fv(vertices + 3);
-		glVertex3fv(vertices + 9);
-		glVertex3fv(vertices + 6);
-		glEnd();
-		glColor4f(1, 1, 1, 1);
-		//glLineWidth(1);
-#endif
-//	}
-#endif
-#if 1
-//	if (surface.lightmapId != -1)
-//	if (surface.lightmapId > 0)
-//	{
-		ro::GND::Lightmap lightmap = gnd->getLightmap(surface.lightmapId);
-	//	const sdle::Texture texture = textures[surface.lightmapId];
-	/*	sdle::Texture::Root *root = new sdle::Texture::Root;
-		root->Create(lightmap.brightness, 8, 8, 8);
-		sdle::Texture texture(root);*/
-	/*	float tvertices[4 * 2] = {
-			surface.u[0] * texture.getMaxU(), (1.0f - surface.v[0]) * texture.getMaxV(),
-			surface.u[1] * texture.getMaxU(), (1.0f - surface.v[1]) * texture.getMaxV(),
-			surface.u[2] * texture.getMaxU(), (1.0f - surface.v[2]) * texture.getMaxV(),
-			surface.u[3] * texture.getMaxU(), (1.0f - surface.v[3]) * texture.getMaxV()
-		};*/
-#if 1
-//		float tvertices[4 * 2] = {
+		// Texture coordinates for unit 1 and 2
 		float tvertices1[4 * 2] = {
-		/*	surface.u[0] * 1, (1.0f - surface.v[0]) * 1,
-			surface.u[1] * 1, (1.0f - surface.v[1]) * 1,
-			surface.u[2] * 1, (1.0f - surface.v[2]) * 1,
-			surface.u[3] * 1, (1.0f - surface.v[3]) * 1*/
-		/*	*(vertices + 0), *(vertices + 2),
-			*(vertices + 3), *(vertices + 5),
-			*(vertices + 6), *(vertices + 8),
-			*(vertices + 9), *(vertices + 11)*/
-		/*	 0.0, 0.0 , 
-			 0.0, 1.0 , 
-			 1.0, 1.0 , 
-			 1.0, 0.0 */
-			 0.0, 0.0 , 
-			 1.0, 0.0 ,
-			 0.0, 1.0 , 
-			 1.0, 1.0
+			 0.1, 0.1 , 
+			 0.9, 0.1 ,
+			 0.1, 0.9 , 
+			 0.9, 0.9
 		};
-#else
-		float tvertices[4 * 3] = {
-		/*	 0.0, 0.0 , -1,
-			 0.0, 1.0 , -1,
-			 1.0, 1.0 , -1,
-			 1.0, 0.0 , -1*/
-			 0.0, 0.0 , -1,
-			 1.0, 0.0 , -1,
-			 0.0, 1.0 , -1,
-			 1.0, 1.0 , -1
-		/*	 0.01, 0.01 , -1,
-			 0.99, 0.01 , -1,
-			 0.01, 0.99 , -1,
-			 0.99, 0.99 , -1*/
-		/*	 0.0, 0.0 , -1,
-			 0.9, 0.0 , -1,
-			 0.0, 0.9 , -1,
-			 0.9, 0.9 , -1*/
-		/*	 0.1, 0.1 , -1,
-			 1.0, 0.1 , -1,
-			 0.1, 1.0 , -1,
-			 1.0, 1.0 , -1*/
-		/*	*(vertices + 0), -100, *(vertices + 2),
-			*(vertices + 3), -100, *(vertices + 5),
-			*(vertices + 6), -100, *(vertices + 8),
-			*(vertices + 9), -100, *(vertices + 11)*/
-		/*	*(vertices + 0), *(vertices + 2), -100,
-			*(vertices + 3), *(vertices + 5), -100,
-			*(vertices + 6), *(vertices + 8), -100,
-			*(vertices + 9), *(vertices + 11), -100*/
-		};
-#endif
-	sdle::Texture tex;
-	std::string texname;
-	std::wstring texnamew;
-	const char *tmp;
 
-/*	TextureManager& tm = m_cache.getTextureManager();
-	FileManager& fm = m_cache.getFileManager();
-
-		tex = tm.Register(fm, texname);
-		if (!tex.Valid()) {
-			fprintf(stderr, "Warning: Texture not found: %s\n", texname.c_str());
-		}
-		lighmapTextures.add(tex);*/
-
-//	static std::map<unsigned short, unsigned int*> texmap;
-	std::map<unsigned short, unsigned int*>::iterator itr = lightmap_texmap.find(surface.lightmapId);
-	unsigned int *m_texid;
-	if (itr == lightmap_texmap.end()) {
-		m_texid = new unsigned int[2];
-		glGenTextures(2, m_texid);
-	//	lightmap_texmap.insert(std::pair<unsigned short, unsigned int*>(surface.lightmapId, m_texid));
-		lightmap_texmap[surface.lightmapId] = m_texid;
+		// find cache
+		std::map<unsigned short, unsigned int*>::iterator itr = lightmap_texmap.find(surface.lightmapId);
+		if (itr == lightmap_texmap.end()) { // no cache
+			unsigned int *texid = new unsigned int[2];
+			glGenTextures(2, texid);
+			lightmap_texmap[surface.lightmapId] = texid;
 #define size 7
-		unsigned char brightness[size][size], color[size][size][3];
-		for (int i = 0; i < size; i++)
-			for (int j = 0; j < size; j++)
+			ro::GND::Lightmap lightmap = gnd->getLightmap(surface.lightmapId);
+			unsigned char brightness[size][size], color[size][size][3];
+			for (int i = 0; i < size; i++)
 			{
-				color[i][j][0] = lightmap.color[i][j].r;
-				color[i][j][1] = lightmap.color[i][j].g;
-				color[i][j][2] = lightmap.color[i][j].b;
-				brightness[i][j] = lightmap.brightness[i][j];
+				for (int j = 0; j < size; j++)
+				{
+					color[i][j][0] = lightmap.color[i][j].r;
+					color[i][j][1] = lightmap.color[i][j].g;
+					color[i][j][2] = lightmap.color[i][j].b;
+					brightness[i][j] = lightmap.brightness[i][j];
+				}
 			}
-		glActiveTexture(GL_TEXTURE1);////
-		glBindTexture(GL_TEXTURE_2D, m_texid[0]);
-		glTexImage2D(GL_TEXTURE_2D, 0, 1, size, size, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, brightness);
 
-#if 0
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-#else
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-#endif
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		
-		static const GLfloat border[] = { 1.0, 1.0, 1.0, 0.0 };
-		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border);
+			// Texture unit 1 is shadow(grayscale) map
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, texid[0]);
+			glTexImage2D(GL_TEXTURE_2D, 0, 1, size, size, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, brightness); // luminance
 
-		//////////////////
-		glActiveTexture(GL_TEXTURE2);////
-		glBindTexture(GL_TEXTURE_2D, m_texid[1]);
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, color);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+			
+			// Texture unit 2 is colored light(intensity) map
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, texid[1]);
+			glTexImage2D(GL_TEXTURE_2D, 0, 3, size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, color);
 
-#if 0
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-#else
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-#endif
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
-		
-		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border);
-	}
-	else {
-		m_texid = itr->second;
-		glActiveTexture(GL_TEXTURE1);////
-		glBindTexture(GL_TEXTURE_2D, m_texid[0]);
-		glActiveTexture(GL_TEXTURE2);////
-		glBindTexture(GL_TEXTURE_2D, m_texid[1]);
-	}
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD); // Add for light intensity
+		}
+		else { // cached
+			unsigned int *texid = itr->second;
+
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, texid[0]);
+
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, texid[1]);
+		}
 
 
-		glActiveTexture(GL_TEXTURE0);////
+		// Calculate normals for lighting no smoothing
+		float f3Vector01[3], f3Vector12[3];
+		f3Vector01[0] = *(vertices + 3) - *(vertices + 0);
+		f3Vector12[0] = *(vertices + 6) - *(vertices + 0);
+
+		f3Vector01[1] = *(vertices + 4) - *(vertices + 1);
+		f3Vector12[1] = *(vertices + 7) - *(vertices + 1);
+
+		f3Vector01[2] = *(vertices + 5) - *(vertices + 2);
+		f3Vector12[2] = *(vertices + 8) - *(vertices + 2);
+		float f3NormalVector[3] = { f3Vector01[1] * f3Vector12[2] - f3Vector01[2] * f3Vector12[1],
+									f3Vector01[2] * f3Vector12[0] - f3Vector01[0] * f3Vector12[2],
+									f3Vector01[0] * f3Vector12[1] - f3Vector01[1] * f3Vector12[0] };
+		glNormal3fv( f3NormalVector );
+
+		// Multi texture
+		glActiveTexture(GL_TEXTURE0);
 		glEnable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE1);////
+		glActiveTexture(GL_TEXTURE1);
 		glEnable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE2);////
+		glActiveTexture(GL_TEXTURE2);
 		glEnable(GL_TEXTURE_2D);
-	//	texture.Activate();
   
-	float f3Vector01[3], f3Vector12[3];
-	f3Vector01[0] = *(vertices + 3) - *(vertices + 0);
-	f3Vector12[0] = *(vertices + 6) - *(vertices + 0);
-
-	f3Vector01[1] = *(vertices + 4) - *(vertices + 1);
-	f3Vector12[1] = *(vertices + 7) - *(vertices + 1);
-
-	f3Vector01[2] = *(vertices + 5) - *(vertices + 2);
-	f3Vector12[2] = *(vertices + 8) - *(vertices + 2);
-	float f3NormalVector[3] = { f3Vector01[1] * f3Vector12[2] - f3Vector01[2] * f3Vector12[1],
-								f3Vector01[2] * f3Vector12[0] - f3Vector01[0] * f3Vector12[2],
-								f3Vector01[0] * f3Vector12[1] - f3Vector01[1] * f3Vector12[0] };
-	glNormal3fv( f3NormalVector );
-
 		glBegin(GL_TRIANGLE_STRIP);
-#if 1 // Multi texture
 		glMultiTexCoord2fv(GL_TEXTURE0, tvertices0 + 0); 
 		glMultiTexCoord2fv(GL_TEXTURE1, tvertices1 + 0); 
 		glMultiTexCoord2fv(GL_TEXTURE2, tvertices1 + 0); 
@@ -508,51 +364,32 @@ void RswObject::DrawSurface(const ro::GND::Surface& surface, const float* vertic
 		glMultiTexCoord2fv(GL_TEXTURE1, tvertices1 + 6); 
 		glMultiTexCoord2fv(GL_TEXTURE2, tvertices1 + 6); 
 		glVertex3fv(vertices + 9);
-#else
-#if 1
-		glTexCoord2fv(tvertices + 0); glVertex3fv(vertices + 0);
-		glTexCoord2fv(tvertices + 2); glVertex3fv(vertices + 3);
-		glTexCoord2fv(tvertices + 4); glVertex3fv(vertices + 6);
-		glTexCoord2fv(tvertices + 6); glVertex3fv(vertices + 9);
-#else
-	/*	glTexCoord3fv(vertices + 0); glVertex3fv(vertices + 0);
-		glTexCoord3fv(vertices + 3); glVertex3fv(vertices + 3);
-		glTexCoord3fv(vertices + 6); glVertex3fv(vertices + 6);
-		glTexCoord3fv(vertices + 9); glVertex3fv(vertices + 9);*/
-		glTexCoord3fv(tvertices + 0); glVertex3fv(vertices + 0);
-		glTexCoord3fv(tvertices + 3); glVertex3fv(vertices + 3);
-		glTexCoord3fv(tvertices + 6); glVertex3fv(vertices + 6);
-		glTexCoord3fv(tvertices + 9); glVertex3fv(vertices + 9);
-#endif
-#endif // Multi texture
 		glEnd();
 
-		glActiveTexture(GL_TEXTURE2);////
+		glActiveTexture(GL_TEXTURE2);
 		glDisable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE1);////
+		glActiveTexture(GL_TEXTURE1);
 		glDisable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE0);////
+		glActiveTexture(GL_TEXTURE0);
 		glDisable(GL_TEXTURE_2D);
-	//	delete root;
 
 	}
-#endif
-
 	else
 	{
-	float f3Vector01[3], f3Vector12[3];
-	f3Vector01[0] = *(vertices + 3) - *(vertices + 0);
-	f3Vector12[0] = *(vertices + 6) - *(vertices + 0);
+		// Calculate normals for lighting no smoothing
+		float f3Vector01[3], f3Vector12[3];
+		f3Vector01[0] = *(vertices + 3) - *(vertices + 0);
+		f3Vector12[0] = *(vertices + 6) - *(vertices + 0);
 
-	f3Vector01[1] = *(vertices + 4) - *(vertices + 1);
-	f3Vector12[1] = *(vertices + 7) - *(vertices + 1);
+		f3Vector01[1] = *(vertices + 4) - *(vertices + 1);
+		f3Vector12[1] = *(vertices + 7) - *(vertices + 1);
 
-	f3Vector01[2] = *(vertices + 5) - *(vertices + 2);
-	f3Vector12[2] = *(vertices + 8) - *(vertices + 2);
-	float f3NormalVector[3] = { f3Vector01[1] * f3Vector12[2] - f3Vector01[2] * f3Vector12[1],
-								f3Vector01[2] * f3Vector12[0] - f3Vector01[0] * f3Vector12[2],
-								f3Vector01[0] * f3Vector12[1] - f3Vector01[1] * f3Vector12[0] };
-	glNormal3fv( f3NormalVector );
+		f3Vector01[2] = *(vertices + 5) - *(vertices + 2);
+		f3Vector12[2] = *(vertices + 8) - *(vertices + 2);
+		float f3NormalVector[3] = { f3Vector01[1] * f3Vector12[2] - f3Vector01[2] * f3Vector12[1],
+									f3Vector01[2] * f3Vector12[0] - f3Vector01[0] * f3Vector12[2],
+									f3Vector01[0] * f3Vector12[1] - f3Vector01[1] * f3Vector12[0] };
+		glNormal3fv( f3NormalVector );
 
 		glBegin(GL_TRIANGLE_STRIP);
 		glVertex3fv(vertices + 0);
