@@ -2,6 +2,7 @@
 #ifndef __GUI_TEXTINPUT_H
 #define __GUI_TEXTINPUT_H
 
+#include <SDL.h>
 #include "label.h"
 #include "sdle/font.h"
 
@@ -58,7 +59,7 @@ protected:
 	unsigned int m_start;
 	unsigned int m_delay;
 	bool m_bar,actived,m_MouseDown;
-	SDLKey m_key;
+	Uint16 m_key;
 	unsigned short repeatingDelay;
 
 public:

@@ -28,7 +28,7 @@ GUI::TextInput::TextInput(Element* parent, const TiXmlElement* e, CacheManager& 
 
 	m_MouseDown = false;
 
-	G_Text.Surface  = SDL_GetVideoSurface();
+	G_Text.Surface = SDL_GetWindowSurface(SDL_GetWindowFromID(0));
 	G_Text.Text_Changed	= false;
 	if( MaxLen <= 0 ) {
 		MaxLen = 0;
@@ -179,14 +179,14 @@ bool GUI::TextInput::HandleMouseDown(int x, int y, int button) {
 
 void GUI::TextInput::onGetFocus() {
 	actived = true;
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+	//SDL_EnableUNICODE(1);
+	//SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 void GUI::TextInput::onLoseFocus() {
 	actived = false;
-	SDL_EnableKeyRepeat(0, 0);
-	SDL_EnableUNICODE(0);
+	//SDL_EnableKeyRepeat(0, 0);
+	//SDL_EnableUNICODE(0);
 }
 
 bool GUI::TextInput::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
@@ -231,12 +231,11 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	else if(key == SDLK_LSHIFT || key == SDLK_RSHIFT);
 	else if(key == SDLK_LCTRL || key == SDLK_RCTRL);
 	else if(key == SDLK_LALT || key == SDLK_RALT);
-	else if(key == SDLK_LMETA || key == SDLK_RMETA);
-	else if(key == SDLK_LSUPER || key == SDLK_RSUPER);
+	else if(key == SDLK_LGUI || key == SDLK_RGUI);
 	else if(key == SDLK_ESCAPE);
-	else if(key == SDLK_PRINT || key == SDLK_SCROLLOCK || key == SDLK_PAUSE);
+	else if(key == SDLK_PRINTSCREEN || key == SDLK_SCROLLLOCK || key == SDLK_PAUSE);
 	else if(key >= SDLK_F1 && key <= SDLK_F15);
-	else if(key == SDLK_NUMLOCK);
+	else if(key == SDLK_NUMLOCKCLEAR);
 	else if(key == SDLK_TAB);
 	else if(key == SDLK_MENU);
 	else if(key == SDLK_PAGEDOWN || key == SDLK_PAGEUP);
@@ -248,11 +247,12 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 	else if( (mod & KMOD_RCTRL) && (key == 97 || key == 65 ) )
 		SelectAll();
 	// Unicode character 
-	else if(sdlEvent->key.keysym.unicode != 0)
-		Insert(sdlEvent->key.keysym.unicode);
+	// TODO: This was removed on SDL 2 port, make sure this is not needed
+	//else if(sdlEvent->key.keysym.unicode != 0)
+	//	Insert(sdlEvent->key.keysym.unicode);
 	// Num pad
-	else if(key >= SDLK_KP0 && key <= SDLK_KP9)
-		Insert(sdlEvent->key.keysym.sym - SDLK_KP0 + SDLK_0);
+	else if(key >= SDLK_KP_0 && key <= SDLK_KP_9)
+		Insert(sdlEvent->key.keysym.sym - SDLK_KP_0 + SDLK_0);
 	else if(key == SDLK_KP_PERIOD)
 		Insert(SDLK_PERIOD);
 	else if(key == SDLK_KP_DIVIDE)
@@ -283,7 +283,7 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 		Insert(sdlEvent->key.keysym.sym);
 
 	printf("Text input:\t");
-	printf("Unicode: %d\t", sdlEvent->key.keysym.unicode);
+	//printf("Unicode: %d\t", sdlEvent->key.keysym.unicode);
 	printf("Sym: %3d\t", sdlEvent->key.keysym.sym);
 	if (sdlEvent->key.keysym.sym < SDLK_SPACE || sdlEvent->key.keysym.sym >= SDLK_DELETE)
 		printf("Char: [ ]\t");  

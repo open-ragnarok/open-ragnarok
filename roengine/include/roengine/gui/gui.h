@@ -8,7 +8,6 @@
 #include "textinput.h"
 #include "button.h"
 #include "label.h"
-#include "textinput.h"
 #include "list.h"
 #include "dialog.h"
 //#include "progressbar.h"

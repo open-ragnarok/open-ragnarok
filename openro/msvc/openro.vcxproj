@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}</ProjectGuid>
+    <RootNamespace>openro</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)..\3rdparty\dependencies\include;$(SolutionDir)..\sdl_lib\include;$(SolutionDir)..\3rdparty\dependencies\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\3rdparty\dependencies\lib;$(SolutionDir)..\msvc-project\FreeType2;$(SolutionDir)..\sdl_lib\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)..\3rdparty\dependencies\include;$(SolutionDir)..\sdl_lib\include;$(SolutionDir)..\3rdparty\dependencies\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(SolutionDir)..\3rdparty\dependencies\lib;$(SolutionDir)..\msvc-project\FreeType2;$(SolutionDir)..\sdl_lib\lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..;$(SDL)\include;$(SolutionDir)..\sdl_engine\include;$(SolutionDir)..\roint\include;$(SolutionDir)..\rogl\include;$(SolutionDir)..\ronet\include;$(SolutionDir)..\roengine\include;$(SolutionDir)\freetype2\include;$(SolutionDir)..\logsys\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>$(OutDir);$(SDL)\lib;$(SolutionDir)\freetype2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>libtarga.lib;libpng.lib;ws2_32.lib;opengl32.lib;glu32.lib;glew32s.lib;SDL2.lib;freetype.lib;Vorbis.lib;Ogg.lib;OpenAL32.lib;cAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..;$(SDL)\include;$(SolutionDir)..\sdl_engine\include;$(SolutionDir)..\roint\include;$(SolutionDir)..\rogl\include;$(SolutionDir)..\ronet\include;$(SolutionDir)..\roengine\include;$(SolutionDir)\freetype2\include;$(SolutionDir)..\logsys\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SDL)\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/verbose:lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>libtarga.lib;libpng.lib;ws2_32.lib;opengl32.lib;glu32.lib;glew32s.lib;SDL2.lib;freetype.lib;Vorbis.lib;Ogg.lib;OpenAL32.lib;cAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <VerboseOutput>true</VerboseOutput>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gui_act.cc" />
+    <ClCompile Include="..\main.cc" />
+    <ClCompile Include="..\openro.cc" />
+    <ClCompile Include="..\stdafx.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\gui\desktop_char.cc" />
+    <ClCompile Include="..\gui\desktop_create.cc" />
+    <ClCompile Include="..\gui\desktop_ingame.cc" />
+    <ClCompile Include="..\gui\desktop_login.cc" />
+    <ClCompile Include="..\gui\desktop_service.cc" />
+    <ClCompile Include="..\gui\ro_desktop.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gui_act.h" />
+    <ClInclude Include="..\log.h" />
+    <ClInclude Include="..\openro.h" />
+    <ClInclude Include="..\states.h" />
+    <ClInclude Include="..\stdafx.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\gui\desktop_char.h" />
+    <ClInclude Include="..\gui\desktop_create.h" />
+    <ClInclude Include="..\gui\desktop_ingame.h" />
+    <ClInclude Include="..\gui\desktop_login.h" />
+    <ClInclude Include="..\gui\desktop_service.h" />
+    <ClInclude Include="..\gui\desktops.h" />
+    <ClInclude Include="..\gui\ro_desktop.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="openro.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="openro.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\data\ui\ingame.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\logsys\msvc\logsys.vcxproj">
+      <Project>{b5d2c7b1-5549-468e-a5ba-6de38bea2833}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\roengine\msvc9\roengine.vcxproj">
+      <Project>{5a500a26-aaf3-48b8-b404-68b9a2ff1c82}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugDLL|Win32">
+      <Configuration>DebugDLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugDLL|x64">
+      <Configuration>DebugDLL</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDLL|Win32">
+      <Configuration>ReleaseDLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDLL|x64">
+      <Configuration>ReleaseDLL</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5A500A26-AAF3-48B8-B404-68B9A2FF1C82}</ProjectGuid>
+    <RootNamespace>roengine</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\3rdparty\dependencies\include;$(SolutionDir)..\sdl_lib\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\3rdparty\dependencies\lib;$(SolutionDir)..\sdl_lib\lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\3rdparty\dependencies\include;$(SolutionDir)..\sdl_lib\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include\;$(SDL)\include\;$(SolutionDir)..\roint\include\;$(SolutionDir)..\rogl\include\;$(SolutionDir)\..\sdl_engine\include\;$(SolutionDir)\libpng\;$(SolutionDir)\freetype2\include\;$(SolutionDir)\zlib123\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;GLEW_STATIC;CAUDIO_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include\;$(SDL)\include\;$(SolutionDir)..\roint\include\;$(SolutionDir)..\rogl\include\;$(SolutionDir)\..\sdl_engine\include\;$(SolutionDir)\libpng\;$(SolutionDir)\freetype2\include\;$(SolutionDir)\zlib123\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include\;$(SDL)\include\;$(SolutionDir)..\roint\include\;$(SolutionDir)..\rogl\include\;$(SolutionDir)\..\sdl_engine\include\;$(SolutionDir)\libpng\;$(SolutionDir)\freetype2\include\;$(SolutionDir)\zlib123\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;ROENGINE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SDL)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include\;$(SDL)\include\;$(SolutionDir)..\roint\include\;$(SolutionDir)..\rogl\include\;$(SolutionDir)\..\sdl_engine\include\;$(SolutionDir)\libpng\;$(SolutionDir)\freetype2\include\;$(SolutionDir)\zlib123\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;ROENGINE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SDL)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)\roint\;$(SolutionDir)\rogl\;$(SDL)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\roint\;$(SolutionDir)\rogl\;$(SDL)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\cache_manager.cc" />
+    <ClCompile Include="..\camera.cc" />
+    <ClCompile Include="..\file_data.cc" />
+    <ClCompile Include="..\file_manager.cc" />
+    <ClCompile Include="..\frustum.cc" />
+    <ClCompile Include="..\full_act.cc" />
+    <ClCompile Include="..\gl_object.cc" />
+    <ClCompile Include="..\gl_object_cache.cc" />
+    <ClCompile Include="..\ro_engine.cc" />
+    <ClCompile Include="..\ro_object_cache.cc" />
+    <ClCompile Include="..\spr_cache.cc" />
+    <ClCompile Include="..\stdafx.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\texturecache.cc" />
+    <ClCompile Include="..\texturemanager.cc" />
+    <ClCompile Include="..\objects\act_object.cc" />
+    <ClCompile Include="..\objects\actor.cc" />
+    <ClCompile Include="..\charobj.cc" />
+    <ClCompile Include="..\objects\cube_object.cc" />
+    <ClCompile Include="..\objects\homunobj.cc" />
+    <ClCompile Include="..\objects\mobobj.cc" />
+    <ClCompile Include="..\objects\npcobj.cc" />
+    <ClCompile Include="..\objects\rsm_object.cc" />
+    <ClCompile Include="..\objects\rsw_object.cc" />
+    <ClCompile Include="..\objects\str_object.cc" />
+    <ClCompile Include="..\gui\button.cc" />
+    <ClCompile Include="..\gui\buttonbar.cc" />
+    <ClCompile Include="..\gui\chatlog.cc" />
+    <ClCompile Include="..\gui\checkbox.cc" />
+    <ClCompile Include="..\gui\desktop.cc" />
+    <ClCompile Include="..\gui\dialog.cc" />
+    <ClCompile Include="..\gui\dropdownlist.cc" />
+    <ClCompile Include="..\gui\element.cc" />
+    <ClCompile Include="..\gui\event.cc" />
+    <ClCompile Include="..\gui\gui.cc" />
+    <ClCompile Include="..\gui\hpspbar.cc" />
+    <ClCompile Include="..\gui\inventorywindow.cc" />
+    <ClCompile Include="..\gui\label.cc" />
+    <ClCompile Include="..\gui\list.cc" />
+    <ClCompile Include="..\gui\scrollbar.cc" />
+    <ClCompile Include="..\gui\slider.cc" />
+    <ClCompile Include="..\gui\statuswindow.cc" />
+    <ClCompile Include="..\gui\sysbox.cc" />
+    <ClCompile Include="..\gui\textbox.cc" />
+    <ClCompile Include="..\gui\textinput.cc" />
+    <ClCompile Include="..\gui\window.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\roengine\base_cache.h" />
+    <ClInclude Include="..\include\roengine\cache_manager.h" />
+    <ClInclude Include="..\include\roengine\camera.h" />
+    <ClInclude Include="..\include\roengine\file_data.h" />
+    <ClInclude Include="..\include\roengine\file_manager.h" />
+    <ClInclude Include="..\include\roengine\frustum.h" />
+    <ClInclude Include="..\include\roengine\full_act.h" />
+    <ClInclude Include="..\include\roengine\gl_object.h" />
+    <ClInclude Include="..\include\roengine\gl_object_cache.h" />
+    <ClInclude Include="..\include\roengine\ro_engine.h" />
+    <ClInclude Include="..\include\roengine\ro_object_cache.h" />
+    <ClInclude Include="..\include\roengine\spr_cache.h" />
+    <ClInclude Include="..\include\stdafx.h" />
+    <ClInclude Include="..\include\roengine\texturecache.h" />
+    <ClInclude Include="..\include\roengine\texturemanager.h" />
+    <ClInclude Include="..\include\roengine\vector.h" />
+    <ClInclude Include="..\include\roengine\objects\act_object.h" />
+    <ClInclude Include="..\include\roengine\objects\actor.h" />
+    <ClInclude Include="..\include\roengine\objects\charobj.h" />
+    <ClInclude Include="..\include\roengine\objects\cube_object.h" />
+    <ClInclude Include="..\include\roengine\objects\homunobj.h" />
+    <ClInclude Include="..\include\roengine\objects\mobobj.h" />
+    <ClInclude Include="..\include\roengine\objects\npcobj.h" />
+    <ClInclude Include="..\include\roengine\objects\rsm_object.h" />
+    <ClInclude Include="..\include\roengine\objects\rsw_object.h" />
+    <ClInclude Include="..\include\roengine\objects\str_object.h" />
+    <ClInclude Include="..\include\roengine\gui\button.h" />
+    <ClInclude Include="..\include\roengine\gui\buttonbar.h" />
+    <ClInclude Include="..\include\roengine\gui\chatlog.h" />
+    <ClInclude Include="..\include\roengine\gui\checkbox.h" />
+    <ClInclude Include="..\include\roengine\gui\desktop.h" />
+    <ClInclude Include="..\include\roengine\gui\dialog.h" />
+    <ClInclude Include="..\include\roengine\gui\dropdownlist.h" />
+    <ClInclude Include="..\include\roengine\gui\element.h" />
+    <ClInclude Include="..\include\roengine\gui\event.h" />
+    <ClInclude Include="..\include\roengine\gui\gui.h" />
+    <ClInclude Include="..\include\roengine\gui\hpspbar.h" />
+    <ClInclude Include="..\include\roengine\gui\inventorywindow.h" />
+    <ClInclude Include="..\include\roengine\gui\label.h" />
+    <ClInclude Include="..\include\roengine\gui\list.h" />
+    <ClInclude Include="..\include\roengine\gui\progressbar.h" />
+    <ClInclude Include="..\include\roengine\gui\scrollbar.h" />
+    <ClInclude Include="..\include\roengine\gui\singleton.h" />
+    <ClInclude Include="..\include\roengine\gui\slider.h" />
+    <ClInclude Include="..\include\roengine\gui\statuswindow.h" />
+    <ClInclude Include="..\include\roengine\gui\sysbox.h" />
+    <ClInclude Include="..\include\roengine\gui\textbox.h" />
+    <ClInclude Include="..\include\roengine\gui\textinput.h" />
+    <ClInclude Include="..\include\roengine\gui\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\data\ui\char_create.xml" />
+    <Xml Include="..\..\data\ui\char_select.xml" />
+    <Xml Include="..\..\data\ui\login.xml" />
+    <Xml Include="..\..\data\ui\service_select.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\rogl\msvc2008\rogl.vcxproj">
+      <Project>{be23fba1-e38f-4461-9ef6-0c0398e2c142}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\roint\msvc2008\roint.vcxproj">
+      <Project>{d9193dac-5699-422e-98b0-51fc86e55d39}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ronet\msvc2009\ronet.vcxproj">
+      <Project>{275a3e0d-3f51-473d-8ccd-747f38454450}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sdl_engine\msvc\sdl_engine.vcxproj">
+      <Project>{285d3072-bfb0-4f3a-9db4-98126f028ca9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

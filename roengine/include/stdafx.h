@@ -14,4 +14,7 @@
 #include "ro/ro.h"
 #include "rogl/rogl.h"
 
+// Ugly hack to avoid some work, TODO: rework this
+typedef Uint16 SDLKey;
+
 #endif /* __STDAFX_H */

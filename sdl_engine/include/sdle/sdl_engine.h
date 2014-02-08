@@ -15,7 +15,7 @@
 
 #include <string>
 
-#include <SDL_keysym.h>
+#include <SDL_keyboard.h>
 #include <SDL_events.h>
 
 #ifdef SDLENGINE_CONSOLE
@@ -62,7 +62,7 @@ private:
 	int m_2dcache_texture_on;
 
 	/** Modifier pressed */
-	SDLMod m_mod;
+	Uint16 m_mod;
 
 	/** Last key that was pressed */
 	unsigned int m_lastkey;
@@ -179,6 +179,8 @@ public:
 
 	// Some primitives
 	static void cube(const float& side = 1.0f);
+
+	SDL_Window *hWindow;
 };
 
 }

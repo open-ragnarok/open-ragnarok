@@ -43,7 +43,7 @@ void ROEngine::clearActors() {
 	m_actors.clear();
 }
 
-void ROEngine::ReadIni(const std::string& name) {
+bool ROEngine::ReadIni(const std::string& name) {
 	std::ifstream ini;
 	std::string cmd, file;
 	char buf[512];
@@ -53,7 +53,7 @@ void ROEngine::ReadIni(const std::string& name) {
 	ini.open(name.c_str(), std::ifstream::in);
 	if (!ini.good()) {
 		std::cerr << "Can't read from INI file: " << name << std::endl;
-		return;
+		return false;
 	}
 
 	while (!ini.eof()) {
@@ -152,6 +152,7 @@ void ROEngine::ReadIni(const std::string& name) {
 		}
 	}
 
+	return true;
 }
 
 void ROEngine::ReadNameTables() {
@@ -421,7 +422,7 @@ void ROEngine::Run() {
 		if(m_elapsed >= 1000){
 			char s[256];
 			sprintf(s, "Open Ragnarok - www.open-ragnarok.org - FPS: %d approx  Lag: %dms", m_fps, m_lag);
-			SDL_WM_SetCaption(s, NULL);
+			SDL_SetWindowTitle(hWindow, s);
 		//	m_elapsed -= 1000;
 			m_elapsed = 0;
 			m_fps = 0;
@@ -484,14 +485,14 @@ bool ROEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) {
 		printf("Screenshot saved to file '%s'.", fn);
 		return(true);
 	}
-	else if (sdlEvent->key.keysym.sym == SDLK_LSHIFT || sdlEvent->key.keysym.sym == SDLK_RSHIFT) {
+	else if (sdlEvent->key.keysym.scancode == SDL_SCANCODE_LSHIFT || sdlEvent->key.keysym.scancode == SDL_SCANCODE_RSHIFT) {
 		m_shift = true;
 	}
 	return(m_gui.InjectKeyPress(sdlEvent, mod));
 }
 
 bool ROEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) {
-	if (sdlEvent->key.keysym.sym == SDLK_LSHIFT || sdlEvent->key.keysym.sym == SDLK_RSHIFT) {
+	if (sdlEvent->key.keysym.scancode == SDL_SCANCODE_LSHIFT || sdlEvent->key.keysym.scancode == SDL_SCANCODE_RSHIFT) {
 		m_shift = false;
 	}
 	return(m_gui.InjectKeyRelease(sdlEvent, mod));

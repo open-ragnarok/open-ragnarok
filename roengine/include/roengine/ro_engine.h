@@ -138,7 +138,7 @@ public:
 
 	void Run();
 
-	void ReadIni(const std::string& name = "data.ini");
+	bool ReadIni(const std::string& name = "data.ini");
 
 	/** Event raised when the user left-clicks a map and there is nothing (mob, items, portals, etc) on the clicked place */
 	virtual void clickMap(int x, int y);

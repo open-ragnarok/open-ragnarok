@@ -8,6 +8,7 @@
 #include "sdle/arial-10.glf.h"
 
 #include <SDL.h>
+#include <SDL_opengl.h>
 #include <stdio.h>
 
 namespace sdle {
@@ -59,21 +60,22 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
         printf("Unable to initialize SDL: %s\n", SDL_GetError());
         return (false);
     }
-    SDL_WM_SetCaption(caption, caption);
 
     // TODO: Check if those values are 0, so use the largest possible.
     m_width = w;
     m_height = h;
 
 #ifdef _DEBUG
-    const SDL_VideoInfo * vi = SDL_GetVideoInfo();
+	SDL_RendererInfo dInfo;
+	SDL_GetRenderDriverInfo(1, &dInfo);
+
     printf("Video Info:\n");
-    printf("\tHardware Surface: %d\n", vi->hw_available);
-    printf("\tWindow Manager: %d\n", vi->wm_available);
-    if (vi->hw_available)
-        printf("\tVideo Memory: %u\n", vi->video_mem);
+	printf("\tName: %s\n", dInfo.name);
+
+	if (dInfo.flags & SDL_RENDERER_ACCELERATED)
+		printf("\tHardware acceleration detected\n");
     else
-        printf("\tNo Hardware acceleration!\n");
+        printf("\tNo hardware acceleration!\n");
 
 #ifdef GL_TEXTURE_RECTANGLE_EXT
     printf("\tGL_TEXTURE_RECTANGLE_EXT defined.\n");
@@ -82,10 +84,10 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
 #endif /* GL_TEXTURE_RECTANGLE_EXT */
 
 #endif /* _DEBUG */
-    int flags = SDL_OPENGL | SDL_ANYFORMAT;
+	int flags = SDL_WINDOW_OPENGL;
 
     if (fullscreen)
-        flags |= SDL_FULLSCREEN;
+		flags |= SDL_WINDOW_FULLSCREEN;
 
     //#define HWCHECK
 #ifdef HWCHECK
@@ -94,7 +96,7 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
     else
         flags |= SDL_SWSURFACE;
 #else
-    flags |= SDL_HWSURFACE;
+    //flags |= SDL_HWSURFACE;
 #endif
 
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
@@ -104,13 +106,23 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, bpp);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    SDL_putenv("SDL_VIDEO_CENTERED=center");
+    SDL_setenv("SDL_VIDEO_CENTERED", "center", 1);
 
-    if (!SDL_SetVideoMode(m_width, m_height, bpp, flags)) {
+	hWindow = SDL_CreateWindow(caption, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_height, flags);
+    if (hWindow == NULL) {
         // TODO: Write log
-        fprintf(stderr, "ERROR in SDL_SetVideoMode: %s\n", SDL_GetError());
+        fprintf(stderr, "ERROR in SDL_CreateWindow: %s\n", SDL_GetError());
         return (false);
     }
+
+	SDL_GLContext glContext = SDL_GL_CreateContext(hWindow);
+	if (glContext == NULL) {
+		// TODO: Write log
+		fprintf(stderr, "ERROR in SDL_GL_CreateContext: %s\n", SDL_GetError());
+		return (false);
+	}
+
+	glewInit();
 
 #ifdef WIN32
     /* http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fSetVideoMode
@@ -133,9 +145,15 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
     data = (char*) glGetString(GL_VENDOR);
     printf("OpenGL Vendor: %s\n", data);
     data = (char*) glGetString(GL_VERSION);
-    printf("       Version: %s\n", data);
+    printf("  Version: %s\n", data);
 
-    data = (char*) glGetString(GL_EXTENSIONS);
+	GLint n, i;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+	printf("  %d extensions:\n", n);
+	for (i = 0; i < n; i++) {
+		printf("    %s\n", glGetStringi(GL_EXTENSIONS, i));
+	}
+    /*data = (char*) glGetString(GL_EXTENSIONS);
     const char* ptr = data;
     while (ptr[0] != 0) {
         if (ptr[0] == ' ')
@@ -146,6 +164,7 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
             }
         ptr++;
     }
+	*/
 #ifdef DEBUG
     if (m_supportPot) {
 		printf("SDLEngine: We have POT!\n");
@@ -208,9 +227,13 @@ void SDLEngine::setFarClip(float f) {
 }
 
 void SDLEngine::WindowResize() {
-    SDL_Surface* screen = SDL_GetVideoSurface();
-    m_width = screen->w;
-    m_height = screen->h;
+	SDL_DisplayMode mode;
+
+	if (!SDL_GetWindowDisplayMode(hWindow, &mode)) {
+		// TODO: Debug info
+	}
+	m_width = mode.w;
+	m_height = mode.h;
 
     glViewport(0, 0, m_width, m_height);
     glMatrixMode(GL_PROJECTION);
@@ -234,7 +257,7 @@ void SDLEngine::Sync(unsigned long delay) {
 #ifdef SDLENGINE_CONSOLE
 	m_console.Draw();
 #endif
-    SDL_GL_SwapBuffers();
+	SDL_GL_SwapWindow(hWindow);
 	if (m_screenshot)
 		SaveScreen();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -414,12 +437,12 @@ int SDLEngine::Screenshot(char *filename) {
 void SDLEngine::SaveScreen() {
 	m_screenshot = false;
 
-    SDL_Surface *screen = SDL_GetVideoSurface();
+	SDL_Surface *screen = SDL_GetWindowSurface(hWindow);
     SDL_Surface *temp;
     unsigned char *pixels;
     int i;
 
-    if (!(screen->flags & SDL_OPENGL)) {
+	if (!(screen->flags & SDL_WINDOW_OPENGL)) {
         SDL_SaveBMP(screen, screenshot_fn);
         return;
     }

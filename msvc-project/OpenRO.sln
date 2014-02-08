@@ -1,63 +1,33 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdl_engine", "..\sdl_engine\msvc\sdl_engine.vcproj", "{285D3072-BFB0-4F3A-9DB4-98126F028CA9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{0008960E-E0DD-41A6-8265-00B31DDB4C21} = {0008960E-E0DD-41A6-8265-00B31DDB4C21}
-		{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833} = {B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}
-		{E61592E1-28F4-4AFC-9EE1-9BE833A061C1} = {E61592E1-28F4-4AFC-9EE1-9BE833A061C1}
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdl_engine", "..\sdl_engine\msvc\sdl_engine.vcxproj", "{285D3072-BFB0-4F3A-9DB4-98126F028CA9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng\projects\msvc\libpng.vcproj", "{0008960E-E0DD-41A6-8265-00B31DDB4C21}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8FD826F8-3739-44E6-8CC8-997122E53B8D} = {8FD826F8-3739-44E6-8CC8-997122E53B8D}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng\projects\msvc\libpng.vcxproj", "{0008960E-E0DD-41A6-8265-00B31DDB4C21}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib123\contrib\vstudio\vc8\zlib.vcproj", "{8FD826F8-3739-44E6-8CC8-997122E53B8D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib123\contrib\vstudio\vc8\zlib.vcxproj", "{8FD826F8-3739-44E6-8CC8-997122E53B8D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdlengine_test1", "..\sdle_tests\sdlengine_test1\sdlengine_test1.vcproj", "{532D9CA8-3739-466C-B3B1-691156DF99BA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{285D3072-BFB0-4F3A-9DB4-98126F028CA9} = {285D3072-BFB0-4F3A-9DB4-98126F028CA9}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdlengine_test1", "..\sdle_tests\sdlengine_test1\sdlengine_test1.vcxproj", "{532D9CA8-3739-466C-B3B1-691156DF99BA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "jpeg-7\jpeg.vcproj", "{E61592E1-28F4-4AFC-9EE1-9BE833A061C1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "jpeg-7\jpeg.vcxproj", "{E61592E1-28F4-4AFC-9EE1-9BE833A061C1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roint", "..\roint\msvc2008\roint.vcproj", "{D9193DAC-5699-422E-98B0-51FC86E55D39}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8FD826F8-3739-44E6-8CC8-997122E53B8D} = {8FD826F8-3739-44E6-8CC8-997122E53B8D}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roint", "..\roint\msvc2008\roint.vcxproj", "{D9193DAC-5699-422E-98B0-51FC86E55D39}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ronet", "..\ronet\msvc2009\ronet.vcproj", "{275A3E0D-3F51-473D-8CCD-747F38454450}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D9193DAC-5699-422E-98B0-51FC86E55D39} = {D9193DAC-5699-422E-98B0-51FC86E55D39}
-		{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833} = {B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ronet", "..\ronet\msvc2009\ronet.vcxproj", "{275A3E0D-3F51-473D-8CCD-747F38454450}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rogl", "..\rogl\msvc2008\rogl.vcproj", "{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}"
-	ProjectSection(ProjectDependencies) = postProject
-		{285D3072-BFB0-4F3A-9DB4-98126F028CA9} = {285D3072-BFB0-4F3A-9DB4-98126F028CA9}
-		{D9193DAC-5699-422E-98B0-51FC86E55D39} = {D9193DAC-5699-422E-98B0-51FC86E55D39}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rogl", "..\rogl\msvc2008\rogl.vcxproj", "{BE23FBA1-E38F-4461-9EF6-0C0398E2C142}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roengine", "..\roengine\msvc9\roengine.vcproj", "{5A500A26-AAF3-48B8-B404-68B9A2FF1C82}"
-	ProjectSection(ProjectDependencies) = postProject
-		{275A3E0D-3F51-473D-8CCD-747F38454450} = {275A3E0D-3F51-473D-8CCD-747F38454450}
-		{285D3072-BFB0-4F3A-9DB4-98126F028CA9} = {285D3072-BFB0-4F3A-9DB4-98126F028CA9}
-		{BE23FBA1-E38F-4461-9EF6-0C0398E2C142} = {BE23FBA1-E38F-4461-9EF6-0C0398E2C142}
-		{D9193DAC-5699-422E-98B0-51FC86E55D39} = {D9193DAC-5699-422E-98B0-51FC86E55D39}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roengine", "..\roengine\msvc9\roengine.vcxproj", "{5A500A26-AAF3-48B8-B404-68B9A2FF1C82}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openro", "..\openro\msvc\openro.vcproj", "{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5A500A26-AAF3-48B8-B404-68B9A2FF1C82} = {5A500A26-AAF3-48B8-B404-68B9A2FF1C82}
-		{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833} = {B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openro", "..\openro\msvc\openro.vcxproj", "{FFE46B54-EFF7-4CFB-B755-8A37334B58B9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logsys", "..\logsys\msvc\logsys.vcproj", "{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logsys", "..\logsys\msvc\logsys.vcxproj", "{B5D2C7B1-5549-468E-A5BA-6DE38BEA2833}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtarga", "libtarga\libtarga.vcproj", "{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtarga", "libtarga\libtarga.vcxproj", "{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GRF Explorer", "..\grf_explorer\msvc\GRFExplorer.vcproj", "{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GRF Explorer", "..\grf_explorer\msvc\GRFExplorer.vcxproj", "{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,11 +62,9 @@ Global
 		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.ReleaseDLL|Win32.ActiveCfg = ReleaseDLL|Win32
 		{8FD826F8-3739-44E6-8CC8-997122E53B8D}.ReleaseDLL|Win32.Build.0 = ReleaseDLL|Win32
 		{532D9CA8-3739-466C-B3B1-691156DF99BA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{532D9CA8-3739-466C-B3B1-691156DF99BA}.Debug|Win32.Build.0 = Debug|Win32
 		{532D9CA8-3739-466C-B3B1-691156DF99BA}.DebugDLL|Win32.ActiveCfg = DebugDLL|Win32
 		{532D9CA8-3739-466C-B3B1-691156DF99BA}.DebugDLL|Win32.Build.0 = DebugDLL|Win32
 		{532D9CA8-3739-466C-B3B1-691156DF99BA}.Release|Win32.ActiveCfg = Release|Win32
-		{532D9CA8-3739-466C-B3B1-691156DF99BA}.Release|Win32.Build.0 = Release|Win32
 		{532D9CA8-3739-466C-B3B1-691156DF99BA}.ReleaseDLL|Win32.ActiveCfg = ReleaseDLL|Win32
 		{532D9CA8-3739-466C-B3B1-691156DF99BA}.ReleaseDLL|Win32.Build.0 = ReleaseDLL|Win32
 		{E61592E1-28F4-4AFC-9EE1-9BE833A061C1}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -163,6 +131,12 @@ Global
 		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.Release|Win32.Build.0 = Release|Win32
 		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.ReleaseDLL|Win32.ActiveCfg = ReleaseDLL|Win32
 		{EAD1688F-3D1D-4B1D-8239-0321EFFE2502}.ReleaseDLL|Win32.Build.0 = ReleaseDLL|Win32
+		{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}.DebugDLL|Win32.ActiveCfg = Debug|Win32
+		{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}.DebugDLL|Win32.Build.0 = Debug|Win32
+		{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}.Release|Win32.ActiveCfg = Release|Win32
+		{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}.ReleaseDLL|Win32.ActiveCfg = Release|Win32
+		{3C00216A-ED19-4D2C-8B6A-4D540FF4C154}.ReleaseDLL|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,7 +13,9 @@
 rogl::ActGL* act_test = NULL;
 
 OpenRO::OpenRO() : ROEngine() {
-	ReadIni("data.ini");
+	if(!ReadIni("data.ini")){
+		//TODO: Ini failed to read
+	}
 	ReadNameTables();
 	m_state = ST_Login;
 	//m_showui = true;
@@ -277,7 +279,7 @@ void OpenRO::BeforeRun() {
     if (err != GLEW_OK)
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 
-	SDL_WM_SetCaption("Open Ragnarok - www.open-ragnarok.org", "OpenRO");
+	SDL_SetWindowTitle(hWindow, "Open Ragnarok - www.open-ragnarok.org");
 
 	// TODO: This should be a parameter
 	sdle::FTFont* lsans = new sdle::FTFont();

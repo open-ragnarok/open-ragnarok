@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugDLL|Win32">
+      <Configuration>DebugDLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDLL|Win32">
+      <Configuration>ReleaseDLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{275A3E0D-3F51-473D-8CCD-747F38454450}</ProjectGuid>
+    <RootNamespace>ronet</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(OutDir)$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\include\;$(SolutionDir)\..\logsys\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\include\;$(SolutionDir)\..\logsys\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\include\;$(SolutionDir)\..\logsys\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;RONET_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)ronet.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>$(TargetDir)\ronet.dll.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\include\;$(SolutionDir)\..\logsys\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;RONET_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)ronet.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>$(TargetDir)\ronet.dll.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\connection.cc" />
+    <ClCompile Include="..\log.cc" />
+    <ClCompile Include="..\mutex.cc" />
+    <ClCompile Include="..\net_tools.cc" />
+    <ClCompile Include="..\packet.cc" />
+    <ClCompile Include="..\packet_factory.cc" />
+    <ClCompile Include="..\packet_vector.cc" />
+    <ClCompile Include="..\ronet.cc" />
+    <ClCompile Include="..\stdafx.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\tcp_connection.cc" />
+    <ClCompile Include="..\ucbuffer.cc" />
+    <ClCompile Include="..\packets\generic_packets.cc" />
+    <ClCompile Include="..\packets\pkt_actionrequest.cc" />
+    <ClCompile Include="..\packets\pkt_actoraction.cc" />
+    <ClCompile Include="..\packets\pkt_actordisplay.cc" />
+    <ClCompile Include="..\packets\pkt_actormove.cc" />
+    <ClCompile Include="..\packets\pkt_actorspawn.cc" />
+    <ClCompile Include="..\packets\pkt_actorwalking.cc" />
+    <ClCompile Include="..\packets\pkt_attackrange.cc" />
+    <ClCompile Include="..\packets\pkt_authfailed.cc" />
+    <ClCompile Include="..\packets\pkt_charcreate.cc" />
+    <ClCompile Include="..\packets\pkt_charcreated.cc" />
+    <ClCompile Include="..\packets\pkt_charcreateerror.cc" />
+    <ClCompile Include="..\packets\pkt_charleavescreen.cc" />
+    <ClCompile Include="..\packets\pkt_charlist.cc" />
+    <ClCompile Include="..\packets\pkt_charlogin.cc" />
+    <ClCompile Include="..\packets\pkt_charposition.cc" />
+    <ClCompile Include="..\packets\pkt_charselect.cc" />
+    <ClCompile Include="..\packets\pkt_displaystat.cc" />
+    <ClCompile Include="..\packets\pkt_gmbroad.cc" />
+    <ClCompile Include="..\packets\pkt_guildinforequest.cc" />
+    <ClCompile Include="..\packets\pkt_guildmessage.cc" />
+    <ClCompile Include="..\packets\pkt_hotkeylist.cc" />
+    <ClCompile Include="..\packets\pkt_hpupdateparty.cc" />
+    <ClCompile Include="..\packets\pkt_inventoryitems.cc" />
+    <ClCompile Include="..\packets\pkt_inventoryitemsstackable.cc" />
+    <ClCompile Include="..\packets\pkt_itemgained.cc" />
+    <ClCompile Include="..\packets\pkt_keepalive.cc" />
+    <ClCompile Include="..\packets\pkt_keepalivemap.cc" />
+    <ClCompile Include="..\packets\pkt_login.cc" />
+    <ClCompile Include="..\packets\pkt_loginerror.cc" />
+    <ClCompile Include="..\packets\pkt_mapacctsend.cc" />
+    <ClCompile Include="..\packets\pkt_mapchange.cc" />
+    <ClCompile Include="..\packets\pkt_maploaded.cc" />
+    <ClCompile Include="..\packets\pkt_maplogin.cc" />
+    <ClCompile Include="..\packets\pkt_maploginsuccess.cc" />
+    <ClCompile Include="..\packets\pkt_mapmove.cc" />
+    <ClCompile Include="..\packets\pkt_mapmoveok.cc" />
+    <ClCompile Include="..\packets\pkt_npccancel.cc" />
+    <ClCompile Include="..\packets\pkt_npccontinue.cc" />
+    <ClCompile Include="..\packets\pkt_otherspeech.cc" />
+    <ClCompile Include="..\packets\pkt_ownspeech.cc" />
+    <ClCompile Include="..\packets\pkt_playerequip.cc" />
+    <ClCompile Include="..\packets\pkt_recvnpcimage2.cc" />
+    <ClCompile Include="..\packets\pkt_recvnpctalk.cc" />
+    <ClCompile Include="..\packets\pkt_recvnpctalknext.cc" />
+    <ClCompile Include="..\packets\pkt_recvnpctalkresponses.cc" />
+    <ClCompile Include="..\packets\pkt_sendnpcnumber.cc" />
+    <ClCompile Include="..\packets\pkt_sendnpcresponse.cc" />
+    <ClCompile Include="..\packets\pkt_sendnpctext.cc" />
+    <ClCompile Include="..\packets\pkt_serverlist.cc" />
+    <ClCompile Include="..\packets\pkt_servertick.cc" />
+    <ClCompile Include="..\packets\pkt_skilllist.cc" />
+    <ClCompile Include="..\packets\pkt_statsinfo.cc" />
+    <ClCompile Include="..\packets\pkt_talk.cc" />
+    <ClCompile Include="..\packets\pkt_updatestatus.cc" />
+    <ClCompile Include="..\packets\pkt_zenyexp.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\ronet\blob.h" />
+    <ClInclude Include="..\include\ronet\buffer.h" />
+    <ClInclude Include="..\include\ronet\connection.h" />
+    <ClInclude Include="..\include\log.h" />
+    <ClInclude Include="..\include\ronet\mutex.h" />
+    <ClInclude Include="..\include\ronet\mutex_buffer.h" />
+    <ClInclude Include="..\include\ronet\net_tools.h" />
+    <ClInclude Include="..\include\ronet\packet.h" />
+    <ClInclude Include="..\include\ronet\packet_factory.h" />
+    <ClInclude Include="..\include\ronet\packet_ids.h" />
+    <ClInclude Include="..\include\ronet\packet_vector.h" />
+    <ClInclude Include="..\include\ronet\ronet.h" />
+    <ClInclude Include="..\include\ronet\ronet_import.h" />
+    <ClInclude Include="..\include\stdafx.h" />
+    <ClInclude Include="..\include\ronet\structures.h" />
+    <ClInclude Include="..\include\ronet\tcp_connection.h" />
+    <ClInclude Include="..\include\ronet\ucbuffer.h" />
+    <ClInclude Include="..\include\ronet\packets\generic_packets.h" />
+    <ClInclude Include="..\include\ronet\packets\packets.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_actionrequest.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_actoraction.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_actordisplay.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_actormove.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_actorspawn.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_actorwalking.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_attackrange.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_authfailed.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charcreate.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charcreated.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charcreateerror.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charleavescreen.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charlist.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charlogin.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charposition.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_charselect.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_displaystat.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_gmbroad.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_guildinforequest.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_guildmessage.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_hotkeylist.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_hpupdateparty.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_inventoryitems.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_inventoryitemsstackable.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_itemgained.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_keepalive.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_keepalivemap.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_login.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_loginerror.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_mapacctsend.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_mapchange.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_maploaded.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_maplogin.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_maploginsuccess.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_mapmove.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_mapmoveok.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_npccancel.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_npccontinue.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_otherspeech.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_ownspeech.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_playerequip.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_recvnpcimage2.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_recvnpctalk.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_recvnpctalknext.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_recvnpctalkresponses.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_sendnpcnumber.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_sendnpcresponse.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_sendnpctext.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_serverlist.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_servertick.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_skilllist.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_statsinfo.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_talk.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_updatestatus.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_zenyexp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ronet.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\logsys\msvc\logsys.vcxproj">
+      <Project>{b5d2c7b1-5549-468e-a5ba-6de38bea2833}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\roint\msvc2008\roint.vcxproj">
+      <Project>{d9193dac-5699-422e-98b0-51fc86e55d39}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

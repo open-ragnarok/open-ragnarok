@@ -12,3 +12,7 @@
 #include <SDL.h>
 
 #include "log.h"
+
+// Ugly hack to avoid some work, TODO: rework this
+typedef Uint16 SDLKey;
+

@@ -36,6 +36,7 @@
 
 #include "log.h"
 
+/* TODO: ???????
 #ifndef HAVE_STRNICMP
 #	ifdef HAVE_STRNCASECMP
 #		define strnicmp strncasecmp
@@ -43,5 +44,6 @@
 #		error "strnicmp is missing!"
 #	endif
 #endif
+*/
 
 #endif /* __STDAFX_H */
