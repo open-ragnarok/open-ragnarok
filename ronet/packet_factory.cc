@@ -253,6 +253,7 @@ void ronet::PacketFactory::generatePackets(ucBuffer& buffer) {
 		//If we receive a packet id > 0x0500
 		//we will ignore the first 4 bytes of the buffer
 		buffer.peek((unsigned char*)&id2, 2);
+		_log(RONET__DEBUG, "Received packet %04X", id2);
 		if(id2 > 0x0500){
 			if(buffer.dataSize() == 4){
 				buffer.clear();

@@ -80,7 +80,7 @@ private:
 #endif
 
 protected:
-	bool keys[1024];
+	bool keys[SDL_NUM_SCANCODES];
 
 	/** Called before initialization. Useful when creating subclasses. */
 	virtual void BeforeInit();

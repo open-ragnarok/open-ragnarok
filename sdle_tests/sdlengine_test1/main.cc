@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
 	e.getConsole().setFont(&f);
 #endif
 	float r = 0.0f;
-	while (!keys[SDLK_ESCAPE]) {
+	while (!keys[SDL_SCANCODE_ESCAPE]) {
 		e.LookAt(8, 4, 0);
 		glRotatef(r, 0, 1, 0);
 		t.Activate();

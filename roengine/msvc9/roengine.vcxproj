@@ -153,8 +153,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\include\;$(SDL)\include\;$(SolutionDir)..\roint\include\;$(SolutionDir)..\rogl\include\;$(SolutionDir)\..\sdl_engine\include\;$(SolutionDir)\libpng\;$(SolutionDir)\freetype2\include\;$(SolutionDir)\zlib123\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>

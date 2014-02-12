@@ -80,7 +80,7 @@ bool RONet::GameLogin(const std::string& name, const std::string& pass, unsigned
 	// Set internal packet version for future reference.
 	m_packetver = version;
 
-	ronet::pktLogin login(name, pass, version);
+	ronet::pktLogin2 login(name, pass, version, "127.0.0.1", "1111111111111", false);
 	login >> m_login.bufOutput;
 	return(true);
 }

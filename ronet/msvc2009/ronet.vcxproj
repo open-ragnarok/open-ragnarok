@@ -100,10 +100,10 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\include\;$(SolutionDir)\..\logsys\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;USE_LOGSYS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -159,6 +159,7 @@
     <ClCompile Include="..\mutex.cc" />
     <ClCompile Include="..\net_tools.cc" />
     <ClCompile Include="..\packet.cc" />
+    <ClCompile Include="..\packets\pkt_login2.cc" />
     <ClCompile Include="..\packet_factory.cc" />
     <ClCompile Include="..\packet_vector.cc" />
     <ClCompile Include="..\ronet.cc" />
@@ -236,6 +237,7 @@
     <ClInclude Include="..\include\ronet\mutex_buffer.h" />
     <ClInclude Include="..\include\ronet\net_tools.h" />
     <ClInclude Include="..\include\ronet\packet.h" />
+    <ClInclude Include="..\include\ronet\packets\pkt_login2.h" />
     <ClInclude Include="..\include\ronet\packet_factory.h" />
     <ClInclude Include="..\include\ronet\packet_ids.h" />
     <ClInclude Include="..\include\ronet\packet_vector.h" />

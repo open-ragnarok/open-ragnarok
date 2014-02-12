@@ -266,7 +266,7 @@ bool ROEngine::ReadNameTable(const char* fn, std::map<std::string, std::string>&
 }
 
 ROEngine::ROEngine(const std::string& name) : SDLEngine(name.c_str()) {
-	for (int i = 0; i < 1024; i++)
+	for (int i = 0; i < SDL_NUM_SCANCODES; i++)
 		keys[i] = false;
 
 	m_lag = 0;
@@ -473,7 +473,7 @@ void ROEngine::Run() {
 }
 
 bool ROEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) {
-	if (sdlEvent->key.keysym.sym == SDLK_PRINT) {
+	if (sdlEvent->key.keysym.sym == SDLK_PRINTSCREEN) {
 		unsigned int i = 1;
 		char fn[128];
 		sprintf(fn, "screenshot-%d.bmp", i);
@@ -485,14 +485,14 @@ bool ROEngine::evtKeyPress(SDL_Event *sdlEvent, const int& mod) {
 		printf("Screenshot saved to file '%s'.", fn);
 		return(true);
 	}
-	else if (sdlEvent->key.keysym.scancode == SDL_SCANCODE_LSHIFT || sdlEvent->key.keysym.scancode == SDL_SCANCODE_RSHIFT) {
+	else if (sdlEvent->key.keysym.sym == SDLK_LSHIFT || sdlEvent->key.keysym.sym == SDLK_RSHIFT) {
 		m_shift = true;
 	}
 	return(m_gui.InjectKeyPress(sdlEvent, mod));
 }
 
 bool ROEngine::evtKeyRelease(SDL_Event *sdlEvent, const int& mod) {
-	if (sdlEvent->key.keysym.scancode == SDL_SCANCODE_LSHIFT || sdlEvent->key.keysym.scancode == SDL_SCANCODE_RSHIFT) {
+	if (sdlEvent->key.keysym.sym == SDLK_LSHIFT || sdlEvent->key.keysym.sym == SDLK_RSHIFT) {
 		m_shift = false;
 	}
 	return(m_gui.InjectKeyRelease(sdlEvent, mod));

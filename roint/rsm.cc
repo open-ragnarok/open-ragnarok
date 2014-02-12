@@ -746,7 +746,7 @@ void ro::RSM::Node::calcBoundingBox() {
 	box.max[0] = box.max[1] = box.max[2] = -999999.0;
 	box.min[0] = box.min[1] = box.min[2] = 999999.0;
 
-	float transf[15];
+	float transf[16];
 	transf[0] = offsetMT[0];
 	transf[1] = offsetMT[1];
 	transf[2] = offsetMT[2];

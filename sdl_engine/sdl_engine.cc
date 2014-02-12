@@ -190,7 +190,7 @@ bool SDLEngine::InitDisplay(const unsigned int& w, const unsigned int& h, const 
     AfterInit();
 
 	// Reset keys
-	for (int i = 0; i < 1024; i++)
+	for (int i = 0; i < SDL_NUM_SCANCODES; i++)
 		keys[i] = false;
 
 /*	GLFFont::Arabia8 = new GLFFont(glf_arabia8, glf_arabia8_size);
@@ -356,17 +356,17 @@ void SDLEngine::ProcessKeyboard() {
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_KEYDOWN:
-                keys[e.key.keysym.sym] = true;
+                keys[e.key.keysym.scancode] = true;
 				m_mod = e.key.keysym.mod;
-				m_lastkey = e.key.keysym.sym;
+				m_lastkey = e.key.keysym.scancode;
 #ifdef SDLENGINE_CONSOLE
 				if (!m_console.InjectKeyDown(&e))
 #endif
                 evtKeyPress(&e, e.key.keysym.mod);
                 break;
             case SDL_KEYUP:
-                keys[e.key.keysym.sym] = false;
-				if (m_lastkey = e.key.keysym.sym)
+				keys[e.key.keysym.scancode] = false;
+				if (m_lastkey = e.key.keysym.scancode)
 					m_lastkey = SDLK_UNKNOWN;
 #ifdef SDLENGINE_CONSOLE
 				if (!m_console.InjectKeyUp(&e))

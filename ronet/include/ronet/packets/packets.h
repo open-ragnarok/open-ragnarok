@@ -34,6 +34,7 @@
 #include "pkt_charlogin.h"
 #include "pkt_keepalive.h"
 #include "pkt_login.h"
+#include "pkt_login2.h"
 #include "pkt_serverlist.h"
 #include "pkt_loginerror.h"			//[kR105]
 #include "pkt_authfailed.h"			//[kR105]

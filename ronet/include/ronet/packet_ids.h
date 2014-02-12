@@ -8,6 +8,7 @@ typedef enum PacketIDs{
 	// ============== //
 	// To LOGIN
 	pktLoginID = 0x0064,
+	pktLogin2ID = 0x02b0,
 
 	// To CHAR
 	pktCharLoginID = 0x0065,		// 17 bytes

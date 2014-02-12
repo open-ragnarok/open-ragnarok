@@ -98,8 +98,8 @@ void OpenRO::CharSelect(unsigned int slot){
 }
 
 void OpenRO::HandleKeyboard() {
-	if (keys[SDLK_ESCAPE]) {
-		keys[SDLK_ESCAPE] = false;
+	if (keys[SDL_SCANCODE_ESCAPE]) {
+		keys[SDL_SCANCODE_ESCAPE] = false;
 	//	((RODesktop*)m_gui.getDesktop())->showQuitDialog();
 	/*	switch(m_state) {
 		case ST_Map:
@@ -109,9 +109,9 @@ void OpenRO::HandleKeyboard() {
 		dskIngame->showQuitDialog();
 	//	m_quit = true;
 	}
-	if (keys[SDLK_F10]) {
+	if (keys[SDL_SCANCODE_F10]) {
 		m_gui.Dialog("Testing", "You've pressed F10", *this);
-		keys[SDLK_F10] = false;
+		keys[SDL_SCANCODE_F10] = false;
 	}
 }
 

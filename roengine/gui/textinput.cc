@@ -202,30 +202,30 @@ bool GUI::TextInput::HandleKeyUp(SDL_Event *sdlEvent, int mod) {
 }
 
 bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
-	SDLKey key = sdlEvent->key.keysym.sym;
+	SDLKey key = sdlEvent->key.keysym.scancode;
 
 	if (m_key == key)
     // Determine if shift is held for selection.  
  //   if( (mod & KMOD_LSHIFT) || (mod & KMOD_RSHIFT) )  
-	if(key == SDLK_LSHIFT || key == SDLK_RSHIFT) 
+	if (key == SDL_SCANCODE_LSHIFT || key == SDL_SCANCODE_RSHIFT)
 		SelectFlag = true;  
  
     // Detect keypresses.  
-	if(key == SDLK_BACKSPACE)
+	if(key == SDL_SCANCODE_BACKSPACE)
 		RemoveLeft();
-	else if(key == SDLK_DELETE) {
+	else if(key == SDL_SCANCODE_DELETE) {
 		if (SelectFlag)
 			RemoveSelected();
 		else
 			RemoveRight();
 	}
-	else if(key == SDLK_LEFT)            
+	else if(key == SDL_SCANCODE_LEFT)            
 		MoveLeft();
-	else if(key == SDLK_RIGHT)
+	else if(key == SDL_SCANCODE_RIGHT)
 		MoveRight();
-	else if(key == SDLK_HOME)
+	else if(key == SDL_SCANCODE_HOME)
 		MoveStart();
-	else if(key == SDLK_END)
+	else if(key == SDL_SCANCODE_END)
 		MoveEnd();
 	// Catch modifier key presses.
 	else if(key == SDLK_LSHIFT || key == SDLK_RSHIFT);
@@ -284,11 +284,12 @@ bool GUI::TextInput::HandleKeyDown(SDL_Event *sdlEvent, int mod) {
 
 	printf("Text input:\t");
 	//printf("Unicode: %d\t", sdlEvent->key.keysym.unicode);
+	printf("Scancode: %3d\t", sdlEvent->key.keysym.scancode);
 	printf("Sym: %3d\t", sdlEvent->key.keysym.sym);
-	if (sdlEvent->key.keysym.sym < SDLK_SPACE || sdlEvent->key.keysym.sym >= SDLK_DELETE)
+	if (sdlEvent->key.keysym.scancode < SDLK_SPACE || sdlEvent->key.keysym.scancode >= SDLK_DELETE)
 		printf("Char: [ ]\t");  
 	else
-		printf("Char: [%c]\t", sdlEvent->key.keysym.sym);  
+		printf("Char: [%c]\t", sdlEvent->key.keysym.scancode);
 	printf("SelectFlag: %s", (SelectFlag)?"T":"F");  
 	printf("\n");
 
