@@ -49,13 +49,26 @@ int RONet::packetCount() const {
 }
 
 bool RONet::Process() {
+	bool state = true;
+
 	m_login.Process();
 	m_char.Process();
 	m_map.Process();
 
-	m_packetfactory << m_login;
-	m_packetfactory << m_char;
-	m_packetfactory << m_map;
+	state &= (m_packetfactory << m_login);
+	state &= (m_packetfactory << m_char);
+	state &= (m_packetfactory << m_map);
+
+	if (!state) {
+		// Something went wrong parsing the received data
+
+		_log(RONET__ERROR, "Process() Error: The connection will be closed");
+
+		m_login.Close();
+		m_char.Close();
+		m_map.Close();
+	}
+
 	return(true);
 }
 

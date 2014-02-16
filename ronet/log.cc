@@ -7,7 +7,7 @@ namespace ronet {
 struct LogSysInfo ronet_logsys[] = {
 	{ RONET__DEBUG, "NetDebug", true, NULL },
 	{ RONET__ERROR, "NetError", true, stderr },
-	{ RONET__TRACE, "Net", false, NULL}
+	{ RONET__TRACE, "Net", true, NULL}
 };
 #endif
 

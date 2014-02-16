@@ -164,9 +164,9 @@ namespace ronet {
 		unsigned int count() const;
 		Packet* pop();
 
-		void generatePackets(ucBuffer&);
+		bool generatePackets(ucBuffer&);
 		PacketFactory& operator << (ucBuffer&);
-		PacketFactory& operator << (Connection&);
+		bool operator << (Connection&);
 	};
 }
 

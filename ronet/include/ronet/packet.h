@@ -360,6 +360,7 @@ bool pkt ##name ::Decode(ucBuffer& buf) { \
 	buf.ignore(2); buf >> id; buf >>trail; return(true); \
 }
 
+#define MAX_PACKET_DB 0xf00
 
 }
 

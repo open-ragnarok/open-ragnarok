@@ -44,18 +44,22 @@ bool ronet::pktLoginError::Decode(ucBuffer& buf) {
 	if (!CheckID(buf))
 		return(false);
 
-	unsigned short size;
-	size = *(unsigned short*)(buf.getBuffer() + 2);
+	unsigned char result;
+	result = buf.getBuffer()[2];
 
-	if (buf.dataSize() < size) // Not enough data
-		return(false);
+	if (result != 6) { //eAthena, login.c @ 1260
+		if (buf.dataSize() == 23)
+			buf.clear(); // We don't need any more data after this packet
+		else if (buf.dataSize() < 23)
+			return(false); // We need more data
+		// It should never be > 23
+	} else {
+		// 6 = Your are Prohibited to log in until %s
+		buf.clear(); // TODO: Handle this!
+	}
 
-	buf.ignore(2);
-	buf >> errorId;
+	errorId = result;
 
-	// When we're done...
-	//buf.ignore(size);
-	buf.clear();
 	return(true);
 }
 

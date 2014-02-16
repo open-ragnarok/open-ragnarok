@@ -95,7 +95,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalOptions>/verbose:lib %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>libtarga.lib;libpng.lib;ws2_32.lib;opengl32.lib;glu32.lib;glew32s.lib;SDL2.lib;freetype.lib;Vorbis.lib;Ogg.lib;OpenAL32.lib;cAudio.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>

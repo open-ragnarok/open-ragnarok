@@ -245,28 +245,34 @@ unsigned int ronet::PacketFactory::count() const {
 	return(packets.size());
 }
 
-void ronet::PacketFactory::generatePackets(ucBuffer& buffer) {
-	unsigned short id;
-	unsigned short id2;
+bool ronet::PacketFactory::generatePackets(ucBuffer& buffer) {
+	unsigned short id, len;
 	while (buffer.dataSize() > 0) {
-		//TODO: Re-Fix this! (Temporal fix)
-		//If we receive a packet id > 0x0500
-		//we will ignore the first 4 bytes of the buffer
-		buffer.peek((unsigned char*)&id2, 2);
-		_log(RONET__DEBUG, "Received packet %04X", id2);
-		if(id2 > 0x0500){
-			if(buffer.dataSize() == 4){
-				buffer.clear();
-				return;
-			}else{
-				buffer.ignore(4);
-			}
+		buffer.peek((unsigned char*)&id, 2);
+
+		if (id == 0x8481) {
+			buffer.ignore(4);
+			return true;
 		}
 
-		buffer.peek((unsigned char*)&id, sizeof(short));
+		//If we receive a packet id > MAX_PACKET_DB something is wrong and the connection must be closed
+		_log(RONET__DEBUG, "Received packet %04X", id);
+		if(id > MAX_PACKET_DB){
+			buffer.clear();
+			return false;
+		}
+
+		buffer.peek((unsigned char*)&len, 2);
+
+		if (len > 32768) {
+			buffer.clear();
+			return false;
+		}
+
 		if(!m_dispatcher.Call(id, buffer))
-			return;
+			return true;
 	}
+	return true;
 }
 
 ronet::PacketFactory& ronet::PacketFactory::operator << (ucBuffer& buffer) {
@@ -274,9 +280,8 @@ ronet::PacketFactory& ronet::PacketFactory::operator << (ucBuffer& buffer) {
 	return(*this);
 }
 
-ronet::PacketFactory& ronet::PacketFactory::operator << (Connection& c) {
-	generatePackets(c.bufInput);
-	return(*this);
+bool ronet::PacketFactory::operator << (Connection& c) {
+	return generatePackets(c.bufInput);
 }
 
 ronet::PacketFactory::Dispatcher::Dispatcher(ronet::PacketFactory* f) {

@@ -156,7 +156,7 @@
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\include\;$(SDL)\include\;$(SolutionDir)..\roint\include\;$(SolutionDir)..\rogl\include\;$(SolutionDir)\..\sdl_engine\include\;$(SolutionDir)\libpng\;$(SolutionDir)\freetype2\include\;$(SolutionDir)\zlib123\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;GLEW_STATIC;USE_LOGSYS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
